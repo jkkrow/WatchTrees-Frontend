@@ -1,0 +1,32 @@
+.drag-drop {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem;
+  gap: 1rem;
+  border-radius: 10px;
+  transition: all 200ms ease-out;
+
+  svg {
+    width: 7rem;
+    height: 7rem;
+  }
+
+  &.invalid {
+    color: #ff0000;
+
+    svg {
+      stroke: #ff0000;
+    }
+  }
+
+  &.dragging {
+    opacity: 0.5;
+
+    * {
+      pointer-events: none;
+    }
+  }
+}

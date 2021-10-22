@@ -1,0 +1,26 @@
+.account-profile {
+  width: 100%;
+  max-width: 100rem;
+  margin: auto;
+  gap: 2rem;
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 2rem 0;
+    gap: 1rem;
+    font-weight: 500;
+    text-align: end;
+
+    div {
+      display: flex;
+      flex-wrap: wrap;
+
+      &::before {
+        content: attr(data-label);
+        margin-right: auto;
+      }
+    }
+  }
+}

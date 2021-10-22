@@ -1,0 +1,16 @@
+.response {
+  width: 100%;
+  padding: 1.5rem 2rem;
+  margin: 1rem 0;
+  font-weight: 600;
+  word-wrap: break-word;
+  border-radius: 5px;
+
+  &.error {
+    background-color: #a50000;
+  }
+
+  &.message {
+    background-color: #1b7200;
+  }
+}

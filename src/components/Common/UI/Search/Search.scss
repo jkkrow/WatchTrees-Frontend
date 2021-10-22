@@ -1,0 +1,47 @@
+.search {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 3rem;
+
+  input {
+    position: absolute;
+    right: 0;
+    width: 25rem;
+    padding: 1rem;
+    border: none;
+    border-bottom: 2px solid var(--text-primary);
+    outline: none;
+    color: var(--text-primary);
+    background-color: transparent;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 300ms ease-out;
+
+    &:focus {
+      transform: scaleX(1);
+    }
+
+    &:focus ~ label {
+      transform: translateX(-25.5rem);
+    }
+  }
+
+  label {
+    display: flex;
+    width: 100%;
+    transform: translateX(0);
+    transition: transform 300ms ease-out;
+  }
+}
+
+@media (max-width: 500px) {
+  .search input {
+    width: 15rem;
+
+    &:focus ~ label {
+      transform: translateX(-15.5rem);
+    }
+  }
+}
