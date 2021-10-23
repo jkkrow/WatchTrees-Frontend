@@ -40,11 +40,11 @@ const App: React.FC = () => {
    */
 
   useEffect(() => {
-    const refreshToken = JSON.parse(
-      localStorage.getItem('refreshToken') || 'null'
-    );
+    const refreshTokenJSON = localStorage.getItem('refreshToken');
 
-    if (!refreshToken) return;
+    if (!refreshTokenJSON) return;
+
+    const refreshToken = JSON.parse(refreshTokenJSON);
 
     if (refreshToken.expiresIn > Date.now()) {
       dispatch(updateRefreshToken(refreshToken.value));

@@ -1,6 +1,6 @@
-import AccountProfile from "components/User/Account/Profile/AccountProfile";
+import AccountProfile from 'components/User/Account/Profile/AccountProfile';
 
-const AccountPage = () => {
+const AccountPage: React.FC = () => {
   return (
     <div className="layout">
       <AccountProfile />

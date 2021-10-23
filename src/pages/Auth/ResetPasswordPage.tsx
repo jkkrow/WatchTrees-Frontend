@@ -10,22 +10,25 @@ import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useForm } from 'hooks/use-form';
-import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
+import { RootState } from 'store';
 import { getResetPassword, postResetPassword } from 'store/actions/auth';
+import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
 
-const ResetPasswordPage = () => {
+const ResetPasswordPage: React.FC = () => {
   const [isAccessAllowed, setIsAccessAllowed] = useState(false);
-
-  const { loading, error, message } = useSelector((state) => state.auth);
-
-  const dispatch = useDispatch();
 
   const { formState, setFormInput } = useForm({
     password: { value: '', isValid: false },
     confirmPassword: { value: '', isValid: false },
   });
 
-  const { token } = useParams();
+  const { loading, error, message } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  const dispatch = useDispatch();
+
+  const { token } = useParams<{ token: string }>();
 
   const submitHandler = () => {
     if (!formState.isValid) return;
@@ -40,7 +43,7 @@ const ResetPasswordPage = () => {
   };
 
   useEffect(() => {
-    dispatch(getResetPassword(token), () => setIsAccessAllowed(true));
+    dispatch(getResetPassword(token, () => setIsAccessAllowed(true)));
   }, [dispatch, token]);
 
   return (
@@ -62,7 +65,7 @@ const ResetPasswordPage = () => {
               <Input
                 id="password"
                 type="password"
-                formElement
+                formInput
                 autoFocus
                 autoComplete="new-password"
                 label="Password *"
@@ -73,7 +76,7 @@ const ResetPasswordPage = () => {
               <Input
                 id="confirmPassword"
                 type="password"
-                formElement
+                formInput
                 autoComplete="new-password"
                 label="Confirm Password *"
                 validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}

@@ -19,8 +19,13 @@ import {
   VALIDATOR_EQUAL,
 } from 'util/validators';
 
-const AuthPage = () => {
+const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
+
+  const { formState, setFormInput, setFormData } = useForm({
+    email: { value: '', isValid: false },
+    password: { value: '', isValid: false },
+  });
 
   const { loading, error, message } = useSelector(
     (state: RootState) => state.auth
@@ -28,16 +33,11 @@ const AuthPage = () => {
 
   const dispatch = useDispatch();
 
-  const { formState, setFormInput, setFormData } = useForm({
-    email: { value: '', isValid: false },
-    password: { value: '', isValid: false },
-  });
-
   const googleLoginHandler = (response: { tokenId: string }): void => {
     dispatch(login({ tokenId: response.tokenId }));
   };
 
-  const submitHandler = async () => {
+  const submitHandler = async (): Promise<void> => {
     if (!formState.isValid) return;
 
     if (isLogin) {
@@ -62,7 +62,7 @@ const AuthPage = () => {
     }
   };
 
-  const toggleMode = () => {
+  const toggleMode = (): void => {
     dispatch(clearResponse());
 
     setIsLogin((prevMode) => {
@@ -96,7 +96,7 @@ const AuthPage = () => {
         <Form onSubmit={submitHandler}>
           <Input
             id="email"
-            formElement
+            formInput
             autoComplete="email"
             label="Email *"
             validators={[VALIDATOR_EMAIL()]}
@@ -105,7 +105,7 @@ const AuthPage = () => {
           <Input
             id="password"
             type="password"
-            formElement
+            formInput
             autoComplete="current-password"
             label="Password *"
             validators={[VALIDATOR_REQUIRE()]}
@@ -127,7 +127,7 @@ const AuthPage = () => {
         <Form onSubmit={submitHandler}>
           <Input
             id="name"
-            formElement
+            formInput
             autoComplete="name"
             label="Name *"
             message="At least 4 characters"
@@ -136,7 +136,7 @@ const AuthPage = () => {
           />
           <Input
             id="email"
-            formElement
+            formInput
             autoComplete="email"
             label="Email *"
             validators={[VALIDATOR_EMAIL()]}
@@ -145,7 +145,7 @@ const AuthPage = () => {
           <Input
             id="password"
             type="password"
-            formElement
+            formInput
             autoComplete="new-password"
             label="Password *"
             message="At least 8 characters with lowercase, uppercase, number, and special character"
@@ -155,7 +155,7 @@ const AuthPage = () => {
           <Input
             id="confirmPassword"
             type="password"
-            formElement
+            formInput
             autoComplete="new-password"
             label="Confirm Password *"
             validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}

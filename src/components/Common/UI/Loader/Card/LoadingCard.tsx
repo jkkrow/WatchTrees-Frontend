@@ -1,6 +1,11 @@
-import "./LoadingCard.scss";
+import './LoadingCard.scss';
 
-const LoadingCard = ({ on, detail }) =>
+interface LoadingCardProps {
+  on: boolean;
+  detail?: boolean;
+}
+
+const LoadingCard: React.FC<LoadingCardProps> = ({ on, detail }) =>
   on ? (
     <div className="loading-card">
       <div className="loading-card__thumbnail" />

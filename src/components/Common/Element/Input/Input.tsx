@@ -14,7 +14,7 @@ type Action =
   | { type: 'FORM_CHANGE'; value: string; validators: ValidatorAction[] }
   | { type: 'FORM_BLUR' };
 
-const inputReducer = (state: State, action: Action) => {
+const inputReducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'CHANGE':
       return {
@@ -43,7 +43,7 @@ interface InputProps {
   isValidated?: boolean;
   type?: 'text' | 'password' | 'number' | 'textarea';
   id: string;
-  label: string;
+  label?: string;
   value?: string;
   initialValue?: string;
   placeholder?: string;
@@ -52,9 +52,9 @@ interface InputProps {
   validators?: ValidatorAction[];
   message?: string;
   rows?: number;
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
-  onTextAreaChange: React.ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur: React.FocusEventHandler;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onTextAreaChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
+  onBlur?: React.FocusEventHandler;
   onForm: (id: string, value: string, isValid: boolean) => void;
 }
 
@@ -91,7 +91,7 @@ const Input: React.FC<InputProps> = ({
 
   const inputChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (
     event
-  ): void => {
+  ) => {
     formInput
       ? dispatch({
           type: 'FORM_CHANGE',

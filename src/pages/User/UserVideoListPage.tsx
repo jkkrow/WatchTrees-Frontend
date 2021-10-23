@@ -1,11 +1,13 @@
-import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
+import { RouteComponentProps } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 
 import NewVideo from 'components/User/UserVideos/Header/NewVideo';
 import UserVideoList from 'components/User/UserVideos/List/UserVideoList';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { useForm } from 'hooks/use-form';
+import { RootState } from 'store';
 import { initiateUpload } from 'store/actions/upload';
 import { VALIDATOR_EQUAL } from 'util/validators';
 
@@ -71,19 +73,20 @@ const ITEMS = [
   },
 ];
 
-const UserVideoListPage = ({ history }) => {
+const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const [displayModal, setDisplayModal] = useState(false);
-  const [targetItem, setTargetItem] = useState({});
+  const [targetItem, setTargetItem] =
+    useState<null | Object /* Video Item Type */>(null);
 
   const { formState, setFormInput } = useForm({
     video: { value: '', isValid: false },
   });
 
+  const { uploadTree } = useSelector((state: RootState) => state.upload);
+
   const dispatch = useDispatch();
 
-  const { uploadTree } = useSelector((state) => state.upload);
-
-  const addNewVideoHandler = () => {
+  const addNewVideoHandler = (): void => {
     if (!uploadTree.root) {
       dispatch(initiateUpload());
     }
@@ -91,21 +94,21 @@ const UserVideoListPage = ({ history }) => {
     history.push('/new-video');
   };
 
-  const openWarningHandler = (item) => {
+  const openWarningHandler = (item: Object): void => {
     setDisplayModal(true);
     setTargetItem(item);
   };
 
-  const closeWarningHandler = () => {
+  const closeWarningHandler = (): void => {
     setDisplayModal(false);
     setTargetItem({});
   };
 
-  const editHandler = () => {
+  const editHandler = (): void => {
     console.log('EDIT');
   };
 
-  const deleteHandler = () => {
+  const deleteHandler = (): void => {
     console.log('DELETE');
   };
 
@@ -124,7 +127,7 @@ const UserVideoListPage = ({ history }) => {
               </p>
               <Input
                 id="video"
-                formElement
+                formInput
                 validators={[VALIDATOR_EQUAL(targetItem.title)]}
                 onForm={setFormInput}
               />

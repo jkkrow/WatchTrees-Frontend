@@ -1,11 +1,11 @@
-import { ReactComponent as SearchIcon } from "assets/icons/search.svg";
-import "./Search.scss";
+import SearchIcon from 'assets/icons/search.svg';
+import './Search.scss';
 
 const Search = () => {
-  const searchHandler = (event) => {
+  const searchHandler = (event: React.FormEvent): void => {
     event.preventDefault();
 
-    console.log("SEARCH!");
+    console.log('SEARCH!');
   };
 
   return (

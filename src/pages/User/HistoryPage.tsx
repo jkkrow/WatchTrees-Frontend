@@ -1,4 +1,4 @@
-const HistoryPage = () => {
+const HistoryPage: React.FC = () => {
   return <div className="layout"></div>;
 };
 

@@ -1,7 +1,7 @@
-import VideoCarousel from "components/Video/Carousel/VideoCarousel";
-import VideoList from "components/Video/List/VideoList";
+import VideoCarousel from 'components/Video/Carousel/VideoCarousel';
+import VideoList from 'components/Video/List/VideoList';
 
-const VideoListPage = () => {
+const VideoListPage: React.FC = () => {
   return (
     <div className="layout">
       <VideoCarousel />

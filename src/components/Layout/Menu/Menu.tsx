@@ -3,15 +3,20 @@ import { NavLink, useHistory } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { RootState } from 'store';
 import { logout } from 'store/actions/auth';
 import { removeTree } from 'store/actions/upload';
 import './Menu.scss';
 
-const Menu = ({ on }) => {
+interface MenuProps {
+  on: boolean;
+}
+
+const Menu: React.FC<MenuProps> = ({ on }) => {
   const dispatch = useDispatch();
 
-  const { userData } = useSelector((state) => state.auth);
-  const { uploadTree } = useSelector((state) => state.upload);
+  const { userData } = useSelector((state: RootState) => state.auth);
+  const { uploadTree } = useSelector((state: RootState) => state.upload);
 
   const history = useHistory();
 
@@ -62,7 +67,7 @@ const Menu = ({ on }) => {
         </ul>
       </div>
     </CSSTransition>,
-    document.getElementById('menu-hook')
+    document.getElementById('menu-hook')!
   );
 };
 

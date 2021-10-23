@@ -1,22 +1,29 @@
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import UploadDashboard from "components/Upload/Dashboard/UploadDashboard";
-import UploadTree from "components/Upload/TreeView/Tree/UploadTree";
-import Preview from "components/Upload/Preview/Preview";
-import Modal from "components/Common/UI/Modal/Modal";
-import { removeNode, updateActiveNode, setWarning } from "store/actions/upload";
-import { updateActiveVideo } from "store/actions/video";
+import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
+import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
+import Preview from 'components/Upload/Preview/Preview';
+import Modal from 'components/Common/UI/Modal/Modal';
+import { RootState } from 'store';
+import { removeNode, updateActiveNode, setWarning } from 'store/actions/upload';
+import { updateActiveVideo } from 'store/actions/video';
 
-const UploadVideoPage = () => {
+const UploadVideoPage: React.FC = () => {
   const { uploadTree, previewTree, activeNodeId, warning } = useSelector(
-    (state) => state.upload
+    (state: RootState) => state.upload
   );
-  const { activeVideoId } = useSelector((state) => state.video);
+  const { activeVideoId } = useSelector((state: RootState) => state.video);
 
   const dispatch = useDispatch();
 
-  const removeNodeHandler = () => {
+  useEffect(() => {
+    return () => {
+      dispatch(setWarning(null));
+    };
+  }, [dispatch]);
+
+  const removeNodeHandler = (): void => {
     dispatch(removeNode(warning.node.id));
 
     if (warning.node.id === activeNodeId) {
@@ -28,30 +35,26 @@ const UploadVideoPage = () => {
     }
   };
 
-  const confirmHandler = () => {
-    if (warning.type === "REMOVE") {
+  const confirmHandler = (): void => {
+    if (warning.type === 'REMOVE') {
       return removeNodeHandler();
     }
   };
 
-  const closeWarningHandler = () => {
+  const closeWarningHandler = (): void => {
     dispatch(setWarning(null));
   };
-
-  useEffect(() => {
-    return () => dispatch(setWarning(null));
-  }, [dispatch]);
 
   return (
     <div className="layout">
       <Modal
-        on={warning}
+        on={!!warning}
         data={warning}
         onConfirm={confirmHandler}
         onClose={closeWarningHandler}
       />
       <div>{uploadTree.root && <UploadDashboard tree={uploadTree} />}</div>
-      <div style={{ display: "flex" }}>
+      <div style={{ display: 'flex' }}>
         {uploadTree.root && <UploadTree tree={uploadTree} />}
         {previewTree.root?.info && <Preview tree={previewTree} />}
       </div>

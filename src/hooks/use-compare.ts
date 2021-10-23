@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-const usePrevious = (value) => {
+const usePrevious = (value: any): typeof value => {
   const ref = useRef();
 
   useEffect(() => {
@@ -10,7 +10,7 @@ const usePrevious = (value) => {
   return ref.current;
 };
 
-export const useCompare = (value) => {
+export const useCompare = (value: any): boolean => {
   const prevValue = usePrevious(value);
 
   return prevValue !== value;

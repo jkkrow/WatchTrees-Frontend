@@ -6,17 +6,22 @@ import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import { useForm } from 'hooks/use-form';
-import { VALIDATOR_EMAIL } from 'util/validators';
+import { RootState } from 'store';
 import { sendRecoveryEmail } from 'store/actions/auth';
+import { VALIDATOR_EMAIL } from 'util/validators';
 
-const SendRecoveryEmailPage = () => {
-  const dispatch = useDispatch();
-  const { loading, error, message } = useSelector((state) => state.auth);
+const SendRecoveryEmailPage: React.FC = () => {
   const { formState, setFormInput } = useForm({
     email: { value: '', isValid: false },
   });
 
-  const submitHandler = () => {
+  const { loading, error, message } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  const dispatch = useDispatch();
+
+  const submitHandler = (): void => {
     if (!formState.isValid) return;
 
     dispatch(sendRecoveryEmail(formState.inputs.email.value));
@@ -29,7 +34,7 @@ const SendRecoveryEmailPage = () => {
         <Form onSubmit={submitHandler}>
           <Input
             id="email"
-            formElement
+            formInput
             autoFocus
             autoComplete="email"
             label="Email *"

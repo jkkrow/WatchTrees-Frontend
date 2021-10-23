@@ -1,20 +1,21 @@
-import { useEffect } from "react";
-import { useParams } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from 'react';
+import { useParams } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 
-import AuthLayout from "components/Auth/AuthLayout/AuthLayout";
-import Response from "components/Common/UI/Response/Response";
-import LoadingSpinner from "components/Common/UI/Loader/Spinner/LoadingSpinner";
-import { verifyEmail, updateUserData } from "store/actions/auth";
+import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
+import Response from 'components/Common/UI/Response/Response';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
+import { RootState } from 'store';
+import { verifyEmail, updateUserData } from 'store/actions/auth';
 
-const VerifyEmailPage = () => {
-  const dispatch = useDispatch();
-
+const VerifyEmailPage: React.FC = () => {
   const { userData, loading, error, message } = useSelector(
-    (state) => state.auth
+    (state: RootState) => state.auth
   );
 
-  const { token } = useParams();
+  const dispatch = useDispatch();
+
+  const { token } = useParams<{ token: string }>();
 
   useEffect(() => {
     dispatch(
@@ -29,7 +30,7 @@ const VerifyEmailPage = () => {
   return (
     <AuthLayout>
       <LoadingSpinner on={loading} />
-      <Response type={error ? "error" : "message"} content={error || message} />
+      <Response type={error ? 'error' : 'message'} content={error || message} />
     </AuthLayout>
   );
 };

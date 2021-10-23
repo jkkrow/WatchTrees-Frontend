@@ -1,11 +1,27 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { CSSTransition } from "react-transition-group";
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { CSSTransition } from 'react-transition-group';
 
-import Button from "components/Common/Element/Button/Button";
-import "./Modal.scss";
+import Button from 'components/Common/Element/Button/Button';
+import './Modal.scss';
 
-const Modal = ({ className, style, on, data, onConfirm, onClose }) => {
+interface ModalProps {
+  className?: string;
+  style?: React.CSSProperties;
+  on: boolean;
+  data: any;
+  onConfirm?: () => void;
+  onClose?: () => void;
+}
+
+const Modal: React.FC<ModalProps> = ({
+  className,
+  style,
+  on,
+  data,
+  onConfirm,
+  onClose,
+}) => {
   const [displayModal, setDisplayModal] = useState(!!on);
   const [modalData, setModalData] = useState(data || {});
 
@@ -14,14 +30,14 @@ const Modal = ({ className, style, on, data, onConfirm, onClose }) => {
     data && setModalData(data);
   }, [on, data]);
 
-  const submitHandler = (event) => {
+  const submitHandler = (event: React.FormEvent): void => {
     event.preventDefault();
 
-    onConfirm();
+    onConfirm && onConfirm();
     setDisplayModal(false);
   };
 
-  const closeModalHandler = () => {
+  const closeModalHandler = (): void => {
     setDisplayModal(false);
   };
 
@@ -36,7 +52,7 @@ const Modal = ({ className, style, on, data, onConfirm, onClose }) => {
         onExited={onClose}
       >
         <form
-          className={`modal${className ? " " + className : ""}`}
+          className={`modal${className ? ' ' + className : ''}`}
           style={style}
           onSubmit={submitHandler}
         >
@@ -53,7 +69,7 @@ const Modal = ({ className, style, on, data, onConfirm, onClose }) => {
               </Button>
             )}
             <Button type="button" small onClick={closeModalHandler}>
-              {modalData.type ? "CANCEL" : "OK"}
+              {modalData.type ? 'CANCEL' : 'OK'}
             </Button>
           </div>
         </form>
@@ -68,7 +84,7 @@ const Modal = ({ className, style, on, data, onConfirm, onClose }) => {
         <div className="modal__backdrop" onClick={closeModalHandler} />
       </CSSTransition>
     </>,
-    document.getElementById("modal-hook")
+    document.getElementById('modal-hook')!
   );
 };
 

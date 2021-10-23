@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import LoadingCard from "components/Common/UI/Loader/Card/LoadingCard";
-import "./VideoList.scss";
+import LoadingCard from 'components/Common/UI/Loader/Card/LoadingCard';
+import './VideoList.scss';
 
 const VideoList = () => {
   const [loadingStatus, setLoadingStatus] = useState(true);
@@ -24,12 +24,13 @@ const VideoList = () => {
   return (
     <div className="video-list" ref={listRef}>
       {loaderNumber.map((item, index) => (
-        <div key={index} className="video-item" ref={itemRef}>
-          <LoadingCard
-            on={loadingStatus}
-            detail
-            onClick={() => setLoadingStatus(false)}
-          />
+        <div
+          key={index}
+          className="video-item"
+          ref={itemRef}
+          onClick={() => setLoadingStatus(false)}
+        >
+          <LoadingCard on={loadingStatus} detail />
         </div>
       ))}
     </div>

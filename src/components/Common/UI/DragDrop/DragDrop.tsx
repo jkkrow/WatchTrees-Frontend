@@ -5,23 +5,27 @@ import './DragDrop.scss';
 
 interface DragDropProps {
   type: string;
+  multiple?: boolean;
   onFile: (file: File) => void;
 }
 
-const DragDrop: React.FC<DragDropProps> = ({ type, onFile }) => {
+const DragDrop: React.FC<DragDropProps> = ({ type, multiple, onFile }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const fileChangeHandler = useCallback(
-    (e: React.DragEvent | React.ChangeEvent<HTMLInputElement>) => {
-      setIsError(false);
-
+    (e: React.DragEvent | React.ChangeEvent<HTMLInputElement>): void => {
       let selectedFile: File;
 
       if (e.type === 'drop') {
+        e = e as React.DragEvent;
+
         selectedFile = e.dataTransfer.files[0];
       } else {
-        selectedFile = e.target.files[0];
+        e = e as React.ChangeEvent<HTMLInputElement>;
+        if (!e.target.files) return;
+
+        selectedFile = e.target.files![0];
       }
 
       if (selectedFile.type.split('/')[0] !== type) {
@@ -33,19 +37,19 @@ const DragDrop: React.FC<DragDropProps> = ({ type, onFile }) => {
     [type, onFile]
   );
 
-  const dragInHandler = useCallback((e: React.DragEvent) => {
+  const dragInHandler = useCallback((e: React.DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
   }, []);
 
-  const dragOutHandler = useCallback((e: React.DragEvent) => {
+  const dragOutHandler = useCallback((e: React.DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
 
     setIsDragging(false);
   }, []);
 
-  const dragOverHandler = useCallback((e: React.DragEvent) => {
+  const dragOverHandler = useCallback((e: React.DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
 
@@ -55,7 +59,7 @@ const DragDrop: React.FC<DragDropProps> = ({ type, onFile }) => {
   }, []);
 
   const dropHandler = useCallback(
-    (e: React.DragEvent) => {
+    (e: React.DragEvent): void => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -79,8 +83,9 @@ const DragDrop: React.FC<DragDropProps> = ({ type, onFile }) => {
         <input
           type="file"
           hidden
-          onChange={fileChangeHandler}
           accept={`${type}/*`}
+          multiple={multiple}
+          onChange={fileChangeHandler}
         />
         <UploadIcon />
       </label>

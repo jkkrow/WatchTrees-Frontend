@@ -4,8 +4,8 @@ const authSlice = createSlice({
   name: 'auth',
   initialState: {
     accessToken: null,
-    refreshToken: JSON.parse(localStorage.getItem('refreshToken') || null),
-    userData: JSON.parse(localStorage.getItem('userData') || null),
+    refreshToken: JSON.parse(localStorage.getItem('refreshToken') || 'null'),
+    userData: JSON.parse(localStorage.getItem('userData') || 'null'),
     loading: false,
     error: null,
     message: null,

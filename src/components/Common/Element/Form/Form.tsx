@@ -16,7 +16,7 @@ const Form: React.FC<FormProps> = ({
 }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const submitHandler = (event: React.FormEvent) => {
+  const submitHandler = (event: React.FormEvent): void => {
     event.preventDefault();
     setIsSubmitted(true);
 

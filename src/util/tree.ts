@@ -1,11 +1,21 @@
-export const findById = (tree, id) => {
-  let currentNode = tree.root;
-  const queue = [];
+interface Node {
+  id: string;
+  info: any;
+  children: Node[];
+}
+
+interface Tree {
+  root: Node;
+}
+
+export const findById = (tree: Tree, id: string): Node | null => {
+  let currentNode: Node = tree.root;
+  const queue: Node[] = [];
 
   queue.push(currentNode);
 
   while (queue.length) {
-    currentNode = queue.shift();
+    currentNode = queue.shift()!;
 
     if (currentNode.id === id) return currentNode;
 
@@ -16,14 +26,14 @@ export const findById = (tree, id) => {
   return null;
 };
 
-export const findByChildId = (tree, id) => {
-  let currentNode = tree.root;
-  const queue = [];
+export const findByChildId = (tree: Tree, id: string): Node | null => {
+  let currentNode: Node = tree.root;
+  const queue: Node[] = [];
 
   queue.push(currentNode);
 
   while (queue.length) {
-    currentNode = queue.shift();
+    currentNode = queue.shift()!;
 
     if (currentNode.children.find((item) => item?.id === id))
       return currentNode;
@@ -35,15 +45,15 @@ export const findByChildId = (tree, id) => {
   return null;
 };
 
-export const traverseNodes = (root) => {
+export const traverseNodes = (root: Node): Node[] => {
   let currentNode = root;
-  const queue = [];
-  const nodes = [];
+  const queue: Node[] = [];
+  const nodes: Node[] = [];
 
   queue.push(currentNode);
 
   while (queue.length) {
-    currentNode = queue.shift();
+    currentNode = queue.shift()!;
 
     nodes.push(currentNode);
 
@@ -54,10 +64,15 @@ export const traverseNodes = (root) => {
   return nodes;
 };
 
-export const validateNodes = (root, key, value, type = true) => {
+export const validateNodes = (
+  root: Node,
+  key: string,
+  value?: any,
+  type = true
+): boolean => {
   const nodes = traverseNodes(root);
 
-  if (key === "info") {
+  if (key === 'info') {
     return !!nodes.find((node) =>
       type ? node.info === (value || null) : node.info !== (value || null)
     );
@@ -68,10 +83,10 @@ export const validateNodes = (root, key, value, type = true) => {
   );
 };
 
-export const getAllPaths = (tree) => {
-  const result = [];
+export const getAllPaths = (tree: Tree): Node[][] => {
+  const result: Node[][] = [];
 
-  const iterate = (currentNode, path) => {
+  const iterate = (currentNode: Node, path: Node[]) => {
     const newPath = path.concat(currentNode);
 
     if (currentNode.children.length) {
@@ -88,13 +103,13 @@ export const getAllPaths = (tree) => {
   return result;
 };
 
-export const getFullSize = (tree) => {
+export const getFullSize = (tree: Tree): number => {
   const nodes = traverseNodes(tree.root);
 
   return nodes.reduce((acc, cur) => acc + (cur.info?.size ?? 0), 0);
 };
 
-export const getMinMaxDuration = (tree) => {
+export const getMinMaxDuration = (tree: Tree): { max: number; min: number } => {
   const paths = getAllPaths(tree);
 
   const possibleDurations = paths.map((path) =>

@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { NavLink, useLocation } from 'react-router-dom';
 
-import Logo from "components/Common/UI/Logo/Logo";
-import Search from "components/Common/UI/Search/Search";
-import Avatar from "components/Common/UI/Avatar/Avatar";
-import Menu from "components/Layout/Menu/Menu";
-import "./Header.scss";
+import Logo from 'components/Common/UI/Logo/Logo';
+import Search from 'components/Common/UI/Search/Search';
+import Avatar from 'components/Common/UI/Avatar/Avatar';
+import Menu from 'components/Layout/Menu/Menu';
+import { RootState } from 'store';
+import './Header.scss';
 
 const Header = () => {
-  const { userData } = useSelector((state) => state.auth);
+  const { userData } = useSelector((state: RootState) => state.auth);
 
   const [displayMenu, setDisplayMenu] = useState(false);
 

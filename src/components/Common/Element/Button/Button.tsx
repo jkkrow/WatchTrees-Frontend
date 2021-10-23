@@ -8,7 +8,7 @@ interface ButtonProps {
   invalid?: boolean;
   inversed?: boolean;
   small?: boolean;
-  onClick: (event: React.MouseEvent) => void;
+  onClick?: (event: React.MouseEvent) => void;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -35,7 +35,7 @@ const Button: React.FC<ButtonProps> = ({
       }}
     >
       {children}
-      <LoadingSpinner on={loading} overlay />
+      <LoadingSpinner on={!!loading} overlay />
     </button>
   );
 };
