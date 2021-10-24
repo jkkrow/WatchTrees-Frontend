@@ -1,31 +1,21 @@
-import { videoActions } from 'store/reducers/video';
+import { videoActions, VideoTree } from 'store/reducers/video';
 
-export const setVideoTree = (tree) => {
-  return (dispatch) => {
-    dispatch(
-      videoActions.setVideoTree({
-        videoTree: tree,
-      })
-    );
+import { AppDispatch } from 'store';
+
+export const setVideoTree = (tree: VideoTree) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(videoActions.setVideoTree(tree));
   };
 };
 
-export const updateActiveVideo = (id) => {
-  return (dispatch) => {
-    dispatch(
-      videoActions.setActiveVideo({
-        activeVideoId: id,
-      })
-    );
+export const updateActiveVideo = (id: string) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(videoActions.setActiveVideo(id));
   };
 };
 
-export const updateVideoVolume = (volume) => {
-  return (dispatch) => {
-    dispatch(
-      videoActions.setVideoVolume({
-        videoVolume: volume,
-      })
-    );
+export const updateVideoVolume = (volume: number) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(videoActions.setVideoVolume(volume));
   };
 };

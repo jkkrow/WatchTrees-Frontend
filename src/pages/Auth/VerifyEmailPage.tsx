@@ -1,19 +1,15 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
 
 import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
-import { RootState } from 'store';
+import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
 import { verifyEmail, updateUserData } from 'store/actions/auth';
 
 const VerifyEmailPage: React.FC = () => {
-  const { userData, loading, error, message } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  const dispatch = useDispatch();
+  const { userData, loading, error, message } = useAuthSelector();
+  const dispatch = useAppDispatch();
 
   const { token } = useParams<{ token: string }>();
 

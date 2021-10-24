@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
 
 import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
@@ -8,8 +7,8 @@ import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import GoogleLoginButton from 'components/Auth/GoogleLoginButton/GoogleLoginButton';
-import { useForm } from 'hooks/use-form';
-import { RootState } from 'store';
+import { useForm } from 'hooks/form-hook';
+import { useAppDispatch, useAuthSelector, useUploadSelector } from 'hooks/store-hook';
 import { register, login, clearResponse } from 'store/actions/auth';
 import {
   VALIDATOR_EMAIL,
@@ -22,16 +21,13 @@ import {
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
 
+  const { loading, error, message } = useAuthSelector();
+  const dispatch = useAppDispatch();
+
   const { formState, setFormInput, setFormData } = useForm({
     email: { value: '', isValid: false },
     password: { value: '', isValid: false },
   });
-
-  const { loading, error, message } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  const dispatch = useDispatch();
 
   const googleLoginHandler = (response: { tokenId: string }): void => {
     dispatch(login({ tokenId: response.tokenId }));
@@ -164,10 +160,7 @@ const AuthPage: React.FC = () => {
           <Button loading={loading}>SIGN UP</Button>
         </Form>
       )}
-      <GoogleLoginButton
-        onLoginSuccess={googleLoginHandler}
-        loading={loading}
-      />
+      <GoogleLoginButton onLoginSuccess={googleLoginHandler} loading={loading} />
       {isLogin ? (
         <p>
           Don't have an account?{' '}

@@ -1,20 +1,20 @@
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import Input from "components/Common/Element/Input/Input";
-import Button from "components/Common/Element/Button/Button";
-import { ReactComponent as EnterIcon } from "assets/icons/enter.svg";
-import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
-import { useTimeout } from "hooks/use-timer";
-import { formatTime, formatSize } from "util/format";
-import { validateNodes } from "util/tree";
-import { updateTree } from "store/actions/upload";
-import "./UploadDashboard.scss";
+import Input from 'components/Common/Element/Input/Input';
+import Button from 'components/Common/Element/Button/Button';
+import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
+import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
+import { useTimeout } from 'hooks/timer-hook';
+import { formatTime, formatSize } from 'util/format';
+import { validateNodes } from 'util/tree';
+import { updateTree } from 'store/actions/upload';
+import './UploadDashboard.scss';
 
 const UploadDashboard = ({ tree }) => {
   const [titleInput, setTitleInput] = useState(tree.title);
   const [descriptionInput, setDescriptionInput] = useState(tree.description);
-  const [tagInput, setTagInput] = useState("");
+  const [tagInput, setTagInput] = useState('');
   const [tagArray, setTagArray] = useState(tree.tags);
 
   const dispatch = useDispatch();
@@ -60,7 +60,7 @@ const UploadDashboard = ({ tree }) => {
       dispatch(updateTree({ tags: newTags }));
     }
 
-    setTagInput("");
+    setTagInput('');
   };
 
   const removeTagHandler = (tag) => {
@@ -70,8 +70,8 @@ const UploadDashboard = ({ tree }) => {
     dispatch(updateTree({ tags: filteredTags }));
   };
 
-  const isEmptyNode = validateNodes(tree.root, "info");
-  const isUncomletedNode = validateNodes(tree.root, "progress", 100, false);
+  const isEmptyNode = validateNodes(tree.root, 'info');
+  const isUncomletedNode = validateNodes(tree.root, 'progress', 100, false);
 
   return (
     <div className="upload-dashboard">
@@ -96,7 +96,7 @@ const UploadDashboard = ({ tree }) => {
               onChange={tagChangeHandler}
             />
             <EnterIcon
-              className={!tagInput.trim().length ? "disabled" : ""}
+              className={!tagInput.trim().length ? 'disabled' : ''}
               onClick={tagSubmitHandler}
             />
           </form>

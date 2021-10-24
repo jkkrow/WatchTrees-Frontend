@@ -1,23 +1,44 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { v1 as uuidv1 } from 'uuid';
 
-import {
-  findById,
-  findByChildId,
-  getFullSize,
-  getMinMaxDuration,
-} from 'util/tree';
+import { Node, Tree, findById, findByChildId, getFullSize, getMinMaxDuration } from 'util/tree';
+
+enum UploadStatus {
+  Progressing = 'Progressing',
+  Completed = 'Completed',
+}
+
+interface UploadTree extends Tree {
+  title: string;
+  tags: string[];
+  description: string;
+  size: number;
+  maxDuration: number;
+  minDuration: number;
+  status: UploadStatus;
+}
+
+interface uploadSliceState {
+  uploadTree: UploadTree | null;
+  previewTree: Tree | null;
+  activeNodeId: string;
+  warning: string | null;
+  error: string | null;
+  saved: boolean | null;
+}
+
+const initialState: uploadSliceState = {
+  uploadTree: null,
+  previewTree: null,
+  activeNodeId: '',
+  warning: null,
+  error: null,
+  saved: null,
+};
 
 const uploadSlice = createSlice({
   name: 'upload',
-  initialState: {
-    uploadTree: {},
-    previewTree: {},
-    activeNodeId: '',
-    warning: null,
-    error: null,
-    saved: null,
-  },
+  initialState,
   reducers: {
     initiateUpload: (state) => {
       const node = {
@@ -35,7 +56,7 @@ const uploadSlice = createSlice({
         size: 0,
         maxDuration: 0,
         minDuration: 0,
-        status: 'Progressing',
+        status: UploadStatus.Progressing,
       };
       state.previewTree = {
         root: node,
@@ -112,12 +133,8 @@ const uploadSlice = createSlice({
       const uploadNode = findByChildId(state.uploadTree, payload.nodeId);
       const previewNode = findByChildId(state.previewTree, payload.nodeId);
 
-      uploadNode.children = uploadNode.children.filter(
-        (item) => item.id !== payload.nodeId
-      );
-      previewNode.children = previewNode.children.filter(
-        (item) => item.id !== payload.nodeId
-      );
+      uploadNode.children = uploadNode.children.filter((item) => item.id !== payload.nodeId);
+      previewNode.children = previewNode.children.filter((item) => item.id !== payload.nodeId);
 
       const fullSize = getFullSize(state.uploadTree);
       const { max, min } = getMinMaxDuration(state.uploadTree);

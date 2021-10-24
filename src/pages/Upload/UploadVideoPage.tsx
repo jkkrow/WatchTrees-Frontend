@@ -1,21 +1,17 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
 import Preview from 'components/Upload/Preview/Preview';
 import Modal from 'components/Common/UI/Modal/Modal';
-import { RootState } from 'store';
+import { useAppDispatch, useUploadSelector, useVideoSelector } from 'hooks/store-hook';
 import { removeNode, updateActiveNode, setWarning } from 'store/actions/upload';
 import { updateActiveVideo } from 'store/actions/video';
 
 const UploadVideoPage: React.FC = () => {
-  const { uploadTree, previewTree, activeNodeId, warning } = useSelector(
-    (state: RootState) => state.upload
-  );
-  const { activeVideoId } = useSelector((state: RootState) => state.video);
-
-  const dispatch = useDispatch();
+  const { uploadTree, previewTree, activeNodeId, warning } = useUploadSelector();
+  const { activeVideoId } = useVideoSelector();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     return () => {

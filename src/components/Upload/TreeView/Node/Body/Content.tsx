@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { ReactComponent as CircleDashIcon } from "assets/icons/circle-dash.svg";
-import { ReactComponent as CircleCheckIcon } from "assets/icons/circle-check.svg";
-import { ReactComponent as CircleLoadingIcon } from "assets/icons/circle-loading.svg";
-import { useTimeout } from "hooks/use-timer";
-import { updateNode, updateActiveNode } from "store/actions/upload";
-import { formatTime, formatSize } from "util/format";
-import { validateNodes } from "util/tree";
+import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
+import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
+import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
+import { useTimeout } from 'hooks/timer-hook';
+import { updateNode, updateActiveNode } from 'store/actions/upload';
+import { formatTime, formatSize } from 'util/format';
+import { validateNodes } from 'util/tree';
 
 const Content = ({ currentNode, treeId }) => {
   const [labelInput, setLabelInput] = useState(currentNode.info.label);
@@ -35,7 +35,7 @@ const Content = ({ currentNode, treeId }) => {
     <div className="upload-node__content">
       <div
         className={`upload-node__title${
-          currentNode.id === activeNodeId ? " parent" : ""
+          currentNode.id === activeNodeId ? ' parent' : ''
         }`}
         onClick={() =>
           currentNode.id !== activeNodeId && activeNodeHandler(currentNode.id)
@@ -48,7 +48,7 @@ const Content = ({ currentNode, treeId }) => {
         <div className="upload-node__progress--background" />
         <div
           className="upload-node__progress--current"
-          style={{ width: currentNode.info.progress + "%" }}
+          style={{ width: currentNode.info.progress + '%' }}
         />
       </div>
 
@@ -72,9 +72,9 @@ const Content = ({ currentNode, treeId }) => {
         )}
         <label className="upload-node__info__timeline" data-label="Timeline">
           <div className="upload-node__info__input">
-            <input readOnly value={currentNode.info.timelineStart || "-"} />
+            <input readOnly value={currentNode.info.timelineStart || '-'} />
             <span>to</span>
-            <input readOnly value={currentNode.info.timelineEnd || "-"} />
+            <input readOnly value={currentNode.info.timelineEnd || '-'} />
             <p>Mark timeline with a button below Video Player.</p>
           </div>
         </label>
@@ -91,8 +91,8 @@ const Content = ({ currentNode, treeId }) => {
                     );
 
                   if (
-                    validateNodes(node, "info") ||
-                    validateNodes(node, "progress", 100, false)
+                    validateNodes(node, 'info') ||
+                    validateNodes(node, 'progress', 100, false)
                   )
                     return (
                       <CircleLoadingIcon
@@ -101,11 +101,11 @@ const Content = ({ currentNode, treeId }) => {
                       />
                     );
 
-                  if (validateNodes(node, "error", null, false))
+                  if (validateNodes(node, 'error', null, false))
                     return (
                       <CircleLoadingIcon
                         key={node.id}
-                        style={{ stroke: "#ff0000" }}
+                        style={{ stroke: '#ff0000' }}
                         onClick={() => activeNodeHandler(node.id)}
                       />
                     );
@@ -117,7 +117,7 @@ const Content = ({ currentNode, treeId }) => {
                     />
                   );
                 })
-              : "-"}
+              : '-'}
           </div>
         </div>
       </div>

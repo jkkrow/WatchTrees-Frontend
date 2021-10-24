@@ -4,41 +4,41 @@ import {
   useEffect,
   useLayoutEffect,
   useRef,
-} from "react";
-import { useDispatch, useSelector } from "react-redux";
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import Playback from "./Controls/Playback";
-import Volume from "./Controls/Volume";
-import Progress from "./Controls/Progress";
-import Time from "./Controls/Time";
-import Fullscreen from "./Controls/Fullscreen";
-import Selector from "./Controls/Selector";
-import Navigation from "./Controls/Navigation";
-import Loader from "./Controls/Loader";
-import { useTimeout } from "hooks/use-timer";
-import { formatTime } from "util/format";
-import { updateActiveVideo, updateVideoVolume } from "store/actions/video";
-import { updateNode } from "store/actions/upload";
-import "./VideoPlayer.scss";
+import Playback from './Controls/Playback';
+import Volume from './Controls/Volume';
+import Progress from './Controls/Progress';
+import Time from './Controls/Time';
+import Fullscreen from './Controls/Fullscreen';
+import Selector from './Controls/Selector';
+import Navigation from './Controls/Navigation';
+import Loader from './Controls/Loader';
+import { useTimeout } from 'hooks/timer-hook';
+import { formatTime } from 'util/format';
+import { updateActiveVideo, updateVideoVolume } from 'store/actions/video';
+import { updateNode } from 'store/actions/upload';
+import './VideoPlayer.scss';
 
-const shaka = require("shaka-player/dist/shaka-player.ui.js");
+const shaka = require('shaka-player/dist/shaka-player.ui.js');
 
 const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
   // vp-container
-  const [displayCursor, setDisplayCursor] = useState("default");
+  const [displayCursor, setDisplayCursor] = useState('default');
 
   // vp-controls
   const [canPlayType, setCanPlayType] = useState(true);
   const [displayControls, setDisplayControls] = useState(true);
 
   // playback button
-  const [playbackState, setPlaybackState] = useState("play");
+  const [playbackState, setPlaybackState] = useState('play');
 
   // volume button
-  const [volumeState, setVolumeState] = useState("high");
+  const [volumeState, setVolumeState] = useState('high');
 
   // volume input
-  const [currentVolume, setCurrentVolume] = useState("100");
+  const [currentVolume, setCurrentVolume] = useState('100');
   const [seekVolume, setSeekVolume] = useState(1);
 
   // progress bar
@@ -48,12 +48,12 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
   const [videoDuration, setVideoDuration] = useState(0);
 
   // seek tooltip
-  const [seekTooltip, setSeekTooltip] = useState("00:00");
-  const [seekTooltipPosition, setSeekTooltipPosition] = useState("");
+  const [seekTooltip, setSeekTooltip] = useState('00:00');
+  const [seekTooltipPosition, setSeekTooltipPosition] = useState('');
 
   // time ui
-  const [currentTimeUI, setCurrentTimeUI] = useState("00:00");
-  const [remainedTimeUI, setRemainedTimeUI] = useState("00:00");
+  const [currentTimeUI, setCurrentTimeUI] = useState('00:00');
+  const [remainedTimeUI, setRemainedTimeUI] = useState('00:00');
 
   // fullscreen button
   const [fullscreen, setFullscreen] = useState(false);
@@ -101,7 +101,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
 
   const errorHandler = useCallback((event) => {
     // Extract the shaka.util.Error object from the event.
-    console.log("Error code", event.detail.code, "object", event.detail);
+    console.log('Error code', event.detail.code, 'object', event.detail);
   }, []);
 
   /*
@@ -115,7 +115,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
   }, []);
 
   const showControlsHandler = useCallback(() => {
-    setDisplayCursor("default");
+    setDisplayCursor('default');
 
     if (
       !selectorData.current ||
@@ -130,7 +130,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
       hideControlsHandler();
 
       if (!videoRef.current.paused) {
-        setDisplayCursor("none");
+        setDisplayCursor('none');
       }
     }, 2000);
   }, [hideControlsHandler, controlsTimeout]);
@@ -150,11 +150,11 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
   }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
-    setPlaybackState("pause");
+    setPlaybackState('pause');
   }, []);
 
   const videoPauseHandler = useCallback(() => {
-    setPlaybackState("play");
+    setPlaybackState('play');
   }, []);
 
   const videoEndedHandler = useCallback(() => {
@@ -193,14 +193,14 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
 
   const volumeInputHandler = useCallback((event) => {
     videoRef.current.volume = event.target.value;
-    setCurrentVolume(event.target.value * 100 + "%");
+    setCurrentVolume(event.target.value * 100 + '%');
     setSeekVolume(event.target.value);
   }, []);
 
   const volumeChangeHandler = useCallback(() => {
     const video = videoRef.current;
 
-    setCurrentVolume(video.volume * 100 + "%");
+    setCurrentVolume(video.volume * 100 + '%');
     setSeekVolume(video.volume);
 
     if (video.volume === 0) {
@@ -211,19 +211,19 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
     }
 
     if (video.muted || video.volume === 0) {
-      setVolumeState("mute");
+      setVolumeState('mute');
     } else if (video.volume > 0 && video.volume < 0.3) {
-      setVolumeState("low");
+      setVolumeState('low');
     } else if (video.volume >= 0.3 && video.volume < 0.7) {
-      setVolumeState("middle");
+      setVolumeState('middle');
     } else {
-      setVolumeState("high");
+      setVolumeState('high');
     }
 
     if (active) {
       volumeTimeout(() => {
         dispatch(updateVideoVolume(video.volume));
-        localStorage.setItem("video-volume", video.volume);
+        localStorage.setItem('video-volume', video.volume);
       }, 300);
     }
   }, [dispatch, active, volumeTimeout]);
@@ -232,12 +232,12 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
     if (videoRef.current.volume !== 0) {
       volumeData.current = videoRef.current.volume;
       videoRef.current.volume = 0;
-      setCurrentVolume("0");
+      setCurrentVolume('0');
       setSeekVolume(0);
     } else {
       videoRef.current.volume = volumeData.current;
       setSeekVolume(volumeData.current);
-      setCurrentVolume(volumeData.current * 100 + "%");
+      setCurrentVolume(volumeData.current * 100 + '%');
     }
   }, []);
 
@@ -308,7 +308,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
     if (skipTo > videoRef.current.duration) {
       newTime = formatTime(videoRef.current.duration);
     } else if (skipTo < 0) {
-      newTime = "00:00";
+      newTime = '00:00';
     } else {
       newTime = formatTime(skipTo);
       setSeekTooltipPosition(`${event.pageX - rect.left}px`);
@@ -333,7 +333,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      document.querySelector(".video-tree").requestFullscreen();
+      document.querySelector('.video-tree').requestFullscreen();
     }
   }, []);
 
@@ -354,9 +354,9 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
       const activeElement = document.activeElement;
 
       if (
-        (activeElement.localName === "input" &&
-          activeElement.type !== "range") ||
-        activeElement.localName === "textarea"
+        (activeElement.localName === 'input' &&
+          activeElement.type !== 'range') ||
+        activeElement.localName === 'textarea'
       ) {
         return;
       }
@@ -364,15 +364,15 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
       const { key } = event;
 
       switch (key) {
-        case "ArrowRight":
+        case 'ArrowRight':
           // Forward 10 seconds
           videoRef.current.currentTime += 10;
           break;
-        case "ArrowLeft":
+        case 'ArrowLeft':
           // Rewind 10 seconds
           videoRef.current.currentTime -= 10;
           break;
-        case "ArrowUp":
+        case 'ArrowUp':
           // Volume Up
           if (videoRef.current.volume + 0.05 > 1) {
             videoRef.current.volume = 1;
@@ -382,7 +382,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
             );
           }
           break;
-        case "ArrowDown":
+        case 'ArrowDown':
           // Volume Down
           if (videoRef.current.volume - 0.05 < 0) {
             videoRef.current.volume = 0;
@@ -392,23 +392,23 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
             );
           }
           break;
-        case " ":
+        case ' ':
           togglePlayHandler();
           break;
 
-        case "1":
+        case '1':
           if (!selectorData.current) return;
           videoSelectorRef.current.children[0]?.click();
           break;
-        case "2":
+        case '2':
           if (!selectorData.current) return;
           videoSelectorRef.current.children[1]?.click();
           break;
-        case "3":
+        case '3':
           if (!selectorData.current) return;
           videoSelectorRef.current.children[2]?.click();
           break;
-        case "4":
+        case '4':
           if (!selectorData.current) return;
           videoSelectorRef.current.children[3]?.click();
           break;
@@ -430,16 +430,16 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
       setCanPlayType(false);
     }
 
-    videoRef.current.volume = localStorage.getItem("video-volume") || 1;
+    videoRef.current.volume = localStorage.getItem('video-volume') || 1;
     setCurrentVolume(
-      localStorage.getItem("video-volume") * 100 + "%" || "100%"
+      localStorage.getItem('video-volume') * 100 + '%' || '100%'
     );
 
     setVideoDuration(videoRef.current.duration);
 
     timeChangeHandler();
 
-    document.addEventListener("fullscreenchange", fullscreenChangeHandler);
+    document.addEventListener('fullscreenchange', fullscreenChangeHandler);
   }, [timeChangeHandler, fullscreenChangeHandler]);
 
   /*
@@ -544,8 +544,8 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
         const src = currentVideo.info.url;
 
         // Edit mode
-        if (src.substr(0, 4) === "blob") {
-          return videoRef.current.setAttribute("src", src);
+        if (src.substr(0, 4) === 'blob') {
+          return videoRef.current.setAttribute('src', src);
         }
 
         // Connect video to Shaka Player
@@ -561,7 +561,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
 
   useEffect(() => {
     return () => {
-      document.removeEventListener("fullscreenchange", fullscreenChangeHandler);
+      document.removeEventListener('fullscreenchange', fullscreenChangeHandler);
     };
   }, [fullscreenChangeHandler]);
 
@@ -575,18 +575,18 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
   useLayoutEffect(() => {
     if (active) {
       videoRef.current.play();
-      setDisplayCursor("none");
-      document.addEventListener("keydown", keyEventHandler);
+      setDisplayCursor('none');
+      document.addEventListener('keydown', keyEventHandler);
     }
 
     if (!active) {
       videoRef.current.currentTime = 0;
       videoRef.current.pause();
-      document.removeEventListener("keydown", keyEventHandler);
+      document.removeEventListener('keydown', keyEventHandler);
     }
 
     return () => {
-      document.removeEventListener("keydown", keyEventHandler);
+      document.removeEventListener('keydown', keyEventHandler);
     };
   }, [active, keyEventHandler]);
 
@@ -620,8 +620,8 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
       />
 
       <div
-        className={`vp-controls${!canPlayType ? " hidden" : ""}${
-          !displayControls ? " hide" : ""
+        className={`vp-controls${!canPlayType ? ' hidden' : ''}${
+          !displayControls ? ' hide' : ''
         }`}
       >
         <div className="vp-controls__header">

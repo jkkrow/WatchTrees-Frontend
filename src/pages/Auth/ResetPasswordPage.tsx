@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 
 import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
@@ -9,24 +8,21 @@ import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
-import { useForm } from 'hooks/use-form';
-import { RootState } from 'store';
+import { useForm } from 'hooks/form-hook';
+import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
 import { getResetPassword, postResetPassword } from 'store/actions/auth';
 import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
 
 const ResetPasswordPage: React.FC = () => {
   const [isAccessAllowed, setIsAccessAllowed] = useState(false);
 
+  const { loading, error, message } = useAuthSelector();
+  const dispatch = useAppDispatch();
+
   const { formState, setFormInput } = useForm({
     password: { value: '', isValid: false },
     confirmPassword: { value: '', isValid: false },
   });
-
-  const { loading, error, message } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  const dispatch = useDispatch();
 
   const { token } = useParams<{ token: string }>();
 
@@ -56,10 +52,7 @@ const ResetPasswordPage: React.FC = () => {
       )}
       {isAccessAllowed && (
         <>
-          <Response
-            type={error ? 'error' : 'message'}
-            content={error || message}
-          />
+          <Response type={error ? 'error' : 'message'} content={error || message} />
           {!message ? (
             <Form onSubmit={submitHandler}>
               <Input

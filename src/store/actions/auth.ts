@@ -1,37 +1,31 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import axiosRetry from 'axios-retry';
 
+import { RootState, AppDispatch } from 'store';
 import { authActions } from 'store/reducers/auth';
 
-export const register = (credentials, cb) => {
-  return async (dispatch) => {
+export const register = (
+  credentials: { name: string; email: string; password: string; confirmPassword: string },
+  cb: () => void
+) => {
+  return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
       const { data } = await axios.post('/auth/register', credentials);
 
-      dispatch(
-        authActions.authSuccess({
-          message: data.message,
-        })
-      );
+      dispatch(authActions.authSuccess(data.message));
 
       cb();
     } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
+      let error = err as AxiosError;
+      dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
   };
 };
 
-export const login = (credentials) => {
-  return async (dispatch) => {
+export const login = (credentials: { email: string; password: string } | { tokenId: string }) => {
+  return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
@@ -56,20 +50,14 @@ export const login = (credentials) => {
         }
       });
     } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
+      let error = err as AxiosError;
+      dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
   };
 };
 
 export const logout = () => {
-  return (dispatch) => {
+  return (dispatch: AppDispatch) => {
     dispatch(authActions.logout());
 
     localStorage.removeItem('refreshToken');
@@ -77,8 +65,8 @@ export const logout = () => {
   };
 };
 
-export const updateRefreshToken = (refreshToken) => {
-  return async (dispatch) => {
+export const updateRefreshToken = (refreshToken: string) => {
+  return async (dispatch: AppDispatch) => {
     try {
       axiosRetry(axios, {
         retries: 3,
@@ -89,9 +77,7 @@ export const updateRefreshToken = (refreshToken) => {
         headers: { Authorization: 'Bearer ' + refreshToken },
       });
 
-      dispatch(
-        authActions.setRefreshToken({ refreshToken: data.refreshToken })
-      );
+      dispatch(authActions.setRefreshToken({ refreshToken: data.refreshToken }));
       dispatch(authActions.setAccessToken({ accessToken: data.accessToken }));
 
       localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
@@ -110,8 +96,8 @@ export const updateRefreshToken = (refreshToken) => {
   };
 };
 
-export const updateAccessToken = (refreshToken) => {
-  return async (dispatch) => {
+export const updateAccessToken = (refreshToken: string) => {
+  return async (dispatch: AppDispatch) => {
     try {
       axiosRetry(axios, {
         retries: 3,
@@ -135,86 +121,60 @@ export const updateAccessToken = (refreshToken) => {
 };
 
 export const clearResponse = () => {
-  return (dispatch) => {
+  return (dispatch: AppDispatch) => {
     dispatch(authActions.clearResponse());
   };
 };
 
-export const verifyEmail = (token, cb) => {
-  return async (dispatch) => {
+export const verifyEmail = (token: string, cb: () => void) => {
+  return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
       const { data } = await axios.get(`/auth/verify-email/${token}`);
 
-      dispatch(
-        authActions.authSuccess({
-          message: data.message,
-        })
-      );
+      dispatch(authActions.authSuccess(data.message));
 
       cb();
     } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
+      let error = err as AxiosError;
+      dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
   };
 };
 
-export const sendVerifyEmail = (email) => {
-  return async (dispatch) => {
+export const sendVerifyEmail = (email: string) => {
+  return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
       const { data } = await axios.post('/auth/send-verify-email', { email });
 
-      dispatch(
-        authActions.authSuccess({
-          message: data.message,
-        })
-      );
+      dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
+      let error = err as AxiosError;
+      dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
   };
 };
 
-export const sendRecoveryEmail = (email) => {
-  return async (dispatch) => {
+export const sendRecoveryEmail = (email: string) => {
+  return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
       const { data } = await axios.post('/auth/send-recovery-email', { email });
 
-      dispatch(authActions.authSuccess({ message: data.message }));
+      dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
+      let error = err as AxiosError;
+      dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
   };
 };
 
-export const getResetPassword = (token, cb) => {
-  return async (dispatch) => {
+export const getResetPassword = (token: string, cb: () => void) => {
+  return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
@@ -222,20 +182,14 @@ export const getResetPassword = (token, cb) => {
 
       cb();
     } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
+      let error = err as AxiosError;
+      dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
   };
 };
 
-export const postResetPassword = (password, confirmPassword, token) => {
-  return async (dispatch) => {
+export const postResetPassword = (password: string, confirmPassword: string, token: string) => {
+  return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
@@ -244,31 +198,20 @@ export const postResetPassword = (password, confirmPassword, token) => {
         confirmPassword,
       });
 
-      dispatch(authActions.authSuccess({ message: data.message }));
+      dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      dispatch(
-        authActions.authFail({
-          error:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : err.message,
-        })
-      );
+      let error = err as AxiosError;
+      dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
   };
 };
 
-export const updateUserData = (info) => {
-  return (dispatch) => {
+export const updateUserData = (info: any) => {
+  return (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(authActions.setUserData({ info }));
 
-    const prevUserData = JSON.parse(localStorage.getItem('userData'));
+    const { userData } = getState().auth;
 
-    const newUserData = {
-      ...prevUserData,
-      ...info,
-    };
-
-    localStorage.setItem('userData', JSON.stringify(newUserData));
+    localStorage.setItem('userData', JSON.stringify(userData));
   };
 };

@@ -1,29 +1,49 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface authSliceState {
+  accessToken: string | null;
+  refreshToken: { value: string; expiresIn: number } | null;
+  userData: {
+    name: string;
+    email: string;
+    picture: string;
+    isVerified: boolean;
+    isPremium: boolean;
+  } | null;
+  loading: boolean;
+  error: string | null;
+  message: string | null;
+}
+
+const refreshTokenJSON = localStorage.getItem('refreshToken');
+const userDataJSON = localStorage.getItem('userData');
+
+const initialState: authSliceState = {
+  accessToken: null,
+  refreshToken: refreshTokenJSON ? JSON.parse(refreshTokenJSON) : null,
+  userData: userDataJSON ? JSON.parse(userDataJSON) : null,
+  loading: false,
+  error: null,
+  message: null,
+};
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState: {
-    accessToken: null,
-    refreshToken: JSON.parse(localStorage.getItem('refreshToken') || 'null'),
-    userData: JSON.parse(localStorage.getItem('userData') || 'null'),
-    loading: false,
-    error: null,
-    message: null,
-  },
+  initialState,
   reducers: {
     authRequest: (state) => {
       state.loading = true;
       state.error = null;
     },
 
-    authSuccess: (state, { payload }) => {
+    authSuccess: (state, { payload }: PayloadAction<string>) => {
       state.loading = false;
-      state.message = payload.message;
+      state.message = payload;
     },
 
-    authFail: (state, { payload }) => {
+    authFail: (state, { payload }: PayloadAction<string>) => {
       state.loading = false;
-      state.error = payload.error;
+      state.error = payload;
     },
 
     login: (state, { payload }) => {

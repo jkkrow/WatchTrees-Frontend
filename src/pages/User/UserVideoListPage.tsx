@@ -1,13 +1,12 @@
 import { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
 
 import NewVideo from 'components/User/UserVideos/Header/NewVideo';
 import UserVideoList from 'components/User/UserVideos/List/UserVideoList';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
-import { useForm } from 'hooks/use-form';
-import { RootState } from 'store';
+import { useForm } from 'hooks/form-hook';
+import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
 import { initiateUpload } from 'store/actions/upload';
 import { VALIDATOR_EQUAL } from 'util/validators';
 
@@ -75,16 +74,14 @@ const ITEMS = [
 
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const [displayModal, setDisplayModal] = useState(false);
-  const [targetItem, setTargetItem] =
-    useState<null | Object /* Video Item Type */>(null);
+  const [targetItem, setTargetItem] = useState<null | Object /* Video Item Type */>(null);
+
+  const { uploadTree } = useUploadSelector();
+  const dispatch = useAppDispatch();
 
   const { formState, setFormInput } = useForm({
     video: { value: '', isValid: false },
   });
-
-  const { uploadTree } = useSelector((state: RootState) => state.upload);
-
-  const dispatch = useDispatch();
 
   const addNewVideoHandler = (): void => {
     if (!uploadTree.root) {
@@ -122,8 +119,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
           content: (
             <>
               <p>
-                To proceed type the video name{' '}
-                <strong>{targetItem.title}</strong>.
+                To proceed type the video name <strong>{targetItem.title}</strong>.
               </p>
               <Input
                 id="video"
@@ -141,11 +137,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
       />
       <div className="layout">
         <NewVideo onAdd={addNewVideoHandler} />
-        <UserVideoList
-          items={ITEMS}
-          onEdit={editHandler}
-          onDelete={openWarningHandler}
-        />
+        <UserVideoList items={ITEMS} onEdit={editHandler} onDelete={openWarningHandler} />
       </div>
     </>
   );

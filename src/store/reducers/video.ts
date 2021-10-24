@@ -1,23 +1,35 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+export interface VideoTree {
+  root: {};
+}
+
+interface videoSliceState {
+  videoTree: VideoTree | null;
+  activeVideoId: string;
+  videoVolume: number;
+}
+
+const initialState: videoSliceState = {
+  videoTree: null,
+  activeVideoId: '',
+  videoVolume: 1,
+};
 
 const videoSlice = createSlice({
   name: 'video',
-  initialState: {
-    videoTree: {},
-    activeVideoId: '',
-    videoVolume: 1,
-  },
+  initialState,
   reducers: {
-    setVideoTree: (state, { payload }) => {
-      state.videoTree = payload.videoTree;
+    setVideoTree: (state, { payload }: PayloadAction<VideoTree>) => {
+      state.videoTree = payload;
     },
 
-    setActiveVideo: (state, { payload }) => {
-      state.activeVideoId = payload.activeVideoId;
+    setActiveVideo: (state, { payload }: PayloadAction<string>) => {
+      state.activeVideoId = payload;
     },
 
-    setVideoVolume: (state, { payload }) => {
-      state.videoVolume = payload.videoVolume;
+    setVideoVolume: (state, { payload }: PayloadAction<number>) => {
+      state.videoVolume = payload;
     },
   },
 });

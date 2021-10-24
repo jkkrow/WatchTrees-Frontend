@@ -1,25 +1,20 @@
-import { useDispatch, useSelector } from 'react-redux';
-
 import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
-import { useForm } from 'hooks/use-form';
-import { RootState } from 'store';
+import { useForm } from 'hooks/form-hook';
+import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
 import { sendRecoveryEmail } from 'store/actions/auth';
 import { VALIDATOR_EMAIL } from 'util/validators';
 
 const SendRecoveryEmailPage: React.FC = () => {
+  const { loading, error, message } = useAuthSelector();
+  const dispatch = useAppDispatch();
+
   const { formState, setFormInput } = useForm({
     email: { value: '', isValid: false },
   });
-
-  const { loading, error, message } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  const dispatch = useDispatch();
 
   const submitHandler = (): void => {
     if (!formState.isValid) return;
