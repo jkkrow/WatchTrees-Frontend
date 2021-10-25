@@ -1,28 +1,30 @@
 import axios from 'axios';
 
-import { uploadActions } from 'store/reducers/upload';
+import { RootState, AppDispatch } from 'store';
+import { uploadActions, UploadTree } from 'store/reducers/upload';
 import { beforeunloadHandler } from 'util/event-handlers';
 
 export const initiateUpload = () => {
-  return (dispatch) => {
+  return (dispatch: AppDispatch) => {
     dispatch(uploadActions.initiateUpload());
 
     window.addEventListener('beforeunload', beforeunloadHandler);
   };
 };
 
-export const appendChild = (nodeId) => {
-  return (dispatch) => {
-    dispatch(
-      uploadActions.appendChild({
-        nodeId,
-      })
-    );
+export const appendChild = (nodeId: string) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(uploadActions.appendChild(nodeId));
   };
 };
 
-export const attachVideo = (file, nodeId, treeId, accessToken) => {
-  return async (dispatch, getState) => {
+export const attachVideo = (
+  file: File,
+  nodeId: string,
+  treeId: string,
+  accessToken: string
+) => {
+  return async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       const videoDuration = await new Promise((resolve) => {
         const video = document.createElement('video');
@@ -84,11 +86,14 @@ export const attachVideo = (file, nodeId, treeId, accessToken) => {
       const CHUNK_SIZE = 10000000; // 10MB
       const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
       const promisesArray = [];
-      const progressArray = [];
+      const progressArray: number[] = [];
 
       let start, end, blob;
 
-      const uploadProgressHandler = async (progressEvent, index) => {
+      const uploadProgressHandler = async (
+        progressEvent: ProgressEvent,
+        index: number
+      ) => {
         if (progressEvent.loaded >= progressEvent.total) return;
 
         const currentProgress =
@@ -126,18 +131,19 @@ export const attachVideo = (file, nodeId, treeId, accessToken) => {
         const { presignedUrl } = getUploadUrlResponse.data;
 
         // Upload Parts
-        const uploadResponse = axios.put(presignedUrl, blob, {
+        const uploadPromise = axios.put(presignedUrl, blob, {
           onUploadProgress: (e) => uploadProgressHandler(e, index),
           headers: {
             'Content-Type': file.type,
           },
         });
-        promisesArray.push(uploadResponse);
+        promisesArray.push(uploadPromise);
       }
 
       const resolvedArray = await Promise.all(promisesArray);
 
-      const uploadPartsArray = [];
+      const uploadPartsArray: { ETag: string; PartNumber: number }[] = [];
+
       resolvedArray.forEach((resolvedPromise, index) => {
         uploadPartsArray.push({
           ETag: resolvedPromise.headers.etag,
@@ -168,20 +174,14 @@ export const attachVideo = (file, nodeId, treeId, accessToken) => {
           nodeId,
         })
       );
-
-      dispatch(
-        uploadActions.saveTree({
-          saved: false,
-        })
-      );
     } catch (err) {
       console.log(err);
     }
   };
 };
 
-export const updateNode = (info, nodeId) => {
-  return (dispatch) => {
+export const updateNode = (info: any, nodeId: string) => {
+  return (dispatch: AppDispatch) => {
     dispatch(
       uploadActions.setUploadNode({
         info,
@@ -198,36 +198,28 @@ export const updateNode = (info, nodeId) => {
   };
 };
 
-export const removeNode = (nodeId) => {
-  return (dispatch) => {
-    dispatch(
-      uploadActions.removeNode({
-        nodeId,
-      })
-    );
+export const removeNode = (nodeId: string) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(uploadActions.removeNode(nodeId));
   };
 };
 
-export const updateTree = (info) => {
-  return (dispatch) => {
-    dispatch(
-      uploadActions.setUploadTree({
-        info,
-      })
-    );
+export const updateTree = (info: any) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(uploadActions.setUploadTree(info));
   };
 };
 
 export const removeTree = () => {
-  return (dispatch) => {
+  return (dispatch: AppDispatch) => {
     dispatch(uploadActions.removeTree());
 
     window.removeEventListener('beforeunload', beforeunloadHandler);
   };
 };
 
-export const saveUploadTree = (tree, accessToken) => {
-  return async (dispatch) => {
+export const saveUploadTree = (tree: UploadTree, accessToken: string) => {
+  return async (dispatch: AppDispatch) => {
     try {
       await axios.post(
         '/upload/save-upload',
@@ -237,31 +229,11 @@ export const saveUploadTree = (tree, accessToken) => {
     } catch (err) {
       console.log(err);
     }
-
-    dispatch(
-      uploadActions.saveTree({
-        saved: true,
-      })
-    );
   };
 };
 
-export const setWarning = (data) => {
-  return (dispatch) => {
-    dispatch(
-      uploadActions.setWarning({
-        warning: data,
-      })
-    );
-  };
-};
-
-export const updateActiveNode = (nodeId) => {
-  return (dispatch) => {
-    dispatch(
-      uploadActions.setActiveNode({
-        nodeId,
-      })
-    );
+export const updateActiveNode = (nodeId: string) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(uploadActions.setActiveNode(nodeId));
   };
 };

@@ -1,19 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface VideoTree {
-  root: {};
+import { Node, Tree } from 'util/tree';
+
+export interface VideoNode extends Node {}
+
+export interface VideoTree extends Tree {
+  root: VideoNode;
 }
 
-interface videoSliceState {
+interface VideoSliceState {
   videoTree: VideoTree | null;
   activeVideoId: string;
   videoVolume: number;
 }
 
-const initialState: videoSliceState = {
+const videoVolumeStorage = localStorage.getItem('video-volume');
+
+const initialState: VideoSliceState = {
   videoTree: null,
   activeVideoId: '',
-  videoVolume: 1,
+  videoVolume: videoVolumeStorage ? +videoVolumeStorage : 1,
 };
 
 const videoSlice = createSlice({

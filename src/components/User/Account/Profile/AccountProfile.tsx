@@ -1,20 +1,16 @@
-import { useDispatch, useSelector } from "react-redux";
+import Button from 'components/Common/Element/Button/Button';
+import Avatar from 'components/Common/UI/Avatar/Avatar';
+import Modal from 'components/Common/UI/Modal/Modal';
+import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
+import { sendVerifyEmail, clearResponse } from 'store/actions/auth';
+import './AccountProfile.scss';
 
-import Button from "components/Common/Element/Button/Button";
-import Avatar from "components/Common/UI/Avatar/Avatar";
-import Modal from "components/Common/UI/Modal/Modal";
-import { sendVerifyEmail, clearResponse } from "store/actions/auth";
-import "./AccountProfile.scss";
-
-const AccountProfile = () => {
-  const dispatch = useDispatch();
-
-  const { userData, loading, error, message } = useSelector(
-    (state) => state.auth
-  );
+const AccountProfile: React.FC = () => {
+  const { userData, loading, error, message } = useAuthSelector();
+  const dispatch = useAppDispatch();
 
   const verifyEmailHandler = () => {
-    dispatch(sendVerifyEmail(userData.email));
+    dispatch(sendVerifyEmail(userData!.email));
   };
 
   const closeModalHandler = () => {
@@ -26,7 +22,7 @@ const AccountProfile = () => {
       <Modal
         on={!!error || !!message}
         data={{
-          header: error ? "Error" : "Email has sent",
+          header: error ? 'Error' : 'Email has sent',
           content: error || message,
         }}
         onClose={closeModalHandler}
@@ -36,17 +32,17 @@ const AccountProfile = () => {
           <Avatar width="5rem" height="5rem" />
         </div>
         <div className="account-profile__info">
-          <div data-label="Name">{userData.name}</div>
-          <div data-label="Email">{userData.email}</div>
+          <div data-label="Name">{userData!.name}</div>
+          <div data-label="Email">{userData!.email}</div>
           <span className="link">Edit</span>
         </div>
         <div className="account-profile__buttons">
-          {!userData.isVerified && (
+          {!userData!.isVerified && (
             <Button loading={loading} onClick={verifyEmailHandler}>
               Verify Email
             </Button>
           )}
-          {userData.isVerified && !userData.isPremium && (
+          {userData!.isVerified && !userData!.isPremium && (
             <Button>Upgrade to Premium</Button>
           )}
         </div>

@@ -2,7 +2,11 @@ import { createPortal } from 'react-dom';
 import { NavLink, useHistory } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 
-import { useAppDispatch, useAuthSelector, useUploadSelector } from 'hooks/store-hook';
+import {
+  useAppDispatch,
+  useAuthSelector,
+  useUploadSelector,
+} from 'hooks/store-hook';
 import { logout } from 'store/actions/auth';
 import { removeTree } from 'store/actions/upload';
 import './Menu.scss';
@@ -19,7 +23,7 @@ const Menu: React.FC<MenuProps> = ({ on }) => {
   const history = useHistory();
 
   const logoutHandler = () => {
-    if (uploadTree.root) {
+    if (uploadTree) {
       const result = window.confirm(
         'There is unfinished uploading process. The process will be lost if you logout. Are you sure to proceed?'
       );
@@ -33,7 +37,13 @@ const Menu: React.FC<MenuProps> = ({ on }) => {
   };
 
   return createPortal(
-    <CSSTransition in={on && !!userData} classNames="menu" timeout={300} mountOnEnter unmountOnExit>
+    <CSSTransition
+      in={on && !!userData}
+      classNames="menu"
+      timeout={300}
+      mountOnEnter
+      unmountOnExit
+    >
       <div className="menu">
         <ul className="menu__list">
           <li>

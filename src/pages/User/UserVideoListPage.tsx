@@ -74,7 +74,8 @@ const ITEMS = [
 
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const [displayModal, setDisplayModal] = useState(false);
-  const [targetItem, setTargetItem] = useState<null | Object /* Video Item Type */>(null);
+  const [targetItem, setTargetItem] =
+    useState<null | Object /* Video Item Type */>(null);
 
   const { uploadTree } = useUploadSelector();
   const dispatch = useAppDispatch();
@@ -84,7 +85,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   });
 
   const addNewVideoHandler = (): void => {
-    if (!uploadTree.root) {
+    if (!uploadTree) {
       dispatch(initiateUpload());
     }
 
@@ -119,12 +120,13 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
           content: (
             <>
               <p>
-                To proceed type the video name <strong>{targetItem.title}</strong>.
+                To proceed type the video name{' '}
+                <strong>{targetItem!.title}</strong>.
               </p>
               <Input
                 id="video"
                 formInput
-                validators={[VALIDATOR_EQUAL(targetItem.title)]}
+                validators={[VALIDATOR_EQUAL(targetItem!.title)]}
                 onForm={setFormInput}
               />
             </>
@@ -137,7 +139,11 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
       />
       <div className="layout">
         <NewVideo onAdd={addNewVideoHandler} />
-        <UserVideoList items={ITEMS} onEdit={editHandler} onDelete={openWarningHandler} />
+        <UserVideoList
+          items={ITEMS}
+          onEdit={editHandler}
+          onDelete={openWarningHandler}
+        />
       </div>
     </>
   );

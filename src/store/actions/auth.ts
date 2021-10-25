@@ -5,7 +5,12 @@ import { RootState, AppDispatch } from 'store';
 import { authActions } from 'store/reducers/auth';
 
 export const register = (
-  credentials: { name: string; email: string; password: string; confirmPassword: string },
+  credentials: {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  },
   cb: () => void
 ) => {
   return async (dispatch: AppDispatch) => {
@@ -19,12 +24,16 @@ export const register = (
       cb();
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
 
-export const login = (credentials: { email: string; password: string } | { tokenId: string }) => {
+export const login = (
+  credentials: { email: string; password: string } | { tokenId: string }
+) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
@@ -51,7 +60,9 @@ export const login = (credentials: { email: string; password: string } | { token
       });
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -77,8 +88,8 @@ export const updateRefreshToken = (refreshToken: string) => {
         headers: { Authorization: 'Bearer ' + refreshToken },
       });
 
-      dispatch(authActions.setRefreshToken({ refreshToken: data.refreshToken }));
-      dispatch(authActions.setAccessToken({ accessToken: data.accessToken }));
+      dispatch(authActions.setRefreshToken(data.refreshToken));
+      dispatch(authActions.setAccessToken(data.accessToken));
 
       localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
 
@@ -108,11 +119,7 @@ export const updateAccessToken = (refreshToken: string) => {
         headers: { Authorization: 'Bearer ' + refreshToken },
       });
 
-      dispatch(
-        authActions.setAccessToken({
-          accessToken: data.accessToken,
-        })
-      );
+      dispatch(authActions.setAccessToken(data.accessToken));
     } catch (err) {
       // Display Global Message
       console.log(err);
@@ -138,7 +145,9 @@ export const verifyEmail = (token: string, cb: () => void) => {
       cb();
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -153,7 +162,9 @@ export const sendVerifyEmail = (email: string) => {
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -168,7 +179,9 @@ export const sendRecoveryEmail = (email: string) => {
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -183,12 +196,18 @@ export const getResetPassword = (token: string, cb: () => void) => {
       cb();
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
 
-export const postResetPassword = (password: string, confirmPassword: string, token: string) => {
+export const postResetPassword = (
+  password: string,
+  confirmPassword: string,
+  token: string
+) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
@@ -201,14 +220,16 @@ export const postResetPassword = (password: string, confirmPassword: string, tok
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
 
 export const updateUserData = (info: any) => {
   return (dispatch: AppDispatch, getState: () => RootState) => {
-    dispatch(authActions.setUserData({ info }));
+    dispatch(authActions.setUserData(info));
 
     const { userData } = getState().auth;
 

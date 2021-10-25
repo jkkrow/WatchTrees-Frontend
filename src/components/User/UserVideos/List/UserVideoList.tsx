@@ -2,7 +2,17 @@ import Table from 'components/Common/Element/Table/Table';
 import { formatSize, formatTime, formatNumber } from 'util/format';
 import './UserVideoList.scss';
 
-const UserVideoList = ({ items, onEdit, onDelete }) => {
+interface UserVideoListProps {
+  items: any[] /* VideoItem[] */;
+  onEdit: (item: Object) => void;
+  onDelete: (item: Object) => void;
+}
+
+const UserVideoList: React.FC<UserVideoListProps> = ({
+  items,
+  onEdit,
+  onDelete,
+}) => {
   const listData = items.map((item) => ({
     ...item,
     views: formatNumber(item.views),

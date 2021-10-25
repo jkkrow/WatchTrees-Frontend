@@ -1,4 +1,4 @@
-import RectIcon from 'assets/icons/rect.svg';
+import { ReactComponent as RectIcon } from 'assets/icons/rect.svg';
 import './LoadingSpinner.scss';
 
 interface LoadingSpinnerProps {

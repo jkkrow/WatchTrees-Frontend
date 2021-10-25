@@ -1,8 +1,12 @@
-import Button from "components/Common/Element/Button/Button";
-import { ReactComponent as PlusIcon } from "assets/icons/plus.svg";
-import "./NewVideo.scss";
+import Button from 'components/Common/Element/Button/Button';
+import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
+import './NewVideo.scss';
 
-const NewVideo = ({ onAdd }) => {
+interface NewVideoProps {
+  onAdd: () => void;
+}
+
+const NewVideo: React.FC<NewVideoProps> = ({ onAdd }) => {
   return (
     <div className="new-video">
       <Button inversed onClick={onAdd}>

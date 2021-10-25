@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-import LoadingCard from "components/Common/UI/Loader/Card/LoadingCard";
-import "./VideoCarousel.scss";
+import LoadingCard from 'components/Common/UI/Loader/Card/LoadingCard';
+import './VideoCarousel.scss';
 
-const VideoCarousel = () => {
+const VideoCarousel: React.FC = () => {
   const [loadingStatus, setLoadingStatus] = useState(true);
 
   useEffect(() => {}, []);
 
   return (
-    <div className="video-carousel">
-      <LoadingCard on={loadingStatus} onClick={() => setLoadingStatus(false)} />
+    <div className="video-carousel" onClick={() => setLoadingStatus(false)}>
+      <LoadingCard on={loadingStatus} />
     </div>
   );
 };

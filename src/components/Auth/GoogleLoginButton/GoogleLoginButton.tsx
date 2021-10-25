@@ -1,6 +1,6 @@
 import { GoogleLogin } from 'react-google-login';
 
-import GoogleIcon from 'assets/icons/google.svg';
+import { ReactComponent as GoogleIcon } from 'assets/icons/google.svg';
 import Button from 'components/Common/Element/Button/Button';
 import './GoogleLoginButton.scss';
 

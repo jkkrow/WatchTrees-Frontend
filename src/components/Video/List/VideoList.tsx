@@ -3,16 +3,16 @@ import { useEffect, useRef, useState } from 'react';
 import LoadingCard from 'components/Common/UI/Loader/Card/LoadingCard';
 import './VideoList.scss';
 
-const VideoList = () => {
+const VideoList: React.FC = () => {
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [loaderNumber, setLoaderNumber] = useState([1]);
 
-  const listRef = useRef();
-  const itemRef = useRef();
+  const listRef = useRef<HTMLDivElement>(null);
+  const itemRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const listWidth = listRef.current.offsetWidth;
-    const itemWidth = itemRef.current.offsetWidth;
+    const listWidth = listRef.current!.offsetWidth;
+    const itemWidth = itemRef.current!.offsetWidth;
 
     let rows = Math.floor(listWidth / itemWidth);
 

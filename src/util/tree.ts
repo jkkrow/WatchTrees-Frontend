@@ -1,5 +1,7 @@
 export interface Node {
   id: string;
+  prevId?: string;
+  layer: number;
   info: any;
   children: Node[];
 }
@@ -19,7 +21,8 @@ export const findById = (tree: Tree, id: string): Node | null => {
 
     if (currentNode.id === id) return currentNode;
 
-    if (currentNode.children.length) currentNode.children.forEach((child) => queue.push(child));
+    if (currentNode.children.length)
+      currentNode.children.forEach((child) => queue.push(child));
   }
 
   return null;
@@ -34,9 +37,11 @@ export const findByChildId = (tree: Tree, id: string): Node | null => {
   while (queue.length) {
     currentNode = queue.shift()!;
 
-    if (currentNode.children.find((item) => item?.id === id)) return currentNode;
+    if (currentNode.children.find((item) => item?.id === id))
+      return currentNode;
 
-    if (currentNode.children.length) currentNode.children.forEach((child) => queue.push(child));
+    if (currentNode.children.length)
+      currentNode.children.forEach((child) => queue.push(child));
   }
 
   return null;
@@ -54,13 +59,19 @@ export const traverseNodes = (root: Node): Node[] => {
 
     nodes.push(currentNode);
 
-    if (currentNode.children.length) currentNode.children.forEach((child) => queue.push(child));
+    if (currentNode.children.length)
+      currentNode.children.forEach((child) => queue.push(child));
   }
 
   return nodes;
 };
 
-export const validateNodes = (root: Node, key: string, value?: any, type = true): boolean => {
+export const validateNodes = (
+  root: Node,
+  key: string,
+  value?: any,
+  type = true
+): boolean => {
   const nodes = traverseNodes(root);
 
   if (key === 'info') {
@@ -69,7 +80,9 @@ export const validateNodes = (root: Node, key: string, value?: any, type = true)
     );
   }
 
-  return !!nodes.find((node) => (type ? node.info?.[key] === value : node.info?.[key] !== value));
+  return !!nodes.find((node) =>
+    type ? node.info?.[key] === value : node.info?.[key] !== value
+  );
 };
 
 export const getAllPaths = (tree: Tree): Node[][] => {

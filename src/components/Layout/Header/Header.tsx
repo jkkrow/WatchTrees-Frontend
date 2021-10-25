@@ -8,10 +8,10 @@ import Menu from 'components/Layout/Menu/Menu';
 import { useAuthSelector } from 'hooks/store-hook';
 import './Header.scss';
 
-const Header = () => {
-  const { userData } = useAuthSelector();
-
+const Header: React.FC = () => {
   const [displayMenu, setDisplayMenu] = useState(false);
+
+  const { userData } = useAuthSelector();
 
   const location = useLocation();
 
@@ -33,7 +33,12 @@ const Header = () => {
 
       {userData ? (
         <div onClick={displayMenuHandler}>
-          <Avatar src={userData.picture} width="2.5rem" height="2.5rem" button />
+          <Avatar
+            src={userData.picture}
+            width="2.5rem"
+            height="2.5rem"
+            button
+          />
         </div>
       ) : (
         <NavLink exact to="/auth">

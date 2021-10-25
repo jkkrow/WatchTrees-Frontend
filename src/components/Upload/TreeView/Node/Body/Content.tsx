@@ -1,24 +1,29 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
 import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
+import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
+import { UploadNode } from 'store/reducers/upload';
 import { updateNode, updateActiveNode } from 'store/actions/upload';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 
-const Content = ({ currentNode, treeId }) => {
+interface ContentProps {
+  currentNode: UploadNode;
+  treeId: string;
+}
+
+const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
   const [labelInput, setLabelInput] = useState(currentNode.info.label);
 
-  const { activeNodeId } = useSelector((state) => state.upload);
-
-  const dispatch = useDispatch();
+  const { activeNodeId } = useUploadSelector();
+  const dispatch = useAppDispatch();
 
   const [labelTimeout] = useTimeout();
 
-  const labelChangeHandler = (event) => {
+  const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLabelInput(event.target.value);
 
     labelTimeout(
@@ -27,7 +32,7 @@ const Content = ({ currentNode, treeId }) => {
     );
   };
 
-  const activeNodeHandler = (id) => {
+  const activeNodeHandler = (id: string) => {
     dispatch(updateActiveNode(id));
   };
 

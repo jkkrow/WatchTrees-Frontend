@@ -1,6 +1,21 @@
-import { memo, forwardRef } from "react";
+import { memo, forwardRef } from 'react';
 
-const Progress = forwardRef(
+interface ProgressProps {
+  videoDuration: number;
+  bufferProgress: number;
+  currentProgress: number;
+  seekProgress: number;
+  seekTooltipPosition: string;
+  seekTooltip: string;
+  timelineStart: number;
+  timelineEnd: number;
+  editMode: boolean;
+  onHover: (event: React.MouseEvent) => void;
+  onSeek: (event: React.ChangeEvent) => void;
+  onKey: (event: React.KeyboardEvent) => void;
+}
+
+const Progress = forwardRef<HTMLDivElement, ProgressProps>(
   (
     {
       bufferProgress,
@@ -28,7 +43,7 @@ const Progress = forwardRef(
 
     const timelineDuration =
       ((timelineEndPosition - timelineStartPosition) / videoDuration) * 100 +
-      "%";
+      '%';
 
     return (
       <div className="vp-controls__progress" ref={ref}>
@@ -36,20 +51,20 @@ const Progress = forwardRef(
           <div className="vp-controls__progress__range--background" />
           <div
             className="vp-controls__progress__range--buffer"
-            style={{ width: bufferProgress + "%" }}
+            style={{ width: bufferProgress + '%' }}
           />
           {editMode && (
             <div
               className="vp-controls__progress__range--timeline"
               style={{
-                left: (timelineStartPosition / videoDuration) * 100 + "%",
+                left: (timelineStartPosition / videoDuration) * 100 + '%',
                 width: timelineDuration,
               }}
             />
           )}
           <div
             className="vp-controls__progress__range--current"
-            style={{ width: currentProgress + "%" }}
+            style={{ width: currentProgress + '%' }}
           />
           <input
             className="vp-controls__progress__range--seek"

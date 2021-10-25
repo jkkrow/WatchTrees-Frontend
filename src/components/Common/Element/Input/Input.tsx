@@ -55,7 +55,7 @@ interface InputProps {
   onChange?: React.ChangeEventHandler<HTMLInputElement>;
   onTextAreaChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   onBlur?: React.FocusEventHandler;
-  onForm: (id: string, value: string, isValid: boolean) => void;
+  onForm?: (id: string, value: string, isValid: boolean) => void;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -84,7 +84,7 @@ const Input: React.FC<InputProps> = ({
   });
 
   useEffect(() => {
-    if (formInput) {
+    if (formInput && onForm) {
       onForm(id, inputState.value, inputState.isValid);
     }
   }, [formInput, onForm, id, inputState]);

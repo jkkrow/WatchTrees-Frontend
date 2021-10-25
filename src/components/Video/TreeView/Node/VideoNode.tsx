@@ -1,14 +1,26 @@
-import { useDispatch, useSelector } from "react-redux";
+import VideoPlayer from '../../Player/VideoPlayer';
+import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
+import { useAppDispatch } from 'hooks/store-hook';
+import { VideoNode as VideoNodeType } from 'store/reducers/video';
+import { updateActiveVideo } from 'store/actions/video';
+import './VideoNode.scss';
 
-import VideoPlayer from "../../Player/VideoPlayer";
-import { ReactComponent as AngleLeftIcon } from "assets/icons/angle-left.svg";
-import { updateActiveVideo } from "store/actions/video";
-import "./VideoNode.scss";
+interface VideoNodeProps {
+  currentVideo: VideoNodeType;
+  treeId: string;
+  activeVideoId: string;
+  autoPlay: boolean;
+  editMode: boolean;
+}
 
-const VideoNode = ({ currentVideo, autoPlay, editMode }) => {
-  const dispatch = useDispatch();
-
-  const { activeVideoId } = useSelector((state) => state.video);
+const VideoNode: React.FC<VideoNodeProps> = ({
+  currentVideo,
+  treeId,
+  activeVideoId,
+  autoPlay,
+  editMode,
+}) => {
+  const dispatch = useAppDispatch();
 
   return (
     <>
@@ -17,11 +29,12 @@ const VideoNode = ({ currentVideo, autoPlay, editMode }) => {
         (currentVideo.info ? (
           <div
             className={`video-node${
-              activeVideoId === currentVideo.id ? " active" : ""
+              activeVideoId === currentVideo.id ? ' active' : ''
             }`}
           >
             <VideoPlayer
               currentVideo={currentVideo}
+              treeId={treeId}
               autoPlay={autoPlay}
               editMode={editMode}
               active={activeVideoId === currentVideo.id}
@@ -30,21 +43,23 @@ const VideoNode = ({ currentVideo, autoPlay, editMode }) => {
         ) : (
           <div
             className={`video-node__not-found${
-              activeVideoId === currentVideo.id ? " active" : ""
+              activeVideoId === currentVideo.id ? ' active' : ''
             }`}
             key={currentVideo.id}
           >
             <p>Not Found</p>
             <AngleLeftIcon
-              onClick={() => dispatch(updateActiveVideo(currentVideo.prevId))}
+              onClick={() => dispatch(updateActiveVideo(currentVideo.prevId!))}
             />
           </div>
         ))}
 
-      {currentVideo.children.map((video) => (
+      {currentVideo.children.map((video: VideoNodeType) => (
         <VideoNode
           key={video.id}
           currentVideo={video}
+          treeId={treeId}
+          activeVideoId={activeVideoId}
           autoPlay={false}
           editMode={editMode}
         />

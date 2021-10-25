@@ -12,19 +12,19 @@ import SendRecoveryEmailPage from 'pages/Auth/SendRecoveryEmailPage';
 import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
-import { useCompare } from 'hooks/compare-hook';
 import { useInterval } from 'hooks/timer-hook';
-import { useAppDispatch, useAuthSelector, useUploadSelector } from 'hooks/store-hook';
-import { logout, updateRefreshToken, updateAccessToken } from 'store/actions/auth';
-import { saveUploadTree } from 'store/actions/upload';
+import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
+import {
+  logout,
+  updateRefreshToken,
+  updateAccessToken,
+} from 'store/actions/auth';
 import './App.scss';
 
 const App: React.FC = () => {
-  const { accessToken, refreshToken, userData } = useAuthSelector();
-  const { uploadTree, saved } = useUploadSelector();
+  const { refreshToken, userData } = useAuthSelector();
   const dispatch = useAppDispatch();
 
-  const savedChanged = useCompare(saved);
   const [accessTokenInterval] = useInterval();
 
   /*
@@ -53,18 +53,6 @@ const App: React.FC = () => {
     }, 1000 * 60 * 14);
   }, [dispatch, refreshToken, accessTokenInterval]);
 
-  /*
-   * UPLOAD CYCLE
-   */
-
-  useEffect(() => {
-    // TODO: SAVE UPLOAD PROGRESS WHEN VIDEO UPLOAD IS FINISHED
-    // AND EVERY VIDEO'S PROGRESS IS 100
-    if (saved || saved === null || !savedChanged) return;
-
-    dispatch(saveUploadTree(uploadTree, accessToken));
-  }, [dispatch, uploadTree, saved, savedChanged, accessToken]);
-
   return (
     <BrowserRouter>
       <Header />
@@ -72,7 +60,11 @@ const App: React.FC = () => {
         {userData && (
           <Switch>
             <Route exact path="/" component={VideoListPage} />
-            <Route exact path="/auth/verify-email/:token" component={VerifyEmailPage} />
+            <Route
+              exact
+              path="/auth/verify-email/:token"
+              component={VerifyEmailPage}
+            />
 
             <Route exact path="/account" component={AccountPage} />
             <Route exact path="/my-videos" component={UserVideoListPage} />
@@ -84,11 +76,23 @@ const App: React.FC = () => {
         {!userData && (
           <Switch>
             <Route exact path="/" component={VideoListPage} />
-            <Route exact path="/auth/verify-email/:token" component={VerifyEmailPage} />
+            <Route
+              exact
+              path="/auth/verify-email/:token"
+              component={VerifyEmailPage}
+            />
 
             <Route exact path="/auth" component={LoginPage} />
-            <Route exact path="/auth/send-recovery-email" component={SendRecoveryEmailPage} />
-            <Route exact path="/auth/reset-password/:token" component={ResetPasswordPage} />
+            <Route
+              exact
+              path="/auth/send-recovery-email"
+              component={SendRecoveryEmailPage}
+            />
+            <Route
+              exact
+              path="/auth/reset-password/:token"
+              component={ResetPasswordPage}
+            />
             <Redirect exact to="/auth" />
           </Switch>
         )}

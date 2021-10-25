@@ -1,28 +1,33 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
+import { useAppDispatch } from 'hooks/store-hook';
+import { UploadTree } from 'store/reducers/upload';
+import { updateTree } from 'store/actions/upload';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
-import { updateTree } from 'store/actions/upload';
 import './UploadDashboard.scss';
 
-const UploadDashboard = ({ tree }) => {
+interface UploadDashboardProps {
+  tree: UploadTree;
+}
+
+const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const [titleInput, setTitleInput] = useState(tree.title);
   const [descriptionInput, setDescriptionInput] = useState(tree.description);
   const [tagInput, setTagInput] = useState('');
   const [tagArray, setTagArray] = useState(tree.tags);
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [titleTimeout] = useTimeout();
   const [descriptionTimeout] = useTimeout();
 
-  const titleChangeHandler = (event) => {
+  const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleInput(event.target.value);
 
     titleTimeout(
@@ -31,7 +36,9 @@ const UploadDashboard = ({ tree }) => {
     );
   };
 
-  const descriptionChangeHandler = (event) => {
+  const descriptionChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setDescriptionInput(event.target.value);
 
     descriptionTimeout(
@@ -40,11 +47,11 @@ const UploadDashboard = ({ tree }) => {
     );
   };
 
-  const tagChangeHandler = (event) => {
+  const tagChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTagInput(event.target.value);
   };
 
-  const tagSubmitHandler = (event) => {
+  const tagSubmitHandler = (event: React.FormEvent | React.MouseEvent) => {
     event.preventDefault();
 
     const newTag = tagInput.trim();
@@ -63,8 +70,8 @@ const UploadDashboard = ({ tree }) => {
     setTagInput('');
   };
 
-  const removeTagHandler = (tag) => {
-    const filteredTags = tagArray.filter((item) => item !== tag);
+  const removeTagHandler = (tag: string) => {
+    const filteredTags = tagArray.filter((item: string) => item !== tag);
 
     setTagArray(filteredTags);
     dispatch(updateTree({ tags: filteredTags }));
@@ -101,7 +108,7 @@ const UploadDashboard = ({ tree }) => {
             />
           </form>
           <div className="upload-dashboard__tag--tags">
-            {tagArray.map((item) => (
+            {tagArray.map((item: string) => (
               <div key={item} onClick={() => removeTagHandler(item)}>
                 <span>{item}</span>
                 <RemoveIcon />

@@ -1,11 +1,16 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { ReactComponent as PreviewIcon } from "assets/icons/play.svg";
-import { ReactComponent as RemoveIcon } from "assets/icons/remove.svg";
-import VideoTree from "components/Video/TreeView/Tree/VideoTree";
-import "./Preview.scss";
+import { ReactComponent as PreviewIcon } from 'assets/icons/play.svg';
+import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
+import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
+import { PreviewTree as PreviewTreeType } from 'store/reducers/upload';
+import './Preview.scss';
 
-const Preview = ({ tree }) => {
+interface PreviewProps {
+  tree: PreviewTreeType;
+}
+
+const Preview: React.FC<PreviewProps> = ({ tree }) => {
   const [activePreview, setActivePreview] = useState(false);
 
   const togglePreviewHandler = () => {
@@ -13,10 +18,10 @@ const Preview = ({ tree }) => {
   };
 
   return (
-    <div className={`preview${activePreview ? " active" : ""}`}>
+    <div className={`preview${activePreview ? ' active' : ''}`}>
       <div className="preview__toggle" onClick={togglePreviewHandler}>
-        <PreviewIcon className={!activePreview ? " active" : ""} />
-        <RemoveIcon className={activePreview ? " active" : ""} />
+        <PreviewIcon className={!activePreview ? ' active' : ''} />
+        <RemoveIcon className={activePreview ? ' active' : ''} />
       </div>
 
       <div className="preview__background" />

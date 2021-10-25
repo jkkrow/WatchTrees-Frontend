@@ -1,6 +1,6 @@
-import "./Footer.scss";
+import './Footer.scss';
 
-const Footer = () => {
+const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   const copyrightYear =
     currentYear > 2021 ? `2021-${currentYear}` : currentYear;

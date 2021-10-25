@@ -5,7 +5,6 @@ import {
   useLayoutEffect,
   useRef,
 } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 import Playback from './Controls/Playback';
 import Volume from './Controls/Volume';
@@ -16,14 +15,33 @@ import Selector from './Controls/Selector';
 import Navigation from './Controls/Navigation';
 import Loader from './Controls/Loader';
 import { useTimeout } from 'hooks/timer-hook';
-import { formatTime } from 'util/format';
+import { useAppDispatch, useVideoSelector } from 'hooks/store-hook';
+import { VideoNode } from 'store/reducers/video';
 import { updateActiveVideo, updateVideoVolume } from 'store/actions/video';
 import { updateNode } from 'store/actions/upload';
+import { formatTime } from 'util/format';
 import './VideoPlayer.scss';
 
 const shaka = require('shaka-player/dist/shaka-player.ui.js');
 
-const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
+interface VideoPlayerProps {
+  currentVideo: VideoNode;
+  treeId: string;
+  autoPlay: boolean;
+  editMode: boolean;
+  active: boolean;
+}
+
+const VideoPlayer: React.FC<VideoPlayerProps> = ({
+  currentVideo,
+  treeId,
+  autoPlay,
+  editMode,
+  active,
+}) => {
+  const { videoVolume } = useVideoSelector();
+  const dispatch = useAppDispatch();
+
   // vp-container
   const [displayCursor, setDisplayCursor] = useState('default');
 
@@ -31,17 +49,13 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
   const [canPlayType, setCanPlayType] = useState(true);
   const [displayControls, setDisplayControls] = useState(true);
 
-  // playback button
-  const [playbackState, setPlaybackState] = useState('play');
+  // playback
+  const [playbackState, setPlaybackState] = useState(false);
 
-  // volume button
-  const [volumeState, setVolumeState] = useState('high');
+  // volume
+  const [volumeState, setVolumeState] = useState(videoVolume || 1);
 
-  // volume input
-  const [currentVolume, setCurrentVolume] = useState('100');
-  const [seekVolume, setSeekVolume] = useState(1);
-
-  // progress bar
+  // progress
   const [currentProgress, setCurrentProgress] = useState(0);
   const [bufferProgress, setBufferProgress] = useState(0);
   const [seekProgress, setSeekProgress] = useState(0);
@@ -63,29 +77,25 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
 
   // vp-selector
   const [displaySelector, setDisplaySelector] = useState(false);
-  const [selectedNextVideo, setSelectedNextVideo] = useState(null);
+  const [selectedNextVideo, setSelectedNextVideo] = useState<VideoNode | null>(
+    null
+  );
 
   // vp-navigation
   const [timelineMarked, setTimelineMarked] = useState(false);
 
-  const { videoTree, activeVideoId, videoVolume } = useSelector(
-    (state) => state.video
-  );
-
-  const videoRef = useRef();
-  const videoContainerRef = useRef();
-  const videoProgressRef = useRef();
-  const videoSelectorRef = useRef();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+  const videoProgressRef = useRef<HTMLDivElement>(null);
+  const videoSelectorRef = useRef<HTMLDivElement>(null);
 
   const volumeData = useRef(videoVolume || 1);
-  const progressSeekData = useRef();
-  const selectorData = useRef();
+  const progressSeekData = useRef(0);
+  const selectorData = useRef(false);
 
   const [controlsTimeout] = useTimeout();
   const [volumeTimeout] = useTimeout();
   const [loaderTimeout, clearLoaderTimeout] = useTimeout();
-
-  const dispatch = useDispatch();
 
   /*
    * PREVENT DEFAULT
@@ -96,40 +106,32 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
   }, []);
 
   /*
-   * ERROR HANDLER
-   */
-
-  const errorHandler = useCallback((event) => {
-    // Extract the shaka.util.Error object from the event.
-    console.log('Error code', event.detail.code, 'object', event.detail);
-  }, []);
-
-  /*
    * TOGGLE SHOWING CONTROLS
    */
 
   const hideControlsHandler = useCallback(() => {
-    if (videoRef.current.paused) return;
+    const video = videoRef.current!;
+
+    if (video.paused) return;
 
     setDisplayControls(false);
   }, []);
 
   const showControlsHandler = useCallback(() => {
+    const video = videoRef.current!;
+
     setDisplayCursor('default');
 
-    if (
-      !selectorData.current ||
-      (selectorData.current && videoRef.current.paused)
-    ) {
+    if (!selectorData.current || (selectorData.current && video.paused)) {
       setDisplayControls(true);
     }
 
-    if (videoRef.current.paused) return;
+    if (video.paused) return;
 
     controlsTimeout(() => {
       hideControlsHandler();
 
-      if (!videoRef.current.paused) {
+      if (!video.paused) {
         setDisplayCursor('none');
       }
     }, 2000);
@@ -140,21 +142,23 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
    */
 
   const togglePlayHandler = useCallback(() => {
-    if (videoRef.current.paused || videoRef.current.ended) {
-      videoRef.current.play();
+    const video = videoRef.current!;
+
+    if (video.paused || video.ended) {
+      video.play();
     } else {
-      videoRef.current.pause();
+      video.pause();
     }
 
     showControlsHandler();
   }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
-    setPlaybackState('pause');
+    setPlaybackState(true);
   }, []);
 
   const videoPauseHandler = useCallback(() => {
-    setPlaybackState('play');
+    setPlaybackState(false);
   }, []);
 
   const videoEndedHandler = useCallback(() => {
@@ -168,9 +172,9 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
     if (selectedNextVideo) {
       dispatch(updateActiveVideo(selectedNextVideo.id));
     } else {
-      dispatch(
-        updateActiveVideo(currentVideo.children.find((item) => item.info).id)
-      );
+      const firstValidItem = currentVideo.children.find((item) => item.info);
+
+      firstValidItem && dispatch(updateActiveVideo(firstValidItem.id));
     }
   }, [dispatch, currentVideo.children, selectedNextVideo]);
 
@@ -192,16 +196,15 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
    */
 
   const volumeInputHandler = useCallback((event) => {
-    videoRef.current.volume = event.target.value;
-    setCurrentVolume(event.target.value * 100 + '%');
-    setSeekVolume(event.target.value);
+    const video = videoRef.current!;
+
+    video.volume = event.target.value;
   }, []);
 
   const volumeChangeHandler = useCallback(() => {
-    const video = videoRef.current;
+    const video = videoRef.current!;
 
-    setCurrentVolume(video.volume * 100 + '%');
-    setSeekVolume(video.volume);
+    setVolumeState(video.volume);
 
     if (video.volume === 0) {
       video.muted = true;
@@ -210,34 +213,24 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
       volumeData.current = video.volume;
     }
 
-    if (video.muted || video.volume === 0) {
-      setVolumeState('mute');
-    } else if (video.volume > 0 && video.volume < 0.3) {
-      setVolumeState('low');
-    } else if (video.volume >= 0.3 && video.volume < 0.7) {
-      setVolumeState('middle');
-    } else {
-      setVolumeState('high');
-    }
-
     if (active) {
       volumeTimeout(() => {
         dispatch(updateVideoVolume(video.volume));
-        localStorage.setItem('video-volume', video.volume);
+        localStorage.setItem('video-volume', `${video.volume}`);
       }, 300);
     }
   }, [dispatch, active, volumeTimeout]);
 
   const toggleMuteHandler = useCallback(() => {
-    if (videoRef.current.volume !== 0) {
-      volumeData.current = videoRef.current.volume;
-      videoRef.current.volume = 0;
-      setCurrentVolume('0');
-      setSeekVolume(0);
+    const video = videoRef.current!;
+
+    if (video.volume !== 0) {
+      volumeData.current = video.volume;
+      video.volume = 0;
+      setVolumeState(0);
     } else {
-      videoRef.current.volume = volumeData.current;
-      setSeekVolume(volumeData.current);
-      setCurrentVolume(volumeData.current * 100 + '%');
+      video.volume = volumeData.current;
+      setVolumeState(volumeData.current);
     }
   }, []);
 
@@ -246,9 +239,11 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
    */
 
   const timeChangeHandler = useCallback(() => {
-    const duration = videoRef.current.duration || 0;
-    const currentTime = videoRef.current.currentTime || 0;
-    const buffer = videoRef.current.buffered;
+    const video = videoRef.current!;
+
+    const duration = video.duration || 0;
+    const currentTime = video.currentTime || 0;
+    const buffer = video.buffered;
 
     // Progress
     setCurrentProgress((currentTime / duration) * 100);
@@ -258,7 +253,7 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
       for (let i = 0; i < buffer.length; i++) {
         if (
           buffer.start(buffer.length - 1 - i) === 0 ||
-          buffer.start(buffer.length - 1 - i) < videoRef.current.currentTime
+          buffer.start(buffer.length - 1 - i) < video.currentTime
         ) {
           setBufferProgress(
             (buffer.end(buffer.length - 1 - i) / duration) * 100
@@ -269,8 +264,10 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
     }
 
     // Time
-    setCurrentTimeUI(formatTime(parseInt(currentTime)));
-    setRemainedTimeUI(formatTime(parseInt(duration) - parseInt(currentTime)));
+    setCurrentTimeUI(formatTime(Math.round(currentTime)));
+    setRemainedTimeUI(
+      formatTime(Math.round(duration) - Math.round(currentTime))
+    );
 
     // Selector
     const timelineStart = currentVideo.info.timelineStart || duration - 10;
@@ -425,22 +422,21 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
    */
 
   const videoLoadHandler = useCallback(() => {
-    if (!videoRef.current.canPlayType) {
-      videoRef.current.controls = true;
+    const video = videoRef.current!;
+
+    if (!video.canPlayType) {
+      video.controls = true;
       setCanPlayType(false);
     }
 
-    videoRef.current.volume = localStorage.getItem('video-volume') || 1;
-    setCurrentVolume(
-      localStorage.getItem('video-volume') * 100 + '%' || '100%'
-    );
+    video.volume = videoVolume || 1;
 
-    setVideoDuration(videoRef.current.duration);
+    setVideoDuration(video.duration);
 
     timeChangeHandler();
 
     document.addEventListener('fullscreenchange', fullscreenChangeHandler);
-  }, [timeChangeHandler, fullscreenChangeHandler]);
+  }, [videoVolume, timeChangeHandler, fullscreenChangeHandler]);
 
   /*
    * SELECTOR
@@ -456,8 +452,8 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
    */
 
   const restartVideoTreeHandler = useCallback(() => {
-    dispatch(updateActiveVideo(videoTree.root.id));
-  }, [dispatch, videoTree.root]);
+    dispatch(updateActiveVideo(treeId));
+  }, [dispatch, treeId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
     dispatch(updateActiveVideo(currentVideo.prevId));
@@ -616,7 +612,6 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
         onDoubleClick={toggleFullscreenHandler}
         onWaiting={showLoaderHandler}
         onCanPlay={hideLoaderHandler}
-        onError={errorHandler}
       />
 
       <div
@@ -646,15 +641,13 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
 
         <div className="vp-controls__body">
           <Volume
-            volumeState={volumeState}
-            currentVolume={currentVolume}
-            seekVolume={seekVolume}
+            volume={volumeState}
             onToggle={toggleMuteHandler}
             onSeek={volumeInputHandler}
             onKey={preventDefault}
           />
           <Playback
-            playbackState={playbackState}
+            play={playbackState}
             onToggle={togglePlayHandler}
             onKey={preventDefault}
           />
@@ -678,8 +671,8 @@ const VideoPlayer = ({ currentVideo, autoPlay, editMode, active }) => {
 
       {editMode && (
         <Navigation
-          activeVideoId={activeVideoId}
-          videoTree={videoTree}
+          currentId={currentVideo.id}
+          treeId={treeId}
           marked={timelineMarked}
           onRestart={restartVideoTreeHandler}
           onPrev={navigateToPreviousVideoHandler}

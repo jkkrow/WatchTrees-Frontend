@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-import UploadIcon from 'assets/icons/upload.svg';
+import { ReactComponent as UploadIcon } from 'assets/icons/upload.svg';
 import './DragDrop.scss';
 
 interface DragDropProps {

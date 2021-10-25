@@ -1,4 +1,4 @@
-import UserIcon from 'assets/icons/user.svg';
+import { ReactComponent as UserIcon } from 'assets/icons/user.svg';
 import './Avatar.scss';
 
 interface AvatarProps {

@@ -1,14 +1,26 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v1 as uuidv1 } from 'uuid';
 
-import { Node, Tree, findById, findByChildId, getFullSize, getMinMaxDuration } from 'util/tree';
+import {
+  Node,
+  Tree,
+  findById,
+  findByChildId,
+  getFullSize,
+  getMinMaxDuration,
+} from 'util/tree';
 
 enum UploadStatus {
   Progressing = 'Progressing',
   Completed = 'Completed',
 }
 
-interface UploadTree extends Tree {
+export interface UploadNode extends Node {}
+
+export interface PreviewNode extends Node {}
+
+export interface UploadTree extends Tree {
+  root: UploadNode;
   title: string;
   tags: string[];
   description: string;
@@ -18,22 +30,22 @@ interface UploadTree extends Tree {
   status: UploadStatus;
 }
 
-interface uploadSliceState {
-  uploadTree: UploadTree | null;
-  previewTree: Tree | null;
-  activeNodeId: string;
-  warning: string | null;
-  error: string | null;
-  saved: boolean | null;
+export interface PreviewTree extends Tree {
+  root: PreviewNode;
 }
 
-const initialState: uploadSliceState = {
+interface UploadSliceState {
+  uploadTree: UploadTree | null;
+  previewTree: PreviewTree | null;
+  activeNodeId: string;
+  error: { nodeId?: string; message: string } | null;
+}
+
+const initialState: UploadSliceState = {
   uploadTree: null,
   previewTree: null,
   activeNodeId: '',
-  warning: null,
   error: null,
-  saved: null,
 };
 
 const uploadSlice = createSlice({
@@ -65,9 +77,13 @@ const uploadSlice = createSlice({
       state.activeNodeId = node.id;
     },
 
-    appendChild: (state, { payload }) => {
-      const uploadNode = findById(state.uploadTree, payload.nodeId);
-      const previewNode = findById(state.previewTree, payload.nodeId);
+    appendChild: (state, { payload }: PayloadAction<string>) => {
+      if (!state.uploadTree || !state.previewTree) return;
+
+      const uploadNode = findById(state.uploadTree, payload);
+      const previewNode = findById(state.previewTree, payload);
+
+      if (!uploadNode || !previewNode) return;
 
       const node = {
         id: uuidv1(),
@@ -88,16 +104,23 @@ const uploadSlice = createSlice({
       state.uploadTree.minDuration = min;
     },
 
-    setUploadTree: (state, { payload }) => {
-      state.uploadTree = { ...state.uploadTree, ...payload.info };
+    setUploadTree: (state, { payload }: PayloadAction<any>) => {
+      state.uploadTree = { ...state.uploadTree, ...payload };
     },
 
-    setPreviewTree: (state, { payload }) => {
-      state.previewTree = { ...state.previewTree, ...payload.info };
+    setPreviewTree: (state, { payload }: PayloadAction<any>) => {
+      state.previewTree = { ...state.previewTree, ...payload };
     },
 
-    setUploadNode: (state, { payload }) => {
+    setUploadNode: (
+      state,
+      { payload }: PayloadAction<{ info: any; nodeId: string }>
+    ) => {
+      if (!state.uploadTree) return;
+
       const uploadNode = findById(state.uploadTree, payload.nodeId);
+
+      if (!uploadNode) return;
 
       if (!uploadNode.info) {
         uploadNode.info = payload.info;
@@ -116,8 +139,15 @@ const uploadSlice = createSlice({
       }
     },
 
-    setPreviewNode: (state, { payload }) => {
+    setPreviewNode: (
+      state,
+      { payload }: PayloadAction<{ info: any; nodeId: string }>
+    ) => {
+      if (!state.previewTree) return;
+
       const previewNode = findById(state.previewTree, payload.nodeId);
+
+      if (!previewNode) return;
 
       if (!previewNode.info) {
         previewNode.info = payload.info;
@@ -129,12 +159,20 @@ const uploadSlice = createSlice({
       }
     },
 
-    removeNode: (state, { payload }) => {
-      const uploadNode = findByChildId(state.uploadTree, payload.nodeId);
-      const previewNode = findByChildId(state.previewTree, payload.nodeId);
+    removeNode: (state, { payload }: PayloadAction<string>) => {
+      if (!state.uploadTree || !state.previewTree) return;
 
-      uploadNode.children = uploadNode.children.filter((item) => item.id !== payload.nodeId);
-      previewNode.children = previewNode.children.filter((item) => item.id !== payload.nodeId);
+      const uploadNode = findByChildId(state.uploadTree, payload);
+      const previewNode = findByChildId(state.previewTree, payload);
+
+      if (!uploadNode || !previewNode) return;
+
+      uploadNode.children = uploadNode.children.filter(
+        (item) => item.id !== payload
+      );
+      previewNode.children = previewNode.children.filter(
+        (item) => item.id !== payload
+      );
 
       const fullSize = getFullSize(state.uploadTree);
       const { max, min } = getMinMaxDuration(state.uploadTree);
@@ -145,24 +183,19 @@ const uploadSlice = createSlice({
     },
 
     removeTree: (state) => {
-      state.uploadTree = {};
-      state.previewTree = {};
+      state.uploadTree = null;
+      state.previewTree = null;
     },
 
-    saveTree: (state, { payload }) => {
-      state.saved = payload.saved;
+    setError: (
+      state,
+      { payload }: PayloadAction<{ nodeId?: string; message: string }>
+    ) => {
+      state.error = payload;
     },
 
-    setWarning: (state, { payload }) => {
-      state.warning = payload.warning;
-    },
-
-    setError: (state, { payload }) => {
-      state.error = payload.error;
-    },
-
-    setActiveNode: (state, { payload }) => {
-      state.activeNodeId = payload.nodeId;
+    setActiveNode: (state, { payload }: PayloadAction<string>) => {
+      state.activeNodeId = payload;
     },
   },
 });
