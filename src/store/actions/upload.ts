@@ -34,25 +34,13 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
           info: {
             name: file.name,
             size: file.size,
+            url: URL.createObjectURL(file),
             duration: videoDuration,
             label: 'Default',
             timelineStart: null,
             timelineEnd: null,
             progress: 0,
             error: null,
-          },
-          nodeId,
-        })
-      );
-
-      dispatch(
-        uploadActions.setPreviewNode({
-          info: {
-            name: file.name,
-            label: 'Default',
-            timelineStart: null,
-            timelineEnd: null,
-            url: URL.createObjectURL(file),
           },
           nodeId,
         })
@@ -150,7 +138,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
       // Complete Upload
       accessToken = getState().auth.accessToken as string;
-      const completeUploadResponse = await axios.post(
+      const completeUploadReseponse = await axios.post(
         '/upload/complete-upload',
         {
           params: {
@@ -163,24 +151,29 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
-      const { url } = completeUploadResponse.data;
+      dispatch(
+        uploadActions.setUploadNode({
+          info: { progress: 100 },
+          nodeId,
+        })
+      );
+
+      const { url } = completeUploadReseponse.data;
 
       console.log(getState());
 
-      dispatch(
-        uploadActions.setUploadNode({
-          info: { progress: 100, url },
-          nodeId,
-        })
-      );
+      // Change url to real url
+
+      // Change Nodes with unfinished progress to null
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(
-        uploadActions.setUploadNode({
-          info: { error: error.response?.data?.message || error.message },
-          nodeId,
-        })
-      );
+      // dispatch(
+      //   uploadActions.setUploadNode({
+      //     info: { error: error.response?.data?.message || error.message },
+      //     nodeId,
+      //   })
+      // );
+      console.log(error);
     }
   };
 };
@@ -189,13 +182,6 @@ export const updateNode = (info: any, nodeId: string) => {
   return (dispatch: AppDispatch) => {
     dispatch(
       uploadActions.setUploadNode({
-        info,
-        nodeId,
-      })
-    );
-
-    dispatch(
-      uploadActions.setPreviewNode({
         info,
         nodeId,
       })

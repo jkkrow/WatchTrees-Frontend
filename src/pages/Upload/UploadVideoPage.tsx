@@ -4,14 +4,16 @@ import Preview from 'components/Upload/Preview/Preview';
 import { useUploadSelector } from 'hooks/store-hook';
 
 const UploadVideoPage: React.FC = () => {
-  const { uploadTree, previewTree } = useUploadSelector();
+  const { uploadTree } = useUploadSelector();
+
+  const isPreview = uploadTree?.root.info?.url;
 
   return (
     <div className="layout">
       <div>{uploadTree && <UploadDashboard tree={uploadTree} />}</div>
       <div style={{ display: 'flex' }}>
         {uploadTree && <UploadTree tree={uploadTree} />}
-        {previewTree?.root.info && <Preview tree={previewTree} />}
+        {isPreview && <Preview tree={uploadTree} />}
       </div>
     </div>
   );

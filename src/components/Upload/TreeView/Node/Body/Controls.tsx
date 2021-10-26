@@ -1,4 +1,7 @@
+import { useState } from 'react';
+
 import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
+import Warning from './Warning';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
@@ -27,6 +30,8 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
   const { activeVideoId } = useVideoSelector();
   const dispatch = useAppDispatch();
 
+  const [warning, setWarning] = useState(false);
+
   const activeNodeHandler = (id: string) => {
     dispatch(updateActiveNode(id));
   };
@@ -42,8 +47,8 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
   const removeNodeHandler = () => {
     const isNotEmpty = validateNodes(currentNode, 'info', null, false);
 
-    if (isNotEmpty) {
-      // set warning
+    if (isNotEmpty && !warning) {
+      setWarning(true);
     } else {
       dispatch(removeNode(currentNode.id));
 
@@ -57,9 +62,16 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
     }
   };
 
+  const cancelRemoveHandler = () => {
+    setWarning(false);
+  };
+
   return (
     <>
-      {currentNode.id !== treeId && (
+      {warning && (
+        <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />
+      )}
+      {currentNode.id !== treeId && currentNode.id !== activeNodeId && (
         <RemoveIcon
           style={{
             top: '2rem',

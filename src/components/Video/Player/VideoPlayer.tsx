@@ -578,6 +578,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [active, videoVolume]);
 
   useLayoutEffect(() => {
+    // TODO: Need to fix not to play when adjusting UploadNode
     const video = videoRef.current!;
 
     if (active) {

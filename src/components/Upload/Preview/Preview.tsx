@@ -3,11 +3,11 @@ import { useState } from 'react';
 import { ReactComponent as PreviewIcon } from 'assets/icons/play.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
-import { PreviewTree as PreviewTreeType } from 'store/reducers/upload';
+import { UploadTree } from 'store/reducers/upload';
 import './Preview.scss';
 
 interface PreviewProps {
-  tree: PreviewTreeType;
+  tree: UploadTree;
 }
 
 const Preview: React.FC<PreviewProps> = ({ tree }) => {

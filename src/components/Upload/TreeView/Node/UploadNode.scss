@@ -143,7 +143,8 @@
     }
   }
 
-  &__error {
+  &__error,
+  &__warning {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -153,15 +154,14 @@
     bottom: 0;
     left: 0;
     right: 0;
-    gap: 1rem;
+    gap: 2rem;
     border-radius: 10px;
-    font-size: 2rem;
-    color: var(--text-invalid);
+    font-size: 1.7rem;
     background-color: rgba(0, 0, 0, 0.7);
     z-index: 1;
 
     &__message {
-      padding: 0 2rem;
+      padding: 0 4rem;
     }
 
     &__action {

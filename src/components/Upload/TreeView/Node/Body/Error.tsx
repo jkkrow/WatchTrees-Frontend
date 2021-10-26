@@ -17,7 +17,9 @@ const Error: React.FC<ErrorProps> = ({ currentNode, error }) => {
 
   return error ? (
     <div className="upload-node__error">
-      <div className="upload-node__error__message">{error}</div>
+      <div className="upload-node__error__message" style={{ color: '#ff0000' }}>
+        {error}
+      </div>
       <div className="upload-node__error__action">
         <RemoveIcon onClick={cancelHandler} />
       </div>
