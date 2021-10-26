@@ -37,7 +37,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const descriptionChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setDescriptionInput(event.target.value);
 
@@ -122,7 +122,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
             type="textarea"
             label="Description"
             value={descriptionInput}
-            onChange={descriptionChangeHandler}
+            onTextAreaChange={descriptionChangeHandler}
           />
         </div>
       </div>

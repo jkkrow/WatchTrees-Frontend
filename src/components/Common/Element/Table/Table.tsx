@@ -1,9 +1,11 @@
-import Button from 'components/Common/Element/Button/Button';
+import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
+import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { formatString } from 'util/format';
 import './Table.scss';
 
 interface Item {
   _id: string;
+  title: string;
 }
 
 interface TableProps {
@@ -11,7 +13,7 @@ interface TableProps {
   data: Item[];
   exclude?: string[];
   onEdit?: (item: Object) => void;
-  onDelete?: (item: Object) => void;
+  onDelete?: (item: { title: string }) => void;
 }
 
 const Table: React.FC<TableProps> = ({
@@ -51,16 +53,8 @@ const Table: React.FC<TableProps> = ({
               )}
               {(onEdit || onDelete) && (
                 <td className="table__buttons">
-                  {onEdit && (
-                    <Button inversed onClick={() => onEdit(item)}>
-                      EDIT
-                    </Button>
-                  )}
-                  {onDelete && (
-                    <Button inversed onClick={() => onDelete(item)}>
-                      DELETE
-                    </Button>
-                  )}
+                  {onEdit && <EditIcon onClick={() => onEdit(item)} />}
+                  {onDelete && <DeleteIcon onClick={() => onDelete(item)} />}
                 </td>
               )}
             </tr>

@@ -10,7 +10,12 @@ const Search = () => {
 
   return (
     <form className="search" onSubmit={searchHandler}>
-      <input id="search-input" type="text" placeholder="Search Videos" />
+      <input
+        id="search-input"
+        type="text"
+        placeholder="Search Videos"
+        autoComplete="off"
+      />
       <label htmlFor="search-input">
         <SearchIcon />
       </label>

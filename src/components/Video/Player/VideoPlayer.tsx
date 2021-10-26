@@ -77,9 +77,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   // vp-selector
   const [displaySelector, setDisplaySelector] = useState(false);
-  const [selectedNextVideo, setSelectedNextVideo] = useState<VideoNode | null>(
-    null
-  );
+  const [selectedNextVideoId, setSelectedNextVideoId] = useState<string>('');
 
   // vp-navigation
   const [timelineMarked, setTimelineMarked] = useState(false);
@@ -87,7 +85,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoProgressRef = useRef<HTMLDivElement>(null);
-  const videoSelectorRef = useRef<HTMLDivElement>(null);
 
   const volumeData = useRef(videoVolume || 1);
   const progressSeekData = useRef(0);
@@ -169,14 +166,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       return;
     }
 
-    if (selectedNextVideo) {
-      dispatch(updateActiveVideo(selectedNextVideo.id));
+    if (selectedNextVideoId) {
+      dispatch(updateActiveVideo(selectedNextVideoId));
     } else {
       const firstValidItem = currentVideo.children.find((item) => item.info);
 
       firstValidItem && dispatch(updateActiveVideo(firstValidItem.id));
     }
-  }, [dispatch, currentVideo.children, selectedNextVideo]);
+  }, [dispatch, currentVideo.children, selectedNextVideoId]);
 
   /*
    * LOADING CONTROL
@@ -277,7 +274,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       currentTime >= timelineStart &&
       currentTime < timelineEnd &&
       currentVideo.children.length > 0 &&
-      !selectedNextVideo
+      !selectedNextVideoId
     ) {
       hideControlsHandler();
       setDisplaySelector(true);
@@ -286,24 +283,26 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       setDisplaySelector(false);
       selectorData.current = false;
     }
-  }, [currentVideo, selectedNextVideo, hideControlsHandler]);
+  }, [currentVideo, selectedNextVideoId, hideControlsHandler]);
 
   /*
    * SKIP CONTROL
    */
 
   const seekMouseMoveHandler = useCallback((event) => {
+    const video = videoRef.current!;
+    const progress = videoProgressRef.current!;
+
     const skipTo =
-      (event.nativeEvent.offsetX / event.target.clientWidth) *
-      +videoRef.current.duration;
+      (event.nativeEvent.offsetX / event.target.clientWidth) * +video.duration;
 
     progressSeekData.current = skipTo;
 
-    const rect = videoProgressRef.current.getBoundingClientRect();
+    const rect = progress.getBoundingClientRect();
 
     let newTime;
-    if (skipTo > videoRef.current.duration) {
-      newTime = formatTime(videoRef.current.duration);
+    if (skipTo > video.duration) {
+      newTime = formatTime(video.duration);
     } else if (skipTo < 0) {
       newTime = '00:00';
     } else {
@@ -315,10 +314,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, []);
 
   const seekInputHandler = useCallback((event) => {
+    const video = videoRef.current!;
+
     const skipTo = progressSeekData.current || event.target.value;
 
-    videoRef.current.currentTime = skipTo;
-    setCurrentProgress((skipTo / videoRef.current.duration) * 100);
+    video.currentTime = skipTo;
+    setCurrentProgress((skipTo / video.duration) * 100);
     setSeekProgress(skipTo);
   }, []);
 
@@ -330,7 +331,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (document.fullscreenElement) {
       document.exitFullscreen();
     } else {
-      document.querySelector('.video-tree').requestFullscreen();
+      document.querySelector('.video-tree')!.requestFullscreen();
     }
   }, []);
 
@@ -343,16 +344,36 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, []);
 
   /*
+   * SELECTOR
+   */
+
+  const selectNextVideoHandler = useCallback(
+    (index: number) => {
+      const validVideos = currentVideo.children.filter((video) => video.info);
+      const selectedVideo = validVideos[index];
+
+      if (!selectedVideo) return;
+
+      setSelectedNextVideoId(selectedVideo.id);
+      setDisplaySelector(false);
+    },
+    [currentVideo.children]
+  );
+
+  /*
    * KEYBOARD SHORTKUTS
    */
 
   const keyEventHandler = useCallback(
     (event) => {
+      const video = videoRef.current!;
       const activeElement = document.activeElement;
+
+      if (!activeElement) return;
 
       if (
         (activeElement.localName === 'input' &&
-          activeElement.type !== 'range') ||
+          (activeElement as HTMLInputElement).type !== 'range') ||
         activeElement.localName === 'textarea'
       ) {
         return;
@@ -363,30 +384,26 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       switch (key) {
         case 'ArrowRight':
           // Forward 10 seconds
-          videoRef.current.currentTime += 10;
+          video.currentTime += 10;
           break;
         case 'ArrowLeft':
           // Rewind 10 seconds
-          videoRef.current.currentTime -= 10;
+          video.currentTime -= 10;
           break;
         case 'ArrowUp':
           // Volume Up
-          if (videoRef.current.volume + 0.05 > 1) {
-            videoRef.current.volume = 1;
+          if (video.volume + 0.05 > 1) {
+            video.volume = 1;
           } else {
-            videoRef.current.volume = (videoRef.current.volume + 0.05).toFixed(
-              2
-            );
+            video.volume = +(video.volume + 0.05).toFixed(2);
           }
           break;
         case 'ArrowDown':
           // Volume Down
-          if (videoRef.current.volume - 0.05 < 0) {
-            videoRef.current.volume = 0;
+          if (video.volume - 0.05 < 0) {
+            video.volume = 0;
           } else {
-            videoRef.current.volume = (videoRef.current.volume - 0.05).toFixed(
-              2
-            );
+            video.volume = +(video.volume - 0.05).toFixed(2);
           }
           break;
         case ' ':
@@ -394,28 +411,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           break;
 
         case '1':
-          if (!selectorData.current) return;
-          videoSelectorRef.current.children[0]?.click();
-          break;
         case '2':
-          if (!selectorData.current) return;
-          videoSelectorRef.current.children[1]?.click();
-          break;
         case '3':
-          if (!selectorData.current) return;
-          videoSelectorRef.current.children[2]?.click();
-          break;
         case '4':
           if (!selectorData.current) return;
-          videoSelectorRef.current.children[3]?.click();
-          break;
-        default:
-          return;
+
+          selectNextVideoHandler(+key - 1);
       }
 
       showControlsHandler();
     },
-    [togglePlayHandler, showControlsHandler]
+    [togglePlayHandler, showControlsHandler, selectNextVideoHandler]
   );
   /*
    * INITIALIZE VIDEO
@@ -439,15 +445,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [videoVolume, timeChangeHandler, fullscreenChangeHandler]);
 
   /*
-   * SELECTOR
-   */
-
-  const selectNextVideoHandler = useCallback((video) => {
-    setSelectedNextVideo(video);
-    setDisplaySelector(false);
-  }, []);
-
-  /*
    * NAVIGATION
    */
 
@@ -456,43 +453,48 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [dispatch, treeId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
+    if (!currentVideo.prevId) return;
+
     dispatch(updateActiveVideo(currentVideo.prevId));
   }, [dispatch, currentVideo.prevId]);
 
   const navigateToSelectorTimelineHandler = useCallback(() => {
-    const timelineStart =
-      currentVideo.info.timelineStart || videoRef.current.duration - 10;
+    const video = videoRef.current!;
 
-    if (videoRef.current.currentTime < timelineStart) {
-      videoRef.current.currentTime = timelineStart;
+    const timelineStart =
+      currentVideo.info.timelineStart || video.duration - 10;
+
+    if (video.currentTime < timelineStart) {
+      video.currentTime = timelineStart;
     } else {
-      videoRef.current.currentTime = videoRef.current.duration;
+      video.currentTime = video.duration;
     }
 
-    videoRef.current.play();
+    video.play();
   }, [currentVideo.info]);
 
   const markTimelineHandler = useCallback(() => {
+    const video = videoRef.current!;
+
     if (!timelineMarked) {
       // Mark start point
-
       dispatch(
         updateNode(
           {
-            timelineStart: +videoRef.current.currentTime.toFixed(2),
+            timelineStart: +video.currentTime.toFixed(2),
           },
           currentVideo.id
         )
       );
 
-      if (videoRef.current.currentTime > currentVideo.info.timelineEnd) {
+      if (video.currentTime > currentVideo.info.timelineEnd) {
         dispatch(
           updateNode(
             {
               timelineEnd: +(
-                videoRef.current.currentTime + 10 > videoDuration
+                video.currentTime + 10 > videoDuration
                   ? videoDuration
-                  : videoRef.current.currentTime + 10
+                  : video.currentTime + 10
               ).toFixed(2),
             },
             currentVideo.id
@@ -501,24 +503,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
     } else {
       // Mark end point
-
       dispatch(
         updateNode(
           {
-            timelineEnd: +videoRef.current.currentTime.toFixed(2),
+            timelineEnd: +video.currentTime.toFixed(2),
           },
           currentVideo.id
         )
       );
 
-      if (videoRef.current.currentTime < currentVideo.info.timelineStart) {
+      if (video.currentTime < currentVideo.info.timelineStart) {
         dispatch(
           updateNode(
             {
               timelineStart: +(
-                videoRef.current.currentTime - 10 < 0
-                  ? 0
-                  : videoRef.current.currentTime - 10
+                video.currentTime - 10 < 0 ? 0 : video.currentTime - 10
               ).toFixed(2),
             },
             currentVideo.id
@@ -537,20 +536,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   useEffect(() => {
     (async () => {
       try {
+        const video = videoRef.current!;
         const src = currentVideo.info.url;
 
         // Edit mode
         if (src.substr(0, 4) === 'blob') {
-          return videoRef.current.setAttribute('src', src);
+          return video.setAttribute('src', src);
         }
 
         // Connect video to Shaka Player
-        const player = new shaka.Player(videoRef.current);
+        const player = new shaka.Player(video);
 
         // Try to load a manifest (async process).
         await player.load(src);
       } catch (err) {
-        alert(err.message);
+        alert(err);
       }
     })();
   }, [currentVideo.info.url]);
@@ -562,22 +562,26 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [fullscreenChangeHandler]);
 
   useEffect(() => {
+    const video = videoRef.current!;
+
     if (!active) {
-      videoRef.current.volume = videoVolume;
+      video.volume = videoVolume;
       setDisplayControls(false);
     }
   }, [active, videoVolume]);
 
   useLayoutEffect(() => {
+    const video = videoRef.current!;
+
     if (active) {
-      videoRef.current.play();
+      video.play();
       setDisplayCursor('none');
       document.addEventListener('keydown', keyEventHandler);
     }
 
     if (!active) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.pause();
+      video.currentTime = 0;
+      video.pause();
       document.removeEventListener('keydown', keyEventHandler);
     }
 
@@ -661,7 +665,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       <Selector
         on={displaySelector}
-        ref={videoSelectorRef}
         high={displayControls}
         next={currentVideo.children}
         onSelect={selectNextVideoHandler}

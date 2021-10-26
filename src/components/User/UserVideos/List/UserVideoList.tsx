@@ -5,7 +5,7 @@ import './UserVideoList.scss';
 interface UserVideoListProps {
   items: any[] /* VideoItem[] */;
   onEdit: (item: Object) => void;
-  onDelete: (item: Object) => void;
+  onDelete: (item: { title: string }) => void;
 }
 
 const UserVideoList: React.FC<UserVideoListProps> = ({

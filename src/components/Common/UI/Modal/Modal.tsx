@@ -9,7 +9,11 @@ interface ModalProps {
   className?: string;
   style?: React.CSSProperties;
   on: boolean;
-  data: any;
+  header: string;
+  content: string | JSX.Element;
+  footer?: string;
+  loading?: boolean;
+  disabled?: boolean;
   onConfirm?: () => void;
   onClose?: () => void;
 }
@@ -18,17 +22,19 @@ const Modal: React.FC<ModalProps> = ({
   className,
   style,
   on,
-  data,
+  header,
+  content,
+  footer,
+  loading,
+  disabled,
   onConfirm,
   onClose,
 }) => {
-  const [displayModal, setDisplayModal] = useState(!!on);
-  const [modalData, setModalData] = useState(data || {});
+  const [displayModal, setDisplayModal] = useState(on);
 
   useEffect(() => {
     on && setDisplayModal(!!on);
-    data && setModalData(data);
-  }, [on, data]);
+  }, [on]);
 
   const submitHandler = (event: React.FormEvent): void => {
     event.preventDefault();
@@ -56,20 +62,16 @@ const Modal: React.FC<ModalProps> = ({
           style={style}
           onSubmit={submitHandler}
         >
-          <h3 className="modal__header">{modalData.header}</h3>
-          <div className="modal__content">{modalData.content}</div>
+          <h3 className="modal__header">{header}</h3>
+          <div className="modal__content">{content}</div>
           <div className="modal__footer">
-            {modalData.type && (
-              <Button
-                small
-                loading={modalData.loading}
-                disabled={modalData.disabled}
-              >
-                {modalData.type}
+            {footer && (
+              <Button small loading={loading} disabled={disabled}>
+                {footer}
               </Button>
             )}
             <Button type="button" small onClick={closeModalHandler}>
-              {modalData.type ? 'CANCEL' : 'OK'}
+              {footer ? 'CANCEL' : 'OK'}
             </Button>
           </div>
         </form>

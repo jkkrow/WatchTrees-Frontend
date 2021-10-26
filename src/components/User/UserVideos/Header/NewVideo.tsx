@@ -8,11 +8,13 @@ interface NewVideoProps {
 
 const NewVideo: React.FC<NewVideoProps> = ({ onAdd }) => {
   return (
-    <div className="new-video">
-      <Button inversed onClick={onAdd}>
-        <PlusIcon />
-        NEW VIDEO
-      </Button>
+    <div className="user-video-header">
+      <div className="new-video">
+        <Button inversed onClick={onAdd}>
+          <PlusIcon />
+          NEW VIDEO
+        </Button>
+      </div>
     </div>
   );
 };

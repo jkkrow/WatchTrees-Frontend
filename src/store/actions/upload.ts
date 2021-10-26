@@ -18,12 +18,7 @@ export const appendChild = (nodeId: string) => {
   };
 };
 
-export const attachVideo = (
-  file: File,
-  nodeId: string,
-  treeId: string,
-  accessToken: string
-) => {
+export const attachVideo = (file: File, nodeId: string, treeId: string) => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       const videoDuration = await new Promise((resolve) => {
@@ -62,6 +57,7 @@ export const attachVideo = (
         })
       );
 
+      let accessToken = getState().auth.accessToken as string;
       const response = await axios.get('/upload/initiate-upload', {
         params: {
           treeId,
@@ -119,6 +115,7 @@ export const attachVideo = (
           index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
         // Initiate Upload
+        accessToken = getState().auth.accessToken as string;
         const getUploadUrlResponse = await axios.get('/upload/get-upload-url', {
           params: {
             uploadId,
@@ -126,6 +123,7 @@ export const attachVideo = (
             treeId,
             fileName: file.name,
           },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const { presignedUrl } = getUploadUrlResponse.data;
@@ -152,6 +150,7 @@ export const attachVideo = (
       });
 
       // Complete Upload
+      accessToken = getState().auth.accessToken as string;
       const completeUploadResponse = await axios.post(
         '/upload/complete-upload',
         {
@@ -161,7 +160,8 @@ export const attachVideo = (
             treeId,
             fileName: file.name,
           },
-        }
+        },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
       const { url } = completeUploadResponse.data;

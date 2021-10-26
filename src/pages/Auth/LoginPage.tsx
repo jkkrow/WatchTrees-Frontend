@@ -8,7 +8,7 @@ import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import GoogleLoginButton from 'components/Auth/GoogleLoginButton/GoogleLoginButton';
 import { useForm } from 'hooks/form-hook';
-import { useAppDispatch, useAuthSelector, useUploadSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
 import { register, login, clearResponse } from 'store/actions/auth';
 import {
   VALIDATOR_EMAIL,
@@ -160,7 +160,10 @@ const AuthPage: React.FC = () => {
           <Button loading={loading}>SIGN UP</Button>
         </Form>
       )}
-      <GoogleLoginButton onLoginSuccess={googleLoginHandler} loading={loading} />
+      <GoogleLoginButton
+        onLoginSuccess={googleLoginHandler}
+        loading={loading}
+      />
       {isLogin ? (
         <p>
           Don't have an account?{' '}

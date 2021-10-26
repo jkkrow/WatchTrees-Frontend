@@ -74,8 +74,10 @@ const ITEMS = [
 
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const [displayModal, setDisplayModal] = useState(false);
-  const [targetItem, setTargetItem] =
-    useState<null | Object /* Video Item Type */>(null);
+  const [targetItem, setTargetItem] = useState<{
+    /* Video Item Type */
+    title: string;
+  } | null>(null);
 
   const { uploadTree } = useUploadSelector();
   const dispatch = useAppDispatch();
@@ -92,14 +94,14 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
     history.push('/new-video');
   };
 
-  const openWarningHandler = (item: Object): void => {
+  const openWarningHandler = (item: { title: string }): void => {
     setDisplayModal(true);
     setTargetItem(item);
   };
 
   const closeWarningHandler = (): void => {
     setDisplayModal(false);
-    setTargetItem({});
+    setTargetItem(null);
   };
 
   const editHandler = (): void => {
@@ -114,26 +116,26 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
     <>
       <Modal
         on={displayModal}
-        data={{
-          type: 'DELETE',
-          header: 'Delete Video',
-          content: (
-            <>
-              <p>
-                To proceed type the video name{' '}
-                <strong>{targetItem!.title}</strong>.
-              </p>
-              <Input
-                id="video"
-                formInput
-                validators={[VALIDATOR_EQUAL(targetItem!.title)]}
-                onForm={setFormInput}
-              />
-            </>
-          ),
-          loading: false,
-          disabled: !formState.isValid,
-        }}
+        header="Delete Video"
+        content={
+          <>
+            <p>
+              To proceed type the video name{' '}
+              <strong>{targetItem?.title}</strong>.
+            </p>
+            <Input
+              id="video"
+              formInput
+              validators={
+                targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined
+              }
+              onForm={setFormInput}
+            />
+          </>
+        }
+        footer="DELETE"
+        loading={false}
+        disabled={!formState.isValid}
         onConfirm={deleteHandler}
         onClose={closeWarningHandler}
       />

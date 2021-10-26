@@ -21,10 +21,8 @@ const AccountProfile: React.FC = () => {
     <>
       <Modal
         on={!!error || !!message}
-        data={{
-          header: error ? 'Error' : 'Email has sent',
-          content: error || message,
-        }}
+        header={error ? 'Error' : 'Email has sent'}
+        content={error || message || ''}
         onClose={closeModalHandler}
       />
       <div className="account-profile">

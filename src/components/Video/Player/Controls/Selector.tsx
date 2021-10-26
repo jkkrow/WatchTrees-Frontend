@@ -1,4 +1,4 @@
-import { forwardRef, memo } from 'react';
+import { memo } from 'react';
 
 import { VideoNode } from 'store/reducers/video';
 
@@ -6,29 +6,24 @@ interface SelectorProps {
   on: boolean;
   high: boolean;
   next: VideoNode[];
-  onSelect: (video: VideoNode) => void;
+  onSelect: (index: number) => void;
 }
 
-const Selector = forwardRef<HTMLDivElement, SelectorProps>(
-  ({ on, high, next, onSelect }, ref) => (
-    <div
-      className={`vp-selector${on ? ' active' : ''}${high ? ' high' : ''}`}
-      ref={ref}
-    >
-      {next.map(
-        (video) =>
-          video.info && (
-            <button
-              key={video.id}
-              className="vp-selector__btn"
-              onClick={() => onSelect(video)}
-            >
-              {video.info.label}
-            </button>
-          )
-      )}
-    </div>
-  )
+const Selector: React.FC<SelectorProps> = ({ on, high, next, onSelect }) => (
+  <div className={`vp-selector${on ? ' active' : ''}${high ? ' high' : ''}`}>
+    {next.map(
+      (video: VideoNode, index: number) =>
+        video.info && (
+          <button
+            key={video.id}
+            className="vp-selector__btn"
+            onClick={() => onSelect(index)}
+          >
+            {video.info.label}
+          </button>
+        )
+    )}
+  </div>
 );
 
 export default memo(Selector);

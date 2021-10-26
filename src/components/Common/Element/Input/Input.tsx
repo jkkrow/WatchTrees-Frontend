@@ -52,9 +52,9 @@ interface InputProps {
   validators?: ValidatorAction[];
   message?: string;
   rows?: number;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
-  onTextAreaChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
-  onBlur?: React.FocusEventHandler;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onTextAreaChange?: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (event: React.FocusEvent) => void;
   onForm?: (id: string, value: string, isValid: boolean) => void;
 }
 
@@ -89,8 +89,21 @@ const Input: React.FC<InputProps> = ({
     }
   }, [formInput, onForm, id, inputState]);
 
-  const inputChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (
-    event
+  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    formInput
+      ? dispatch({
+          type: 'FORM_CHANGE',
+          value: event.target.value,
+          validators: validators!,
+        })
+      : dispatch({
+          type: 'CHANGE',
+          value: event.target.value,
+        });
+  };
+
+  const textareaChangeHandler = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     formInput
       ? dispatch({
@@ -104,22 +117,7 @@ const Input: React.FC<InputProps> = ({
         });
   };
 
-  const textareaChangeHandler: React.ChangeEventHandler<HTMLTextAreaElement> = (
-    event
-  ) => {
-    formInput
-      ? dispatch({
-          type: 'FORM_CHANGE',
-          value: event.target.value,
-          validators: validators!,
-        })
-      : dispatch({
-          type: 'CHANGE',
-          value: event.target.value,
-        });
-  };
-
-  const inputBlurHandler: React.FocusEventHandler = () => {
+  const inputBlurHandler = (event: React.FocusEvent) => {
     dispatch({ type: 'FORM_BLUR' });
   };
 

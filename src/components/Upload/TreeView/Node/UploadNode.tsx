@@ -1,11 +1,7 @@
 import Content from './Body/Content';
 import Controls from './Body/Controls';
 import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
-import {
-  useAppDispatch,
-  useAuthSelector,
-  useUploadSelector,
-} from 'hooks/store-hook';
+import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
 import { UploadNode as UploadNodeType } from 'store/reducers/upload';
 import { attachVideo } from 'store/actions/upload';
 import './UploadNode.scss';
@@ -16,12 +12,11 @@ interface UploadNodeProps {
 }
 
 const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
-  const { accessToken } = useAuthSelector();
   const { activeNodeId } = useUploadSelector();
   const dispatch = useAppDispatch();
 
   const onFileHandler = (file: File): void => {
-    dispatch(attachVideo(file, currentNode.id, treeId, accessToken!));
+    dispatch(attachVideo(file, currentNode.id, treeId));
   };
 
   return (
