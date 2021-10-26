@@ -38,14 +38,12 @@ interface UploadSliceState {
   uploadTree: UploadTree | null;
   previewTree: PreviewTree | null;
   activeNodeId: string;
-  error: { nodeId?: string; message: string } | null;
 }
 
 const initialState: UploadSliceState = {
   uploadTree: null,
   previewTree: null,
   activeNodeId: '',
-  error: null,
 };
 
 const uploadSlice = createSlice({
@@ -124,19 +122,23 @@ const uploadSlice = createSlice({
 
       if (!uploadNode.info) {
         uploadNode.info = payload.info;
-
-        const fullSize = getFullSize(state.uploadTree);
-        const { max, min } = getMinMaxDuration(state.uploadTree);
-
-        state.uploadTree.size = fullSize;
-        state.uploadTree.maxDuration = max;
-        state.uploadTree.minDuration = min;
       } else {
-        uploadNode.info = {
-          ...uploadNode.info,
-          ...payload.info,
-        };
+        if (payload.info === null) {
+          uploadNode.info = null;
+        } else {
+          uploadNode.info = {
+            ...uploadNode.info,
+            ...payload.info,
+          };
+        }
       }
+
+      const fullSize = getFullSize(state.uploadTree);
+      const { max, min } = getMinMaxDuration(state.uploadTree);
+
+      state.uploadTree.size = fullSize;
+      state.uploadTree.maxDuration = max;
+      state.uploadTree.minDuration = min;
     },
 
     setPreviewNode: (
@@ -152,10 +154,14 @@ const uploadSlice = createSlice({
       if (!previewNode.info) {
         previewNode.info = payload.info;
       } else {
-        previewNode.info = {
-          ...previewNode.info,
-          ...payload.info,
-        };
+        if (payload.info === null) {
+          previewNode.info = null;
+        } else {
+          previewNode.info = {
+            ...previewNode.info,
+            ...payload.info,
+          };
+        }
       }
     },
 
@@ -185,13 +191,6 @@ const uploadSlice = createSlice({
     removeTree: (state) => {
       state.uploadTree = null;
       state.previewTree = null;
-    },
-
-    setError: (
-      state,
-      { payload }: PayloadAction<{ nodeId?: string; message: string }>
-    ) => {
-      state.error = payload;
     },
 
     setActiveNode: (state, { payload }: PayloadAction<string>) => {

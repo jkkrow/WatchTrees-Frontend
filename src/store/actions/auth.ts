@@ -79,12 +79,14 @@ export const logout = () => {
 export const updateRefreshToken = (refreshToken: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      axiosRetry(axios, {
+      const request = axios.create();
+
+      axiosRetry(request, {
         retries: 3,
         retryDelay: () => 3000,
       });
 
-      const { data } = await axios.get('/auth/refresh-token', {
+      const { data } = await request.get('/auth/refresh-token', {
         headers: { Authorization: 'Bearer ' + refreshToken },
       });
 
@@ -110,12 +112,14 @@ export const updateRefreshToken = (refreshToken: string) => {
 export const updateAccessToken = (refreshToken: string) => {
   return async (dispatch: AppDispatch) => {
     try {
-      axiosRetry(axios, {
+      const request = axios.create();
+
+      axiosRetry(request, {
         retries: 3,
         retryDelay: () => 3000,
       });
 
-      const { data } = await axios.get('/auth/access-token', {
+      const { data } = await request.get('/auth/access-token', {
         headers: { Authorization: 'Bearer ' + refreshToken },
       });
 

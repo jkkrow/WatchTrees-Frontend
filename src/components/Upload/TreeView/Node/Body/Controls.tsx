@@ -42,16 +42,18 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
   const removeNodeHandler = () => {
     const isNotEmpty = validateNodes(currentNode, 'info', null, false);
 
-    if (isNotEmpty) return;
+    if (isNotEmpty) {
+      // set warning
+    } else {
+      dispatch(removeNode(currentNode.id));
 
-    dispatch(removeNode(currentNode.id));
+      if (currentNode.id === activeNodeId) {
+        activeNodeHandler(currentNode.prevId!);
+      }
 
-    if (currentNode.id === activeNodeId) {
-      activeNodeHandler(currentNode.prevId!);
-    }
-
-    if (currentNode.id === activeVideoId) {
-      activeVideoHandler(currentNode.prevId!);
+      if (currentNode.id === activeVideoId) {
+        activeVideoHandler(currentNode.prevId!);
+      }
     }
   };
 

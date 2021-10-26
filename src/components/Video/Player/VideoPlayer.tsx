@@ -192,11 +192,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    * VOLUME CONTROL
    */
 
-  const volumeInputHandler = useCallback((event) => {
-    const video = videoRef.current!;
+  const volumeInputHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const video = videoRef.current!;
 
-    video.volume = event.target.value;
-  }, []);
+      video.volume = +event.target.value;
+    },
+    []
+  );
 
   const volumeChangeHandler = useCallback(() => {
     const video = videoRef.current!;
@@ -289,12 +292,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    * SKIP CONTROL
    */
 
-  const seekMouseMoveHandler = useCallback((event) => {
+  const seekMouseMoveHandler = useCallback((event: React.MouseEvent) => {
     const video = videoRef.current!;
     const progress = videoProgressRef.current!;
 
     const skipTo =
-      (event.nativeEvent.offsetX / event.target.clientWidth) * +video.duration;
+      (event.nativeEvent.offsetX / (event.target as Element).clientWidth) *
+      +video.duration;
 
     progressSeekData.current = skipTo;
 
@@ -313,15 +317,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setSeekTooltip(newTime);
   }, []);
 
-  const seekInputHandler = useCallback((event) => {
-    const video = videoRef.current!;
+  const seekInputHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const video = videoRef.current!;
 
-    const skipTo = progressSeekData.current || event.target.value;
+      const skipTo = progressSeekData.current || +event.target.value;
 
-    video.currentTime = skipTo;
-    setCurrentProgress((skipTo / video.duration) * 100);
-    setSeekProgress(skipTo);
-  }, []);
+      video.currentTime = skipTo;
+      setCurrentProgress((skipTo / video.duration) * 100);
+      setSeekProgress(skipTo);
+    },
+    []
+  );
 
   /*
    * FULLSCREEN CONTROL
@@ -365,7 +372,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    */
 
   const keyEventHandler = useCallback(
-    (event) => {
+    (event: KeyboardEvent) => {
       const video = videoRef.current!;
       const activeElement = document.activeElement;
 

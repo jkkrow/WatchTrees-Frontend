@@ -1,5 +1,9 @@
+import { useState } from 'react';
+
 import Content from './Body/Content';
 import Controls from './Body/Controls';
+import Warning from './Body/Warning';
+import Error from './Body/Error';
 import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
 import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
 import { UploadNode as UploadNodeType } from 'store/reducers/upload';
@@ -14,6 +18,8 @@ interface UploadNodeProps {
 const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
   const { activeNodeId } = useUploadSelector();
   const dispatch = useAppDispatch();
+
+  const [warning, setWarning] = useState(null);
 
   const onFileHandler = (file: File): void => {
     dispatch(attachVideo(file, currentNode.id, treeId));
@@ -35,11 +41,15 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
           }}
         >
           {currentNode.info ? (
-            <Content currentNode={currentNode} treeId={treeId} />
+            <>
+              <Content currentNode={currentNode} treeId={treeId} />
+              <Error currentNode={currentNode} error={currentNode.info.error} />
+            </>
           ) : (
             <DragDrop type="video" onFile={onFileHandler} />
           )}
           <Controls currentNode={currentNode} treeId={treeId} />
+          <Warning />
         </div>
       )}
 

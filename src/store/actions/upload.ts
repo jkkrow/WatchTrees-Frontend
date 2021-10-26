@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import axiosRetry from 'axios-retry';
 
 import { RootState, AppDispatch } from 'store';
 import { uploadActions, UploadTree } from 'store/reducers/upload';
@@ -57,6 +58,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         })
       );
 
+      // Initiate Upload
       let accessToken = getState().auth.accessToken as string;
       const response = await axios.get('/upload/initiate-upload', {
         params: {
@@ -69,20 +71,12 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
       const { uploadId } = response.data;
 
-      dispatch(
-        uploadActions.setUploadNode({
-          info: {
-            uploadId,
-          },
-          nodeId,
-        })
-      );
-
       const fileSize = file.size;
       const CHUNK_SIZE = 10000000; // 10MB
       const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
       const promisesArray = [];
       const progressArray: number[] = [];
+      const uploadPartsArray: { ETag: string; PartNumber: number }[] = [];
 
       let start, end, blob;
 
@@ -114,7 +108,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         blob =
           index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
-        // Initiate Upload
+        // Get Urls
         accessToken = getState().auth.accessToken as string;
         const getUploadUrlResponse = await axios.get('/upload/get-upload-url', {
           params: {
@@ -128,8 +122,14 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
         const { presignedUrl } = getUploadUrlResponse.data;
 
-        // Upload Parts
-        const uploadPromise = axios.put(presignedUrl, blob, {
+        // Save Promises
+        const request = axios.create();
+        axiosRetry(request, {
+          retries: 3,
+          retryDelay: () => 3000,
+        });
+
+        const uploadPromise = request.put(presignedUrl, blob, {
           onUploadProgress: (e) => uploadProgressHandler(e, index),
           headers: {
             'Content-Type': file.type,
@@ -138,9 +138,8 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         promisesArray.push(uploadPromise);
       }
 
+      // Upload Parts
       const resolvedArray = await Promise.all(promisesArray);
-
-      const uploadPartsArray: { ETag: string; PartNumber: number }[] = [];
 
       resolvedArray.forEach((resolvedPromise, index) => {
         uploadPartsArray.push({
@@ -175,7 +174,13 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         })
       );
     } catch (err) {
-      console.log(err);
+      let error = err as AxiosError;
+      dispatch(
+        uploadActions.setUploadNode({
+          info: { error: error.response?.data?.message || error.message },
+          nodeId,
+        })
+      );
     }
   };
 };

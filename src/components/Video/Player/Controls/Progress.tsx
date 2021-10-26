@@ -11,7 +11,7 @@ interface ProgressProps {
   timelineEnd: number;
   editMode: boolean;
   onHover: (event: React.MouseEvent) => void;
-  onSeek: (event: React.ChangeEvent) => void;
+  onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKey: (event: React.KeyboardEvent) => void;
 }
 
