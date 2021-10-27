@@ -80,9 +80,10 @@ export const validateNodes = (
     );
   }
 
-  return !!nodes.find((node) =>
-    type ? node.info?.[key] === value : node.info?.[key] !== value
-  );
+  return !!nodes.find((node) => {
+    if (!node.info) return false;
+    return type ? node.info[key] === value : node.info[key] !== value;
+  });
 };
 
 export const getAllPaths = (tree: Tree): Node[][] => {

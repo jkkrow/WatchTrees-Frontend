@@ -7,7 +7,7 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { UploadTree } from 'store/reducers/upload';
-import { updateTree } from 'store/actions/upload';
+import { saveUpload, updateTree } from 'store/actions/upload';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';
@@ -21,6 +21,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const [descriptionInput, setDescriptionInput] = useState(tree.description);
   const [tagInput, setTagInput] = useState('');
   const [tagArray, setTagArray] = useState(tree.tags);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useAppDispatch();
 
@@ -75,6 +76,14 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
 
     setTagArray(filteredTags);
     dispatch(updateTree({ tags: filteredTags }));
+  };
+
+  const saveUploadHandler = async () => {
+    setLoading(true);
+
+    await dispatch(saveUpload());
+
+    setLoading(false);
   };
 
   const isEmptyNode = validateNodes(tree.root, 'info');
@@ -146,7 +155,13 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
             </div>
           </div>
           <div className="upload-dashboard__save">
-            <Button disabled={isEmptyNode || isUncomletedNode}>SAVE</Button>
+            <Button
+              onClick={saveUploadHandler}
+              loading={loading}
+              disabled={isEmptyNode || isUncomletedNode}
+            >
+              SAVE
+            </Button>
           </div>
         </div>
       )}

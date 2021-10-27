@@ -160,11 +160,12 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
       const { url } = completeUploadReseponse.data;
 
-      console.log(getState());
-
-      // Change url to real url
-
-      // Change Nodes with unfinished progress to null
+      dispatch(
+        uploadActions.saveTree({
+          info: { url },
+          nodeId,
+        })
+      );
     } catch (err) {
       let error = err as AxiosError;
       // dispatch(
@@ -174,6 +175,34 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
       //   })
       // );
       console.log(error);
+    }
+
+    dispatch(saveUpload());
+  };
+};
+
+export const saveUpload = () => {
+  return async (dispatch: AppDispatch, getState: () => RootState) => {
+    try {
+      // Get current upload state
+      const { auth, upload } = getState();
+
+      const savedTree = upload.savedTree as UploadTree;
+      const accessToken = auth.accessToken as string;
+
+      const saveRepsonse = await axios.post(
+        '/upload/save-upload',
+        { savedTree },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      // TODO: Add Global message
+      console.log(saveRepsonse.data.message);
+    } catch (err) {
+      // TODO: Add Global message
+      console.log(err);
     }
   };
 };

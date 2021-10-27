@@ -1,5 +1,7 @@
 export const formatTime = (timeInSeconds: number): string => {
-  const result = new Date(timeInSeconds * 1000).toISOString().substr(11, 8);
+  const result = new Date(Math.round(timeInSeconds) * 1000)
+    .toISOString()
+    .substr(11, 8);
   // if duration is over hour
   if (+result.substr(0, 2) > 0) {
     // show 00:00:00

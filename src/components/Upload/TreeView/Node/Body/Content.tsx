@@ -95,15 +95,6 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
                       />
                     );
 
-                  if (validateNodes(node, 'error', null, false))
-                    return (
-                      <CircleLoadingIcon
-                        key={node.id}
-                        style={{ stroke: '#ff0000' }}
-                        onClick={() => activeNodeHandler(node.id)}
-                      />
-                    );
-
                   if (
                     validateNodes(node, 'info') ||
                     validateNodes(node, 'progress', 100, false)
@@ -111,6 +102,13 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
                     return (
                       <CircleLoadingIcon
                         key={node.id}
+                        style={
+                          validateNodes(node, 'error', null, false)
+                            ? {
+                                stroke: '#ff0000',
+                              }
+                            : undefined
+                        }
                         onClick={() => activeNodeHandler(node.id)}
                       />
                     );

@@ -30,11 +30,13 @@ export interface UploadTree extends Tree {
 
 interface UploadSliceState {
   uploadTree: UploadTree | null;
+  savedTree: UploadTree | null;
   activeNodeId: string;
 }
 
 const initialState: UploadSliceState = {
   uploadTree: null,
+  savedTree: null,
   activeNodeId: '',
 };
 
@@ -61,6 +63,7 @@ const uploadSlice = createSlice({
         status: UploadStatus.Progressing,
       };
 
+      state.savedTree = state.uploadTree;
       state.activeNodeId = node.id;
     },
 
@@ -87,10 +90,13 @@ const uploadSlice = createSlice({
       state.uploadTree.size = fullSize;
       state.uploadTree.maxDuration = max;
       state.uploadTree.minDuration = min;
+
+      state.savedTree = state.uploadTree;
     },
 
     setUploadTree: (state, { payload }: PayloadAction<any>) => {
       state.uploadTree = { ...state.uploadTree, ...payload };
+      state.savedTree = state.uploadTree;
     },
 
     setUploadNode: (
@@ -109,10 +115,7 @@ const uploadSlice = createSlice({
         if (payload.info === null) {
           uploadNode.info = null;
         } else {
-          uploadNode.info = {
-            ...uploadNode.info,
-            ...payload.info,
-          };
+          uploadNode.info = { ...uploadNode.info, ...payload.info };
         }
       }
 
@@ -122,6 +125,8 @@ const uploadSlice = createSlice({
       state.uploadTree.size = fullSize;
       state.uploadTree.maxDuration = max;
       state.uploadTree.minDuration = min;
+
+      state.savedTree = state.uploadTree;
     },
 
     removeNode: (state, { payload }: PayloadAction<string>) => {
@@ -141,10 +146,26 @@ const uploadSlice = createSlice({
       state.uploadTree.size = fullSize;
       state.uploadTree.maxDuration = max;
       state.uploadTree.minDuration = min;
+
+      state.savedTree = state.uploadTree;
     },
 
     removeTree: (state) => {
       state.uploadTree = null;
+      state.savedTree = null;
+    },
+
+    saveTree: (
+      state,
+      { payload }: PayloadAction<{ info: any; nodeId: string }>
+    ) => {
+      if (!state.savedTree) return;
+
+      const savedNode = findById(state.savedTree, payload.nodeId);
+
+      if (!savedNode) return;
+
+      savedNode.info = { ...savedNode.info, ...payload.info };
     },
 
     setActiveNode: (state, { payload }: PayloadAction<string>) => {
