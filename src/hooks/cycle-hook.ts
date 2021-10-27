@@ -15,3 +15,13 @@ export const useCompare = (value: any): boolean => {
 
   return prevValue !== value;
 };
+
+export const useFirstRender = () => {
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    firstRender.current = false;
+  }, []);
+
+  return firstRender.current;
+};

@@ -1,10 +1,5 @@
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import shaka from 'shaka-player';
 
 import Playback from './Controls/Playback';
 import Volume from './Controls/Volume';
@@ -15,15 +10,13 @@ import Selector from './Controls/Selector';
 import Navigation from './Controls/Navigation';
 import Loader from './Controls/Loader';
 import { useTimeout } from 'hooks/timer-hook';
-import { useCompare } from 'hooks/compare-hook';
+import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useVideoSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video';
 import { updateActiveVideo, updateVideoVolume } from 'store/actions/video';
 import { updateNode } from 'store/actions/upload';
 import { formatTime } from 'util/format';
 import './VideoPlayer.scss';
-
-const shaka = require('shaka-player/dist/shaka-player.ui.js');
 
 interface VideoPlayerProps {
   currentVideo: VideoNode;
@@ -94,8 +87,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [controlsTimeout] = useTimeout();
   const [volumeTimeout] = useTimeout();
   const [loaderTimeout, clearLoaderTimeout] = useTimeout();
-
   const activeChange = useCompare(active);
+  const firstRender = useFirstRender();
 
   /*
    * PREVENT DEFAULT
@@ -580,27 +573,31 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setDisplayControls(false);
   }, [active, videoVolume]);
 
-  useLayoutEffect(() => {
-    if (!activeChange) return;
+  useEffect(() => {
+    if (firstRender || !activeChange) return;
 
     const video = videoRef.current!;
 
     if (active) {
       video.play();
       setDisplayCursor('none');
-      document.addEventListener('keydown', keyEventHandler);
-    }
-
-    if (!active) {
+    } else {
       video.currentTime = 0;
       video.pause();
+    }
+  }, [firstRender, active, activeChange]);
+
+  useEffect(() => {
+    if (active) {
+      document.addEventListener('keydown', keyEventHandler);
+    } else {
       document.removeEventListener('keydown', keyEventHandler);
     }
 
     return () => {
       document.removeEventListener('keydown', keyEventHandler);
     };
-  }, [active, activeChange, keyEventHandler]);
+  }, [active, keyEventHandler]);
 
   /*
    * RENDER
