@@ -15,6 +15,7 @@ import Selector from './Controls/Selector';
 import Navigation from './Controls/Navigation';
 import Loader from './Controls/Loader';
 import { useTimeout } from 'hooks/timer-hook';
+import { useCompare } from 'hooks/compare-hook';
 import { useAppDispatch, useVideoSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video';
 import { updateActiveVideo, updateVideoVolume } from 'store/actions/video';
@@ -93,6 +94,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [controlsTimeout] = useTimeout();
   const [volumeTimeout] = useTimeout();
   const [loaderTimeout, clearLoaderTimeout] = useTimeout();
+
+  const activeChange = useCompare(active);
 
   /*
    * PREVENT DEFAULT
@@ -569,16 +572,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [fullscreenChangeHandler]);
 
   useEffect(() => {
+    if (active) return;
+
     const video = videoRef.current!;
 
-    if (!active) {
-      video.volume = videoVolume;
-      setDisplayControls(false);
-    }
+    video.volume = videoVolume;
+    setDisplayControls(false);
   }, [active, videoVolume]);
 
   useLayoutEffect(() => {
-    // TODO: Need to fix not to play when adjusting UploadNode
+    if (!activeChange) return;
+
     const video = videoRef.current!;
 
     if (active) {
@@ -596,7 +600,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return () => {
       document.removeEventListener('keydown', keyEventHandler);
     };
-  }, [active, keyEventHandler]);
+  }, [active, activeChange, keyEventHandler]);
 
   /*
    * RENDER

@@ -103,7 +103,7 @@ export const updateRefreshToken = (refreshToken: string) => {
         }
       });
     } catch (err) {
-      // Display Global Message
+      // TODO: Display Global Message
       console.log(err);
     }
   };
@@ -125,7 +125,7 @@ export const updateAccessToken = (refreshToken: string) => {
 
       dispatch(authActions.setAccessToken(data.accessToken));
     } catch (err) {
-      // Display Global Message
+      // TODO: Display Global Message
       console.log(err);
     }
   };
