@@ -1,18 +1,15 @@
 import axios, { AxiosError } from 'axios';
 import axiosRetry from 'axios-retry';
 
-import { RootState, AppDispatch } from 'store';
+import { AppDispatch } from 'store';
 import { authActions } from 'store/reducers/auth';
 
-export const register = (
-  credentials: {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  },
-  cb: () => void
-) => {
+export const register = (credentials: {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
@@ -21,7 +18,7 @@ export const register = (
 
       dispatch(authActions.authSuccess(data.message));
 
-      cb();
+      return true;
     } catch (err) {
       let error = err as AxiosError;
       dispatch(
@@ -137,16 +134,14 @@ export const clearResponse = () => {
   };
 };
 
-export const verifyEmail = (token: string, cb: () => void) => {
+export const sendVerifyEmail = (email: string) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.get(`/auth/verify-email/${token}`);
+      const { data } = await axios.post('/auth/send-verify-email', { email });
 
       dispatch(authActions.authSuccess(data.message));
-
-      cb();
     } catch (err) {
       let error = err as AxiosError;
       dispatch(
@@ -156,14 +151,16 @@ export const verifyEmail = (token: string, cb: () => void) => {
   };
 };
 
-export const sendVerifyEmail = (email: string) => {
+export const verifyEmail = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await axios.post('/auth/send-verify-email', { email });
+      const { data } = await axios.get(`/auth/verify-email/${token}`);
 
       dispatch(authActions.authSuccess(data.message));
+
+      return true;
     } catch (err) {
       let error = err as AxiosError;
       dispatch(
@@ -190,14 +187,14 @@ export const sendRecoveryEmail = (email: string) => {
   };
 };
 
-export const getResetPassword = (token: string, cb: () => void) => {
+export const getResetPassword = (token: string) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
 
       await axios.get(`/auth/reset-password/${token}`);
 
-      cb();
+      return true;
     } catch (err) {
       let error = err as AxiosError;
       dispatch(
@@ -228,15 +225,5 @@ export const postResetPassword = (
         authActions.authFail(error.response?.data?.message || error.message)
       );
     }
-  };
-};
-
-export const updateUserData = (info: any) => {
-  return (dispatch: AppDispatch, getState: () => RootState) => {
-    dispatch(authActions.setUserData(info));
-
-    const { userData } = getState().auth;
-
-    localStorage.setItem('userData', JSON.stringify(userData));
   };
 };

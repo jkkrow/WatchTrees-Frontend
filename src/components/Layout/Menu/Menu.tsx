@@ -4,8 +4,8 @@ import { CSSTransition } from 'react-transition-group';
 
 import {
   useAppDispatch,
-  useAuthSelector,
   useUploadSelector,
+  useUserSelector,
 } from 'hooks/store-hook';
 import { logout } from 'store/actions/auth';
 import { removeTree } from 'store/actions/upload';
@@ -16,8 +16,8 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ on }) => {
-  const { userData } = useAuthSelector();
   const { uploadTree } = useUploadSelector();
+  const { userData } = useUserSelector();
   const dispatch = useAppDispatch();
 
   const history = useHistory();

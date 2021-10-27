@@ -5,13 +5,13 @@ import Logo from 'components/Common/UI/Logo/Logo';
 import Search from 'components/Common/UI/Search/Search';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Menu from 'components/Layout/Menu/Menu';
-import { useAuthSelector } from 'hooks/store-hook';
+import { useUserSelector } from 'hooks/store-hook';
 import './Header.scss';
 
 const Header: React.FC = () => {
   const [displayMenu, setDisplayMenu] = useState(false);
 
-  const { userData } = useAuthSelector();
+  const { userData } = useUserSelector();
 
   const location = useLocation();
 

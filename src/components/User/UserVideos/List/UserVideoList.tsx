@@ -1,35 +1,80 @@
-import Table from 'components/Common/Element/Table/Table';
-import { formatSize, formatTime, formatNumber } from 'util/format';
+import { useState } from 'react';
+
+import UserVideoItem from './UserVideoItem';
+import Modal from 'components/Common/UI/Modal/Modal';
+import Input from 'components/Common/Element/Input/Input';
+import { useForm } from 'hooks/form-hook';
+import { VideoTree } from 'store/reducers/video';
+import { VALIDATOR_EQUAL } from 'util/validators';
 import './UserVideoList.scss';
 
 interface UserVideoListProps {
-  items: any[] /* VideoItem[] */;
-  onEdit: (item: Object) => void;
-  onDelete: (item: { title: string }) => void;
+  items: VideoTree[];
 }
 
-const UserVideoList: React.FC<UserVideoListProps> = ({
-  items,
-  onEdit,
-  onDelete,
-}) => {
-  const listData = items.map((item) => ({
-    ...item,
-    views: formatNumber(item.views),
-    size: formatSize(item.size),
-    minDuration: formatTime(item.minDuration),
-    maxDuration: formatTime(item.maxDuration),
-  }));
+const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
+  const [displayModal, setDisplayModal] = useState(false);
+  const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
+
+  const { formState, setFormInput } = useForm({
+    video: { value: '', isValid: false },
+  });
+
+  const openWarningHandler = (item: VideoTree): void => {
+    setDisplayModal(true);
+    setTargetItem(item);
+  };
+
+  const closeWarningHandler = (): void => {
+    setDisplayModal(false);
+    setTargetItem(null);
+  };
+
+  const editHandler = (): void => {
+    console.log('EDIT');
+  };
+
+  const deleteHandler = (): void => {
+    console.log('DELETE');
+  };
 
   return (
-    <div className="user-video-list">
-      <Table
-        data={listData}
-        exclude={['_id', 'createdAt']}
-        onEdit={onEdit}
-        onDelete={onDelete}
+    <>
+      <Modal
+        on={displayModal}
+        header="Delete Video"
+        content={
+          <>
+            <p>
+              To proceed type the video name{' '}
+              <strong>{targetItem?.title}</strong>.
+            </p>
+            <Input
+              id="video"
+              formInput
+              validators={
+                targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined
+              }
+              onForm={setFormInput}
+            />
+          </>
+        }
+        footer="DELETE"
+        loading={false}
+        disabled={!formState.isValid}
+        onConfirm={deleteHandler}
+        onClose={closeWarningHandler}
       />
-    </div>
+      <ul className="user-video-list">
+        {items.map((item) => (
+          <UserVideoItem
+            item={item}
+            onEdit={editHandler}
+            onDelete={openWarningHandler}
+          />
+        ))}
+      </ul>
+    </>
   );
 };
 

@@ -1,10 +1,10 @@
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useAppDispatch } from 'hooks/store-hook';
-import { UploadNode } from 'store/reducers/upload';
+import { VideoNode } from 'store/reducers/video';
 import { updateNode } from 'store/actions/upload';
 
 interface ErrorProps {
-  currentNode: UploadNode;
+  currentNode: VideoNode;
   error: string;
 }
 

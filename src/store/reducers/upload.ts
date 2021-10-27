@@ -1,36 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v1 as uuidv1 } from 'uuid';
 
+import { VideoTree } from './video';
 import {
-  Node,
-  Tree,
   findById,
   findByChildId,
   getFullSize,
   getMinMaxDuration,
 } from 'util/tree';
 
-enum UploadStatus {
-  Progressing = 'Progressing',
-  Completed = 'Completed',
-}
-
-export interface UploadNode extends Node {}
-
-export interface UploadTree extends Tree {
-  root: UploadNode;
-  title: string;
-  tags: string[];
-  description: string;
-  size: number;
-  maxDuration: number;
-  minDuration: number;
-  status: UploadStatus;
-}
-
 interface UploadSliceState {
-  uploadTree: UploadTree | null;
-  savedTree: UploadTree | null;
+  uploadTree: VideoTree | null;
+  savedTree: VideoTree | null;
   activeNodeId: string;
 }
 
@@ -60,7 +41,7 @@ const uploadSlice = createSlice({
         size: 0,
         maxDuration: 0,
         minDuration: 0,
-        status: UploadStatus.Progressing,
+        status: 'Progressing',
       };
 
       state.savedTree = state.uploadTree;

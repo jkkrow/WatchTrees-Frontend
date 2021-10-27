@@ -44,17 +44,16 @@ const AuthPage: React.FC = () => {
         })
       );
     } else {
-      dispatch(
-        register(
-          {
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-            confirmPassword: formState.inputs.confirmPassword.value,
-          },
-          () => setIsLogin(true)
-        )
+      const success = await dispatch(
+        register({
+          name: formState.inputs.name.value,
+          email: formState.inputs.email.value,
+          password: formState.inputs.password.value,
+          confirmPassword: formState.inputs.confirmPassword.value,
+        })
       );
+
+      success && setIsLogin(true);
     }
   };
 

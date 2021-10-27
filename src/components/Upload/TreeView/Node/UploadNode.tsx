@@ -3,12 +3,12 @@ import Controls from './Body/Controls';
 import Error from './Body/Error';
 import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
 import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
-import { UploadNode as UploadNodeType } from 'store/reducers/upload';
+import { VideoNode } from 'store/reducers/video';
 import { attachVideo } from 'store/actions/upload';
 import './UploadNode.scss';
 
 interface UploadNodeProps {
-  currentNode: UploadNodeType;
+  currentNode: VideoNode;
   treeId: string;
 }
 

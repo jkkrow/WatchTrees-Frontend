@@ -11,7 +11,7 @@ import {
   useUploadSelector,
   useVideoSelector,
 } from 'hooks/store-hook';
-import { UploadNode } from 'store/reducers/upload';
+import { VideoNode } from 'store/reducers/video';
 import {
   appendChild,
   updateActiveNode,
@@ -21,7 +21,7 @@ import { updateActiveVideo } from 'store/actions/video';
 import { validateNodes } from 'util/tree';
 
 interface ControlsProps {
-  currentNode: UploadNode;
+  currentNode: VideoNode;
   treeId: string;
 }
 

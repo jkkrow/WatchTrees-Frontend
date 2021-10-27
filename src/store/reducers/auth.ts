@@ -1,34 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-interface RefreshToken {
+import { UserData } from './user';
+
+export interface RefreshToken {
   value: string;
   expiresIn: number;
-}
-
-interface UserData {
-  name: string;
-  email: string;
-  picture: string;
-  isVerified: boolean;
-  isPremium: boolean;
 }
 
 interface AuthSliceState {
   accessToken: string | null;
   refreshToken: RefreshToken | null;
-  userData: UserData | null;
   loading: boolean;
   error: string | null;
   message: string | null;
 }
 
 const refreshTokenJSON = localStorage.getItem('refreshToken');
-const userDataJSON = localStorage.getItem('userData');
 
 const initialState: AuthSliceState = {
   accessToken: null,
-  refreshToken: refreshTokenJSON ? JSON.parse(refreshTokenJSON) : null,
-  userData: userDataJSON ? JSON.parse(userDataJSON) : null,
+  refreshToken: refreshTokenJSON
+    ? (JSON.parse(refreshTokenJSON) as RefreshToken)
+    : null,
   loading: false,
   error: null,
   message: null,
@@ -66,13 +59,11 @@ const authSlice = createSlice({
       state.loading = false;
       state.accessToken = payload.accessToken;
       state.refreshToken = payload.refreshToken;
-      state.userData = payload.userData;
     },
 
     logout: (state) => {
       state.accessToken = null;
       state.refreshToken = null;
-      state.userData = null;
     },
 
     setRefreshToken: (state, { payload }: PayloadAction<RefreshToken>) => {
@@ -81,13 +72,6 @@ const authSlice = createSlice({
 
     setAccessToken: (state, { payload }: PayloadAction<string>) => {
       state.accessToken = payload;
-    },
-
-    setUserData: (state, { payload }: PayloadAction<any>) => {
-      state.userData = {
-        ...state.userData,
-        ...payload,
-      };
     },
 
     clearResponse: (state) => {

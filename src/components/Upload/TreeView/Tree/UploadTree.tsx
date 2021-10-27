@@ -1,9 +1,9 @@
 import UploadNode from '../Node/UploadNode';
-import { UploadTree as UploadTreeType } from 'store/reducers/upload';
+import { VideoTree } from 'store/reducers/video';
 import './UploadTree.scss';
 
 interface UploadTreeProps {
-  tree: UploadTreeType;
+  tree: VideoTree;
 }
 
 const UploadTree: React.FC<UploadTreeProps> = ({ tree }) => {

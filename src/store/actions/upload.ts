@@ -2,7 +2,8 @@ import axios, { AxiosError } from 'axios';
 import axiosRetry from 'axios-retry';
 
 import { RootState, AppDispatch } from 'store';
-import { uploadActions, UploadTree } from 'store/reducers/upload';
+import { uploadActions } from 'store/reducers/upload';
+import { VideoTree } from 'store/reducers/video';
 import { beforeunloadHandler } from 'util/event-handlers';
 
 export const initiateUpload = () => {
@@ -187,7 +188,7 @@ export const saveUpload = () => {
       // Get current upload state
       const { auth, upload } = getState();
 
-      const savedTree = upload.savedTree as UploadTree;
+      const savedTree = upload.savedTree as VideoTree;
       const accessToken = auth.accessToken as string;
 
       const saveRepsonse = await axios.post(
@@ -235,20 +236,6 @@ export const removeTree = () => {
     dispatch(uploadActions.removeTree());
 
     window.removeEventListener('beforeunload', beforeunloadHandler);
-  };
-};
-
-export const saveUploadTree = (tree: UploadTree, accessToken: string) => {
-  return async (dispatch: AppDispatch) => {
-    try {
-      await axios.post(
-        '/upload/save-upload',
-        { tree },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-    } catch (err) {
-      console.log(err);
-    }
   };
 };
 

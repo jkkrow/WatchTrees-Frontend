@@ -6,6 +6,13 @@ export interface VideoNode extends Node {}
 
 export interface VideoTree extends Tree {
   root: VideoNode;
+  title: string;
+  tags: string[];
+  description: string;
+  size: number;
+  maxDuration: number;
+  minDuration: number;
+  status: 'Progressing' | 'Completed';
 }
 
 interface VideoSliceState {

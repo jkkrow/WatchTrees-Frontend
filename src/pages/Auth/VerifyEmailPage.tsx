@@ -4,23 +4,29 @@ import { useParams } from 'react-router';
 import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
-import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
-import { verifyEmail, updateUserData } from 'store/actions/auth';
+import {
+  useAppDispatch,
+  useAuthSelector,
+  useUserSelector,
+} from 'hooks/store-hook';
+import { verifyEmail } from 'store/actions/auth';
+import { updateUserData } from 'store/actions/user';
 
 const VerifyEmailPage: React.FC = () => {
-  const { userData, loading, error, message } = useAuthSelector();
+  const { loading, error, message } = useAuthSelector();
+  const { userData } = useUserSelector();
   const dispatch = useAppDispatch();
 
   const { token } = useParams<{ token: string }>();
 
   useEffect(() => {
-    dispatch(
-      verifyEmail(token, () => {
-        if (!userData) return;
+    (async () => {
+      const success = await dispatch(verifyEmail(token));
 
-        dispatch(updateUserData({ isVerified: true }));
-      })
-    );
+      if (!success || !userData) return;
+
+      dispatch(updateUserData({ isVerified: true }));
+    })();
   }, [dispatch, userData, token]);
 
   return (

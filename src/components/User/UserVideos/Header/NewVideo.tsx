@@ -1,16 +1,29 @@
+import { useHistory } from 'react-router';
+
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
+import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
+import { initiateUpload } from 'store/actions/upload';
 import './NewVideo.scss';
 
-interface NewVideoProps {
-  onAdd: () => void;
-}
+const NewVideo: React.FC = () => {
+  const { uploadTree } = useUploadSelector();
+  const dispatch = useAppDispatch();
 
-const NewVideo: React.FC<NewVideoProps> = ({ onAdd }) => {
+  const history = useHistory();
+
+  const addNewVideoHandler = (): void => {
+    if (!uploadTree) {
+      dispatch(initiateUpload());
+    }
+
+    history.push('/new-video');
+  };
+
   return (
     <div className="user-video-header">
       <div className="new-video">
-        <Button inversed onClick={onAdd}>
+        <Button inversed onClick={addNewVideoHandler}>
           <PlusIcon />
           NEW VIDEO
         </Button>

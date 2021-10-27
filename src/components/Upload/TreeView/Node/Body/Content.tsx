@@ -5,13 +5,13 @@ import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
-import { UploadNode } from 'store/reducers/upload';
+import { VideoNode } from 'store/reducers/video';
 import { updateNode, updateActiveNode } from 'store/actions/upload';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 
 interface ContentProps {
-  currentNode: UploadNode;
+  currentNode: VideoNode;
   treeId: string;
 }
 

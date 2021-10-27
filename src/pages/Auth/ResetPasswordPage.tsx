@@ -39,7 +39,11 @@ const ResetPasswordPage: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(getResetPassword(token, () => setIsAccessAllowed(true)));
+    (async () => {
+      const success = await dispatch(getResetPassword(token));
+
+      success && setIsAccessAllowed(true);
+    })();
   }, [dispatch, token]);
 
   return (
@@ -52,7 +56,10 @@ const ResetPasswordPage: React.FC = () => {
       )}
       {isAccessAllowed && (
         <>
-          <Response type={error ? 'error' : 'message'} content={error || message} />
+          <Response
+            type={error ? 'error' : 'message'}
+            content={error || message}
+          />
           {!message ? (
             <Form onSubmit={submitHandler}>
               <Input

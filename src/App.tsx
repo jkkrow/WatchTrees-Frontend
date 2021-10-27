@@ -13,7 +13,11 @@ import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
 import { useInterval } from 'hooks/timer-hook';
-import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
+import {
+  useAppDispatch,
+  useAuthSelector,
+  useUserSelector,
+} from 'hooks/store-hook';
 import {
   logout,
   updateRefreshToken,
@@ -22,7 +26,8 @@ import {
 import './App.scss';
 
 const App: React.FC = () => {
-  const { refreshToken, userData } = useAuthSelector();
+  const { refreshToken } = useAuthSelector();
+  const { userData } = useUserSelector();
   const dispatch = useAppDispatch();
 
   const [accessTokenInterval] = useInterval();
