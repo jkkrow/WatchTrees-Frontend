@@ -72,6 +72,7 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
           />
         ))}
       </ul>
+      {!items.length && <div className="user-video-list__empty">No Video</div>}
     </>
   );
 };

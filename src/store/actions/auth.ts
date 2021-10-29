@@ -137,12 +137,6 @@ export const updateAccessToken = (refreshToken: string) => {
   };
 };
 
-export const clearResponse = () => {
-  return (dispatch: AppDispatch) => {
-    dispatch(authActions.clearResponse());
-  };
-};
-
 export const sendVerifyEmail = (email: string) => {
   return async (dispatch: AppDispatch) => {
     try {
@@ -220,5 +214,11 @@ export const postResetPassword = (password: string, confirmPassword: string, tok
       let error = err as AxiosError;
       dispatch(authActions.authFail(error.response?.data?.message || error.message));
     }
+  };
+};
+
+export const clearResponse = () => {
+  return (dispatch: AppDispatch) => {
+    dispatch(authActions.clearResponse());
   };
 };

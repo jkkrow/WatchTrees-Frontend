@@ -1,5 +1,7 @@
+import UserLayout from 'components/User/Layout/UserLayout';
+
 const HistoryPage: React.FC = () => {
-  return <div className="layout"></div>;
+  return <UserLayout></UserLayout>;
 };
 
 export default HistoryPage;

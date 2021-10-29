@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 
 import { useAppDispatch } from 'hooks/store-hook';
-import { clearResponse } from 'store/actions/auth';
-import './AuthLayout.scss';
+import { clearResponse } from 'store/actions/user';
+import './UserLayout.scss';
 
-const AuthLayout: React.FC = ({ children }) => {
+const UserLayout: React.FC = ({ children }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const AuthLayout: React.FC = ({ children }) => {
     };
   }, [dispatch]);
 
-  return <div className="auth-layout">{children}</div>;
+  return <div className="user-layout">{children}</div>;
 };
 
-export default AuthLayout;
+export default UserLayout;

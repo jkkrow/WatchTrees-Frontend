@@ -51,6 +51,10 @@ const userSlice = createSlice({
         };
       }
     },
+
+    clearResponse: (state) => {
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(

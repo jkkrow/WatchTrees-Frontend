@@ -1,10 +1,11 @@
+import UserLayout from 'components/User/Layout/UserLayout';
 import AccountProfile from 'components/User/Account/Profile/AccountProfile';
 
 const AccountPage: React.FC = () => {
   return (
-    <div className="layout">
+    <UserLayout>
       <AccountProfile />
-    </div>
+    </UserLayout>
   );
 };
 

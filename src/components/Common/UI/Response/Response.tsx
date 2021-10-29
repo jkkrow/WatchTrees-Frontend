@@ -1,7 +1,7 @@
-import './AuthResponse.scss';
+import './Response.scss';
 
 interface ResponseProps {
-  type: string;
+  type: 'error' | 'message';
   content: string | null;
 }
 

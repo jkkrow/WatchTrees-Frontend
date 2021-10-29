@@ -1,0 +1,21 @@
+.response {
+  width: 100%;
+  padding: 2rem;
+  margin: 1rem 0;
+  font-weight: 600;
+  word-wrap: break-word;
+  border-radius: 5px;
+  text-align: center;
+
+  &.error {
+    border: 2px solid var(--text-invalid);
+    color: var(--text-invalid);
+    background-color: var(--bg-primary);
+  }
+
+  &.message {
+    border: 2px solid var(--text-success);
+    color: var(--text-success);
+    background-color: var(--bg-primary);
+  }
+}

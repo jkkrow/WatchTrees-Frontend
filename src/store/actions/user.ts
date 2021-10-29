@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { AppDispatch, RootState } from 'store';
 import { userActions } from 'store/reducers/user';
 
-export const fetchVideos = () => {
+export const fetchUserVideos = () => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       dispatch(userActions.userRequest());
@@ -19,7 +19,11 @@ export const fetchVideos = () => {
       return true;
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(userActions.userFail(error.response?.data?.message || error.message));
+      dispatch(
+        userActions.userFail(
+          `${error.response?.data?.message || error.message} - Failed to load videos.`
+        )
+      );
     }
   };
 };
@@ -31,5 +35,11 @@ export const updateUserData = (info: any) => {
     const { userData } = getState().user;
 
     localStorage.setItem('userData', JSON.stringify(userData));
+  };
+};
+
+export const clearResponse = () => {
+  return (dispatch: AppDispatch) => {
+    dispatch(userActions.clearResponse());
   };
 };

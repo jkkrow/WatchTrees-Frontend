@@ -5,7 +5,7 @@ import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as ReloadIcon } from 'assets/icons/reload.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { initiateUpload } from 'store/actions/upload';
-import { fetchVideos } from 'store/actions/user';
+import { fetchUserVideos } from 'store/actions/user';
 import './UserVideoHeader.scss';
 
 const NewVideo: React.FC = () => {
@@ -23,7 +23,7 @@ const NewVideo: React.FC = () => {
   };
 
   const fetchVideosHandler = (): void => {
-    dispatch(fetchVideos());
+    dispatch(fetchUserVideos());
   };
 
   return (

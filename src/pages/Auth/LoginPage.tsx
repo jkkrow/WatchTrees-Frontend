@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import AuthLayout from 'components/Auth/Layout/AuthLayout';
-import Response from 'components/Auth/Response/AuthResponse';
+import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
