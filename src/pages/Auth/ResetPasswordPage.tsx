@@ -2,21 +2,21 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
-import Response from 'components/Common/UI/Response/Response';
+import AuthLayout from 'components/Auth/Layout/AuthLayout';
+import Response from 'components/Auth/Response/AuthResponse';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useForm } from 'hooks/form-hook';
-import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { getResetPassword, postResetPassword } from 'store/actions/auth';
 import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
 
 const ResetPasswordPage: React.FC = () => {
   const [isAccessAllowed, setIsAccessAllowed] = useState(false);
 
-  const { loading, error, message } = useAuthSelector();
+  const { loading, error, message } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const { formState, setFormInput } = useForm({
@@ -56,10 +56,7 @@ const ResetPasswordPage: React.FC = () => {
       )}
       {isAccessAllowed && (
         <>
-          <Response
-            type={error ? 'error' : 'message'}
-            content={error || message}
-          />
+          <Response type={error ? 'error' : 'message'} content={error || message} />
           {!message ? (
             <Form onSubmit={submitHandler}>
               <Input

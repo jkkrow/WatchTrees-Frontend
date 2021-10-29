@@ -1,0 +1,16 @@
+.user-video-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  max-width: 100rem;
+  margin: auto;
+  gap: 1rem;
+
+  &__new-video {
+    svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+}

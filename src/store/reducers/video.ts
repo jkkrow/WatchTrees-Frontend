@@ -5,6 +5,7 @@ import { Node, Tree } from 'util/tree';
 export interface VideoNode extends Node {}
 
 export interface VideoTree extends Tree {
+  _id?: string;
   root: VideoNode;
   title: string;
   tags: string[];
@@ -12,6 +13,7 @@ export interface VideoTree extends Tree {
   size: number;
   maxDuration: number;
   minDuration: number;
+  thumbnail?: string;
   status: 'Progressing' | 'Completed';
 }
 

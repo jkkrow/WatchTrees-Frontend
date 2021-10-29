@@ -1,0 +1,32 @@
+.user-video-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 100rem;
+  margin: auto;
+  gap: 2rem;
+
+  &__thumbnail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25rem;
+    background-color: var(--bg-secondary);
+    aspect-ratio: 16/9;
+  }
+
+  &__info {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: column;
+    margin-left: auto;
+    gap: 1rem;
+    font-weight: 500;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 1rem;
+  }
+}

@@ -46,15 +46,12 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
         content={
           <>
             <p>
-              To proceed type the video name{' '}
-              <strong>{targetItem?.title}</strong>.
+              To proceed type the video name <strong>{targetItem?.title}</strong>.
             </p>
             <Input
               id="video"
               formInput
-              validators={
-                targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined
-              }
+              validators={targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined}
               onForm={setFormInput}
             />
           </>
@@ -68,6 +65,7 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
       <ul className="user-video-list">
         {items.map((item) => (
           <UserVideoItem
+            key={item._id}
             item={item}
             onEdit={editHandler}
             onDelete={openWarningHandler}

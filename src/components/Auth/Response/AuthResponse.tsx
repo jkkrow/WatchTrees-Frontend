@@ -1,4 +1,4 @@
-import './Response.scss';
+import './AuthResponse.scss';
 
 interface ResponseProps {
   type: string;
@@ -7,9 +7,7 @@ interface ResponseProps {
 
 const Response: React.FC<ResponseProps> = ({ type, content }) =>
   content ? (
-    <div className={`response${type === 'error' ? ' error' : ' message'}`}>
-      {content}
-    </div>
+    <div className={`response${type === 'error' ? ' error' : ' message'}`}>{content}</div>
   ) : null;
 
 export default Response;

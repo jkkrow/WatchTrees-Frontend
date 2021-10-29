@@ -12,22 +12,15 @@ import SendRecoveryEmailPage from 'pages/Auth/SendRecoveryEmailPage';
 import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
+import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
 import { useInterval } from 'hooks/timer-hook';
-import {
-  useAppDispatch,
-  useAuthSelector,
-  useUserSelector,
-} from 'hooks/store-hook';
-import {
-  logout,
-  updateRefreshToken,
-  updateAccessToken,
-} from 'store/actions/auth';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { logout, updateRefreshToken, updateAccessToken } from 'store/actions/auth';
 import './App.scss';
 
 const App: React.FC = () => {
-  const { refreshToken } = useAuthSelector();
-  const { userData } = useUserSelector();
+  const { refreshToken } = useAppSelector((state) => state.auth);
+  const { userData } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const [accessTokenInterval] = useInterval();
@@ -60,16 +53,13 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
+      <GlobalMessageList />
       <Header />
       <main>
         {userData && (
           <Switch>
             <Route exact path="/" component={VideoListPage} />
-            <Route
-              exact
-              path="/auth/verify-email/:token"
-              component={VerifyEmailPage}
-            />
+            <Route exact path="/auth/verify-email/:token" component={VerifyEmailPage} />
 
             <Route exact path="/account" component={AccountPage} />
             <Route exact path="/my-videos" component={UserVideoListPage} />
@@ -81,23 +71,11 @@ const App: React.FC = () => {
         {!userData && (
           <Switch>
             <Route exact path="/" component={VideoListPage} />
-            <Route
-              exact
-              path="/auth/verify-email/:token"
-              component={VerifyEmailPage}
-            />
+            <Route exact path="/auth/verify-email/:token" component={VerifyEmailPage} />
 
             <Route exact path="/auth" component={LoginPage} />
-            <Route
-              exact
-              path="/auth/send-recovery-email"
-              component={SendRecoveryEmailPage}
-            />
-            <Route
-              exact
-              path="/auth/reset-password/:token"
-              component={ResetPasswordPage}
-            />
+            <Route exact path="/auth/send-recovery-email" component={SendRecoveryEmailPage} />
+            <Route exact path="/auth/reset-password/:token" component={ResetPasswordPage} />
             <Redirect exact to="/auth" />
           </Switch>
         )}

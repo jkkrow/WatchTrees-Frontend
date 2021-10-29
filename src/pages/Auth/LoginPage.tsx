@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import AuthLayout from 'components/Auth/AuthLayout/AuthLayout';
-import Response from 'components/Common/UI/Response/Response';
+import AuthLayout from 'components/Auth/Layout/AuthLayout';
+import Response from 'components/Auth/Response/AuthResponse';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import GoogleLoginButton from 'components/Auth/GoogleLoginButton/GoogleLoginButton';
 import { useForm } from 'hooks/form-hook';
-import { useAppDispatch, useAuthSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { register, login, clearResponse } from 'store/actions/auth';
 import {
   VALIDATOR_EMAIL,
@@ -21,7 +21,7 @@ import {
 const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
 
-  const { loading, error, message } = useAuthSelector();
+  const { loading, error, message } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const { formState, setFormInput, setFormData } = useForm({
@@ -159,10 +159,7 @@ const AuthPage: React.FC = () => {
           <Button loading={loading}>SIGN UP</Button>
         </Form>
       )}
-      <GoogleLoginButton
-        onLoginSuccess={googleLoginHandler}
-        loading={loading}
-      />
+      <GoogleLoginButton onLoginSuccess={googleLoginHandler} loading={loading} />
       {isLogin ? (
         <p>
           Don't have an account?{' '}

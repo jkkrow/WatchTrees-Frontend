@@ -1,12 +1,18 @@
 .modal {
   position: fixed;
+  display: flex;
+  justify-content: center;
   top: 30%;
-  left: 15%;
-  width: 70%;
-  padding: 2rem;
-  border-radius: 10px;
-  background-color: var(--bg-tertiary);
+  width: 100%;
   z-index: 2000;
+
+  form {
+    width: 70%;
+    max-width: 100rem;
+    padding: 2rem;
+    border-radius: 10px;
+    background-color: var(--bg-tertiary);
+  }
 
   &__header {
     width: 100%;
@@ -34,30 +40,30 @@
     background-color: rgba(0, 0, 0, 0.8);
     z-index: 1999;
   }
-}
 
-/* CSS Transition */
+  /* CSS Transition */
 
-.modal-enter {
-  transform: scale(0.5);
-  opacity: 0;
-  transition: all 200ms;
-}
+  &-enter {
+    transform: scale(0.5);
+    opacity: 0;
+    transition: all 200ms;
 
-.modal-enter-active {
-  transform: scale(1);
-  opacity: 1;
-}
+    &-active {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
 
-.modal-exit {
-  transform: scale(1);
-  opacity: 1;
-  transition: all 200ms;
-}
+  &-exit {
+    transform: scale(1);
+    opacity: 1;
+    transition: all 200ms;
 
-.modal-exit-active {
-  transform: scale(0.5);
-  opacity: 0;
+    &-active {
+      transform: scale(0.5);
+      opacity: 0;
+    }
+  }
 }
 
 .backdrop-enter {

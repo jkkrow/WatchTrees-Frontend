@@ -1,17 +1,13 @@
 import Button from 'components/Common/Element/Button/Button';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Modal from 'components/Common/UI/Modal/Modal';
-import {
-  useAppDispatch,
-  useAuthSelector,
-  useUserSelector,
-} from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { sendVerifyEmail, clearResponse } from 'store/actions/auth';
 import './AccountProfile.scss';
 
 const AccountProfile: React.FC = () => {
-  const { loading, error, message } = useAuthSelector();
-  const { userData } = useUserSelector();
+  const { loading, error, message } = useAppSelector((state) => state.auth);
+  const { userData } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const verifyEmailHandler = () => {
@@ -45,9 +41,7 @@ const AccountProfile: React.FC = () => {
               Verify Email
             </Button>
           )}
-          {userData!.isVerified && !userData!.isPremium && (
-            <Button>Upgrade to Premium</Button>
-          )}
+          {userData!.isVerified && !userData!.isPremium && <Button>Upgrade to Premium</Button>}
         </div>
       </div>
     </>

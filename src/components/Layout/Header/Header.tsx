@@ -5,13 +5,13 @@ import Logo from 'components/Common/UI/Logo/Logo';
 import Search from 'components/Common/UI/Search/Search';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Menu from 'components/Layout/Menu/Menu';
-import { useUserSelector } from 'hooks/store-hook';
+import { useAppSelector } from 'hooks/store-hook';
 import './Header.scss';
 
 const Header: React.FC = () => {
   const [displayMenu, setDisplayMenu] = useState(false);
 
-  const { userData } = useUserSelector();
+  const { userData } = useAppSelector((state) => state.user);
 
   const location = useLocation();
 
@@ -33,12 +33,7 @@ const Header: React.FC = () => {
 
       {userData ? (
         <div onClick={displayMenuHandler}>
-          <Avatar
-            src={userData.picture}
-            width="2.5rem"
-            height="2.5rem"
-            button
-          />
+          <Avatar src={userData.picture} width="2.5rem" height="2.5rem" button />
         </div>
       ) : (
         <NavLink exact to="/auth">

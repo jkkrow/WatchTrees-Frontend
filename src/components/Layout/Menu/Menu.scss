@@ -40,6 +40,26 @@
       animation-delay: 500ms;
     }
   }
+
+  /* CSS Transition */
+
+  &-enter {
+    transform: translateX(100%);
+    transition: all 300ms;
+
+    &-active {
+      transform: translateX(0%);
+    }
+  }
+
+  &-exit {
+    transform: translateX(0%);
+    transition: all 300ms;
+
+    &-active {
+      transform: translateX(100%);
+    }
+  }
 }
 
 @keyframes menu-list {
@@ -52,24 +72,4 @@
     opacity: 1;
     transform: translateX(0%);
   }
-}
-
-/* CSS Transition */
-
-.menu-enter {
-  transform: translateX(100%);
-  transition: all 300ms;
-}
-
-.menu-enter-active {
-  transform: translateX(0%);
-}
-
-.menu-exit {
-  transform: translateX(0%);
-  transition: all 300ms;
-}
-
-.menu-exit-active {
-  transform: translateX(100%);
 }

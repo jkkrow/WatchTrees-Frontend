@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-export const useTimeout = (): [
-  (callback: () => void, delay: number) => void,
-  () => void
-] => {
+export const useTimeout = (): [(callback: () => void, delay: number) => void, () => void] => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const clear = useCallback(() => {
@@ -25,7 +22,7 @@ export const useTimeout = (): [
   return [set, clear];
 };
 
-export const useInterval = () => {
+export const useInterval = (): [(callback: () => void, delay: number) => void, () => void] => {
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
 
   const clear = useCallback(() => {

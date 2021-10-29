@@ -6,17 +6,9 @@ import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
-import {
-  useAppDispatch,
-  useUploadSelector,
-  useVideoSelector,
-} from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video';
-import {
-  appendChild,
-  updateActiveNode,
-  removeNode,
-} from 'store/actions/upload';
+import { appendChild, updateActiveNode, removeNode } from 'store/actions/upload';
 import { updateActiveVideo } from 'store/actions/video';
 import { validateNodes } from 'util/tree';
 
@@ -26,8 +18,8 @@ interface ControlsProps {
 }
 
 const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
-  const { activeNodeId } = useUploadSelector();
-  const { activeVideoId } = useVideoSelector();
+  const { activeNodeId } = useAppSelector((state) => state.upload);
+  const { activeVideoId } = useAppSelector((state) => state.video);
   const dispatch = useAppDispatch();
 
   const [warning, setWarning] = useState(false);
@@ -68,9 +60,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
 
   return (
     <>
-      {warning && (
-        <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />
-      )}
+      {warning && <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />}
       {currentNode.id !== treeId && currentNode.id !== activeNodeId && (
         <RemoveIcon
           style={{

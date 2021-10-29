@@ -1,36 +1,36 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import NewVideo from 'components/User/UserVideos/Header/NewVideo';
+import NewVideo from 'components/User/UserVideos/Header/UserVideoHeader';
 import UserVideoList from 'components/User/UserVideos/List/UserVideoList';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
-import {
-  useAppDispatch,
-  useAuthSelector,
-  useUserSelector,
-} from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { fetchVideos } from 'store/actions/user';
 
 const UserVideoListPage: React.FC = () => {
-  const { accessToken } = useAuthSelector();
-  const { userData, loading } = useUserSelector();
+  const { accessToken } = useAppSelector((state) => state.auth);
+  const { userData, loading } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+
+  const [isFetched, setIsFetched] = useState(false);
 
   useEffect(() => {
     (async () => {
-      // if (userData?.videos || !accessToken) return;
+      if (!userData) return;
+      if (userData.videos.length) return;
+      if (isFetched) return;
 
-      const result = await dispatch(fetchVideos('accessToken'));
-      console.log(result);
+      const success = await dispatch(fetchVideos());
+
+      success && setIsFetched(true);
     })();
-  }, [dispatch, userData, accessToken]);
+  }, [dispatch, userData, accessToken, isFetched]);
 
   return (
     <div className="layout">
       <NewVideo />
       <LoadingSpinner on={loading} />
-      {/* {userData?.videos?.length ? (
-        <UserVideoList items={userData.videos} />
-      ) : null} */}
+      {userData && !loading && <UserVideoList items={userData.videos} />}
+      {isFetched && userData && !userData.videos.length && <div>No Video</div>}
     </div>
   );
 };

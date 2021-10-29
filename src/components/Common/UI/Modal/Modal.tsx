@@ -6,7 +6,6 @@ import Button from 'components/Common/Element/Button/Button';
 import './Modal.scss';
 
 interface ModalProps {
-  className?: string;
   style?: React.CSSProperties;
   on: boolean;
   header: string;
@@ -19,7 +18,6 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({
-  className,
   style,
   on,
   header,
@@ -57,24 +55,22 @@ const Modal: React.FC<ModalProps> = ({
         unmountOnExit
         onExited={onClose}
       >
-        <form
-          className={`modal${className ? ' ' + className : ''}`}
-          style={style}
-          onSubmit={submitHandler}
-        >
-          <h3 className="modal__header">{header}</h3>
-          <div className="modal__content">{content}</div>
-          <div className="modal__footer">
-            {footer && (
-              <Button small loading={loading} disabled={disabled}>
-                {footer}
+        <div className="modal">
+          <form style={style} onSubmit={submitHandler}>
+            <h3 className="modal__header">{header}</h3>
+            <div className="modal__content">{content}</div>
+            <div className="modal__footer">
+              {footer && (
+                <Button small loading={loading} disabled={disabled}>
+                  {footer}
+                </Button>
+              )}
+              <Button type="button" small onClick={closeModalHandler}>
+                {footer ? 'CANCEL' : 'OK'}
               </Button>
-            )}
-            <Button type="button" small onClick={closeModalHandler}>
-              {footer ? 'CANCEL' : 'OK'}
-            </Button>
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </CSSTransition>
       <CSSTransition
         in={displayModal}

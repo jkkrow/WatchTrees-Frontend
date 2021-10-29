@@ -3,6 +3,7 @@ import axiosRetry from 'axios-retry';
 
 import { RootState, AppDispatch } from 'store';
 import { uploadActions } from 'store/reducers/upload';
+import { uiActions } from 'store/reducers/ui';
 import { VideoTree } from 'store/reducers/video';
 import { beforeunloadHandler } from 'util/event-handlers';
 
@@ -69,14 +70,10 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
       let start, end, blob;
 
-      const uploadProgressHandler = async (
-        progressEvent: ProgressEvent,
-        index: number
-      ) => {
+      const uploadProgressHandler = async (progressEvent: ProgressEvent, index: number) => {
         if (progressEvent.loaded >= progressEvent.total) return;
 
-        const currentProgress =
-          Math.round(progressEvent.loaded * 100) / progressEvent.total;
+        const currentProgress = Math.round(progressEvent.loaded * 100) / progressEvent.total;
 
         progressArray[index - 1] = currentProgress;
         const sum = progressArray.reduce((acc, cur) => acc + cur);
@@ -94,8 +91,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
       for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
         start = (index - 1) * CHUNK_SIZE;
         end = index * CHUNK_SIZE;
-        blob =
-          index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
+        blob = index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
         // Get Urls
         accessToken = getState().auth.accessToken as string;
@@ -169,13 +165,12 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
       );
     } catch (err) {
       let error = err as AxiosError;
-      // dispatch(
-      //   uploadActions.setUploadNode({
-      //     info: { error: error.response?.data?.message || error.message },
-      //     nodeId,
-      //   })
-      // );
-      console.log(error);
+      dispatch(
+        uploadActions.setUploadNode({
+          info: { error: error.response?.data?.message || error.message },
+          nodeId,
+        })
+      );
     }
 
     dispatch(saveUpload());
@@ -199,10 +194,18 @@ export const saveUpload = () => {
         }
       );
 
-      // TODO: Add Global message
-      console.log(saveRepsonse.data.message);
+      dispatch(
+        uiActions.setMessage({ content: saveRepsonse.data.message, type: 'message', timer: 5000 })
+      );
     } catch (err) {
-      // TODO: Add Global message
+      let error = err as AxiosError;
+      dispatch(
+        uiActions.setMessage({
+          content: `${error.response?.data?.message || error.message} - Saving upload failed.`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
       console.log(err);
     }
   };

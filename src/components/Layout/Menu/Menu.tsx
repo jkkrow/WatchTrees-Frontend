@@ -2,11 +2,7 @@ import { createPortal } from 'react-dom';
 import { NavLink, useHistory } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 
-import {
-  useAppDispatch,
-  useUploadSelector,
-  useUserSelector,
-} from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { logout } from 'store/actions/auth';
 import { removeTree } from 'store/actions/upload';
 import './Menu.scss';
@@ -16,8 +12,8 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ on }) => {
-  const { uploadTree } = useUploadSelector();
-  const { userData } = useUserSelector();
+  const { uploadTree } = useAppSelector((state) => state.upload);
+  const { userData } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
 
   const history = useHistory();
@@ -37,13 +33,7 @@ const Menu: React.FC<MenuProps> = ({ on }) => {
   };
 
   return createPortal(
-    <CSSTransition
-      in={on && !!userData}
-      classNames="menu"
-      timeout={300}
-      mountOnEnter
-      unmountOnExit
-    >
+    <CSSTransition in={on && !!userData} classNames="menu" timeout={300} mountOnEnter unmountOnExit>
       <div className="menu">
         <ul className="menu__list">
           <li>

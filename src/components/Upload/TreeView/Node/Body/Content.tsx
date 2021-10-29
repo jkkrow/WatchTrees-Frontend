@@ -4,7 +4,7 @@ import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
 import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
-import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video';
 import { updateNode, updateActiveNode } from 'store/actions/upload';
 import { formatTime, formatSize } from 'util/format';
@@ -18,7 +18,7 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
   const [labelInput, setLabelInput] = useState(currentNode.info.label);
 
-  const { activeNodeId } = useUploadSelector();
+  const { activeNodeId } = useAppSelector((state) => state.upload);
   const dispatch = useAppDispatch();
 
   const [labelTimeout] = useTimeout();
@@ -26,10 +26,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
   const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLabelInput(event.target.value);
 
-    labelTimeout(
-      () => dispatch(updateNode({ label: event.target.value }, currentNode.id)),
-      300
-    );
+    labelTimeout(() => dispatch(updateNode({ label: event.target.value }, currentNode.id)), 300);
   };
 
   const activeNodeHandler = (id: string) => {
@@ -39,12 +36,8 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
   return (
     <div className="upload-node__content">
       <div
-        className={`upload-node__title${
-          currentNode.id === activeNodeId ? ' parent' : ''
-        }`}
-        onClick={() =>
-          currentNode.id !== activeNodeId && activeNodeHandler(currentNode.id)
-        }
+        className={`upload-node__title${currentNode.id === activeNodeId ? ' parent' : ''}`}
+        onClick={() => currentNode.id !== activeNodeId && activeNodeHandler(currentNode.id)}
       >
         {currentNode.info.name}
       </div>
@@ -67,11 +60,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
         {currentNode.id !== treeId && (
           <label className="upload-node__info__label" data-label="Label">
             <div className="upload-node__info__input">
-              <input
-                type="text"
-                value={labelInput}
-                onChange={labelChangeHandler}
-              />
+              <input type="text" value={labelInput} onChange={labelChangeHandler} />
             </div>
           </label>
         )}
@@ -89,16 +78,10 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
               ? currentNode.children.map((node) => {
                   if (!node.info)
                     return (
-                      <CircleDashIcon
-                        key={node.id}
-                        onClick={() => activeNodeHandler(node.id)}
-                      />
+                      <CircleDashIcon key={node.id} onClick={() => activeNodeHandler(node.id)} />
                     );
 
-                  if (
-                    validateNodes(node, 'info') ||
-                    validateNodes(node, 'progress', 100, false)
-                  )
+                  if (validateNodes(node, 'info') || validateNodes(node, 'progress', 100, false))
                     return (
                       <CircleLoadingIcon
                         key={node.id}
@@ -114,10 +97,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
                     );
 
                   return (
-                    <CircleCheckIcon
-                      key={node.id}
-                      onClick={() => activeNodeHandler(node.id)}
-                    />
+                    <CircleCheckIcon key={node.id} onClick={() => activeNodeHandler(node.id)} />
                   );
                 })
               : '-'}

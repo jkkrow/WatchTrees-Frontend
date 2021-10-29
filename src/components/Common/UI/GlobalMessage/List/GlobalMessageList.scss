@@ -1,0 +1,9 @@
+.global-message-list {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  right: 1rem;
+  margin-left: auto;
+  gap: 1rem;
+  z-index: 150;
+}

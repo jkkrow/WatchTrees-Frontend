@@ -2,12 +2,14 @@ import { useHistory } from 'react-router';
 
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
-import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
+import { ReactComponent as ReloadIcon } from 'assets/icons/reload.svg';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { initiateUpload } from 'store/actions/upload';
-import './NewVideo.scss';
+import { fetchVideos } from 'store/actions/user';
+import './UserVideoHeader.scss';
 
 const NewVideo: React.FC = () => {
-  const { uploadTree } = useUploadSelector();
+  const { uploadTree } = useAppSelector((state) => state.upload);
   const dispatch = useAppDispatch();
 
   const history = useHistory();
@@ -20,9 +22,18 @@ const NewVideo: React.FC = () => {
     history.push('/new-video');
   };
 
+  const fetchVideosHandler = (): void => {
+    dispatch(fetchVideos());
+  };
+
   return (
     <div className="user-video-header">
-      <div className="new-video">
+      <div className="user-video-header__reload">
+        <Button inversed onClick={fetchVideosHandler}>
+          <ReloadIcon />
+        </Button>
+      </div>
+      <div className="user-video-header__new-video">
         <Button inversed onClick={addNewVideoHandler}>
           <PlusIcon />
           NEW VIDEO

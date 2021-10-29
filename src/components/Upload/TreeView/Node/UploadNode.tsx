@@ -2,7 +2,7 @@ import Content from './Body/Content';
 import Controls from './Body/Controls';
 import Error from './Body/Error';
 import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
-import { useAppDispatch, useUploadSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video';
 import { attachVideo } from 'store/actions/upload';
 import './UploadNode.scss';
@@ -13,7 +13,7 @@ interface UploadNodeProps {
 }
 
 const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
-  const { activeNodeId } = useUploadSelector();
+  const { activeNodeId } = useAppSelector((state) => state.upload);
   const dispatch = useAppDispatch();
 
   const onFileHandler = (file: File): void => {
@@ -21,18 +21,12 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
   };
 
   return (
-    <div
-      className={`upload-node${
-        currentNode.id === activeNodeId ? ' active' : ''
-      }`}
-    >
-      {(currentNode.id === activeNodeId ||
-        currentNode.prevId === activeNodeId) && (
+    <div className={`upload-node${currentNode.id === activeNodeId ? ' active' : ''}`}>
+      {(currentNode.id === activeNodeId || currentNode.prevId === activeNodeId) && (
         <div
           className="upload-node__body"
           style={{
-            backgroundColor:
-              currentNode.layer % 2 === 0 ? '#242424' : '#424242',
+            backgroundColor: currentNode.layer % 2 === 0 ? '#242424' : '#424242',
           }}
         >
           {currentNode.info ? (

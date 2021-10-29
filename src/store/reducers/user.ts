@@ -40,18 +40,16 @@ const userSlice = createSlice({
       state.error = payload;
     },
 
-    setUserData: (state, { payload }: PayloadAction<UserData>) => {
-      state.userData = {
-        ...state.userData,
-        ...payload,
-      };
-    },
-
-    setVideos: (state, { payload }: PayloadAction<VideoTree[]>) => {
-      if (!state.userData) return;
-
+    setUserData: (state, { payload }: PayloadAction<any>) => {
       state.loading = false;
-      state.userData.videos = payload;
+      if (!state.userData) {
+        state.userData = payload;
+      } else {
+        state.userData = {
+          ...state.userData,
+          ...payload,
+        };
+      }
     },
   },
   extraReducers: (builder) => {
