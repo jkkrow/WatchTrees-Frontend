@@ -10,9 +10,10 @@ import './UserVideoList.scss';
 
 interface UserVideoListProps {
   items: VideoTree[];
+  fetched: boolean;
 }
 
-const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
+const UserVideoList: React.FC<UserVideoListProps> = ({ items, fetched }) => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
 
@@ -72,7 +73,7 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
           />
         ))}
       </ul>
-      {!items.length && <div className="user-video-list__empty">No Video</div>}
+      {fetched && !items.length && <div className="user-video-list__empty">No Video</div>}
     </>
   );
 };

@@ -34,7 +34,9 @@ const UserVideoListPage: React.FC = () => {
       <UserVideoHeader />
       <LoadingSpinner on={loading} />
       <Response type="error" content={error} />
-      {userData && !loading && <UserVideoList items={userData.videos} />}
+      {userData && !loading && (
+        <UserVideoList items={userData.videos} fetched={isFetched.current} />
+      )}
     </UserLayout>
   );
 };

@@ -5,6 +5,15 @@
   align-items: center;
   gap: 3rem;
 
+  > li {
+    padding-bottom: 2rem;
+    border-bottom: 2px solid var(--text-secondary);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
   &__empty {
     padding: 3rem;
     border-radius: 5px;

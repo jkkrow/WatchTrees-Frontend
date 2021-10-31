@@ -17,10 +17,13 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({ item, onEdit, onDelete })
         {item.thumbnail ? <img src={item.thumbnail} alt={item.title} /> : 'No Thumbnail'}
       </div>
       <div className="user-video-item__info">
-        <div>{item.title}</div>
-        <div>{item.tags.join(', ')}</div>
-        <div>{`${formatTime(item.minDuration)} - ${formatTime(item.maxDuration)}`}</div>
-        <div>{formatSize(item.size)}</div>
+        <div className="user-video-item__info__title">{item.title}</div>
+        <div className="user-video-item__info__tags">{item.tags.join(', ')}</div>
+        <div className="user-video-item__info__description">{item.description}</div>
+        <div className="user-video-item__info__duration">{`${formatTime(
+          item.minDuration
+        )} - ${formatTime(item.maxDuration)}`}</div>
+        <div className="user-video-item__info__size">{formatSize(item.size)}</div>
         <div className="user-video-item__buttons">
           <EditIcon onClick={onEdit} />
           <DeleteIcon onClick={() => onDelete(item)} />
