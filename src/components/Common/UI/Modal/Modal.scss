@@ -4,7 +4,7 @@
   justify-content: center;
   top: 30%;
   width: 100%;
-  z-index: 2000;
+  z-index: 150;
 
   form {
     width: 70%;
@@ -32,13 +32,7 @@
   }
 
   &__backdrop {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 1999;
+    z-index: 149;
   }
 
   /* CSS Transition */
@@ -64,22 +58,4 @@
       opacity: 0;
     }
   }
-}
-
-.backdrop-enter {
-  opacity: 0;
-  transition: opacity 200ms;
-}
-
-.backdrop-enter-active {
-  opacity: 1;
-}
-
-.backdrop-exit {
-  opacity: 1;
-  transition: opacity 200ms;
-}
-
-.backdrop-exit-active {
-  opacity: 0;
 }

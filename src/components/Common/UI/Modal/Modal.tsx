@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
 
+import Backdrop from '../Backdrop/Backdrop';
 import Button from 'components/Common/Element/Button/Button';
 import './Modal.scss';
 
@@ -72,15 +73,7 @@ const Modal: React.FC<ModalProps> = ({
           </form>
         </div>
       </CSSTransition>
-      <CSSTransition
-        in={displayModal}
-        classNames="backdrop"
-        timeout={200}
-        mountOnEnter
-        unmountOnExit
-      >
-        <div className="modal__backdrop" onClick={closeModalHandler} />
-      </CSSTransition>
+      <Backdrop className="modal__backdrop" on={displayModal} onClick={closeModalHandler} />
     </>,
     document.getElementById('modal-hook')!
   );

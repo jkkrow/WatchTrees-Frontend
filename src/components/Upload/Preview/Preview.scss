@@ -35,7 +35,7 @@
     cursor: pointer;
     background-color: var(--bg-tertiary);
     transition: all 200ms ease-out;
-    z-index: 50;
+    z-index: 30;
 
     &:hover {
       transform: scale(1.5);
@@ -67,7 +67,7 @@
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.7);
     transition: transform 800ms ease-out;
-    z-index: 49;
+    z-index: 29;
   }
 
   &__video {
@@ -78,7 +78,7 @@
     max-width: 120rem;
     visibility: hidden;
     transform: translate(-50%, -50%);
-    z-index: 50;
+    z-index: 30;
 
     > div {
       opacity: 0;

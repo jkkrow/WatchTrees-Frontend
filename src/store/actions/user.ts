@@ -3,20 +3,20 @@ import axios, { AxiosError } from 'axios';
 import { AppDispatch, RootState } from 'store';
 import { userActions } from 'store/reducers/user';
 
-export const fetchUserVideos = () => {
+export const fetchUserVideos = (pageNumber: number) => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       dispatch(userActions.userRequest());
 
       const { accessToken } = getState().auth;
 
-      const { data } = await axios.get('/user/videos', {
+      const { data } = await axios.get(`/user/videos?page=${pageNumber}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      dispatch(userActions.setUserData({ videos: data.videos }));
+      dispatch(userActions.userSuccess());
 
-      return true;
+      return { videos: data.videos, totalPage: data.totalPage };
     } catch (err) {
       let error = err as AxiosError;
       dispatch(

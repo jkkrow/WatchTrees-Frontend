@@ -6,7 +6,15 @@
   left: 0;
   right: 0;
   background-color: var(--bg-primary);
-  z-index: 100;
+  z-index: 110;
+
+  @media (min-width: 1000px) {
+    bottom: initial;
+    left: initial;
+    width: 40%;
+    height: 100vh;
+    border-left: 2px solid var(--text-secondary);
+  }
 
   &__list {
     display: flex;
@@ -22,6 +30,12 @@
       transform: translateX(100%);
       animation: menu-list 300ms ease-out forwards;
       animation-delay: 300ms;
+
+      @media (min-width: 1000px) {
+        animation: none;
+        opacity: initial;
+        transform: initial;
+      }
     }
 
     > li:nth-child(1) {

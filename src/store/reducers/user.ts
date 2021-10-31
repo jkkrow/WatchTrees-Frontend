@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { authActions, RefreshToken } from './auth';
-import { VideoTree } from 'store/reducers/video';
 
 export interface UserData {
   name: string;
   email: string;
   picture: string;
-  videos: VideoTree[];
   isVerified: boolean;
   isPremium: boolean;
 }
@@ -33,6 +31,10 @@ const userSlice = createSlice({
     userRequest: (state) => {
       state.loading = true;
       state.error = null;
+    },
+
+    userSuccess: (state) => {
+      state.loading = false;
     },
 
     userFail: (state, { payload }: PayloadAction<string>) => {

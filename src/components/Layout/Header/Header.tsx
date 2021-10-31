@@ -41,7 +41,7 @@ const Header: React.FC = () => {
         </NavLink>
       )}
 
-      <Menu on={displayMenu} />
+      <Menu on={displayMenu} onClose={() => setDisplayMenu(false)} />
     </header>
   );
 };

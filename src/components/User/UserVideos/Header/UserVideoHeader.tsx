@@ -8,7 +8,11 @@ import { initiateUpload } from 'store/actions/upload';
 import { fetchUserVideos } from 'store/actions/user';
 import './UserVideoHeader.scss';
 
-const NewVideo: React.FC = () => {
+interface UserVideoHeaderProps {
+  currentPage: number;
+}
+
+const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ currentPage }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
   const dispatch = useAppDispatch();
 
@@ -23,7 +27,7 @@ const NewVideo: React.FC = () => {
   };
 
   const fetchVideosHandler = (): void => {
-    dispatch(fetchUserVideos());
+    dispatch(fetchUserVideos(currentPage));
   };
 
   return (
@@ -43,4 +47,4 @@ const NewVideo: React.FC = () => {
   );
 };
 
-export default NewVideo;
+export default UserVideoHeader;
