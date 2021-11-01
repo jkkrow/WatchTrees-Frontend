@@ -1,23 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v1 as uuidv1 } from 'uuid';
 
 import { VideoTree } from './video';
 import {
+  createNode,
   findById,
   findByChildId,
   getFullSize,
   getMinMaxDuration,
 } from 'util/tree';
 
+type TreeType = 'uploadTree' | 'previewTree';
+
 interface UploadSliceState {
   uploadTree: VideoTree | null;
-  savedTree: VideoTree | null;
+  previewTree: VideoTree | null;
   activeNodeId: string;
 }
 
 const initialState: UploadSliceState = {
   uploadTree: null,
-  savedTree: null,
+  previewTree: null,
   activeNodeId: '',
 };
 
@@ -26,14 +28,8 @@ const uploadSlice = createSlice({
   initialState,
   reducers: {
     initiateUpload: (state) => {
-      const node = {
-        id: uuidv1(),
-        layer: 0,
-        info: null,
-        children: [],
-      };
-
-      state.uploadTree = {
+      const node = createNode();
+      const tree: VideoTree = {
         root: node,
         title: '',
         tags: [],
@@ -44,109 +40,128 @@ const uploadSlice = createSlice({
         status: 'Progressing',
       };
 
-      state.savedTree = state.uploadTree;
+      state.uploadTree = tree;
+      state.previewTree = tree;
       state.activeNodeId = node.id;
     },
 
-    appendChild: (state, { payload }: PayloadAction<string>) => {
-      if (!state.uploadTree) return;
-
-      const uploadNode = findById(state.uploadTree, payload);
-
-      if (!uploadNode) return;
-
-      const node = {
-        id: uuidv1(),
-        prevId: uploadNode.id,
-        layer: uploadNode.layer + 1,
-        info: null,
-        children: [],
-      };
-
-      uploadNode.children.push(node);
-
-      const fullSize = getFullSize(state.uploadTree);
-      const { max, min } = getMinMaxDuration(state.uploadTree);
-
-      state.uploadTree.size = fullSize;
-      state.uploadTree.maxDuration = max;
-      state.uploadTree.minDuration = min;
-
-      state.savedTree = state.uploadTree;
-    },
-
-    setUploadTree: (state, { payload }: PayloadAction<any>) => {
-      state.uploadTree = { ...state.uploadTree, ...payload };
-      state.savedTree = state.uploadTree;
-    },
-
-    setUploadNode: (
+    appendNode: (
       state,
-      { payload }: PayloadAction<{ info: any; nodeId: string }>
+      { payload }: PayloadAction<{ type?: TreeType; nodeId: string }>
     ) => {
-      if (!state.uploadTree) return;
+      let trees = [
+        state.uploadTree as VideoTree,
+        state.previewTree as VideoTree,
+      ];
 
-      const uploadNode = findById(state.uploadTree, payload.nodeId);
-
-      if (!uploadNode) return;
-
-      if (!uploadNode.info) {
-        uploadNode.info = payload.info;
-      } else {
-        if (payload.info === null) {
-          uploadNode.info = null;
-        } else {
-          uploadNode.info = { ...uploadNode.info, ...payload.info };
-        }
+      if (payload.type) {
+        trees = [state[payload.type] as VideoTree];
       }
 
-      const fullSize = getFullSize(state.uploadTree);
-      const { max, min } = getMinMaxDuration(state.uploadTree);
+      for (let tree of trees) {
+        const node = findById(tree, payload.nodeId);
 
-      state.uploadTree.size = fullSize;
-      state.uploadTree.maxDuration = max;
-      state.uploadTree.minDuration = min;
+        if (!node) return;
 
-      state.savedTree = state.uploadTree;
+        const newNode = createNode(node);
+
+        node.children.push(newNode);
+
+        const fullSize = getFullSize(tree);
+        const { max, min } = getMinMaxDuration(tree);
+
+        tree.size = fullSize;
+        tree.maxDuration = max;
+        tree.minDuration = min;
+      }
     },
 
-    removeNode: (state, { payload }: PayloadAction<string>) => {
-      if (!state.uploadTree) return;
+    setNode: (
+      state,
+      { payload }: PayloadAction<{ type?: TreeType; info: any; nodeId: string }>
+    ) => {
+      let trees = [
+        state.uploadTree as VideoTree,
+        state.previewTree as VideoTree,
+      ];
 
-      const uploadNode = findByChildId(state.uploadTree, payload);
+      if (payload.type) {
+        trees = [state[payload.type] as VideoTree];
+      }
 
-      if (!uploadNode) return;
+      for (let tree of trees) {
+        const node = findById(tree, payload.nodeId);
 
-      uploadNode.children = uploadNode.children.filter(
-        (item) => item.id !== payload
-      );
+        if (!node) return;
 
-      const fullSize = getFullSize(state.uploadTree);
-      const { max, min } = getMinMaxDuration(state.uploadTree);
+        if (!node.info) {
+          node.info = payload.info;
+        } else {
+          if (payload.info === null) {
+            node.info = null;
+          } else {
+            node.info = { ...node.info, ...payload.info };
+          }
+        }
 
-      state.uploadTree.size = fullSize;
-      state.uploadTree.maxDuration = max;
-      state.uploadTree.minDuration = min;
+        const fullSize = getFullSize(tree);
+        const { max, min } = getMinMaxDuration(tree);
 
-      state.savedTree = state.uploadTree;
+        tree.size = fullSize;
+        tree.maxDuration = max;
+        tree.minDuration = min;
+      }
+    },
+
+    removeNode: (
+      state,
+      { payload }: PayloadAction<{ type?: TreeType; nodeId: string }>
+    ) => {
+      let trees = [
+        state.uploadTree as VideoTree,
+        state.previewTree as VideoTree,
+      ];
+
+      if (payload.type) {
+        trees = [state[payload.type] as VideoTree];
+      }
+
+      for (let tree of trees) {
+        if (!tree) return;
+
+        const node = findByChildId(tree, payload.nodeId);
+
+        if (!node) return;
+
+        node.children = node.children.filter(
+          (item) => item.id !== payload.nodeId
+        );
+
+        const fullSize = getFullSize(tree);
+        const { max, min } = getMinMaxDuration(tree);
+
+        tree.size = fullSize;
+        tree.maxDuration = max;
+        tree.minDuration = min;
+      }
+    },
+
+    setTree: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        type?: TreeType;
+        info: { [key in keyof VideoTree]: VideoTree[key] };
+      }>
+    ) => {
+      state.uploadTree = { ...state.uploadTree, ...payload.info };
+      state.previewTree = { ...state.previewTree, ...payload.info };
     },
 
     removeTree: (state) => {
       state.uploadTree = null;
-      state.savedTree = null;
-    },
-
-    saveTree: (
-      state,
-      { payload }: PayloadAction<{ info: any; nodeId: string }>
-    ) => {
-      if (!state.savedTree) return;
-
-      const savedNode = findById(state.savedTree, payload.nodeId);
-
-      if (!savedNode) return;
-
-      savedNode.info = { ...savedNode.info, ...payload.info };
+      state.previewTree = null;
     },
 
     setActiveNode: (state, { payload }: PayloadAction<string>) => {

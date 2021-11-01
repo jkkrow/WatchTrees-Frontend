@@ -1,3 +1,5 @@
+import { v1 as uuidv1 } from 'uuid';
+
 export interface Node {
   id: string;
   prevId?: string;
@@ -9,6 +11,22 @@ export interface Node {
 export interface Tree {
   root: Node;
 }
+
+export const createNode = (prevNode?: Node): Node => {
+  const node: Node = {
+    id: uuidv1(),
+    layer: 0,
+    info: null,
+    children: [],
+  };
+
+  if (prevNode) {
+    node.prevId = prevNode.id;
+    node.layer = prevNode.layer + 1;
+  }
+
+  return node;
+};
 
 export const findById = (tree: Tree, id: string): Node | null => {
   let currentNode: Node = tree.root;

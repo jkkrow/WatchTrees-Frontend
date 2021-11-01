@@ -17,7 +17,7 @@ export const initiateUpload = () => {
 
 export const appendChild = (nodeId: string) => {
   return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.appendChild(nodeId));
+    dispatch(uploadActions.appendNode({ nodeId }));
   };
 };
 
@@ -31,19 +31,28 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         video.src = URL.createObjectURL(file);
       });
 
+      const nodeInfo = {
+        name: file.name,
+        size: file.size,
+        duration: videoDuration,
+        label: 'Default',
+        timelineStart: null,
+        timelineEnd: null,
+        progress: 0,
+        error: null,
+      };
+
       dispatch(
-        uploadActions.setUploadNode({
-          info: {
-            name: file.name,
-            size: file.size,
-            url: URL.createObjectURL(file),
-            duration: videoDuration,
-            label: 'Default',
-            timelineStart: null,
-            timelineEnd: null,
-            progress: 0,
-            error: null,
-          },
+        uploadActions.setNode({
+          type: 'uploadTree',
+          info: nodeInfo,
+          nodeId,
+        })
+      );
+      dispatch(
+        uploadActions.setNode({
+          type: 'previewTree',
+          info: { ...nodeInfo, url: URL.createObjectURL(file) },
           nodeId,
         })
       );
@@ -70,16 +79,20 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
       let start, end, blob;
 
-      const uploadProgressHandler = async (progressEvent: ProgressEvent, index: number) => {
+      const uploadProgressHandler = async (
+        progressEvent: ProgressEvent,
+        index: number
+      ) => {
         if (progressEvent.loaded >= progressEvent.total) return;
 
-        const currentProgress = Math.round(progressEvent.loaded * 100) / progressEvent.total;
+        const currentProgress =
+          Math.round(progressEvent.loaded * 100) / progressEvent.total;
 
         progressArray[index - 1] = currentProgress;
         const sum = progressArray.reduce((acc, cur) => acc + cur);
 
         dispatch(
-          uploadActions.setUploadNode({
+          uploadActions.setNode({
             info: {
               progress: Math.round(sum / CHUNKS_COUNT),
             },
@@ -91,7 +104,8 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
       for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
         start = (index - 1) * CHUNK_SIZE;
         end = index * CHUNK_SIZE;
-        blob = index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
+        blob =
+          index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
         // Get Urls
         accessToken = getState().auth.accessToken as string;
@@ -149,7 +163,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
       );
 
       dispatch(
-        uploadActions.setUploadNode({
+        uploadActions.setNode({
           info: { progress: 100 },
           nodeId,
         })
@@ -158,7 +172,8 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
       const { url } = completeUploadReseponse.data;
 
       dispatch(
-        uploadActions.saveTree({
+        uploadActions.setNode({
+          type: 'uploadTree',
           info: { url },
           nodeId,
         })
@@ -166,7 +181,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
     } catch (err) {
       let error = err as AxiosError;
       dispatch(
-        uploadActions.setUploadNode({
+        uploadActions.setNode({
           info: { error: error.response?.data?.message || error.message },
           nodeId,
         })
@@ -183,30 +198,35 @@ export const saveUpload = () => {
       // Get current upload state
       const { auth, upload } = getState();
 
-      const savedTree = upload.savedTree as VideoTree;
+      const uploadTree = upload.uploadTree as VideoTree;
       const accessToken = auth.accessToken as string;
 
       const saveRepsonse = await axios.post(
         '/upload/save-upload',
-        { savedTree },
+        { uploadTree },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
 
       dispatch(
-        uiActions.setMessage({ content: saveRepsonse.data.message, type: 'message', timer: 5000 })
+        uiActions.setMessage({
+          content: saveRepsonse.data.message,
+          type: 'message',
+          timer: 5000,
+        })
       );
     } catch (err) {
       let error = err as AxiosError;
       dispatch(
         uiActions.setMessage({
-          content: `${error.response?.data?.message || error.message} - Saving upload failed.`,
+          content: `${
+            error.response?.data?.message || error.message
+          } - Saving upload failed.`,
           type: 'error',
           timer: 5000,
         })
       );
-      console.log(err);
     }
   };
 };
@@ -214,7 +234,7 @@ export const saveUpload = () => {
 export const updateNode = (info: any, nodeId: string) => {
   return (dispatch: AppDispatch) => {
     dispatch(
-      uploadActions.setUploadNode({
+      uploadActions.setNode({
         info,
         nodeId,
       })
@@ -224,13 +244,13 @@ export const updateNode = (info: any, nodeId: string) => {
 
 export const removeNode = (nodeId: string) => {
   return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.removeNode(nodeId));
+    dispatch(uploadActions.removeNode({ nodeId }));
   };
 };
 
 export const updateTree = (info: any) => {
   return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.setUploadTree(info));
+    dispatch(uploadActions.setTree({ info }));
   };
 };
 
