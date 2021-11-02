@@ -39,6 +39,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {
   useEffect(() => {
     (async () => {
       if (!accessToken || !currentPage) return;
+      if (isFetched) return;
 
       const response = await dispatch(fetchUserVideos(currentPage));
 
@@ -48,7 +49,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {
         setIsFetched(true);
       }
     })();
-  }, [dispatch, accessToken, currentPage]);
+  }, [dispatch, accessToken, currentPage, isFetched]);
 
   return (
     <UserLayout>

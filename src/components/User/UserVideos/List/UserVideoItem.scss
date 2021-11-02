@@ -1,4 +1,5 @@
 .user-video-item {
+  position: relative;
   display: flex;
   align-items: center;
   width: 100%;
@@ -9,18 +10,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 35rem;
-    min-width: 20rem;
+    width: 40rem;
+    min-width: 23rem;
+    margin-bottom: auto;
     background-color: var(--bg-secondary);
     aspect-ratio: 16/9;
   }
 
   &__info {
     display: flex;
-    width: 100%;
-    justify-content: center;
     flex-direction: column;
+    justify-content: center;
+    width: 100%;
     max-width: 60%;
+    margin-left: auto;
     overflow: hidden;
     text-align: end;
     gap: 1rem;
@@ -37,11 +40,15 @@
 
     &__tags {
       font-style: italic;
-
-      &::before {
-        content: '#';
-      }
     }
+  }
+
+  &__editing {
+    position: absolute;
+    top: 0;
+    padding: 1rem;
+    font-size: 1.3rem;
+    background-color: var(--bg-tertiary);
   }
 
   svg {

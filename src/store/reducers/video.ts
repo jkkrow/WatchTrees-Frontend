@@ -4,17 +4,24 @@ import { Node, Tree } from 'util/tree';
 
 export interface VideoNode extends Node {}
 
+export enum VideoStatus {
+  Public = 'public',
+  Private = 'private',
+}
+
 export interface VideoTree extends Tree {
   _id?: string;
   root: VideoNode;
   title: string;
   tags: string[];
   description: string;
+  thumbnail?: string;
   size: number;
   maxDuration: number;
   minDuration: number;
-  thumbnail?: string;
-  status: 'Progressing' | 'Completed';
+  views: number;
+  isEditing: boolean;
+  status: VideoStatus;
 }
 
 interface VideoSliceState {

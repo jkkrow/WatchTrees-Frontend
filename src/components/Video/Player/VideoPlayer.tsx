@@ -155,7 +155,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, []);
 
   const videoEndedHandler = useCallback(() => {
-    if (currentVideo.children.length === 0 || !currentVideo.children.find((item) => item.info)) {
+    if (
+      currentVideo.children.length === 0 ||
+      !currentVideo.children.find((item) => item.info)
+    ) {
       return;
     }
 
@@ -185,11 +188,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    * VOLUME CONTROL
    */
 
-  const volumeInputHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current!;
+  const volumeInputHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const video = videoRef.current!;
 
-    video.volume = +event.target.value;
-  }, []);
+      video.volume = +event.target.value;
+    },
+    []
+  );
 
   const volumeChangeHandler = useCallback(() => {
     const video = videoRef.current!;
@@ -245,7 +251,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           buffer.start(buffer.length - 1 - i) === 0 ||
           buffer.start(buffer.length - 1 - i) < video.currentTime
         ) {
-          setBufferProgress((buffer.end(buffer.length - 1 - i) / duration) * 100);
+          setBufferProgress(
+            (buffer.end(buffer.length - 1 - i) / duration) * 100
+          );
           break;
         }
       }
@@ -253,7 +261,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     // Time
     setCurrentTimeUI(formatTime(Math.round(currentTime)));
-    setRemainedTimeUI(formatTime(Math.round(duration) - Math.round(currentTime)));
+    setRemainedTimeUI(
+      formatTime(Math.round(duration) - Math.round(currentTime))
+    );
 
     // Selector
     const timelineStart = currentVideo.info.timelineStart || duration - 10;
@@ -283,7 +293,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const progress = videoProgressRef.current!;
 
     const skipTo =
-      (event.nativeEvent.offsetX / (event.target as Element).clientWidth) * +video.duration;
+      (event.nativeEvent.offsetX / (event.target as Element).clientWidth) *
+      +video.duration;
 
     progressSeekData.current = skipTo;
 
@@ -302,15 +313,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setSeekTooltip(newTime);
   }, []);
 
-  const seekInputHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const video = videoRef.current!;
+  const seekInputHandler = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const video = videoRef.current!;
 
-    const skipTo = progressSeekData.current || +event.target.value;
+      const skipTo = progressSeekData.current || +event.target.value;
 
-    video.currentTime = skipTo;
-    setCurrentProgress((skipTo / video.duration) * 100);
-    setSeekProgress(skipTo);
-  }, []);
+      video.currentTime = skipTo;
+      setCurrentProgress((skipTo / video.duration) * 100);
+      setSeekProgress(skipTo);
+    },
+    []
+  );
 
   /*
    * FULLSCREEN CONTROL
@@ -450,7 +464,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const navigateToSelectorTimelineHandler = useCallback(() => {
     const video = videoRef.current!;
 
-    const timelineStart = currentVideo.info.timelineStart || video.duration - 10;
+    const timelineStart =
+      currentVideo.info.timelineStart || video.duration - 10;
 
     if (video.currentTime < timelineStart) {
       video.currentTime = timelineStart;
@@ -480,7 +495,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           updateNode(
             {
               timelineEnd: +(
-                video.currentTime + 10 > videoDuration ? videoDuration : video.currentTime + 10
+                video.currentTime + 10 > videoDuration
+                  ? videoDuration
+                  : video.currentTime + 10
               ).toFixed(2),
             },
             currentVideo.id
@@ -502,7 +519,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         dispatch(
           updateNode(
             {
-              timelineStart: +(video.currentTime - 10 < 0 ? 0 : video.currentTime - 10).toFixed(2),
+              timelineStart: +(
+                video.currentTime - 10 < 0 ? 0 : video.currentTime - 10
+              ).toFixed(2),
             },
             currentVideo.id
           )
@@ -609,7 +628,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       />
 
       <div
-        className={`vp-controls${!canPlayType ? ' hidden' : ''}${!displayControls ? ' hide' : ''}`}
+        className={`vp-controls${!canPlayType ? ' hidden' : ''}${
+          !displayControls ? ' hide' : ''
+        }`}
       >
         <div className="vp-controls__header">
           <Time time={currentTimeUI} />
@@ -638,7 +659,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             onSeek={volumeInputHandler}
             onKey={preventDefault}
           />
-          <Playback play={playbackState} onToggle={togglePlayHandler} onKey={preventDefault} />
+          <Playback
+            play={playbackState}
+            onToggle={togglePlayHandler}
+            onKey={preventDefault}
+          />
           <Fullscreen
             fullscreenState={fullscreen}
             onToggle={toggleFullscreenHandler}

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { VideoTree } from './video';
+import { VideoTree, VideoStatus } from './video';
 import {
   createNode,
   findById,
@@ -37,7 +37,10 @@ const uploadSlice = createSlice({
         size: 0,
         maxDuration: 0,
         minDuration: 0,
-        status: 'Progressing',
+        thumbnail: '',
+        views: 0,
+        isEditing: true,
+        status: VideoStatus.Public,
       };
 
       state.uploadTree = tree;

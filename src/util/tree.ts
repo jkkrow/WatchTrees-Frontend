@@ -87,14 +87,14 @@ export const traverseNodes = (root: Node): Node[] => {
 export const validateNodes = (
   root: Node,
   key: string,
-  value?: any,
+  value: any = null,
   type = true
 ): boolean => {
   const nodes = traverseNodes(root);
 
   if (key === 'info') {
     return !!nodes.find((node) =>
-      type ? node.info === (value || null) : node.info !== (value || null)
+      type ? node.info === value : node.info !== value
     );
   }
 
