@@ -129,7 +129,14 @@ const FileInput: React.FC<FileInputProps> = ({
       </ul>
       {type === 'image' && (
         <Modal on={!!filePreview} onClose={() => setFilePreview(null)}>
-          <img src={filePreview?.url} alt={filePreview?.name} />
+          <img
+            src={
+              filePreview?.url.substr(0, 4) === 'blob'
+                ? filePreview.url
+                : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${filePreview?.url}`
+            }
+            alt={label}
+          />
         </Modal>
       )}
     </div>

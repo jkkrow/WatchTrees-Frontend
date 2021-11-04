@@ -9,7 +9,7 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { VideoTree } from 'store/reducers/video';
-import { saveUpload, updateTree } from 'store/actions/upload';
+import { saveUpload, updateTree, uploadThumbnail } from 'store/actions/upload';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';
@@ -81,16 +81,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const thumbnailChangeHandler = (files: File[]) => {
-    const fileInfo = {
-      name: files[0].name,
-      url: URL.createObjectURL(files[0]),
-    };
-
-    dispatch(
-      updateTree({
-        thumbnail: fileInfo,
-      })
-    );
+    dispatch(uploadThumbnail(files[0]));
   };
 
   const thumbnailDeleteHandler = (fileName: string) => {

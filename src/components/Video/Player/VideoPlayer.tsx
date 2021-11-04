@@ -540,12 +540,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     (async () => {
       try {
         const video = videoRef.current!;
-        const src = currentVideo.info.url;
+        let src = currentVideo.info.url;
 
         // Edit mode
         if (src.substr(0, 4) === 'blob') {
           return video.setAttribute('src', src);
         }
+
+        // TODO: check currentVideo.info.converted
+
+        // if not converted: set domain to souce bucket
+        src = `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
+
+        // else set domain to cloudfront domain
+        src = `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`;
 
         // Connect video to Shaka Player
         const player = new shaka.Player(video);

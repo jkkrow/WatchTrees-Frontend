@@ -4,7 +4,7 @@ import Error from './Body/Error';
 import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video';
-import { attachVideo } from 'store/actions/upload';
+import { uploadVideo } from 'store/actions/upload';
 import './UploadNode.scss';
 
 interface UploadNodeProps {
@@ -17,7 +17,7 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
   const dispatch = useAppDispatch();
 
   const fileChangeHandler = (files: File[]): void => {
-    dispatch(attachVideo(files[0], currentNode.id, treeId));
+    dispatch(uploadVideo(files[0], currentNode.id, treeId));
   };
 
   return (

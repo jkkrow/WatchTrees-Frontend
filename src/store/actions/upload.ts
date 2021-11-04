@@ -21,7 +21,7 @@ export const appendChild = (nodeId: string) => {
   };
 };
 
-export const attachVideo = (file: File, nodeId: string, treeId: string) => {
+export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
       const videoDuration = await new Promise((resolve) => {
@@ -39,6 +39,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         timelineStart: null,
         timelineEnd: null,
         progress: 0,
+        isConverted: false,
         error: null,
       };
 
@@ -59,7 +60,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
       // Initiate Upload
       let accessToken = getState().auth.accessToken as string;
-      const response = await axios.get('/upload/initiate-upload', {
+      const response = await axios.get('/upload/video-initiate', {
         params: {
           treeId,
           fileName: file.name,
@@ -109,7 +110,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
 
         // Get Urls
         accessToken = getState().auth.accessToken as string;
-        const getUploadUrlResponse = await axios.get('/upload/get-upload-url', {
+        const getUploadUrlResponse = await axios.get('/upload/video-url', {
           params: {
             uploadId,
             partNumber: index,
@@ -150,7 +151,7 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
       // Complete Upload
       accessToken = getState().auth.accessToken as string;
       const completeUploadReseponse = await axios.post(
-        '/upload/complete-upload',
+        '/upload/video-complete',
         {
           params: {
             uploadId,
@@ -178,6 +179,8 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
           nodeId,
         })
       );
+
+      dispatch(saveUpload());
     } catch (err) {
       let error = err as AxiosError;
       dispatch(
@@ -187,8 +190,55 @@ export const attachVideo = (file: File, nodeId: string, treeId: string) => {
         })
       );
     }
+  };
+};
 
-    dispatch(saveUpload());
+export const uploadThumbnail = (file: File) => {
+  return async (dispatch: AppDispatch, getState: () => RootState) => {
+    try {
+      const thumbnailInfo = {
+        name: file.name,
+        url: URL.createObjectURL(file),
+      };
+
+      dispatch(uploadActions.setTree({ info: { thumbnail: thumbnailInfo } }));
+
+      const { auth } = getState();
+      const accessToken = auth.accessToken as string;
+
+      const response = await axios.get('/upload/image', {
+        params: { fileType: file.type },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      const { presignedUrl, key } = response.data;
+
+      await axios.put(presignedUrl, file, {
+        headers: {
+          'Content-Type': file.type,
+        },
+      });
+
+      dispatch(
+        uploadActions.setTree({
+          type: 'uploadTree',
+          info: { thumbnail: { name: file.name, url: key } },
+        })
+      );
+
+      dispatch(saveUpload());
+    } catch (err) {
+      let error = err as AxiosError;
+      dispatch(
+        uiActions.setMessage({
+          content: `${
+            error.response?.data?.message || error.message
+          } - Uploading thumbnail failed.`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
+    }
   };
 };
 

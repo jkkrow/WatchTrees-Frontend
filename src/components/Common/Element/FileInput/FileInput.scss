@@ -24,6 +24,12 @@
     align-items: center;
     gap: 1rem;
 
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     svg {
       margin: 0;
       min-width: 2.5rem;

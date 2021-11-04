@@ -22,7 +22,14 @@ const Avatar: React.FC<AvatarProps> = ({
       style={{ width, height }}
       onClick={onClick}
     >
-      {src ? <img src={src} alt="" /> : <UserIcon />}
+      {src ? (
+        <img
+          src={`${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`}
+          alt=""
+        />
+      ) : (
+        <UserIcon />
+      )}
     </div>
   );
 };

@@ -151,15 +151,19 @@ const uploadSlice = createSlice({
 
     setTree: (
       state,
-      {
-        payload,
-      }: PayloadAction<{
-        type?: TreeType;
-        info: { [key in keyof VideoTree]: VideoTree[key] };
-      }>
+      { payload }: PayloadAction<{ type?: TreeType; info: any }>
     ) => {
-      state.uploadTree = { ...state.uploadTree, ...payload.info };
-      state.previewTree = { ...state.previewTree, ...payload.info };
+      switch (payload.type) {
+        case 'uploadTree':
+          state.uploadTree = { ...state.uploadTree, ...payload.info };
+          break;
+        case 'previewTree':
+          state.previewTree = { ...state.previewTree, ...payload.info };
+          break;
+        default:
+          state.uploadTree = { ...state.uploadTree, ...payload.info };
+          state.previewTree = { ...state.previewTree, ...payload.info };
+      }
     },
 
     removeTree: (state) => {
