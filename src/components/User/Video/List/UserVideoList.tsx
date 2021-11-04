@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import UserVideoItem from './UserVideoItem';
+import UserVideoItem from '../Item/UserVideoItem';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { useForm } from 'hooks/form-hook';
@@ -46,12 +46,15 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
         content={
           <>
             <p>
-              To proceed type the video name <strong>{targetItem?.title}</strong>.
+              To proceed type the video name{' '}
+              <strong>{targetItem?.title}</strong>.
             </p>
             <Input
               id="video"
               formInput
-              validators={targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined}
+              validators={
+                targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined
+              }
               onForm={setFormInput}
             />
           </>

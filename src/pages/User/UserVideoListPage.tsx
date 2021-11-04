@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import UserLayout from 'components/User/Layout/UserLayout';
-import UserVideoHeader from 'components/User/UserVideos/Header/UserVideoHeader';
-import UserVideoList from 'components/User/UserVideos/List/UserVideoList';
+import UserVideoHeader from 'components/User/Video/Header/UserVideoHeader';
+import UserVideoList from 'components/User/Video/List/UserVideoList';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Response from 'components/Common/UI/Response/Response';
@@ -14,12 +14,13 @@ import { RouteComponentProps } from 'react-router';
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {
   const { accessToken } = useAppSelector((state) => state.auth);
   const { loading, error } = useAppSelector((state) => state.user);
-  const dispatch = useAppDispatch();
 
   const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
   const [fetchedVideos, setFetchedVideos] = useState<VideoTree[]>([]);
   const [isFetched, setIsFetched] = useState(false);
+
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     let page = 1;

@@ -6,7 +6,7 @@ import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
-import GoogleLoginButton from 'components/Auth/GoogleLoginButton/GoogleLoginButton';
+import GoogleLoginButton from 'components/Auth/Google/GoogleLoginButton';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { register, login, clearResponse } from 'store/actions/auth';
@@ -159,7 +159,10 @@ const AuthPage: React.FC = () => {
           <Button loading={loading}>SIGN UP</Button>
         </Form>
       )}
-      <GoogleLoginButton onLoginSuccess={googleLoginHandler} loading={loading} />
+      <GoogleLoginButton
+        onLoginSuccess={googleLoginHandler}
+        loading={loading}
+      />
       {isLogin ? (
         <p>
           Don't have an account?{' '}

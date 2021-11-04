@@ -213,7 +213,7 @@ export const saveUpload = () => {
         uiActions.setMessage({
           content: saveRepsonse.data.message,
           type: 'message',
-          timer: 5000,
+          timer: 3000,
         })
       );
     } catch (err) {

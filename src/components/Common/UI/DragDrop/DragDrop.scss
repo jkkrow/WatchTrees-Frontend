@@ -7,15 +7,16 @@
   padding: 3rem;
   gap: 1rem;
   border-radius: 10px;
+  cursor: pointer;
   transition: all 200ms ease-out;
 
-  svg {
-    width: 7rem;
-    height: 7rem;
+  &:hover {
+    opacity: 0.7;
   }
 
   &.invalid {
     color: #ff0000;
+    border-color: #ff0000;
 
     svg {
       stroke: #ff0000;
@@ -27,6 +28,15 @@
 
     * {
       pointer-events: none;
+    }
+  }
+
+  svg {
+    width: 7rem;
+    height: 7rem;
+
+    &:hover {
+      opacity: 1;
     }
   }
 }

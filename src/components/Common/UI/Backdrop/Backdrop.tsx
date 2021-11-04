@@ -11,7 +11,13 @@ interface BackdropProps {
 
 const Backdrop: React.FC<BackdropProps> = ({ className, on, onClick }) =>
   createPortal(
-    <CSSTransition in={on} classNames="backdrop" timeout={200} mountOnEnter unmountOnExit>
+    <CSSTransition
+      in={on}
+      classNames="backdrop"
+      timeout={300}
+      mountOnEnter
+      unmountOnExit
+    >
       <div className={`backdrop ${className}`} onClick={onClick} />
     </CSSTransition>,
     document.getElementById('backdrop-hook')!

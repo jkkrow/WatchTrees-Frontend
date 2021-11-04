@@ -1,8 +1,9 @@
 import { useHistory } from 'react-router';
 
 import Button from 'components/Common/Element/Button/Button';
-import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as ReloadIcon } from 'assets/icons/reload.svg';
+import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
+import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { initiateUpload } from 'store/actions/upload';
 import { fetchUserVideos } from 'store/actions/user';
@@ -32,15 +33,24 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ currentPage }) => {
 
   return (
     <div className="user-video-header">
-      <div className="user-video-header__reload">
+      <div>
         <Button inversed onClick={fetchVideosHandler}>
           <ReloadIcon />
         </Button>
       </div>
-      <div className="user-video-header__new-video">
+      <div>
         <Button inversed onClick={addNewVideoHandler}>
-          <PlusIcon />
-          NEW VIDEO
+          {!uploadTree ? (
+            <>
+              <PlusIcon style={{ width: '1.2rem', height: '1.2rem' }} />
+              NEW VIDEO
+            </>
+          ) : (
+            <>
+              <EditIcon style={{ width: '1.5rem', height: '1.5rem' }} />
+              CONTINUE
+            </>
+          )}
         </Button>
       </div>
     </div>

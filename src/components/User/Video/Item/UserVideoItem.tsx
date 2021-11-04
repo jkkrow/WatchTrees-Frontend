@@ -35,13 +35,15 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({
         <div className="user-video-item__info__views">
           Views: {formatNumber(item.views)}
         </div>
-        <div className="user-video-item__info__status">{item.status}</div>
+        <div className="user-video-item__info__status">
+          Status: {item.status}
+        </div>
         <div className="user-video-item__buttons">
           <EditIcon onClick={onEdit} />
           <DeleteIcon onClick={() => onDelete(item)} />
         </div>
       </div>
-      {!item.isEditing && (
+      {item.isEditing && (
         <div className="user-video-item__editing">Editing</div>
       )}
     </li>

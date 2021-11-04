@@ -1,7 +1,7 @@
 .upload-dashboard {
   display: flex;
   width: 100%;
-  padding: 2rem 4rem 3rem 4rem;
+  padding: 3rem 4rem;
   gap: 3rem;
   border-radius: 10px;
   font-weight: 500;
@@ -10,7 +10,7 @@
   &__header {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 50%;
   }
 
   &__tag {
@@ -43,7 +43,7 @@
         cursor: pointer;
 
         &::before {
-          content: "";
+          content: '';
           position: absolute;
           top: 0;
           bottom: 0;
@@ -76,18 +76,20 @@
   &__body {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 50%;
+    padding-top: 1rem;
     gap: 3rem;
   }
 
   &__info {
     display: flex;
     flex-direction: column;
+    width: 100%;
     gap: 1rem;
-    margin: 3rem 0 auto 0;
 
-    > div {
+    div {
       display: flex;
+      align-items: center;
 
       &::before {
         content: attr(data-label);
@@ -100,6 +102,11 @@
 @media (max-width: 700px) {
   .upload-dashboard {
     flex-direction: column;
+
+    &__header,
+    &__body {
+      width: 100%;
+    }
 
     &__info {
       margin: auto 0;

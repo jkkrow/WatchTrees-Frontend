@@ -9,8 +9,8 @@ import './Modal.scss';
 interface ModalProps {
   style?: React.CSSProperties;
   on: boolean;
-  header: string;
-  content: string | JSX.Element;
+  header?: string;
+  content?: string | JSX.Element;
   footer?: string;
   loading?: boolean;
   disabled?: boolean;
@@ -28,6 +28,7 @@ const Modal: React.FC<ModalProps> = ({
   disabled,
   onConfirm,
   onClose,
+  children,
 }) => {
   const [displayModal, setDisplayModal] = useState(on);
 
@@ -51,29 +52,35 @@ const Modal: React.FC<ModalProps> = ({
       <CSSTransition
         in={displayModal}
         classNames="modal"
-        timeout={200}
+        timeout={300}
         mountOnEnter
         unmountOnExit
         onExited={onClose}
       >
         <div className="modal">
-          <form style={style} onSubmit={submitHandler}>
-            <h3 className="modal__header">{header}</h3>
-            <div className="modal__content">{content}</div>
-            <div className="modal__footer">
-              {footer && (
-                <Button small loading={loading} disabled={disabled}>
-                  {footer}
+          {children || (
+            <form style={style} onSubmit={submitHandler}>
+              <h3 className="modal__header">{header}</h3>
+              <div className="modal__content">{content}</div>
+              <div className="modal__footer">
+                {footer && (
+                  <Button small loading={loading} disabled={disabled}>
+                    {footer}
+                  </Button>
+                )}
+                <Button type="button" small onClick={closeModalHandler}>
+                  {footer ? 'CANCEL' : 'OK'}
                 </Button>
-              )}
-              <Button type="button" small onClick={closeModalHandler}>
-                {footer ? 'CANCEL' : 'OK'}
-              </Button>
-            </div>
-          </form>
+              </div>
+            </form>
+          )}
         </div>
       </CSSTransition>
-      <Backdrop className="modal__backdrop" on={displayModal} onClick={closeModalHandler} />
+      <Backdrop
+        className="modal__backdrop"
+        on={displayModal}
+        onClick={closeModalHandler}
+      />
     </>,
     document.getElementById('modal-hook')!
   );

@@ -4,37 +4,61 @@ import { ReactComponent as UploadIcon } from 'assets/icons/upload.svg';
 import './DragDrop.scss';
 
 interface DragDropProps {
+  className?: string;
   type: string;
   multiple?: boolean;
-  onFile: (file: File) => void;
+  maxFile?: number;
+  onFile: (files: File[]) => void;
 }
 
-const DragDrop: React.FC<DragDropProps> = ({ type, multiple, onFile }) => {
+const DragDrop: React.FC<DragDropProps> = ({
+  className,
+  type,
+  multiple,
+  maxFile,
+  onFile,
+  children,
+}) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fileChangeHandler = useCallback(
     (e: React.DragEvent | React.ChangeEvent<HTMLInputElement>): void => {
-      let selectedFile: File;
+      try {
+        let selectedFiles: File[];
 
-      if (e.type === 'drop') {
-        e = e as React.DragEvent;
+        if (e.type === 'drop') {
+          e = e as React.DragEvent;
+          if (!e.dataTransfer.files) return;
 
-        selectedFile = e.dataTransfer.files[0];
-      } else {
-        e = e as React.ChangeEvent<HTMLInputElement>;
-        if (!e.target.files) return;
+          selectedFiles = [...e.dataTransfer.files];
+        } else {
+          e = e as React.ChangeEvent<HTMLInputElement>;
+          if (!e.target.files) return;
 
-        selectedFile = e.target.files![0];
+          selectedFiles = [...e.target.files];
+        }
+
+        selectedFiles.forEach((file) => {
+          if (file.type.split('/')[0] !== type) {
+            throw new Error('Invalid type');
+          }
+        });
+
+        if (
+          (maxFile && selectedFiles.length > maxFile) ||
+          (!multiple && selectedFiles.length > 1)
+        ) {
+          throw new Error('Invalid file number');
+        }
+
+        onFile(selectedFiles);
+        setError(null);
+      } catch (err) {
+        setError((err as Error).message);
       }
-
-      if (selectedFile.type.split('/')[0] !== type) {
-        return setIsError(true);
-      }
-
-      onFile(selectedFile);
     },
-    [type, onFile]
+    [type, onFile, multiple, maxFile]
   );
 
   const dragInHandler = useCallback((e: React.DragEvent): void => {
@@ -70,27 +94,35 @@ const DragDrop: React.FC<DragDropProps> = ({ type, multiple, onFile }) => {
   );
 
   return (
-    <div
+    <label
       className={`drag-drop${isDragging ? ' dragging' : ''}${
-        isError ? ' invalid' : ''
-      }`}
+        error ? ' invalid' : ''
+      }${className ? ` ${className}` : ''}`}
       onDragEnter={dragInHandler}
       onDragLeave={dragOutHandler}
       onDragOver={dragOverHandler}
       onDrop={dropHandler}
     >
-      <label>
-        <input
-          type="file"
-          hidden
-          accept={`${type}/*`}
-          multiple={multiple}
-          onChange={fileChangeHandler}
-        />
-        <UploadIcon />
-      </label>
-      <p>Drag and Drop {type[0].toUpperCase() + type.substring(1)} File</p>
-    </div>
+      <input
+        type="file"
+        hidden
+        accept={`${type}/*`}
+        multiple={multiple}
+        onChange={fileChangeHandler}
+      />
+      {children || (
+        <div>
+          <UploadIcon />
+          <div>
+            {error
+              ? error
+              : `Drag and Drop ${
+                  type[0].toUpperCase() + type.substring(1)
+                } File${multiple ? 's' : ''}`}
+          </div>
+        </div>
+      )}
+    </label>
   );
 };
 

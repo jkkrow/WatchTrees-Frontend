@@ -16,17 +16,23 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
   const { activeNodeId } = useAppSelector((state) => state.upload);
   const dispatch = useAppDispatch();
 
-  const onFileHandler = (file: File): void => {
-    dispatch(attachVideo(file, currentNode.id, treeId));
+  const fileChangeHandler = (files: File[]): void => {
+    dispatch(attachVideo(files[0], currentNode.id, treeId));
   };
 
   return (
-    <div className={`upload-node${currentNode.id === activeNodeId ? ' active' : ''}`}>
-      {(currentNode.id === activeNodeId || currentNode.prevId === activeNodeId) && (
+    <div
+      className={`upload-node${
+        currentNode.id === activeNodeId ? ' active' : ''
+      }`}
+    >
+      {(currentNode.id === activeNodeId ||
+        currentNode.prevId === activeNodeId) && (
         <div
           className="upload-node__body"
           style={{
-            backgroundColor: currentNode.layer % 2 === 0 ? '#242424' : '#424242',
+            backgroundColor:
+              currentNode.layer % 2 === 0 ? '#242424' : '#424242',
           }}
         >
           {currentNode.info ? (
@@ -35,7 +41,7 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
               <Error currentNode={currentNode} error={currentNode.info.error} />
             </>
           ) : (
-            <DragDrop type="video" onFile={onFileHandler} />
+            <DragDrop type="video" onFile={fileChangeHandler} />
           )}
           <Controls currentNode={currentNode} treeId={treeId} />
         </div>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
+import FileInput from 'components/Common/Element/FileInput/FIleInput';
+import Radio from 'components/Common/Element/Radio/Radio';
 import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
@@ -78,6 +80,14 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     dispatch(updateTree({ tags: filteredTags }));
   };
 
+  const fileChangeHandler = (files: File[]) => {
+    console.log('file has changed' + new Date());
+  };
+
+  const statusChangeHandler = (value: string) => {
+    dispatch(updateTree({ status: value }));
+  };
+
   const saveUploadHandler = async () => {
     setLoading(true);
 
@@ -130,41 +140,54 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
             id="description"
             type="textarea"
             label="Description"
+            rows={7}
             value={descriptionInput}
             onTextAreaChange={descriptionChangeHandler}
           />
         </div>
       </div>
-      {tree.root.info && (
-        <div className="upload-dashboard__body">
-          <div className="upload-dashboard__info">
-            <div className="upload-dashboard__size" data-label="Size">
-              {formatSize(tree.size)}
-            </div>
-            <div
-              className="upload-dashboard__min-duration"
-              data-label="MinDuration"
-            >
-              {formatTime(tree.minDuration)}
-            </div>
-            <div
-              className="upload-dashboard__max-duration"
-              data-label="MaxDuration"
-            >
-              {formatTime(tree.maxDuration)}
-            </div>
+      <div className="upload-dashboard__body">
+        <FileInput
+          type="image"
+          multiple
+          onFileChange={fileChangeHandler}
+          label="Add thumbnail"
+        />
+        <div className="upload-dashboard__info">
+          <div className="upload-dashboard__status" data-label="Status">
+            <Radio
+              name="video-status"
+              options={['public', 'private']}
+              initialValue={tree.status}
+              onRadioChange={statusChangeHandler}
+            />
           </div>
-          <div className="upload-dashboard__save">
-            <Button
-              onClick={saveUploadHandler}
-              loading={loading}
-              disabled={isEmptyNode || isUncomletedNode}
-            >
-              SAVE
-            </Button>
+          <div className="upload-dashboard__size" data-label="Size">
+            {formatSize(tree.size)}
+          </div>
+          <div
+            className="upload-dashboard__min-duration"
+            data-label="Min Duration"
+          >
+            {formatTime(tree.minDuration)}
+          </div>
+          <div
+            className="upload-dashboard__max-duration"
+            data-label="Max Duration"
+          >
+            {formatTime(tree.maxDuration)}
           </div>
         </div>
-      )}
+        <div className="upload-dashboard__save">
+          <Button
+            onClick={saveUploadHandler}
+            loading={loading}
+            disabled={isEmptyNode || isUncomletedNode}
+          >
+            SAVE
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

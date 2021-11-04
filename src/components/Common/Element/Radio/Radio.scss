@@ -1,0 +1,49 @@
+.radio {
+  &__list {
+    display: flex;
+    flex-flow: wrap;
+    gap: 1rem;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: opacity 200ms ease-out;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    input {
+      display: none;
+
+      &:checked ~ .radio__checkmark::before {
+        display: block;
+      }
+    }
+  }
+
+  &__checkmark {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50px;
+    background-color: var(--bg-inversed);
+
+    &::before {
+      content: '';
+      position: absolute;
+      display: none;
+      top: 50%;
+      left: 50%;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50px;
+      background-color: var(--bg-primary);
+      transform: translate(-50%, -50%);
+    }
+  }
+}
