@@ -8,6 +8,7 @@ interface DragDropProps {
   type: string;
   multiple?: boolean;
   maxFile?: number;
+  fileNumber?: number;
   onFile: (files: File[]) => void;
 }
 
@@ -16,6 +17,7 @@ const DragDrop: React.FC<DragDropProps> = ({
   type,
   multiple,
   maxFile,
+  fileNumber,
   onFile,
   children,
 }) => {
@@ -47,6 +49,9 @@ const DragDrop: React.FC<DragDropProps> = ({
 
         if (
           (maxFile && selectedFiles.length > maxFile) ||
+          (fileNumber &&
+            maxFile &&
+            selectedFiles.length + fileNumber > maxFile) ||
           (!multiple && selectedFiles.length > 1)
         ) {
           throw new Error('Invalid file number');
@@ -58,7 +63,7 @@ const DragDrop: React.FC<DragDropProps> = ({
         setError((err as Error).message);
       }
     },
-    [type, onFile, multiple, maxFile]
+    [type, onFile, multiple, maxFile, fileNumber]
   );
 
   const dragInHandler = useCallback((e: React.DragEvent): void => {

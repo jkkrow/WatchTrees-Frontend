@@ -37,7 +37,7 @@ const uploadSlice = createSlice({
         size: 0,
         maxDuration: 0,
         minDuration: 0,
-        thumbnail: '',
+        thumbnail: { name: '', url: '' },
         views: 0,
         isEditing: true,
         status: VideoStatus.Public,

@@ -12,81 +12,91 @@ interface FileInfo {
 
 interface FileInputProps {
   type: string;
-  multiple?: boolean;
   label: string;
+  multiple?: boolean;
+  maxFile?: number;
   initialValue?: FileInfo[];
   onFileChange: (files: File[]) => void;
+  onFileDelete?: (fileName: string) => void;
 }
 
 const FileInput: React.FC<FileInputProps> = ({
   type,
   multiple,
+  maxFile,
   label,
   initialValue = [],
   onFileChange,
+  onFileDelete,
 }) => {
   const [validFiles, setValidFiles] = useState<File[]>([]);
-  const [fileInfos, setFileInfos] = useState<FileInfo[]>(initialValue);
+  const [fileInfos, setFileInfos] = useState<FileInfo[]>([]);
   const [filePreview, setFilePreview] = useState<FileInfo | null>(null);
 
   useEffect(() => {
-    if (!validFiles.length) return;
-
-    setFileInfos(
-      validFiles.map((file) => ({
-        name: file.name,
-        url: URL.createObjectURL(file),
-      }))
-    );
-  }, [validFiles]);
+    !initialValue &&
+      setFileInfos(
+        validFiles.map((file) => ({
+          name: file.name,
+          url: URL.createObjectURL(file),
+        }))
+      );
+  }, [validFiles, initialValue]);
 
   const fileChangeHandler = (selectedFiles: File[]) => {
     if (!selectedFiles.length) return;
 
-    setValidFiles((prevFiles) => {
-      if (!prevFiles.length) {
-        /*
-         * Initial selectedFiles
-         */
-        onFileChange(selectedFiles);
-        return selectedFiles;
-      }
+    if (!validFiles.length) {
+      /*
+       * Initial selectedFiles
+       */
+      setValidFiles(selectedFiles);
+      onFileChange(selectedFiles);
 
-      if (multiple) {
-        /*
-         * Handler multiple file
-         */
-        const filesArray = [...prevFiles];
-        const newFiles: File[] = [];
+      return;
+    }
 
-        selectedFiles.forEach((selectedFile) => {
-          const duplicate = prevFiles.find(
-            (prevFile) => selectedFile.name === prevFile.name
-          );
+    const newFiles: File[] = [];
 
-          if (!duplicate) {
-            filesArray.push(selectedFile);
-            newFiles.push(selectedFile);
-          }
-        });
+    if (multiple) {
+      /*
+       * Handler multiple file
+       */
+      const filesArray = [...validFiles];
 
-        if (newFiles.length) {
-          onFileChange(newFiles);
+      selectedFiles.forEach((selectedFile) => {
+        const duplicate = validFiles.find(
+          (validFile) => selectedFile.name === validFile.name
+        );
+
+        if (!duplicate) {
+          filesArray.push(selectedFile);
+          newFiles.push(selectedFile);
         }
+      });
 
-        return filesArray;
-      } else {
-        /*
-         * Handle single file
-         */
-        if (prevFiles[0].name !== selectedFiles[0].name) {
-          onFileChange(selectedFiles);
-          return selectedFiles;
-        } else {
-          return prevFiles;
-        }
+      setValidFiles(filesArray);
+    } else {
+      /*
+       * Handle single file
+       */
+      if (validFiles[0].name !== selectedFiles[0].name) {
+        newFiles.push(selectedFiles[0]);
+        setValidFiles(selectedFiles);
       }
-    });
+    }
+
+    if (newFiles.length) {
+      onFileChange(newFiles);
+    }
+  };
+
+  const removeFileHandler = (fileName: string) => {
+    setValidFiles((prevFiles) =>
+      prevFiles.filter((prevFile) => prevFile.name !== fileName)
+    );
+
+    onFileDelete && onFileDelete(fileName);
   };
 
   return (
@@ -94,23 +104,28 @@ const FileInput: React.FC<FileInputProps> = ({
       <DragDrop
         className="file-input__dragdrop"
         type={type}
+        maxFile={maxFile}
+        fileNumber={validFiles.length}
         onFile={fileChangeHandler}
         multiple={multiple}
       >
         {label}
       </DragDrop>
       <ul className="file-input__list">
-        {fileInfos.map((fileInfo) => (
-          <li key={fileInfo.url} className="file-input__item">
-            <span
-              className={type === 'image' ? ' link' : ''}
-              onClick={() => setFilePreview(fileInfo)}
-            >
-              {fileInfo.name}
-            </span>
-            <RemoveIcon />
-          </li>
-        ))}
+        {(initialValue || fileInfos).map(
+          (fileInfo) =>
+            fileInfo.name && (
+              <li key={fileInfo.url} className="file-input__item">
+                <span
+                  className={type === 'image' ? ' link' : ''}
+                  onClick={() => setFilePreview(fileInfo)}
+                >
+                  {fileInfo.name}
+                </span>
+                <RemoveIcon onClick={() => removeFileHandler(fileInfo.name)} />
+              </li>
+            )
+        )}
       </ul>
       {type === 'image' && (
         <Modal on={!!filePreview} onClose={() => setFilePreview(null)}>

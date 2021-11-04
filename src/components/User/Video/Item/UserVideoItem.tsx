@@ -19,7 +19,7 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({
     <li className="user-video-item">
       <div className="user-video-item__thumbnail">
         {item.thumbnail ? (
-          <img src={item.thumbnail} alt={item.title} />
+          <img src={item.thumbnail.url} alt={item.title} />
         ) : (
           'No Thumbnail'
         )}

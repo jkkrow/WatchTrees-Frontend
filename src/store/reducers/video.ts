@@ -15,7 +15,7 @@ export interface VideoTree extends Tree {
   title: string;
   tags: string[];
   description: string;
-  thumbnail?: string;
+  thumbnail: { name: string; url: string };
   size: number;
   maxDuration: number;
   minDuration: number;

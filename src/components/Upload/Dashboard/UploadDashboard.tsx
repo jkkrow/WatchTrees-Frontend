@@ -80,8 +80,21 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     dispatch(updateTree({ tags: filteredTags }));
   };
 
-  const fileChangeHandler = (files: File[]) => {
-    console.log('file has changed' + new Date());
+  const thumbnailChangeHandler = (files: File[]) => {
+    const fileInfo = {
+      name: files[0].name,
+      url: URL.createObjectURL(files[0]),
+    };
+
+    dispatch(
+      updateTree({
+        thumbnail: fileInfo,
+      })
+    );
+  };
+
+  const thumbnailDeleteHandler = (fileName: string) => {
+    dispatch(updateTree({ thumbnail: { name: '', url: '' } }));
   };
 
   const statusChangeHandler = (value: string) => {
@@ -149,9 +162,10 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
       <div className="upload-dashboard__body">
         <FileInput
           type="image"
-          multiple
-          onFileChange={fileChangeHandler}
           label="Add thumbnail"
+          initialValue={[tree.thumbnail]}
+          onFileChange={thumbnailChangeHandler}
+          onFileDelete={thumbnailDeleteHandler}
         />
         <div className="upload-dashboard__info">
           <div className="upload-dashboard__status" data-label="Status">
