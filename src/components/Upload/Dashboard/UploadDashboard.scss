@@ -97,6 +97,19 @@
       }
     }
   }
+
+  &__buttons {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    gap: 1rem;
+    border-radius: 5px;
+    // overflow: hidden;
+  }
+
+  &__save {
+    stroke: #121212;
+  }
 }
 
 @media (max-width: 700px) {

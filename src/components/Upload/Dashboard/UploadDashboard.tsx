@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import FileInput from 'components/Common/Element/FileInput/FIleInput';
 import Radio from 'components/Common/Element/Radio/Radio';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
+import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
 import { useTimeout } from 'hooks/timer-hook';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoTree } from 'types/video';
 import {
   saveUpload,
@@ -17,22 +19,46 @@ import {
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';
+import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 
 interface UploadDashboardProps {
   tree: VideoTree;
 }
 
 const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
+  const { isUploadSaved } = useAppSelector((state) => state.upload);
   const [titleInput, setTitleInput] = useState(tree.title);
   const [descriptionInput, setDescriptionInput] = useState(tree.description);
   const [tagInput, setTagInput] = useState('');
   const [tagArray, setTagArray] = useState(tree.tags);
   const [loading, setLoading] = useState(false);
 
-  const dispatch = useAppDispatch();
-
   const [titleTimeout] = useTimeout();
   const [descriptionTimeout] = useTimeout();
+
+  const dispatch = useAppDispatch();
+
+  const disableSubmit = useMemo(() => {
+    let message: string = '';
+
+    const isEmptyNode = validateNodes(tree.root, 'info');
+    const isUncomletedNode = validateNodes(tree.root, 'progress', 100, false);
+    const isTitleEmpty = !tree.title;
+
+    if (isTitleEmpty) {
+      message = 'Title is empty';
+    }
+
+    if (isEmptyNode) {
+      message = 'Empty file exists';
+    }
+
+    if (isUncomletedNode) {
+      message = 'Unfinished process exists';
+    }
+
+    return message;
+  }, [tree.root, tree.title]);
 
   const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleInput(event.target.value);
@@ -104,8 +130,13 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     setLoading(false);
   };
 
-  const isEmptyNode = validateNodes(tree.root, 'info');
-  const isUncomletedNode = validateNodes(tree.root, 'progress', 100, false);
+  const submitUploadHandler = async () => {
+    setLoading(true);
+
+    await dispatch(saveUpload());
+
+    setLoading(false);
+  };
 
   return (
     <div className="upload-dashboard">
@@ -187,14 +218,19 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
             {formatTime(tree.maxDuration)}
           </div>
         </div>
-        <div className="upload-dashboard__save">
-          <Button
-            onClick={saveUploadHandler}
-            loading={loading}
-            disabled={isEmptyNode || isUncomletedNode}
-          >
-            SAVE
+        <div className="upload-dashboard__buttons">
+          <LoadingSpinner on={loading} overlay />
+          <Button disabled={isUploadSaved} onClick={saveUploadHandler}>
+            <SaveIcon
+              className="upload-dashboard__save"
+              style={{ width: '2.5rem', height: '2.5rem' }}
+            />
           </Button>
+          <Tooltip text={disableSubmit} direction="bottom">
+            <Button onClick={submitUploadHandler} disabled={!!disableSubmit}>
+              SUBMIT
+            </Button>
+          </Tooltip>
         </div>
       </div>
     </div>

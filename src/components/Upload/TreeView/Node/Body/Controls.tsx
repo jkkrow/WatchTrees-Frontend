@@ -9,7 +9,7 @@ import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode } from 'types/video';
 import {
-  appendChild,
+  appendNode,
   updateActiveNode,
   removeNode,
 } from 'store/actions/upload-action';
@@ -37,7 +37,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
   };
 
   const addChildHandler = () => {
-    dispatch(appendChild(currentNode.id));
+    dispatch(appendNode(currentNode.id));
   };
 
   const removeNodeHandler = () => {

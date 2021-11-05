@@ -15,12 +15,6 @@ export const initiateUpload = () => {
   };
 };
 
-export const appendChild = (nodeId: string) => {
-  return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.appendNode({ nodeId }));
-  };
-};
-
 export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
@@ -237,6 +231,8 @@ export const saveUpload = () => {
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
+      dispatch(uploadActions.saveUpload());
+
       dispatch(
         uiActions.setMessage({
           content: saveRepsonse.data.message,
@@ -259,6 +255,12 @@ export const saveUpload = () => {
   };
 };
 
+export const appendNode = (nodeId: string) => {
+  return (dispatch: AppDispatch) => {
+    dispatch(uploadActions.appendNode({ nodeId }));
+  };
+};
+
 export const updateNode = (info: any, nodeId: string) => {
   return (dispatch: AppDispatch) => {
     dispatch(uploadActions.setNode({ info, nodeId }));
@@ -277,16 +279,16 @@ export const updateTree = (info: any) => {
   };
 };
 
-export const removeTree = () => {
-  return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.removeTree());
-
-    window.removeEventListener('beforeunload', beforeunloadHandler);
-  };
-};
-
 export const updateActiveNode = (nodeId: string) => {
   return (dispatch: AppDispatch) => {
     dispatch(uploadActions.setActiveNode(nodeId));
+  };
+};
+
+export const finishUpload = () => {
+  return (dispatch: AppDispatch) => {
+    dispatch(uploadActions.finishUpload());
+
+    window.removeEventListener('beforeunload', beforeunloadHandler);
   };
 };

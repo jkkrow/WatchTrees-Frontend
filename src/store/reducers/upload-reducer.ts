@@ -15,12 +15,14 @@ interface UploadSliceState {
   uploadTree: VideoTree | null;
   previewTree: VideoTree | null;
   activeNodeId: string;
+  isUploadSaved: boolean;
 }
 
 const initialState: UploadSliceState = {
   uploadTree: null,
   previewTree: null,
   activeNodeId: '',
+  isUploadSaved: false,
 };
 
 const uploadSlice = createSlice({
@@ -46,6 +48,7 @@ const uploadSlice = createSlice({
       state.uploadTree = tree;
       state.previewTree = tree;
       state.activeNodeId = node.id;
+      state.isUploadSaved = true;
     },
 
     appendNode: (
@@ -78,6 +81,8 @@ const uploadSlice = createSlice({
         tree.maxDuration = max;
         tree.minDuration = min;
       }
+
+      state.isUploadSaved = false;
     },
 
     setNode: (
@@ -115,6 +120,8 @@ const uploadSlice = createSlice({
         tree.maxDuration = max;
         tree.minDuration = min;
       }
+
+      state.isUploadSaved = false;
     },
 
     removeNode: (
@@ -148,6 +155,8 @@ const uploadSlice = createSlice({
         tree.maxDuration = max;
         tree.minDuration = min;
       }
+
+      state.isUploadSaved = false;
     },
 
     setTree: (
@@ -165,15 +174,23 @@ const uploadSlice = createSlice({
           state.uploadTree = { ...state.uploadTree, ...payload.info };
           state.previewTree = { ...state.previewTree, ...payload.info };
       }
-    },
 
-    removeTree: (state) => {
-      state.uploadTree = null;
-      state.previewTree = null;
+      state.isUploadSaved = false;
     },
 
     setActiveNode: (state, { payload }: PayloadAction<string>) => {
       state.activeNodeId = payload;
+    },
+
+    saveUpload: (state) => {
+      state.isUploadSaved = true;
+    },
+
+    finishUpload: (state) => {
+      state.uploadTree = null;
+      state.previewTree = null;
+      state.activeNodeId = '';
+      state.isUploadSaved = false;
     },
   },
 });
