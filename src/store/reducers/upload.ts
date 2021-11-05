@@ -61,13 +61,14 @@ const uploadSlice = createSlice({
         trees = [state[payload.type] as VideoTree];
       }
 
+      const newNode = createNode();
+
       for (let tree of trees) {
         const node = findById(tree, payload.nodeId);
 
         if (!node) return;
 
-        const newNode = createNode(node);
-
+        newNode.prevId = node.id;
         node.children.push(newNode);
 
         const fullSize = getFullSize(tree);
