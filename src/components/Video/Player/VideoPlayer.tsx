@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import shaka from 'shaka-player';
 
 import Playback from './Controls/Playback';
@@ -12,9 +12,12 @@ import Loader from './Controls/Loader';
 import { useTimeout } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video';
-import { updateActiveVideo, updateVideoVolume } from 'store/actions/video';
-import { updateNode } from 'store/actions/upload';
+import { VideoNode } from 'types/video';
+import {
+  updateActiveVideo,
+  updateVideoVolume,
+} from 'store/actions/video-action';
+import { updateNode } from 'store/actions/upload-action';
 import { formatTime } from 'util/format';
 import './VideoPlayer.scss';
 
@@ -87,8 +90,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [controlsTimeout] = useTimeout();
   const [volumeTimeout] = useTimeout();
   const [loaderTimeout, clearLoaderTimeout] = useTimeout();
+
   const activeChange = useCompare(active);
   const firstRender = useFirstRender();
+
+  const videoInfo = useMemo(() => currentVideo.info!, [currentVideo.info]);
 
   /*
    * PREVENT DEFAULT
@@ -266,8 +272,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
 
     // Selector
-    const timelineStart = currentVideo.info.timelineStart || duration - 10;
-    const timelineEnd = currentVideo.info.timelineEnd || timelineStart + 10;
+    const timelineStart = videoInfo!.timelineStart || duration - 10;
+    const timelineEnd = videoInfo!.timelineEnd || timelineStart + 10;
 
     if (
       currentTime >= timelineStart &&
@@ -282,7 +288,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       setDisplaySelector(false);
       selectorData.current = false;
     }
-  }, [currentVideo, selectedNextVideoId, hideControlsHandler]);
+  }, [
+    videoInfo,
+    currentVideo.children,
+    selectedNextVideoId,
+    hideControlsHandler,
+  ]);
 
   /*
    * SKIP CONTROL
@@ -464,8 +475,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const navigateToSelectorTimelineHandler = useCallback(() => {
     const video = videoRef.current!;
 
-    const timelineStart =
-      currentVideo.info.timelineStart || video.duration - 10;
+    const timelineStart = videoInfo!.timelineStart || video.duration - 10;
 
     if (video.currentTime < timelineStart) {
       video.currentTime = timelineStart;
@@ -474,10 +484,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     video.play();
-  }, [currentVideo.info]);
+  }, [videoInfo]);
 
   const markTimelineHandler = useCallback(() => {
     const video = videoRef.current!;
+    const { timelineStart, timelineEnd } = videoInfo!;
 
     if (!timelineMarked) {
       // Mark start point
@@ -490,7 +501,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         )
       );
 
-      if (video.currentTime > currentVideo.info.timelineEnd) {
+      if (video.currentTime > (timelineEnd || 0)) {
         dispatch(
           updateNode(
             {
@@ -515,7 +526,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         )
       );
 
-      if (video.currentTime < currentVideo.info.timelineStart) {
+      if (video.currentTime < (timelineStart || 0)) {
         dispatch(
           updateNode(
             {
@@ -530,7 +541,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     setTimelineMarked((prev) => !prev);
-  }, [dispatch, currentVideo, timelineMarked, videoDuration]);
+  }, [dispatch, currentVideo.id, videoInfo, timelineMarked, videoDuration]);
 
   /*
    * USEEFFECT
@@ -540,20 +551,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     (async () => {
       try {
         const video = videoRef.current!;
-        let src = currentVideo.info.url;
+        let src = videoInfo.url;
 
         // Edit mode
         if (src.substr(0, 4) === 'blob') {
           return video.setAttribute('src', src);
         }
 
-        // TODO: check currentVideo.info.converted
-
-        // if not converted: set domain to souce bucket
-        src = `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
-
-        // else set domain to cloudfront domain
-        src = `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`;
+        videoInfo.isConverted
+          ? // set domain to souce bucket
+            (src = `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`)
+          : // set domain to cloudfront domain
+            (src = `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`);
 
         // Connect video to Shaka Player
         const player = new shaka.Player(video);
@@ -564,7 +573,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         alert(err);
       }
     })();
-  }, [currentVideo.info.url]);
+  }, [videoInfo.isConverted, videoInfo.url]);
 
   useEffect(() => {
     return () => {
@@ -650,8 +659,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             seekProgress={seekProgress}
             seekTooltip={seekTooltip}
             seekTooltipPosition={seekTooltipPosition}
-            timelineStart={currentVideo.info.timelineStart}
-            timelineEnd={currentVideo.info.timelineEnd}
+            timelineStart={videoInfo!.timelineStart}
+            timelineEnd={videoInfo!.timelineEnd}
             editMode={editMode}
             onHover={seekMouseMoveHandler}
             onSeek={seekInputHandler}

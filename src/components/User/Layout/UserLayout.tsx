@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useAppDispatch } from 'hooks/store-hook';
-import { clearResponse } from 'store/actions/user';
+import { clearResponse } from 'store/actions/user-action';
 import './UserLayout.scss';
 
 const UserLayout: React.FC = ({ children }) => {

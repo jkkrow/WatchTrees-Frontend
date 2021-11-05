@@ -1,11 +1,11 @@
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video';
-import { updateNode } from 'store/actions/upload';
+import { VideoNode } from 'types/video';
+import { updateNode } from 'store/actions/upload-action';
 
 interface ErrorProps {
   currentNode: VideoNode;
-  error: string;
+  error: string | null;
 }
 
 const Error: React.FC<ErrorProps> = ({ currentNode, error }) => {

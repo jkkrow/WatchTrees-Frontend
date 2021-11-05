@@ -2,8 +2,8 @@ import axios, { AxiosError } from 'axios';
 import axiosRetry from 'axios-retry';
 
 import { AppDispatch } from 'store';
-import { authActions } from 'store/reducers/auth';
-import { loadMessage } from './ui';
+import { authActions } from 'store/reducers/auth-reducer';
+import { loadMessage } from './ui-action';
 
 export const register = (credentials: {
   name: string;
@@ -22,12 +22,16 @@ export const register = (credentials: {
       return true;
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
 
-export const login = (credentials: { email: string; password: string } | { tokenId: string }) => {
+export const login = (
+  credentials: { email: string; password: string } | { tokenId: string }
+) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
@@ -54,7 +58,9 @@ export const login = (credentials: { email: string; password: string } | { token
       });
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -147,7 +153,9 @@ export const sendVerifyEmail = (email: string) => {
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -164,7 +172,9 @@ export const verifyEmail = (token: string) => {
       return true;
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -179,7 +189,9 @@ export const sendRecoveryEmail = (email: string) => {
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
@@ -194,12 +206,18 @@ export const getResetPassword = (token: string) => {
       return true;
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };
 
-export const postResetPassword = (password: string, confirmPassword: string, token: string) => {
+export const postResetPassword = (
+  password: string,
+  confirmPassword: string,
+  token: string
+) => {
   return async (dispatch: AppDispatch) => {
     try {
       dispatch(authActions.authRequest());
@@ -212,7 +230,9 @@ export const postResetPassword = (password: string, confirmPassword: string, tok
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       let error = err as AxiosError;
-      dispatch(authActions.authFail(error.response?.data?.message || error.message));
+      dispatch(
+        authActions.authFail(error.response?.data?.message || error.message)
+      );
     }
   };
 };

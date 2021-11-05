@@ -7,8 +7,8 @@ interface ProgressProps {
   seekProgress: number;
   seekTooltipPosition: string;
   seekTooltip: string;
-  timelineStart: number;
-  timelineEnd: number;
+  timelineStart: number | null;
+  timelineEnd: number | null;
   editMode: boolean;
   onHover: (event: React.MouseEvent) => void;
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -34,11 +34,12 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
     ref
   ) => {
     const timelineStartPosition =
-      (timelineStart >= videoDuration ? videoDuration - 10 : timelineStart) ??
-      videoDuration - 10;
+      ((timelineStart as number) >= videoDuration
+        ? videoDuration - 10
+        : timelineStart) ?? videoDuration - 10;
 
     const timelineEndPosition =
-      (timelineEnd > videoDuration ? videoDuration : timelineEnd) ??
+      ((timelineEnd as number) > videoDuration ? videoDuration : timelineEnd) ??
       videoDuration;
 
     const timelineDuration =

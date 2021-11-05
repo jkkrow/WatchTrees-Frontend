@@ -1,28 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Node, Tree } from 'util/tree';
-
-export interface VideoNode extends Node {}
-
-export enum VideoStatus {
-  Public = 'public',
-  Private = 'private',
-}
-
-export interface VideoTree extends Tree {
-  _id?: string;
-  root: VideoNode;
-  title: string;
-  tags: string[];
-  description: string;
-  thumbnail: { name: string; url: string };
-  size: number;
-  maxDuration: number;
-  minDuration: number;
-  views: number;
-  isEditing: boolean;
-  status: VideoStatus;
-}
+import { VideoTree } from 'types/video';
 
 interface VideoSliceState {
   videoTree: VideoTree | null;

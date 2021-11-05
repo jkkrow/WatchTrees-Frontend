@@ -2,9 +2,9 @@ import axios, { AxiosError } from 'axios';
 import axiosRetry from 'axios-retry';
 
 import { RootState, AppDispatch } from 'store';
-import { uploadActions } from 'store/reducers/upload';
-import { uiActions } from 'store/reducers/ui';
-import { VideoTree } from 'store/reducers/video';
+import { uploadActions } from 'store/reducers/upload-reducer';
+import { uiActions } from 'store/reducers/ui-reducer';
+import { VideoTree } from 'types/video';
 import { beforeunloadHandler } from 'util/event-handlers';
 
 export const initiateUpload = () => {
@@ -44,11 +44,7 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
       };
 
       dispatch(
-        uploadActions.setNode({
-          type: 'uploadTree',
-          info: nodeInfo,
-          nodeId,
-        })
+        uploadActions.setNode({ type: 'uploadTree', info: nodeInfo, nodeId })
       );
       dispatch(
         uploadActions.setNode({
@@ -94,9 +90,7 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
 
         dispatch(
           uploadActions.setNode({
-            info: {
-              progress: Math.round(sum / CHUNKS_COUNT),
-            },
+            info: { progress: Math.round(sum / CHUNKS_COUNT) },
             nodeId,
           })
         );
@@ -124,10 +118,7 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
 
         // Save Promises
         const request = axios.create();
-        axiosRetry(request, {
-          retries: 3,
-          retryDelay: () => 3000,
-        });
+        axiosRetry(request, { retries: 3, retryDelay: () => 3000 });
 
         const uploadPromise = request.put(presignedUrl, blob, {
           onUploadProgress: (e) => uploadProgressHandler(e, index),
@@ -163,21 +154,12 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
-      dispatch(
-        uploadActions.setNode({
-          info: { progress: 100 },
-          nodeId,
-        })
-      );
+      dispatch(uploadActions.setNode({ info: { progress: 100 }, nodeId }));
 
       const { url } = completeUploadReseponse.data;
 
       dispatch(
-        uploadActions.setNode({
-          type: 'uploadTree',
-          info: { url },
-          nodeId,
-        })
+        uploadActions.setNode({ type: 'uploadTree', info: { url }, nodeId })
       );
 
       dispatch(saveUpload());
@@ -214,9 +196,7 @@ export const uploadThumbnail = (file: File) => {
       const { presignedUrl, key } = response.data;
 
       await axios.put(presignedUrl, file, {
-        headers: {
-          'Content-Type': file.type,
-        },
+        headers: { 'Content-Type': file.type },
       });
 
       dispatch(
@@ -254,9 +234,7 @@ export const saveUpload = () => {
       const saveRepsonse = await axios.post(
         '/upload/save-upload',
         { uploadTree },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
+        { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
       dispatch(
@@ -283,12 +261,7 @@ export const saveUpload = () => {
 
 export const updateNode = (info: any, nodeId: string) => {
   return (dispatch: AppDispatch) => {
-    dispatch(
-      uploadActions.setNode({
-        info,
-        nodeId,
-      })
-    );
+    dispatch(uploadActions.setNode({ info, nodeId }));
   };
 };
 

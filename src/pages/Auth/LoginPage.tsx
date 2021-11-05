@@ -9,7 +9,7 @@ import Button from 'components/Common/Element/Button/Button';
 import GoogleLoginButton from 'components/Auth/Google/GoogleLoginButton';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { register, login, clearResponse } from 'store/actions/auth';
+import { register, login, clearResponse } from 'store/actions/auth-action';
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_PASSWORD,

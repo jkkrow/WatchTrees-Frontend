@@ -1,19 +1,9 @@
 import { v1 as uuidv1 } from 'uuid';
 
-export interface Node {
-  id: string;
-  prevId?: string;
-  layer: number;
-  info: any;
-  children: Node[];
-}
+import { VideoInfo, VideoNode, VideoTree } from 'types/video';
 
-export interface Tree {
-  root: Node;
-}
-
-export const createNode = (prevNode?: Node): Node => {
-  const node: Node = {
+export const createNode = (prevNode?: VideoNode): VideoNode => {
+  const node: VideoNode = {
     id: uuidv1(),
     layer: 0,
     info: null,
@@ -28,9 +18,9 @@ export const createNode = (prevNode?: Node): Node => {
   return node;
 };
 
-export const findById = (tree: Tree, id: string): Node | null => {
-  let currentNode: Node = tree.root;
-  const queue: Node[] = [];
+export const findById = (tree: VideoTree, id: string): VideoNode | null => {
+  let currentNode: VideoNode = tree.root;
+  const queue: VideoNode[] = [];
 
   queue.push(currentNode);
 
@@ -46,9 +36,12 @@ export const findById = (tree: Tree, id: string): Node | null => {
   return null;
 };
 
-export const findByChildId = (tree: Tree, id: string): Node | null => {
-  let currentNode: Node = tree.root;
-  const queue: Node[] = [];
+export const findByChildId = (
+  tree: VideoTree,
+  id: string
+): VideoNode | null => {
+  let currentNode: VideoNode = tree.root;
+  const queue: VideoNode[] = [];
 
   queue.push(currentNode);
 
@@ -65,10 +58,10 @@ export const findByChildId = (tree: Tree, id: string): Node | null => {
   return null;
 };
 
-export const traverseNodes = (root: Node): Node[] => {
+export const traverseNodes = (root: VideoNode): VideoNode[] => {
   let currentNode = root;
-  const queue: Node[] = [];
-  const nodes: Node[] = [];
+  const queue: VideoNode[] = [];
+  const nodes: VideoNode[] = [];
 
   queue.push(currentNode);
 
@@ -85,8 +78,8 @@ export const traverseNodes = (root: Node): Node[] => {
 };
 
 export const validateNodes = (
-  root: Node,
-  key: string,
+  root: VideoNode,
+  key: keyof VideoInfo | 'info',
   value: any = null,
   type = true
 ): boolean => {
@@ -104,10 +97,10 @@ export const validateNodes = (
   });
 };
 
-export const getAllPaths = (tree: Tree): Node[][] => {
-  const result: Node[][] = [];
+export const getAllPaths = (tree: VideoTree): VideoNode[][] => {
+  const result: VideoNode[][] = [];
 
-  const iterate = (currentNode: Node, path: Node[]) => {
+  const iterate = (currentNode: VideoNode, path: VideoNode[]) => {
     const newPath = path.concat(currentNode);
 
     if (currentNode.children.length) {
@@ -124,13 +117,15 @@ export const getAllPaths = (tree: Tree): Node[][] => {
   return result;
 };
 
-export const getFullSize = (tree: Tree): number => {
+export const getFullSize = (tree: VideoTree): number => {
   const nodes = traverseNodes(tree.root);
 
   return nodes.reduce((acc, cur) => acc + (cur.info?.size ?? 0), 0);
 };
 
-export const getMinMaxDuration = (tree: Tree): { max: number; min: number } => {
+export const getMinMaxDuration = (
+  tree: VideoTree
+): { max: number; min: number } => {
   const paths = getAllPaths(tree);
 
   const possibleDurations = paths.map((path) =>

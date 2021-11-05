@@ -7,8 +7,8 @@ import Pagination from 'components/Common/UI/Pagination/Pagination';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Response from 'components/Common/UI/Response/Response';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree } from 'store/reducers/video';
-import { fetchUserVideos } from 'store/actions/user';
+import { VideoTree } from 'types/video';
+import { fetchUserVideos } from 'store/actions/user-action';
 import { RouteComponentProps } from 'react-router';
 
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {

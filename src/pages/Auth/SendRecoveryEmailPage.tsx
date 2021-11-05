@@ -5,7 +5,7 @@ import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { sendRecoveryEmail } from 'store/actions/auth';
+import { sendRecoveryEmail } from 'store/actions/auth-action';
 import { VALIDATOR_EMAIL } from 'util/validators';
 
 const SendRecoveryEmailPage: React.FC = () => {

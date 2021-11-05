@@ -5,8 +5,8 @@ import AuthLayout from 'components/Auth/Layout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { verifyEmail } from 'store/actions/auth';
-import { updateUserData } from 'store/actions/user';
+import { verifyEmail } from 'store/actions/auth-action';
+import { updateUserData } from 'store/actions/user-action';
 
 const VerifyEmailPage: React.FC = () => {
   const { loading, error, message } = useAppSelector((state) => state.auth);

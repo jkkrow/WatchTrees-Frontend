@@ -1,6 +1,6 @@
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
-import { VideoTree } from 'store/reducers/video';
+import { VideoTree } from 'types/video';
 import { formatTime, formatNumber } from 'util/format';
 import './UserVideoItem.scss';
 
@@ -18,7 +18,7 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({
   return (
     <li className="user-video-item">
       <div className="user-video-item__thumbnail">
-        {item.thumbnail ? (
+        {item.thumbnail.url ? (
           <img
             src={`${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${item.thumbnail.url}`}
             alt={item.title}

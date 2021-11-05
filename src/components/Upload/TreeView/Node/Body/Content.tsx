@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
 import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video';
-import { updateNode, updateActiveNode } from 'store/actions/upload';
+import { VideoNode } from 'types/video';
+import { updateNode, updateActiveNode } from 'store/actions/upload-action';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 
@@ -16,7 +16,9 @@ interface ContentProps {
 }
 
 const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
-  const [labelInput, setLabelInput] = useState(currentNode.info.label);
+  const nodeInfo = useMemo(() => currentNode.info!, [currentNode.info]);
+
+  const [labelInput, setLabelInput] = useState(nodeInfo.label);
 
   const { activeNodeId } = useAppSelector((state) => state.upload);
   const dispatch = useAppDispatch();
@@ -26,7 +28,10 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
   const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLabelInput(event.target.value);
 
-    labelTimeout(() => dispatch(updateNode({ label: event.target.value }, currentNode.id)), 300);
+    labelTimeout(
+      () => dispatch(updateNode({ label: event.target.value }, currentNode.id)),
+      300
+    );
   };
 
   const activeNodeHandler = (id: string) => {
@@ -36,39 +41,47 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
   return (
     <div className="upload-node__content">
       <div
-        className={`upload-node__title${currentNode.id === activeNodeId ? ' parent' : ''}`}
-        onClick={() => currentNode.id !== activeNodeId && activeNodeHandler(currentNode.id)}
+        className={`upload-node__title${
+          currentNode.id === activeNodeId ? ' parent' : ''
+        }`}
+        onClick={() =>
+          currentNode.id !== activeNodeId && activeNodeHandler(currentNode.id)
+        }
       >
-        {currentNode.info.name}
+        {nodeInfo.name}
       </div>
 
       <div className="upload-node__progress">
         <div className="upload-node__progress--background" />
         <div
           className="upload-node__progress--current"
-          style={{ width: currentNode.info.progress + '%' }}
+          style={{ width: nodeInfo.progress + '%' }}
         />
       </div>
 
       <div className="upload-node__info">
         <div className="upload-node__info__size" data-label="FileSize">
-          {formatSize(currentNode.info.size)}
+          {formatSize(nodeInfo.size)}
         </div>
         <div className="upload-node__info__duration" data-label="Duration">
-          {formatTime(currentNode.info.duration)}
+          {formatTime(nodeInfo.duration)}
         </div>
         {currentNode.id !== treeId && (
           <label className="upload-node__info__label" data-label="Label">
             <div className="upload-node__info__input">
-              <input type="text" value={labelInput} onChange={labelChangeHandler} />
+              <input
+                type="text"
+                value={labelInput}
+                onChange={labelChangeHandler}
+              />
             </div>
           </label>
         )}
         <label className="upload-node__info__timeline" data-label="Timeline">
           <div className="upload-node__info__input">
-            <input readOnly value={currentNode.info.timelineStart || '-'} />
+            <input readOnly value={nodeInfo.timelineStart || '-'} />
             <span>to</span>
-            <input readOnly value={currentNode.info.timelineEnd || '-'} />
+            <input readOnly value={nodeInfo.timelineEnd || '-'} />
             <p>Mark timeline with a button below Video Player.</p>
           </div>
         </label>
@@ -78,10 +91,16 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
               ? currentNode.children.map((node) => {
                   if (!node.info)
                     return (
-                      <CircleDashIcon key={node.id} onClick={() => activeNodeHandler(node.id)} />
+                      <CircleDashIcon
+                        key={node.id}
+                        onClick={() => activeNodeHandler(node.id)}
+                      />
                     );
 
-                  if (validateNodes(node, 'info') || validateNodes(node, 'progress', 100, false))
+                  if (
+                    validateNodes(node, 'info') ||
+                    validateNodes(node, 'progress', 100, false)
+                  )
                     return (
                       <CircleLoadingIcon
                         key={node.id}
@@ -97,7 +116,10 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
                     );
 
                   return (
-                    <CircleCheckIcon key={node.id} onClick={() => activeNodeHandler(node.id)} />
+                    <CircleCheckIcon
+                      key={node.id}
+                      onClick={() => activeNodeHandler(node.id)}
+                    />
                   );
                 })
               : '-'}

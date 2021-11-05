@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { AppDispatch, RootState } from 'store';
-import { userActions } from 'store/reducers/user';
+import { userActions } from 'store/reducers/user-reducer';
 
 export const fetchUserVideos = (pageNumber: number) => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -21,7 +21,9 @@ export const fetchUserVideos = (pageNumber: number) => {
       let error = err as AxiosError;
       dispatch(
         userActions.userFail(
-          `${error.response?.data?.message || error.message} - Failed to load videos.`
+          `${
+            error.response?.data?.message || error.message
+          } - Failed to load videos.`
         )
       );
     }

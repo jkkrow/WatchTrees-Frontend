@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import authReducer from './reducers/auth';
-import uploadReducer from './reducers/upload';
-import userReducer from './reducers/user';
-import videoReducer from './reducers/video';
-import uiReducer from './reducers/ui';
+import authReducer from './reducers/auth-reducer';
+import uploadReducer from './reducers/upload-reducer';
+import userReducer from './reducers/user-reducer';
+import videoReducer from './reducers/video-reducer';
+import uiReducer from './reducers/ui-reducer';
 
 const store = configureStore({
   reducer: {

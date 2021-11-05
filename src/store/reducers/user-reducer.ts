@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { authActions, RefreshToken } from './auth';
+import { authActions, RefreshToken } from './auth-reducer';
 
 export interface UserData {
   name: string;

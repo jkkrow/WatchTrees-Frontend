@@ -10,7 +10,7 @@ import Button from 'components/Common/Element/Button/Button';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { getResetPassword, postResetPassword } from 'store/actions/auth';
+import { getResetPassword, postResetPassword } from 'store/actions/auth-action';
 import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
 
 const ResetPasswordPage: React.FC = () => {
@@ -56,7 +56,10 @@ const ResetPasswordPage: React.FC = () => {
       )}
       {isAccessAllowed && (
         <>
-          <Response type={error ? 'error' : 'message'} content={error || message} />
+          <Response
+            type={error ? 'error' : 'message'}
+            content={error || message}
+          />
           {!message ? (
             <Form onSubmit={submitHandler}>
               <Input

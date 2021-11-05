@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useAppDispatch } from 'hooks/store-hook';
-import { clearResponse } from 'store/actions/auth';
+import { clearResponse } from 'store/actions/auth-action';
 import './AuthLayout.scss';
 
 const AuthLayout: React.FC = ({ children }) => {

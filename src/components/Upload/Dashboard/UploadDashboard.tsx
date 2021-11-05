@@ -8,8 +8,12 @@ import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoTree } from 'store/reducers/video';
-import { saveUpload, updateTree, uploadThumbnail } from 'store/actions/upload';
+import { VideoTree } from 'types/video';
+import {
+  saveUpload,
+  updateTree,
+  uploadThumbnail,
+} from 'store/actions/upload-action';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';

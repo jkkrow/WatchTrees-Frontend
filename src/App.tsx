@@ -21,7 +21,7 @@ import {
   logout,
   updateRefreshToken,
   updateAccessToken,
-} from 'store/actions/auth';
+} from 'store/actions/auth-action';
 import './App.scss';
 
 const App: React.FC = () => {

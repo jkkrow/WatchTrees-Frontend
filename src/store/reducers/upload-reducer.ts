@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { VideoTree, VideoStatus } from './video';
+import { VideoTree, VideoStatus } from 'types/video';
 import {
   createNode,
   findById,

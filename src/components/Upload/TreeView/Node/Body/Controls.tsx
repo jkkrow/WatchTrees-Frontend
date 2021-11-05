@@ -7,9 +7,13 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video';
-import { appendChild, updateActiveNode, removeNode } from 'store/actions/upload';
-import { updateActiveVideo } from 'store/actions/video';
+import { VideoNode } from 'types/video';
+import {
+  appendChild,
+  updateActiveNode,
+  removeNode,
+} from 'store/actions/upload-action';
+import { updateActiveVideo } from 'store/actions/video-action';
 import { validateNodes } from 'util/tree';
 
 interface ControlsProps {
@@ -60,7 +64,9 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
 
   return (
     <>
-      {warning && <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />}
+      {warning && (
+        <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />
+      )}
       {currentNode.id !== treeId && currentNode.id !== activeNodeId && (
         <RemoveIcon
           style={{
