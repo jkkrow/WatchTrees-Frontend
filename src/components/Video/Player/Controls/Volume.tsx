@@ -25,7 +25,9 @@ const Volume: React.FC<VolumeProps> = ({ volume, onToggle, onSeek, onKey }) => (
       <div
         className="vp-controls__volume__range--current"
         style={{ width: `${volume * 100}%` }}
-      />
+      >
+        <div className="vp-controls__volume__range--current__thumb" />
+      </div>
       <input
         className="vp-controls__volume__range--seek"
         type="range"

@@ -66,7 +66,9 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
           <div
             className="vp-controls__progress__range--current"
             style={{ width: currentProgress + '%' }}
-          />
+          >
+            <div className="vp-controls__progress__range--current__thumb" />
+          </div>
           <input
             className="vp-controls__progress__range--seek"
             type="range"

@@ -304,8 +304,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const progress = videoProgressRef.current!;
 
     const skipTo =
-      (event.nativeEvent.offsetX / (event.target as Element).clientWidth) *
-      +video.duration;
+      (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
 
     progressSeekData.current = skipTo;
 
