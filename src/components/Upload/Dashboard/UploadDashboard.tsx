@@ -10,7 +10,7 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree } from 'types/video';
+import { VideoTree, VideoStatus } from 'types/video';
 import {
   saveUpload,
   updateTree,
@@ -119,7 +119,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const statusChangeHandler = (value: string) => {
-    dispatch(updateTree({ status: value }));
+    dispatch(updateTree({ status: value as VideoStatus }));
   };
 
   const saveUploadHandler = async () => {

@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
@@ -28,32 +29,36 @@ const App: React.FC = () => {
   const { refreshToken } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const refreshCycle = useRef(false);
-
   const [accessTokenInterval] = useInterval();
 
   useEffect(() => {
-    if (!refreshToken || refreshCycle.current) return;
+    const refreshTokenStorage = localStorage.getItem('refreshToken');
 
+    if (!refreshTokenStorage) {
+      return dispatch(logout());
+    }
+
+    const refreshToken: string = JSON.parse(refreshTokenStorage);
+
+    const { exp } = jwt_decode<JwtPayload>(refreshToken);
+    const expiresIn = (exp as number) * 1000;
     const i = Date.now();
     const j = i + 86400000 * 6;
 
-    if (refreshToken.expiresIn > i && refreshToken.expiresIn < j) {
-      dispatch(updateRefreshToken(refreshToken.value));
-    } else if (refreshToken.expiresIn > j) {
-      dispatch(updateAccessToken(refreshToken.value));
+    if (expiresIn >= i && expiresIn < j) {
+      dispatch(updateRefreshToken(refreshToken));
+    } else if (expiresIn >= j) {
+      dispatch(updateAccessToken(refreshToken));
     } else {
       dispatch(logout());
     }
-
-    refreshCycle.current = true;
-  }, [dispatch, refreshToken]);
+  }, [dispatch]);
 
   useEffect(() => {
     if (!refreshToken) return;
 
     accessTokenInterval(() => {
-      dispatch(updateAccessToken(refreshToken.value));
+      dispatch(updateAccessToken(refreshToken));
     }, 1000 * 60 * 14);
   }, [dispatch, refreshToken, accessTokenInterval]);
 

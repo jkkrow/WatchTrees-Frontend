@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { VideoTree, VideoStatus } from 'types/video';
+import { VideoTree, VideoInfo, VideoStatus } from 'types/video';
 import {
   createNode,
   findById,
@@ -87,7 +87,13 @@ const uploadSlice = createSlice({
 
     setNode: (
       state,
-      { payload }: PayloadAction<{ type?: TreeType; info: any; nodeId: string }>
+      {
+        payload,
+      }: PayloadAction<{
+        type?: TreeType;
+        info: { [key in keyof VideoInfo]?: VideoInfo[key] } | null;
+        nodeId: string;
+      }>
     ) => {
       let trees = [
         state.uploadTree as VideoTree,
@@ -104,7 +110,7 @@ const uploadSlice = createSlice({
         if (!node) return;
 
         if (!node.info) {
-          node.info = payload.info;
+          node.info = payload.info as VideoInfo;
         } else {
           if (payload.info === null) {
             node.info = null;
@@ -161,18 +167,35 @@ const uploadSlice = createSlice({
 
     setTree: (
       state,
-      { payload }: PayloadAction<{ type?: TreeType; info: any }>
+      {
+        payload,
+      }: PayloadAction<{
+        type?: TreeType;
+        info: { [key in keyof VideoTree]?: VideoTree[key] };
+      }>
     ) => {
       switch (payload.type) {
         case 'uploadTree':
-          state.uploadTree = { ...state.uploadTree, ...payload.info };
+          state.uploadTree = {
+            ...state.uploadTree,
+            ...payload.info,
+          } as VideoTree;
           break;
         case 'previewTree':
-          state.previewTree = { ...state.previewTree, ...payload.info };
+          state.previewTree = {
+            ...state.previewTree,
+            ...payload.info,
+          } as VideoTree;
           break;
         default:
-          state.uploadTree = { ...state.uploadTree, ...payload.info };
-          state.previewTree = { ...state.previewTree, ...payload.info };
+          state.uploadTree = {
+            ...state.uploadTree,
+            ...payload.info,
+          } as VideoTree;
+          state.previewTree = {
+            ...state.previewTree,
+            ...payload.info,
+          } as VideoTree;
       }
 
       state.isUploadSaved = false;

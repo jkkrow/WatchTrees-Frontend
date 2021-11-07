@@ -2,14 +2,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { UserData } from './user-reducer';
 
-export interface RefreshToken {
-  value: string;
-  expiresIn: number;
-}
-
 interface AuthSliceState {
   accessToken: string | null;
-  refreshToken: RefreshToken | null;
+  refreshToken: string | null;
   loading: boolean;
   error: string | null;
   message: string | null;
@@ -20,7 +15,7 @@ const refreshTokenJSON = localStorage.getItem('refreshToken');
 const initialState: AuthSliceState = {
   accessToken: null,
   refreshToken: refreshTokenJSON
-    ? (JSON.parse(refreshTokenJSON) as RefreshToken)
+    ? (JSON.parse(refreshTokenJSON) as string)
     : null,
   loading: false,
   error: null,
@@ -52,7 +47,7 @@ const authSlice = createSlice({
         payload,
       }: PayloadAction<{
         accessToken: string;
-        refreshToken: RefreshToken;
+        refreshToken: string;
         userData: UserData;
       }>
     ) => {
@@ -66,7 +61,7 @@ const authSlice = createSlice({
       state.refreshToken = null;
     },
 
-    setRefreshToken: (state, { payload }: PayloadAction<RefreshToken>) => {
+    setRefreshToken: (state, { payload }: PayloadAction<string>) => {
       state.refreshToken = payload;
     },
 

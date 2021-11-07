@@ -4,7 +4,7 @@ import axiosRetry from 'axios-retry';
 import { RootState, AppDispatch } from 'store';
 import { uploadActions } from 'store/reducers/upload-reducer';
 import { uiActions } from 'store/reducers/ui-reducer';
-import { VideoTree } from 'types/video';
+import { VideoTree, VideoInfo } from 'types/video';
 import { beforeunloadHandler } from 'util/event-handlers';
 
 export const initiateUpload = () => {
@@ -18,7 +18,7 @@ export const initiateUpload = () => {
 export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
     try {
-      const videoDuration = await new Promise((resolve) => {
+      const videoDuration = await new Promise<number>((resolve) => {
         const video = document.createElement('video');
 
         video.onloadedmetadata = () => resolve(video.duration);
@@ -33,8 +33,9 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
         timelineStart: null,
         timelineEnd: null,
         progress: 0,
-        isConverted: false,
         error: null,
+        isConverted: false,
+        url: '',
       };
 
       dispatch(
@@ -261,7 +262,10 @@ export const appendNode = (nodeId: string) => {
   };
 };
 
-export const updateNode = (info: any, nodeId: string) => {
+export const updateNode = (
+  info: { [key in keyof VideoInfo]?: VideoInfo[key] } | null,
+  nodeId: string
+) => {
   return (dispatch: AppDispatch) => {
     dispatch(uploadActions.setNode({ info, nodeId }));
   };
@@ -273,7 +277,9 @@ export const removeNode = (nodeId: string) => {
   };
 };
 
-export const updateTree = (info: any) => {
+export const updateTree = (info: {
+  [key in keyof VideoTree]?: VideoTree[key];
+}) => {
   return (dispatch: AppDispatch) => {
     dispatch(uploadActions.setTree({ info }));
   };

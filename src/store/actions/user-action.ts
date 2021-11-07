@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 import { AppDispatch, RootState } from 'store';
-import { userActions } from 'store/reducers/user-reducer';
+import { userActions, UserData } from 'store/reducers/user-reducer';
 
 export const fetchUserVideos = (pageNumber: number) => {
   return async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -30,7 +30,9 @@ export const fetchUserVideos = (pageNumber: number) => {
   };
 };
 
-export const updateUserData = (info: any) => {
+export const updateUserData = (info: {
+  [key in keyof UserData]?: UserData[key];
+}) => {
   return (dispatch: AppDispatch, getState: () => RootState) => {
     dispatch(userActions.setUserData(info));
 

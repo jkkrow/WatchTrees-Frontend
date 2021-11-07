@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { authActions, RefreshToken } from './auth-reducer';
+import { authActions } from './auth-reducer';
 
 export interface UserData {
   name: string;
@@ -42,10 +42,13 @@ const userSlice = createSlice({
       state.error = payload;
     },
 
-    setUserData: (state, { payload }: PayloadAction<any>) => {
+    setUserData: (
+      state,
+      { payload }: PayloadAction<{ [key in keyof UserData]?: UserData[key] }>
+    ) => {
       state.loading = false;
       if (!state.userData) {
-        state.userData = payload;
+        state.userData = payload as UserData;
       } else {
         state.userData = {
           ...state.userData,
@@ -67,7 +70,7 @@ const userSlice = createSlice({
           payload,
         }: PayloadAction<{
           accessToken: string;
-          refreshToken: RefreshToken;
+          refreshToken: string;
           userData: UserData;
         }>
       ) => {

@@ -244,34 +244,28 @@ $vp-progress--timeline: #ececec;
 
 .vp-selector {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   display: flex;
   flex-flow: wrap;
   justify-content: center;
-  align-items: center;
-  align-content: flex-start;
+  align-content: flex-end;
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 30%;
   max-height: 25rem;
   gap: 2rem;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(20%);
   transition: all 400ms ease-out;
 
   &.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateY(-30%);
   }
 
   &.high {
     transform: translateY(-100%);
-  }
-
-  &.high &__btn {
-    transform: translateY(100%);
   }
 
   &__btn {
@@ -282,6 +276,7 @@ $vp-progress--timeline: #ececec;
     border-radius: 5px;
     height: 30%;
     padding: 0.5rem;
+    margin-top: auto;
     text-align: center;
     cursor: pointer;
     font-size: clamp(1.2rem, 1vw, 1.7rem);
