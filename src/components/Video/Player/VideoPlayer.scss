@@ -1,3 +1,10 @@
+$vp-bg: #000000;
+$vp-text: #ffffff;
+$vp-accent--primary: var(--accent-primary);
+$vp-accent--secondary: var(--accent-secondary);
+$vp-progress--background: #858585;
+$vp-progress--timeline: #ececec;
+
 @mixin vp-range($color) {
   display: flex;
   align-items: center;
@@ -7,7 +14,7 @@
     width: 100%;
     height: 10%;
     border-radius: 50px;
-    background-color: #858585;
+    background-color: $vp-progress--background;
   }
 
   &--buffer {
@@ -15,7 +22,7 @@
     width: 100%;
     height: 10%;
     border-radius: 50px;
-    background-color: var(--accent-secondary);
+    background-color: $vp-accent--secondary;
   }
 
   &--current {
@@ -44,7 +51,7 @@
     width: 100%;
     height: 10%;
     border-radius: 50px;
-    background-color: #ececec;
+    background-color: $vp-progress--timeline;
   }
 
   &--seek {
@@ -81,8 +88,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: #ffffff;
-  background-color: #000000;
+  background-color: $vp-bg;
   outline: none;
 }
 
@@ -97,8 +103,8 @@
   bottom: -1px;
   height: 30%;
   max-height: 25rem;
-  padding: 0 1rem;
-  background-image: linear-gradient(transparent, #000000);
+  padding-bottom: 1rem;
+  background-image: linear-gradient(transparent, $vp-bg);
   transition: all 300ms ease-out;
   z-index: 10;
 
@@ -112,11 +118,8 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
-    max-height: 5rem;
-    min-height: 3rem;
+    height: clamp(3rem, 100%, 5rem);
     margin-top: auto;
-    gap: 2rem;
   }
 
   &__body {
@@ -129,6 +132,7 @@
 
     > div {
       display: flex;
+      width: 100%;
       height: 100%;
       margin: 0 auto;
       aspect-ratio: 1/1;
@@ -137,25 +141,27 @@
 
   &__btn {
     display: flex;
+    justify-content: center;
     align-items: center;
     height: 100%;
     margin: auto;
     background-color: transparent;
-    transform: translateX(0) scale(1);
+    transform: scale(1);
     transition: all 200ms ease-out;
     z-index: 5;
     aspect-ratio: 1/1;
 
     svg {
       width: initial;
-      height: 50%;
       min-width: 2.5rem;
+      height: 50%;
       min-height: 2.5rem;
+      margin: 0;
       aspect-ratio: 1/1;
     }
 
     &:hover {
-      transform: translateX(0) scale(1.5);
+      transform: scale(1.5);
 
       svg {
         opacity: 1;
@@ -170,12 +176,10 @@
   &__volume {
     position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 1rem;
 
     &:hover button {
-      transform: translateX(-50%);
+      transform: translateX(-60%) scale(1.5);
     }
 
     &:hover &__range {
@@ -183,10 +187,10 @@
     }
 
     &__range {
-      @include vp-range(#ffffff);
+      @include vp-range($vp-text);
       position: absolute;
       left: 50%;
-      width: 8rem;
+      width: clamp(6rem, 30%, 15rem);
       height: 6rem;
       transform: scaleX(0);
       transform-origin: left;
@@ -201,7 +205,7 @@
     cursor: pointer;
 
     &__range {
-      @include vp-range(var(--accent-primary));
+      @include vp-range($vp-accent--primary);
       position: relative;
       width: 100%;
       height: 100%;
@@ -214,11 +218,12 @@
 
     &__tooltip {
       position: absolute;
-      top: -50%;
+      top: -3rem;
       font-size: 1.2rem;
       padding: 0.3rem;
       font-weight: 700;
-      background-color: rgba(0, 0, 0, 0.8);
+      color: $vp-text;
+      background-color: transparentize($color: $vp-bg, $amount: 0.2);
       opacity: 0;
       visibility: hidden;
       transform: translateX(-50%);
@@ -229,21 +234,27 @@
   }
 
   &__time {
-    margin-left: auto;
+    width: clamp(6rem, 10%, 15rem);
+    padding: 1rem;
+    font-size: clamp(1.3rem, 2vw, 1.7rem);
+    color: $vp-text;
+    text-align: center;
   }
 }
 
 .vp-selector {
   position: absolute;
-  bottom: 2rem;
+  bottom: 0;
   left: 0;
   right: 0;
   display: flex;
   flex-flow: wrap;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  align-content: flex-start;
+  height: 30%;
+  max-height: 25rem;
+  gap: 2rem;
   opacity: 0;
   visibility: hidden;
   transform: translateY(20%);
@@ -256,22 +267,33 @@
   }
 
   &.high {
-    transform: translateY(-8rem);
+    transform: translateY(-100%);
+  }
+
+  &.high &__btn {
+    transform: translateY(100%);
   }
 
   &__btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 40%;
     border-radius: 5px;
+    height: 30%;
     padding: 0.5rem;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: #ffffff;
     text-align: center;
     cursor: pointer;
-    transition: all 200ms ease-out;
+    font-size: clamp(1.2rem, 1vw, 1.7rem);
+    color: $vp-text;
+    background-color: transparentize($color: $vp-bg, $amount: 0.2);
+    transition-property: background-color, opacity, visibility, transform;
+    transition-duration: 200ms;
+    transition-timing-function: ease-out;
   }
 
   &__btn:hover {
-    background-color: rgb(0, 0, 0);
+    background-color: $vp-bg;
   }
 }
 
@@ -301,14 +323,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: transparentize($color: $vp-bg, $amount: 0.5);
   z-index: 20;
 
   div {
     width: 4rem;
     height: 4rem;
     border-radius: 50%;
-    box-shadow: 2px 2px 0 0 var(--accent-primary);
+    box-shadow: 2px 2px 0 0 $vp-accent--primary;
     transform-origin: 2rem;
     animation: vp-loader 1s linear infinite;
   }

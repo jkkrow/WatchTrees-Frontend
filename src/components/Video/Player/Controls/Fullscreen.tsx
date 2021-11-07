@@ -14,8 +14,8 @@ const Fullscreen: React.FC<FullscreenProps> = ({
   onToggle,
   onKey,
 }) => (
-  <div className="vp-controls__fullscreen" onClick={onToggle} onKeyDown={onKey}>
-    <button className="vp-controls__btn">
+  <div className="vp-controls__fullscreen">
+    <button className="vp-controls__btn" onClick={onToggle} onKeyDown={onKey}>
       {!fullscreenState && <FullscreenIcon />}
       {fullscreenState && <FullscreenExitIcon />}
     </button>
