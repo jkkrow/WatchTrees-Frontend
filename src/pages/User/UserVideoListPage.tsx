@@ -7,7 +7,7 @@ import Pagination from 'components/Common/UI/Pagination/Pagination';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Response from 'components/Common/UI/Response/Response';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree } from 'types/video';
+import { VideoTree } from 'store/reducers/video-reducer';
 import { fetchUserVideos } from 'store/actions/user-action';
 import { RouteComponentProps } from 'react-router';
 

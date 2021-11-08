@@ -10,7 +10,7 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree, VideoStatus } from 'types/video';
+import { VideoTree, VideoStatus } from 'store/reducers/video-reducer';
 import {
   saveUpload,
   updateTree,

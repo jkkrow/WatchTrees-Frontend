@@ -1,6 +1,5 @@
 import { AppDispatch } from 'store';
-import { videoActions } from 'store/reducers/video-reducer';
-import { VideoTree } from 'types/video';
+import { VideoTree, videoActions } from 'store/reducers/video-reducer';
 
 export const setVideoTree = (tree: VideoTree) => {
   return (dispatch: AppDispatch) => {

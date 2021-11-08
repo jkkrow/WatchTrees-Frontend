@@ -1,6 +1,6 @@
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoNode } from 'types/video';
+import { VideoNode } from 'store/reducers/video-reducer';
 import { updateNode } from 'store/actions/upload-action';
 
 interface ErrorProps {

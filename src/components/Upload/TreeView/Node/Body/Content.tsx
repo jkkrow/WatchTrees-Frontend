@@ -5,7 +5,7 @@ import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'types/video';
+import { VideoNode } from 'store/reducers/video-reducer';
 import { updateNode, updateActiveNode } from 'store/actions/upload-action';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';

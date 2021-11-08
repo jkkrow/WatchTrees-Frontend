@@ -4,7 +4,7 @@ import UserVideoItem from '../Item/UserVideoItem';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { useForm } from 'hooks/form-hook';
-import { VideoTree } from 'types/video';
+import { VideoTree } from 'store/reducers/video-reducer';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import './UserVideoList.scss';
 

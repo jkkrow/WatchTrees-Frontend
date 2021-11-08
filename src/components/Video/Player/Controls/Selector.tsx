@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { VideoNode } from 'types/video';
+import { VideoNode } from 'store/reducers/video-reducer';
 
 interface SelectorProps {
   on: boolean;

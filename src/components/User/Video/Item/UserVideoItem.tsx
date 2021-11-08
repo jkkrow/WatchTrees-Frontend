@@ -1,6 +1,6 @@
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
-import { VideoTree } from 'types/video';
+import { VideoTree } from 'store/reducers/video-reducer';
 import { formatTime, formatNumber } from 'util/format';
 import './UserVideoItem.scss';
 

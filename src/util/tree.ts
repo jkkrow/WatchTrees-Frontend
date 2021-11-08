@@ -1,6 +1,6 @@
 import { v1 as uuidv1 } from 'uuid';
 
-import { VideoInfo, VideoNode, VideoTree } from 'types/video';
+import { VideoInfo, VideoNode, VideoTree } from 'store/reducers/video-reducer';
 
 export const createNode = (prevNode?: VideoNode): VideoNode => {
   const node: VideoNode = {

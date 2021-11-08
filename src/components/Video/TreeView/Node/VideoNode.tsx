@@ -1,7 +1,7 @@
 import VideoPlayer from '../../Player/VideoPlayer';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoNode as VideoNodeType } from 'types/video';
+import { VideoNode as VideoNodeType } from 'store/reducers/video-reducer';
 import { updateActiveVideo } from 'store/actions/video-action';
 import './VideoNode.scss';
 

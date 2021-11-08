@@ -12,7 +12,7 @@ import Loader from './Controls/Loader';
 import { useTimeout } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'types/video';
+import { VideoNode } from 'store/reducers/video-reducer';
 import {
   updateActiveVideo,
   updateVideoVolume,

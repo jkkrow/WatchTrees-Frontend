@@ -1,10 +1,10 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import axiosRetry from 'axios-retry';
 
 import { RootState, AppDispatch } from 'store';
 import { uploadActions } from 'store/reducers/upload-reducer';
 import { uiActions } from 'store/reducers/ui-reducer';
-import { VideoTree, VideoInfo } from 'types/video';
+import { VideoTree, VideoInfo } from 'store/reducers/video-reducer';
 import { beforeunloadHandler } from 'util/event-handlers';
 
 export const initiateUpload = () => {
@@ -54,6 +54,7 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
       const response = await axios.get('/upload/video-initiate', {
         params: {
           treeId,
+          nodeId,
           fileName: file.name,
           fileType: file.type,
         },
@@ -65,7 +66,7 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
       const fileSize = file.size;
       const CHUNK_SIZE = 10000000; // 10MB
       const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
-      const promisesArray = [];
+      const promisesArray: Promise<AxiosResponse>[] = [];
       const progressArray: number[] = [];
       const uploadPartsArray: { ETag: string; PartNumber: number }[] = [];
 
