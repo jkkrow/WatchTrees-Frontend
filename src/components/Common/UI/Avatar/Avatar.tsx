@@ -1,4 +1,5 @@
 import { ReactComponent as UserIcon } from 'assets/icons/user.svg';
+import { imageUrl } from 'util/src';
 import './Avatar.scss';
 
 interface AvatarProps {
@@ -22,14 +23,7 @@ const Avatar: React.FC<AvatarProps> = ({
       style={{ width, height }}
       onClick={onClick}
     >
-      {src ? (
-        <img
-          src={`${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`}
-          alt=""
-        />
-      ) : (
-        <UserIcon />
-      )}
+      {src ? <img src={imageUrl(src)} alt="" /> : <UserIcon />}
     </div>
   );
 };

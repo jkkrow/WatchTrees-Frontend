@@ -19,6 +19,7 @@ import {
 } from 'store/actions/video-action';
 import { updateNode } from 'store/actions/upload-action';
 import { formatTime } from 'util/format';
+import { videoUrl } from 'util/src';
 import './VideoPlayer.scss';
 
 interface VideoPlayerProps {
@@ -557,11 +558,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           return video.setAttribute('src', src);
         }
 
-        videoInfo.isConverted
-          ? // set domain to souce bucket
-            (src = `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`)
-          : // set domain to cloudfront domain
-            (src = `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`);
+        src = videoUrl(src, videoInfo.isConverted);
 
         // Connect video to Shaka Player
         const player = new shaka.Player(video);

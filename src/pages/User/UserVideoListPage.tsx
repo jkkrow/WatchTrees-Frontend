@@ -44,7 +44,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {
       const response = await dispatch(fetchUserVideos(currentPage));
 
       if (response) {
-        setFetchedVideos(response.videos);
+        setFetchedVideos(JSON.parse(JSON.stringify(response.videos)));
         setTotalPage(response.totalPage);
         setIsFetched(true);
       }

@@ -33,7 +33,12 @@ const Header: React.FC = () => {
 
       {userData ? (
         <div onClick={displayMenuHandler}>
-          <Avatar src={userData.picture} width="2.5rem" height="2.5rem" button />
+          <Avatar
+            src={userData.picture}
+            width="2.5rem"
+            height="2.5rem"
+            button
+          />
         </div>
       ) : (
         <NavLink exact to="/auth">

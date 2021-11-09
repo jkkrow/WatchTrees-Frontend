@@ -2,6 +2,7 @@ import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { VideoTree } from 'store/reducers/video-reducer';
 import { formatTime, formatNumber } from 'util/format';
+import { thumbanilUrl } from 'util/src';
 import './UserVideoItem.scss';
 
 interface UserVideoItemProps {
@@ -18,11 +19,8 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({
   return (
     <li className="user-video-item">
       <div className="user-video-item__thumbnail">
-        {item.thumbnail.url ? (
-          <img
-            src={`${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${item.thumbnail.url}`}
-            alt={item.title}
-          />
+        {thumbanilUrl(item) ? (
+          <img src={thumbanilUrl(item)} alt={item.title} />
         ) : (
           'No Thumbnail'
         )}
