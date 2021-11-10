@@ -40,7 +40,7 @@ const Pagination: React.FC<PaginationProps> = ({
     history.push(destinationUrl);
   };
 
-  return (
+  return count > 0 ? (
     <div className="pagination">
       <Button inversed onClick={() => pageHandler(1)}>
         <DoubleAngleLeftIcon />
@@ -76,7 +76,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <DoubleAngleRightIcon />
       </Button>
     </div>
-  );
+  ) : null;
 };
 
 export default Pagination;

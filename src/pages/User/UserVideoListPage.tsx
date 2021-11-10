@@ -16,11 +16,9 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({
 }) => {
   const { accessToken } = useAppSelector((state) => state.auth);
   const { loading, error, userData } = useAppSelector((state) => state.user);
-
-  const [currentPage, setCurrentPage] = useState(0);
-  const [isFetched, setIsFetched] = useState(false);
-
   const dispatch = useAppDispatch();
+
+  const [isFetched, setIsFetched] = useState(false);
   const { videos, count } = useMemo(
     () => ({
       videos: userData!.videos.data,
@@ -28,25 +26,24 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({
     }),
     [userData]
   );
-
-  useEffect(() => {
+  const currentPage = useMemo(() => {
     let page = 1;
 
     if (location.search) {
       const urlQuery = new URLSearchParams(location.search);
       const pageQuery = urlQuery.get('page');
 
-      if (!pageQuery) return;
+      if (!pageQuery) return page;
 
       page = +pageQuery;
     }
 
-    setCurrentPage(page);
+    return page;
   }, [location.search]);
 
   useEffect(() => {
     (async () => {
-      if (!accessToken || !currentPage) return;
+      if (!accessToken) return;
 
       const success = await dispatch(
         fetchUserVideos(currentPage, history.action !== 'POP')
@@ -61,17 +58,13 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({
       <UserVideoHeader currentPage={currentPage} />
       <LoadingSpinner on={loading} />
       <Response type="error" content={error} />
-      {!loading && isFetched && (
-        <>
-          <UserVideoList items={videos} />
-          {videos.length > 0 && (
-            <Pagination
-              baseUrl={location.pathname}
-              count={count}
-              currentPage={currentPage}
-            />
-          )}
-        </>
+      {!loading && isFetched && <UserVideoList items={videos} />}
+      {count > 0 && (
+        <Pagination
+          baseUrl={location.pathname}
+          count={count}
+          currentPage={currentPage}
+        />
       )}
     </UserLayout>
   );
