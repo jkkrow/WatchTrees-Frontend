@@ -1,18 +1,16 @@
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 
-import { AppDispatch, RootState } from 'store';
+import { AppDispatch, AppState, AppThunk } from 'store';
 import { userActions, UserData } from 'store/reducers/user-reducer';
 
-export const fetchUserVideos = (pageNumber: number) => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
+export const fetchUserVideos = (pageNumber: number): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
       dispatch(userActions.userRequest());
 
-      const { accessToken } = getState().auth;
-
-      const { data } = await axios.get(`/user/videos?page=${pageNumber}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
+      const { data } = await client.get(`/user/videos?page=${pageNumber}`);
 
       dispatch(userActions.userSuccess());
 
@@ -33,7 +31,7 @@ export const fetchUserVideos = (pageNumber: number) => {
 export const updateUserData = (info: {
   [key in keyof UserData]?: UserData[key];
 }) => {
-  return (dispatch: AppDispatch, getState: () => RootState) => {
+  return (dispatch: AppDispatch, getState: () => AppState) => {
     dispatch(userActions.setUserData(info));
 
     const { userData } = getState().user;

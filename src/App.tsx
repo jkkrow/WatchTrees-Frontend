@@ -16,7 +16,6 @@ import LoginPage from 'pages/Auth/LoginPage';
 import SendRecoveryEmailPage from 'pages/Auth/SendRecoveryEmailPage';
 import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
 import NotFoundPage from 'pages/Error/NotFoundPage';
-import { useInterval } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import {
   logout,
@@ -29,8 +28,6 @@ const App: React.FC = () => {
   const { refreshToken } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const [accessTokenInterval] = useInterval();
-
   useEffect(() => {
     const refreshTokenStorage = localStorage.getItem('refreshToken');
 
@@ -42,25 +39,18 @@ const App: React.FC = () => {
 
     const { exp } = jwt_decode<JwtPayload>(refreshToken);
     const expiresIn = (exp as number) * 1000;
+
     const i = Date.now();
     const j = i + 86400000 * 6;
 
     if (expiresIn >= i && expiresIn < j) {
-      dispatch(updateRefreshToken(refreshToken));
+      dispatch(updateRefreshToken());
     } else if (expiresIn >= j) {
-      dispatch(updateAccessToken(refreshToken));
+      dispatch(updateAccessToken());
     } else {
       dispatch(logout());
     }
   }, [dispatch]);
-
-  useEffect(() => {
-    if (!refreshToken) return;
-
-    accessTokenInterval(() => {
-      dispatch(updateAccessToken(refreshToken));
-    }, 1000 * 60 * 14);
-  }, [dispatch, refreshToken, accessTokenInterval]);
 
   return (
     <BrowserRouter>

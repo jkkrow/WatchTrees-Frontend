@@ -1,7 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
-import axiosRetry from 'axios-retry';
 
-import { RootState, AppDispatch } from 'store';
+import { AppDispatch, AppThunk } from 'store';
 import { uploadActions } from 'store/reducers/upload-reducer';
 import { uiActions } from 'store/reducers/ui-reducer';
 import { VideoTree, VideoInfo } from 'store/reducers/video-reducer';
@@ -15,9 +14,14 @@ export const initiateUpload = () => {
   };
 };
 
-export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
+export const uploadVideo = (
+  file: File,
+  nodeId: string,
+  treeId: string
+): AppThunk => {
+  return async (dispatch, _, api) => {
     try {
+      const client = dispatch(api());
       const videoDuration = await new Promise<number>((resolve) => {
         const video = document.createElement('video');
 
@@ -50,15 +54,13 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
       );
 
       // Initiate Upload
-      let accessToken = getState().auth.accessToken as string;
-      const response = await axios.get('/upload/video-initiate', {
+      const response = await client.get('/upload/video-initiate', {
         params: {
           treeId,
           nodeId,
           fileName: file.name,
           fileType: file.type,
         },
-        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       const { uploadId } = response.data;
@@ -99,24 +101,19 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
           index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
         // Get Urls
-        accessToken = getState().auth.accessToken as string;
-        const getUploadUrlResponse = await axios.get('/upload/video-url', {
+        const getUploadUrlResponse = await client.get('/upload/video-url', {
           params: {
             uploadId,
             partNumber: index,
             treeId,
             fileName: file.name,
           },
-          headers: { Authorization: `Bearer ${accessToken}` },
         });
 
         const { presignedUrl } = getUploadUrlResponse.data;
 
         // Save Promises
-        const request = axios.create();
-        axiosRetry(request, { retries: 3, retryDelay: () => 3000 });
-
-        const uploadPromise = request.put(presignedUrl, blob, {
+        const uploadPromise = axios.put(presignedUrl, blob, {
           onUploadProgress: (e) => uploadProgressHandler(e, index),
           headers: {
             'Content-Type': file.type,
@@ -136,8 +133,7 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
       });
 
       // Complete Upload
-      accessToken = getState().auth.accessToken as string;
-      const completeUploadReseponse = await axios.post(
+      const completeUploadReseponse = await client.post(
         '/upload/video-complete',
         {
           params: {
@@ -146,8 +142,7 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
             treeId,
             fileName: file.name,
           },
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
+        }
       );
 
       dispatch(uploadActions.setNode({ info: { progress: 100 }, nodeId }));
@@ -171,9 +166,10 @@ export const uploadVideo = (file: File, nodeId: string, treeId: string) => {
   };
 };
 
-export const uploadThumbnail = (file: File) => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
+export const uploadThumbnail = (file: File): AppThunk => {
+  return async (dispatch, _, api) => {
     try {
+      const client = dispatch(api());
       const thumbnailInfo = {
         name: file.name,
         url: URL.createObjectURL(file),
@@ -181,17 +177,13 @@ export const uploadThumbnail = (file: File) => {
 
       dispatch(uploadActions.setTree({ info: { thumbnail: thumbnailInfo } }));
 
-      const { auth } = getState();
-      const accessToken = auth.accessToken as string;
-
-      const response = await axios.get('/upload/image', {
+      const response = await client.get('/upload/image', {
         params: { fileType: file.type },
-        headers: { Authorization: `Bearer ${accessToken}` },
       });
 
       const { presignedUrl, key } = response.data;
 
-      await axios.put(presignedUrl, file, {
+      await client.put(presignedUrl, file, {
         headers: { 'Content-Type': file.type },
       });
 
@@ -207,9 +199,9 @@ export const uploadThumbnail = (file: File) => {
       let error = err as AxiosError;
       dispatch(
         uiActions.setMessage({
-          content: `${
+          content: `Uploading thumbnail failed: ${
             error.response?.data?.message || error.message
-          } - Uploading thumbnail failed.`,
+          }`,
           type: 'error',
           timer: 5000,
         })
@@ -218,20 +210,17 @@ export const uploadThumbnail = (file: File) => {
   };
 };
 
-export const saveUpload = () => {
-  return async (dispatch: AppDispatch, getState: () => RootState) => {
+export const saveUpload = (): AppThunk => {
+  return async (dispatch, getState, api) => {
     try {
-      // Get current upload state
-      const { auth, upload } = getState();
+      const client = dispatch(api());
+      const { upload } = getState();
 
       const uploadTree = upload.uploadTree as VideoTree;
-      const accessToken = auth.accessToken as string;
 
-      const saveRepsonse = await axios.post(
-        '/upload/save-upload',
-        { uploadTree },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+      const saveRepsonse = await client.post('/upload/save-upload', {
+        uploadTree,
+      });
 
       dispatch(uploadActions.saveUpload());
 
@@ -246,9 +235,9 @@ export const saveUpload = () => {
       let error = err as AxiosError;
       dispatch(
         uiActions.setMessage({
-          content: `${
+          content: `Saving upload failed: ${
             error.response?.data?.message || error.message
-          } - Saving upload failed.`,
+          }`,
           type: 'error',
           timer: 5000,
         })
