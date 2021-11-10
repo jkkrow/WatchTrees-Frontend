@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import UserLayout from 'components/User/Layout/UserLayout';
 import UserVideoHeader from 'components/User/Video/Header/UserVideoHeader';
@@ -7,20 +7,27 @@ import Pagination from 'components/Common/UI/Pagination/Pagination';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Response from 'components/Common/UI/Response/Response';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree } from 'store/reducers/video-reducer';
 import { fetchUserVideos } from 'store/actions/user-action';
 import { RouteComponentProps } from 'react-router';
 
-const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {
+const UserVideoListPage: React.FC<RouteComponentProps> = ({
+  history,
+  location,
+}) => {
   const { accessToken } = useAppSelector((state) => state.auth);
-  const { loading, error } = useAppSelector((state) => state.user);
+  const { loading, error, userData } = useAppSelector((state) => state.user);
 
-  const [totalPage, setTotalPage] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const [fetchedVideos, setFetchedVideos] = useState<VideoTree[]>([]);
   const [isFetched, setIsFetched] = useState(false);
 
   const dispatch = useAppDispatch();
+  const { videos, count } = useMemo(
+    () => ({
+      videos: userData!.videos.data,
+      count: userData!.videos.count,
+    }),
+    [userData]
+  );
 
   useEffect(() => {
     let page = 1;
@@ -41,15 +48,13 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {
     (async () => {
       if (!accessToken || !currentPage) return;
 
-      const response = await dispatch(fetchUserVideos(currentPage));
+      const success = await dispatch(
+        fetchUserVideos(currentPage, history.action !== 'POP')
+      );
 
-      if (response) {
-        setFetchedVideos(JSON.parse(JSON.stringify(response.videos)));
-        setTotalPage(response.totalPage);
-        setIsFetched(true);
-      }
+      success && setIsFetched(true);
     })();
-  }, [dispatch, accessToken, currentPage]);
+  }, [dispatch, accessToken, currentPage, history]);
 
   return (
     <UserLayout>
@@ -58,11 +63,11 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ location }) => {
       <Response type="error" content={error} />
       {!loading && isFetched && (
         <>
-          <UserVideoList items={fetchedVideos} />
-          {fetchedVideos && (
+          <UserVideoList items={videos} />
+          {videos.length > 0 && (
             <Pagination
               baseUrl={location.pathname}
-              totalPage={totalPage}
+              count={count}
               currentPage={currentPage}
             />
           )}

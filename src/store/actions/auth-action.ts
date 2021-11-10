@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import axiosRetry from 'axios-retry';
 
 import { AppDispatch, AppThunk } from 'store';
@@ -12,8 +11,9 @@ export const register = (credentials: {
   confirmPassword: string;
 }): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       dispatch(authActions.authRequest());
 
       const { data } = await client.post('/auth/register', credentials);
@@ -22,10 +22,7 @@ export const register = (credentials: {
 
       return true;
     } catch (err) {
-      let error = err as AxiosError;
-      dispatch(
-        authActions.authFail(error.response?.data?.message || error.message)
-      );
+      dispatch(authActions.authFail(`${err}`));
     }
   };
 };
@@ -34,8 +31,9 @@ export const login = (
   credentials: { email: string; password: string } | { tokenId: string }
 ): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       dispatch(authActions.authRequest());
 
       const { data } = await client.post('/auth/login', credentials);
@@ -59,10 +57,7 @@ export const login = (
         }
       });
     } catch (err) {
-      let error = err as AxiosError;
-      dispatch(
-        authActions.authFail(error.response?.data?.message || error.message)
-      );
+      dispatch(authActions.authFail(`${err}`));
     }
   };
 };
@@ -78,8 +73,9 @@ export const logout = () => {
 
 export const updateRefreshToken = (): AppThunk => {
   return async (dispatch, getState, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       const { refreshToken } = getState().auth;
 
       axiosRetry(client, {
@@ -106,12 +102,9 @@ export const updateRefreshToken = (): AppThunk => {
 
       return data.refreshToken;
     } catch (err) {
-      let error = err as AxiosError;
       dispatch(
         loadMessage({
-          content: `Fetching user credential failed: ${
-            error.response?.data?.message || error.message
-          } Please reload page or re-signin`,
+          content: `Fetching user credential failed: ${err}. Please reload page or re-signin`,
           type: 'error',
         })
       );
@@ -121,8 +114,9 @@ export const updateRefreshToken = (): AppThunk => {
 
 export const updateAccessToken = (): AppThunk => {
   return async (dispatch, getState, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       const { refreshToken } = getState().auth;
 
       axiosRetry(client, {
@@ -146,12 +140,9 @@ export const updateAccessToken = (): AppThunk => {
 
       return data.accessToken;
     } catch (err) {
-      let error = err as AxiosError;
       dispatch(
         loadMessage({
-          content: `Fetching user credential failed: ${
-            error.response?.data?.message || error.message
-          } Please reload page or re-signin`,
+          content: `Fetching user credential failed: ${err}. Please reload page or re-signin`,
           type: 'error',
         })
       );
@@ -161,26 +152,25 @@ export const updateAccessToken = (): AppThunk => {
 
 export const sendVerifyEmail = (email: string): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       dispatch(authActions.authRequest());
 
       const { data } = await client.post('/auth/send-verify-email', { email });
 
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      let error = err as AxiosError;
-      dispatch(
-        authActions.authFail(error.response?.data?.message || error.message)
-      );
+      dispatch(authActions.authFail(`${err}`));
     }
   };
 };
 
 export const verifyEmail = (token: string): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       dispatch(authActions.authRequest());
 
       const { data } = await client.get(`/auth/verify-email/${token}`);
@@ -189,18 +179,16 @@ export const verifyEmail = (token: string): AppThunk => {
 
       return true;
     } catch (err) {
-      let error = err as AxiosError;
-      dispatch(
-        authActions.authFail(error.response?.data?.message || error.message)
-      );
+      dispatch(authActions.authFail(`${err}`));
     }
   };
 };
 
 export const sendRecoveryEmail = (email: string): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       dispatch(authActions.authRequest());
 
       const { data } = await client.post('/auth/send-recovery-email', {
@@ -209,28 +197,23 @@ export const sendRecoveryEmail = (email: string): AppThunk => {
 
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      let error = err as AxiosError;
-      dispatch(
-        authActions.authFail(error.response?.data?.message || error.message)
-      );
+      dispatch(authActions.authFail(`${err}`));
     }
   };
 };
 
 export const getResetPassword = (token: string): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       dispatch(authActions.authRequest());
 
       await client.get(`/auth/reset-password/${token}`);
 
       return true;
     } catch (err) {
-      let error = err as AxiosError;
-      dispatch(
-        authActions.authFail(error.response?.data?.message || error.message)
-      );
+      dispatch(authActions.authFail(`${err}`));
     }
   };
 };
@@ -241,8 +224,9 @@ export const postResetPassword = (
   token: string
 ): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       dispatch(authActions.authRequest());
 
       const { data } = await client.put(`/auth/reset-password/${token}`, {
@@ -252,10 +236,7 @@ export const postResetPassword = (
 
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      let error = err as AxiosError;
-      dispatch(
-        authActions.authFail(error.response?.data?.message || error.message)
-      );
+      dispatch(authActions.authFail(`${err}`));
     }
   };
 };

@@ -19,7 +19,7 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ currentPage }) => {
 
   const history = useHistory();
 
-  const addNewVideoHandler = (): void => {
+  const addNewVideoHandler = () => {
     if (!uploadTree) {
       dispatch(initiateUpload());
     }
@@ -27,8 +27,8 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ currentPage }) => {
     history.push('/new-video');
   };
 
-  const fetchVideosHandler = (): void => {
-    dispatch(fetchUserVideos(currentPage));
+  const fetchVideosHandler = async () => {
+    await dispatch(fetchUserVideos(currentPage));
   };
 
   return (

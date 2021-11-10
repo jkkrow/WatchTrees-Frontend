@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { useHistory } from 'react-router';
 
 import Button from 'components/Common/Element/Button/Button';
@@ -10,23 +10,32 @@ import './Pagination.scss';
 
 interface PaginationProps {
   baseUrl: string;
-  totalPage: number;
+  count: number;
   currentPage: number;
   keyword?: string;
+  itemsPerPage?: number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   baseUrl,
-  totalPage,
+  count,
   currentPage = 1,
+  itemsPerPage = 10,
   keyword,
 }) => {
   const history = useHistory();
+  const totalPage = useMemo(
+    () => Math.ceil(count / itemsPerPage),
+    [count, itemsPerPage]
+  );
 
   const pageHandler = (pageNumber: number) => {
-    if (pageNumber < 1 || pageNumber > totalPage || pageNumber === currentPage) return;
+    if (pageNumber < 1 || pageNumber > totalPage || pageNumber === currentPage)
+      return;
 
-    const destinationUrl = `${baseUrl}${keyword ? `${keyword}/` : ''}?page=${pageNumber}`;
+    const destinationUrl = `${baseUrl}${
+      keyword ? `${keyword}/` : ''
+    }?page=${pageNumber}`;
 
     history.push(destinationUrl);
   };

@@ -20,8 +20,9 @@ export const uploadVideo = (
   treeId: string
 ): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       const videoDuration = await new Promise<number>((resolve) => {
         const video = document.createElement('video');
 
@@ -168,8 +169,9 @@ export const uploadVideo = (
 
 export const uploadThumbnail = (file: File): AppThunk => {
   return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       const thumbnailInfo = {
         name: file.name,
         url: URL.createObjectURL(file),
@@ -212,8 +214,9 @@ export const uploadThumbnail = (file: File): AppThunk => {
 
 export const saveUpload = (): AppThunk => {
   return async (dispatch, getState, api) => {
+    const client = dispatch(api());
+
     try {
-      const client = dispatch(api());
       const { upload } = getState();
 
       const uploadTree = upload.uploadTree as VideoTree;
