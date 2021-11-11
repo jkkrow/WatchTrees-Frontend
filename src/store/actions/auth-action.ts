@@ -1,5 +1,3 @@
-import axiosRetry from 'axios-retry';
-
 import { AppDispatch, AppThunk } from 'store';
 import { authActions } from 'store/reducers/auth-reducer';
 import { loadMessage } from './ui-action';
@@ -22,7 +20,7 @@ export const register = (credentials: {
 
       return true;
     } catch (err) {
-      dispatch(authActions.authFail(`${err}`));
+      dispatch(authActions.authFail(`${(err as Error).message}`));
     }
   };
 };
@@ -57,7 +55,7 @@ export const login = (
         }
       });
     } catch (err) {
-      dispatch(authActions.authFail(`${err}`));
+      dispatch(authActions.authFail(`${(err as Error).message}`));
     }
   };
 };
@@ -77,11 +75,6 @@ export const updateRefreshToken = (): AppThunk => {
 
     try {
       const { refreshToken } = getState().auth;
-
-      axiosRetry(client, {
-        retries: 3,
-        retryDelay: () => 3000,
-      });
 
       const { data } = await client.get('/auth/refresh-token', {
         headers: { Authorization: 'Bearer ' + refreshToken },
@@ -104,7 +97,9 @@ export const updateRefreshToken = (): AppThunk => {
     } catch (err) {
       dispatch(
         loadMessage({
-          content: `Fetching user credential failed: ${err}. Please reload page or re-signin`,
+          content: `${
+            (err as Error).message
+          }: Fetching user credential failed. Please reload page or re-signin`,
           type: 'error',
         })
       );
@@ -118,11 +113,6 @@ export const updateAccessToken = (): AppThunk => {
 
     try {
       const { refreshToken } = getState().auth;
-
-      axiosRetry(client, {
-        retries: 3,
-        retryDelay: () => 3000,
-      });
 
       const { data } = await client.get('/auth/access-token', {
         headers: { Authorization: 'Bearer ' + refreshToken },
@@ -142,7 +132,9 @@ export const updateAccessToken = (): AppThunk => {
     } catch (err) {
       dispatch(
         loadMessage({
-          content: `Fetching user credential failed: ${err}. Please reload page or re-signin`,
+          content: `${
+            (err as Error).message
+          }: Fetching user credential failed. Please reload page or re-signin`,
           type: 'error',
         })
       );
@@ -161,7 +153,7 @@ export const sendVerifyEmail = (email: string): AppThunk => {
 
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      dispatch(authActions.authFail(`${err}`));
+      dispatch(authActions.authFail(`${(err as Error).message}`));
     }
   };
 };
@@ -179,7 +171,7 @@ export const verifyEmail = (token: string): AppThunk => {
 
       return true;
     } catch (err) {
-      dispatch(authActions.authFail(`${err}`));
+      dispatch(authActions.authFail(`${(err as Error).message}`));
     }
   };
 };
@@ -197,7 +189,7 @@ export const sendRecoveryEmail = (email: string): AppThunk => {
 
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      dispatch(authActions.authFail(`${err}`));
+      dispatch(authActions.authFail(`${(err as Error).message}`));
     }
   };
 };
@@ -213,7 +205,7 @@ export const getResetPassword = (token: string): AppThunk => {
 
       return true;
     } catch (err) {
-      dispatch(authActions.authFail(`${err}`));
+      dispatch(authActions.authFail(`${(err as Error).message}`));
     }
   };
 };
@@ -236,7 +228,7 @@ export const postResetPassword = (
 
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
-      dispatch(authActions.authFail(`${err}`));
+      dispatch(authActions.authFail(`${(err as Error).message}`));
     }
   };
 };

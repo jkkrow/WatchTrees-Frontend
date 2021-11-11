@@ -9,6 +9,7 @@ import Fullscreen from './Controls/Fullscreen';
 import Selector from './Controls/Selector';
 import Navigation from './Controls/Navigation';
 import Loader from './Controls/Loader';
+import KeyAction from './Controls/KeyAction';
 import { useTimeout } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
@@ -90,6 +91,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const [controlsTimeout] = useTimeout();
   const [volumeTimeout] = useTimeout();
+  const [keyActionTimeout] = useTimeout();
   const [loaderTimeout, clearLoaderTimeout] = useTimeout();
 
   const activeChange = useCompare(active);
@@ -395,14 +397,70 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       const { key } = event;
 
+      const rewind = document.querySelector(
+        '.vp-key-action__skip.rewind'
+      ) as HTMLElement;
+      const forward = document.querySelector(
+        '.vp-key-action__skip.forward'
+      ) as HTMLElement;
+
+      const rewindSVG = rewind.firstElementChild as HTMLElement;
+      const forwardSVG = forward.firstElementChild as HTMLElement;
+
       switch (key) {
-        case 'ArrowRight':
-          // Forward 10 seconds
-          video.currentTime += 10;
-          break;
         case 'ArrowLeft':
           // Rewind 10 seconds
           video.currentTime -= 10;
+
+          rewind.style.display = 'flex';
+          rewind.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 1000,
+            easing: 'ease-in',
+            fill: 'forwards',
+          });
+          rewindSVG.animate(
+            [
+              { opacity: 1, transform: 'translateX(0)' },
+              { opacity: 0, transform: 'translateX(-100%)' },
+            ],
+            {
+              duration: 500,
+              easing: 'ease-in',
+              fill: 'forwards',
+            }
+          );
+          keyActionTimeout(() => {
+            rewind.style.display = 'none';
+            forward.style.display = 'none';
+          }, 1000);
+
+          break;
+        case 'ArrowRight':
+          // Forward 10 seconds
+          video.currentTime += 10;
+
+          forward.style.display = 'flex';
+          forward.animate([{ opacity: 1 }, { opacity: 0 }], {
+            duration: 1000,
+            easing: 'ease-in',
+            fill: 'forwards',
+          });
+          forwardSVG.animate(
+            [
+              { opacity: 1, transform: 'translateX(0)' },
+              { opacity: 0, transform: 'translateX(100%)' },
+            ],
+            {
+              duration: 500,
+              easing: 'ease-in',
+              fill: 'forwards',
+            }
+          );
+          keyActionTimeout(() => {
+            rewind.style.display = 'none';
+            forward.style.display = 'none';
+          }, 1000);
+
           break;
         case 'ArrowUp':
           // Volume Up
@@ -432,11 +490,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
           selectNextVideoHandler(+key - 1);
       }
-
-      showControlsHandler();
     },
-    [togglePlayHandler, showControlsHandler, selectNextVideoHandler]
+    [togglePlayHandler, selectNextVideoHandler, keyActionTimeout]
   );
+
   /*
    * INITIALIZE VIDEO
    */
@@ -639,7 +696,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onWaiting={showLoaderHandler}
         onCanPlay={hideLoaderHandler}
       />
-
+      <Loader on={displayLoader} />
+      <KeyAction />
       <div
         className={`vp-controls${!canPlayType ? ' hidden' : ''}${
           !displayControls ? ' hide' : ''
@@ -664,7 +722,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           />
           <Time time={remainedTimeUI} />
         </div>
-
         <div className="vp-controls__body">
           <Volume
             volume={volumeState}
@@ -684,15 +741,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           />
         </div>
       </div>
-
       <Selector
         on={displaySelector}
         high={displayControls}
         next={currentVideo.children}
         onSelect={selectNextVideoHandler}
       />
-
-      <Loader on={displayLoader} />
 
       {editMode && (
         <Navigation

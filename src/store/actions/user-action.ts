@@ -24,7 +24,9 @@ export const fetchUserVideos = (
 
       return true;
     } catch (err) {
-      dispatch(userActions.userFail(`Failed to load videos: ${err}`));
+      dispatch(
+        userActions.userFail(`${(err as Error).message}: Failed to load videos`)
+      );
     }
   };
 };

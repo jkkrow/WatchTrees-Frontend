@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 import { AppDispatch, AppThunk } from 'store';
 import { uploadActions } from 'store/reducers/upload-reducer';
@@ -156,10 +156,9 @@ export const uploadVideo = (
 
       dispatch(saveUpload());
     } catch (err) {
-      let error = err as AxiosError;
       dispatch(
         uploadActions.setNode({
-          info: { error: error.response?.data?.message || error.message },
+          info: { error: `${(err as Error).message}` },
           nodeId,
         })
       );
@@ -198,12 +197,9 @@ export const uploadThumbnail = (file: File): AppThunk => {
 
       dispatch(saveUpload());
     } catch (err) {
-      let error = err as AxiosError;
       dispatch(
         uiActions.setMessage({
-          content: `Uploading thumbnail failed: ${
-            error.response?.data?.message || error.message
-          }`,
+          content: `${(err as Error).message}: Uploading thumbnail failed`,
           type: 'error',
           timer: 5000,
         })
@@ -235,12 +231,9 @@ export const saveUpload = (): AppThunk => {
         })
       );
     } catch (err) {
-      let error = err as AxiosError;
       dispatch(
         uiActions.setMessage({
-          content: `Saving upload failed: ${
-            error.response?.data?.message || error.message
-          }`,
+          content: `${(err as Error).message}: Saving upload failed`,
           type: 'error',
           timer: 5000,
         })

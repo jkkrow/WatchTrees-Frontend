@@ -1,4 +1,4 @@
-import axios, { AxiosAdapter } from 'axios';
+import axios, { AxiosAdapter, AxiosError } from 'axios';
 import { cacheAdapterEnhancer } from 'axios-extensions';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
@@ -48,7 +48,13 @@ export const api = () => {
       (err) => {
         console.log(err);
 
-        return Promise.reject(err.response?.data?.message || err.message);
+        let axiosError: AxiosError | undefined;
+
+        if (err.response) {
+          axiosError = err.response.data;
+        }
+
+        return Promise.reject(axiosError || err);
       }
     );
 

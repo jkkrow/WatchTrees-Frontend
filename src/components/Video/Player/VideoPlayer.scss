@@ -59,6 +59,7 @@ $vp-progress--timeline: #ececec;
     position: absolute;
     width: 100%;
     height: 100%;
+    outline: none;
     background-color: transparent;
     cursor: pointer;
     z-index: 5;
@@ -90,6 +91,11 @@ $vp-progress--timeline: #ececec;
   justify-content: center;
   background-color: $vp-bg;
   outline: none;
+
+  video {
+    position: relative;
+    z-index: 1;
+  }
 }
 
 .vp-controls {
@@ -98,7 +104,7 @@ $vp-progress--timeline: #ececec;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  left: 0;
+  left: -1px;
   right: -1px;
   bottom: -1px;
   height: 30%;
@@ -179,7 +185,7 @@ $vp-progress--timeline: #ececec;
     align-items: center;
 
     &:hover button {
-      transform: translateX(-60%) scale(1.5);
+      transform: translateX(-100%) scale(1.5);
     }
 
     &:hover &__range {
@@ -202,7 +208,6 @@ $vp-progress--timeline: #ececec;
     position: relative;
     width: 100%;
     height: 100%;
-    cursor: pointer;
 
     &__range {
       @include vp-range($vp-accent--primary);
@@ -223,7 +228,7 @@ $vp-progress--timeline: #ececec;
       padding: 0.3rem;
       font-weight: 700;
       color: $vp-text;
-      background-color: transparentize($color: $vp-bg, $amount: 0.2);
+      background-color: rgba($color: $vp-bg, $alpha: 0.8);
       opacity: 0;
       visibility: hidden;
       transform: translateX(-50%);
@@ -281,7 +286,7 @@ $vp-progress--timeline: #ececec;
     cursor: pointer;
     font-size: clamp(1.2rem, 1vw, 1.7rem);
     color: $vp-text;
-    background-color: transparentize($color: $vp-bg, $amount: 0.2);
+    background-color: rgba($color: $vp-bg, $alpha: 0.8);
     transition-property: background-color, opacity, visibility, transform;
     transition-duration: 200ms;
     transition-timing-function: ease-out;
@@ -289,23 +294,6 @@ $vp-progress--timeline: #ececec;
 
   &__btn:hover {
     background-color: $vp-bg;
-  }
-}
-
-.vp-navigation {
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 1rem;
-  gap: 1rem;
-  bottom: -4rem;
-  z-index: 10;
-
-  svg {
-    width: 1.5rem;
-    height: 1.5rem;
   }
 }
 
@@ -318,7 +306,7 @@ $vp-progress--timeline: #ececec;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: transparentize($color: $vp-bg, $amount: 0.5);
+  background-color: rgba($color: $vp-bg, $alpha: 0.5);
   z-index: 20;
 
   div {
@@ -338,5 +326,82 @@ $vp-progress--timeline: #ececec;
     100% {
       transform: rotate(360deg);
     }
+  }
+}
+
+.vp-key-action {
+  position: absolute;
+  display: flex;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  &__volume {
+    position: absolute;
+    display: flex;
+    width: clamp(5rem, 10%, 8rem);
+    height: clamp(20rem, 50%, 30rem);
+    margin: auto;
+    background-color: rgba($color: $vp-bg, $alpha: 0.7);
+  }
+
+  &__skip {
+    position: absolute;
+    // opacity: 0;
+    // display: flex;
+    display: none;
+    top: -1px;
+    bottom: -1px;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+
+    &.rewind {
+      left: -1px;
+      right: 50%;
+      background-image: linear-gradient(
+        to left,
+        transparent,
+        rgba($color: $vp-bg, $alpha: 0.7)
+      );
+    }
+
+    &.forward {
+      left: 50%;
+      right: -1px;
+      background-image: linear-gradient(
+        to right,
+        transparent,
+        rgba($color: $vp-bg, $alpha: 0.7)
+      );
+    }
+  }
+
+  svg {
+    width: initial;
+    height: clamp(5rem, 20%, 15rem);
+    margin: auto;
+    fill: transparent;
+
+    pointer-events: none;
+    aspect-ratio: 1/1;
+  }
+}
+
+.vp-navigation {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem;
+  gap: 1rem;
+  bottom: -4rem;
+  z-index: 10;
+
+  svg {
+    width: 1.5rem;
+    height: 1.5rem;
   }
 }
