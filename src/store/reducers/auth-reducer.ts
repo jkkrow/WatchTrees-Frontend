@@ -10,12 +10,12 @@ interface AuthSliceState {
   message: string | null;
 }
 
-const refreshTokenJSON = localStorage.getItem('refreshToken');
+const refreshTokenStorage = localStorage.getItem('refreshToken');
 
 const initialState: AuthSliceState = {
   accessToken: null,
-  refreshToken: refreshTokenJSON
-    ? (JSON.parse(refreshTokenJSON) as string)
+  refreshToken: refreshTokenStorage
+    ? (JSON.parse(refreshTokenStorage) as string)
     : null,
   loading: false,
   error: null,

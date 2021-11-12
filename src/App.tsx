@@ -1,11 +1,9 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
-import ProtectedRoute from 'service/ProtectedRoute';
 import VideoListPage from 'pages/Video/VideoListPage';
 import VerifyEmailPage from 'pages/Auth/VerifyEmailPage';
 import AccountPage from 'pages/User/AccountPage';
@@ -16,12 +14,9 @@ import LoginPage from 'pages/Auth/LoginPage';
 import SendRecoveryEmailPage from 'pages/Auth/SendRecoveryEmailPage';
 import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
 import NotFoundPage from 'pages/Error/NotFoundPage';
+import ProtectedRoute from 'service/ProtectedRoute';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import {
-  logout,
-  updateRefreshToken,
-  updateAccessToken,
-} from 'store/actions/auth-action';
+import { fetchTokenOnload } from 'store/actions/auth-action';
 import './App.scss';
 
 const App: React.FC = () => {
@@ -29,27 +24,7 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const refreshTokenStorage = localStorage.getItem('refreshToken');
-
-    if (!refreshTokenStorage) {
-      return dispatch(logout());
-    }
-
-    const refreshToken: string = JSON.parse(refreshTokenStorage);
-
-    const { exp } = jwt_decode<JwtPayload>(refreshToken);
-    const expiresIn = (exp as number) * 1000;
-
-    const i = Date.now();
-    const j = i + 86400000 * 6;
-
-    if (expiresIn >= i && expiresIn < j) {
-      dispatch(updateRefreshToken());
-    } else if (expiresIn >= j) {
-      dispatch(updateAccessToken());
-    } else {
-      dispatch(logout());
-    }
+    dispatch(fetchTokenOnload());
   }, [dispatch]);
 
   return (

@@ -18,10 +18,10 @@ interface userSliceState {
   error: string | null;
 }
 
-const userDataJSON = localStorage.getItem('userData');
+const userDataStorage = localStorage.getItem('userData');
 
 const initialState: userSliceState = {
-  userData: userDataJSON ? (JSON.parse(userDataJSON) as UserData) : null,
+  userData: userDataStorage ? (JSON.parse(userDataStorage) as UserData) : null,
   loading: false,
   error: null,
 };

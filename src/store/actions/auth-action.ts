@@ -1,3 +1,5 @@
+import jwt_decode, { JwtPayload } from 'jwt-decode';
+
 import { AppDispatch, AppThunk } from 'store';
 import { authActions } from 'store/reducers/auth-reducer';
 import { loadMessage } from './ui-action';
@@ -69,66 +71,49 @@ export const logout = () => {
   };
 };
 
-export const updateRefreshToken = (): AppThunk => {
+export const fetchTokenOnload = (): AppThunk => {
   return async (dispatch, getState, api) => {
     const client = dispatch(api());
 
     try {
       const { refreshToken } = getState().auth;
 
-      const { data } = await client.get('/auth/refresh-token', {
-        headers: { Authorization: 'Bearer ' + refreshToken },
-      });
+      if (!refreshToken) {
+        return dispatch(logout());
+      }
 
-      dispatch(authActions.setRefreshToken(data.refreshToken));
-      dispatch(authActions.setAccessToken(data.accessToken));
+      const { exp } = jwt_decode<JwtPayload>(refreshToken);
+      const expiresIn = (exp as number) * 1000;
 
-      localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
+      const i = Date.now();
+      const j = i + 86400000 * 6;
 
-      window.addEventListener('storage', (event) => {
-        if (event.key !== 'refreshToken') return;
+      if (expiresIn >= i && expiresIn < j) {
+        const { data } = await client.get('/auth/refresh-token', {
+          headers: { Authorization: 'Bearer ' + refreshToken },
+        });
 
-        if (event.oldValue && !event.newValue) {
-          dispatch(authActions.logout());
-        }
-      });
+        dispatch(authActions.setRefreshToken(data.refreshToken));
+        dispatch(authActions.setAccessToken(data.accessToken));
 
-      return data.refreshToken;
-    } catch (err) {
-      dispatch(
-        loadMessage({
-          content: `${
-            (err as Error).message
-          }: Fetching user credential failed. Please reload page or re-signin`,
-          type: 'error',
-        })
-      );
-    }
-  };
-};
+        localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
+      } else if (expiresIn >= j) {
+        const { data } = await client.get('/auth/access-token', {
+          headers: { Authorization: 'Bearer ' + refreshToken },
+        });
 
-export const updateAccessToken = (): AppThunk => {
-  return async (dispatch, getState, api) => {
-    const client = dispatch(api());
-
-    try {
-      const { refreshToken } = getState().auth;
-
-      const { data } = await client.get('/auth/access-token', {
-        headers: { Authorization: 'Bearer ' + refreshToken },
-      });
-
-      dispatch(authActions.setAccessToken(data.accessToken));
+        dispatch(authActions.setAccessToken(data.accessToken));
+      } else {
+        return dispatch(logout());
+      }
 
       window.addEventListener('storage', (event) => {
         if (event.key !== 'refreshToken') return;
 
         if (event.oldValue && !event.newValue) {
-          dispatch(authActions.logout());
+          dispatch(logout());
         }
       });
-
-      return data.accessToken;
     } catch (err) {
       dispatch(
         loadMessage({

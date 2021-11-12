@@ -78,6 +78,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [displaySelector, setDisplaySelector] = useState(false);
   const [selectedNextVideoId, setSelectedNextVideoId] = useState<string>('');
 
+  // vp-key-action
+  const [displayKeyAction, setDisplayKeyAction] = useState(false);
+
   // vp-navigation
   const [timelineMarked, setTimelineMarked] = useState(false);
 
@@ -91,7 +94,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const [controlsTimeout] = useTimeout();
   const [volumeTimeout] = useTimeout();
-  const [keyActionTimeout] = useTimeout();
+  const [keyActionSkipTimeout] = useTimeout();
+  const [keyActionVolumeTimeout] = useTimeout();
   const [loaderTimeout, clearLoaderTimeout] = useTimeout();
 
   const activeChange = useCompare(active);
@@ -397,58 +401,40 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       const { key } = event;
 
-      const rewind = document.querySelector(
-        '.vp-key-action__skip.rewind'
-      ) as HTMLElement;
-      const forward = document.querySelector(
-        '.vp-key-action__skip.forward'
-      ) as HTMLElement;
-
-      const rewindSVG = rewind.firstElementChild as HTMLElement;
-      const forwardSVG = forward.firstElementChild as HTMLElement;
-
       switch (key) {
         case 'ArrowLeft':
-          // Rewind 10 seconds
-          video.currentTime -= 10;
-
-          rewind.style.display = 'flex';
-          rewind.animate([{ opacity: 1 }, { opacity: 0 }], {
-            duration: 1000,
-            easing: 'ease-in',
-            fill: 'forwards',
-          });
-          rewindSVG.animate(
-            [
-              { opacity: 1, transform: 'translateX(0)' },
-              { opacity: 0, transform: 'translateX(-100%)' },
-            ],
-            {
-              duration: 500,
-              easing: 'ease-in',
-              fill: 'forwards',
-            }
-          );
-          keyActionTimeout(() => {
-            rewind.style.display = 'none';
-            forward.style.display = 'none';
-          }, 1000);
-
-          break;
         case 'ArrowRight':
-          // Forward 10 seconds
-          video.currentTime += 10;
+          video.currentTime =
+            key === 'ArrowLeft'
+              ? video.currentTime - 10
+              : video.currentTime + 10;
 
-          forward.style.display = 'flex';
-          forward.animate([{ opacity: 1 }, { opacity: 0 }], {
+          const rewind = document.querySelector(
+            '.vp-key-action__skip.rewind'
+          ) as HTMLElement;
+          const forward = document.querySelector(
+            '.vp-key-action__skip.forward'
+          ) as HTMLElement;
+
+          const target = key === 'ArrowLeft' ? rewind : forward;
+
+          const targetSVG = target.firstElementChild as HTMLElement;
+
+          target.style.display = 'flex';
+          target.animate([{ opacity: 1 }, { opacity: 0 }], {
             duration: 1000,
             easing: 'ease-in',
             fill: 'forwards',
           });
-          forwardSVG.animate(
+          targetSVG.animate(
             [
               { opacity: 1, transform: 'translateX(0)' },
-              { opacity: 0, transform: 'translateX(100%)' },
+              {
+                opacity: 0,
+                transform: `translateX(${
+                  key === 'ArrowLeft' ? '-100%' : '100%'
+                })`,
+              },
             ],
             {
               duration: 500,
@@ -456,27 +442,37 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               fill: 'forwards',
             }
           );
-          keyActionTimeout(() => {
+          keyActionSkipTimeout(() => {
             rewind.style.display = 'none';
             forward.style.display = 'none';
           }, 1000);
 
           break;
         case 'ArrowUp':
-          // Volume Up
           if (video.volume + 0.05 > 1) {
             video.volume = 1;
           } else {
             video.volume = +(video.volume + 0.05).toFixed(2);
           }
+
+          setDisplayKeyAction(true);
+          keyActionVolumeTimeout(() => {
+            setDisplayKeyAction(false);
+          }, 1500);
+
           break;
         case 'ArrowDown':
-          // Volume Down
           if (video.volume - 0.05 < 0) {
             video.volume = 0;
           } else {
             video.volume = +(video.volume - 0.05).toFixed(2);
           }
+
+          setDisplayKeyAction(true);
+          keyActionVolumeTimeout(() => {
+            setDisplayKeyAction(false);
+          }, 1500);
+
           break;
         case ' ':
           togglePlayHandler();
@@ -491,7 +487,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           selectNextVideoHandler(+key - 1);
       }
     },
-    [togglePlayHandler, selectNextVideoHandler, keyActionTimeout]
+    [
+      togglePlayHandler,
+      selectNextVideoHandler,
+      keyActionSkipTimeout,
+      keyActionVolumeTimeout,
+    ]
   );
 
   /*
@@ -697,12 +698,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onCanPlay={hideLoaderHandler}
       />
       <Loader on={displayLoader} />
-      <KeyAction />
+      <KeyAction on={displayKeyAction} volume={volumeState} />
       <div
         className={`vp-controls${!canPlayType ? ' hidden' : ''}${
           !displayControls ? ' hide' : ''
         }`}
       >
+        <div className="vp-controls__background" />
         <div className="vp-controls__header">
           <Time time={currentTimeUI} />
           <Progress

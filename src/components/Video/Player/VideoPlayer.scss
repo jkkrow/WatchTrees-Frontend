@@ -2,10 +2,11 @@ $vp-bg: #000000;
 $vp-text: #ffffff;
 $vp-accent--primary: var(--accent-primary);
 $vp-accent--secondary: var(--accent-secondary);
-$vp-progress--background: #858585;
-$vp-progress--timeline: #ececec;
+$vp-range--background: #858585;
+$vp-range--timeline: #ececec;
 
 @mixin vp-range($color) {
+  position: relative;
   display: flex;
   align-items: center;
 
@@ -14,7 +15,7 @@ $vp-progress--timeline: #ececec;
     width: 100%;
     height: 10%;
     border-radius: 50px;
-    background-color: $vp-progress--background;
+    background-color: $vp-range--background;
   }
 
   &--buffer {
@@ -51,7 +52,7 @@ $vp-progress--timeline: #ececec;
     width: 100%;
     height: 10%;
     border-radius: 50px;
-    background-color: $vp-progress--timeline;
+    background-color: $vp-range--timeline;
   }
 
   &--seek {
@@ -110,13 +111,21 @@ $vp-progress--timeline: #ececec;
   height: 30%;
   max-height: 25rem;
   padding-bottom: 1rem;
-  background-image: linear-gradient(transparent, $vp-bg);
   transition: all 300ms ease-out;
   z-index: 10;
 
   &.hide {
     opacity: 0;
     pointer-events: none;
+  }
+
+  &__background {
+    position: absolute;
+    top: -30%;
+    bottom: -1px;
+    left: -1px;
+    right: -1px;
+    background-image: linear-gradient(transparent, $vp-bg);
   }
 
   &__header {
@@ -154,7 +163,6 @@ $vp-progress--timeline: #ececec;
     background-color: transparent;
     transform: scale(1);
     transition: all 200ms ease-out;
-    z-index: 5;
     aspect-ratio: 1/1;
 
     svg {
@@ -211,7 +219,6 @@ $vp-progress--timeline: #ececec;
 
     &__range {
       @include vp-range($vp-accent--primary);
-      position: relative;
       width: 100%;
       height: 100%;
     }
@@ -244,6 +251,7 @@ $vp-progress--timeline: #ececec;
     font-size: clamp(1.3rem, 2vw, 1.7rem);
     color: $vp-text;
     text-align: center;
+    z-index: 1;
   }
 }
 
@@ -339,23 +347,97 @@ $vp-progress--timeline: #ececec;
 
   &__volume {
     position: absolute;
-    display: flex;
-    width: clamp(5rem, 10%, 8rem);
-    height: clamp(20rem, 50%, 30rem);
-    margin: auto;
-    background-color: rgba($color: $vp-bg, $alpha: 0.7);
+    top: -1px;
+    bottom: 50%;
+    left: -1px;
+    right: -1px;
+    background-image: linear-gradient(
+      rgba($color: $vp-bg, $alpha: 0.7),
+      transparent
+    );
+    transition: opacity 300ms ease-out;
+    z-index: 15;
+
+    &__container {
+      display: flex;
+      margin: auto;
+      gap: 1rem;
+      width: clamp(13rem, 25%, 50rem);
+      height: clamp(3rem, 20%, 8rem);
+      transform: translateY(100%);
+      transition: all 300ms ease-out;
+    }
+
+    &__icon {
+      position: relative;
+      height: 100%;
+      aspect-ratio: 1/1;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    &__range {
+      @include vp-range($vp-text);
+      width: 100%;
+      height: 100%;
+
+      &--background,
+      &--current {
+        height: 30%;
+        transition: width 200ms ease-out;
+      }
+    }
+
+    /* CSS Transition */
+
+    &-enter {
+      opacity: 0;
+
+      > div {
+        opacity: 0;
+        transform: translateY(0);
+      }
+
+      &-active {
+        opacity: 1;
+
+        > div {
+          opacity: 1;
+          transform: translateY(100%);
+        }
+      }
+    }
+
+    &-exit {
+      opacity: 1;
+
+      > div {
+        opacity: 1;
+        transform: translateY(100%);
+      }
+
+      &-active {
+        opacity: 0;
+
+        > div {
+          opacity: 0;
+          transform: translateY(0);
+        }
+      }
+    }
   }
 
   &__skip {
     position: absolute;
-    // opacity: 0;
-    // display: flex;
     display: none;
     top: -1px;
     bottom: -1px;
     justify-content: center;
     align-items: center;
-    z-index: 2;
+    z-index: 15;
 
     &.rewind {
       left: -1px;
@@ -376,14 +458,15 @@ $vp-progress--timeline: #ececec;
         rgba($color: $vp-bg, $alpha: 0.7)
       );
     }
+
+    svg {
+      width: initial;
+      height: clamp(5rem, 20%, 15rem);
+      margin: auto;
+    }
   }
 
   svg {
-    width: initial;
-    height: clamp(5rem, 20%, 15rem);
-    margin: auto;
-    fill: transparent;
-
     pointer-events: none;
     aspect-ratio: 1/1;
   }
