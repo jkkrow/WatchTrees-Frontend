@@ -1,12 +1,22 @@
 import { useMemo, useState } from 'react';
 
+import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
+import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
+import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
+import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
+import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
 import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
 import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video-reducer';
-import { updateNode, updateActiveNode } from 'store/actions/upload-action';
+import {
+  appendNode,
+  updateNode,
+  updateActiveNode,
+} from 'store/actions/upload-action';
+import { updateActiveVideo } from 'store/actions/video-action';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 
@@ -34,21 +44,59 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
     );
   };
 
+  const addChildHandler = () => {
+    dispatch(appendNode(currentNode.id));
+  };
+
   const activeNodeHandler = (id: string) => {
     dispatch(updateActiveNode(id));
   };
 
+  const activeVideoHandler = (id: string) => {
+    dispatch(updateActiveVideo(id));
+  };
+
   return (
     <div className="upload-node__content">
-      <div
-        className={`upload-node__title${
-          currentNode.id === activeNodeId ? ' parent' : ''
-        }`}
-        onClick={() =>
-          currentNode.id !== activeNodeId && activeNodeHandler(currentNode.id)
-        }
-      >
-        {nodeInfo.name}
+      <div className="upload-node__header">
+        {currentNode.id === treeId ? (
+          <Tooltip text="This is first video">
+            <strong>ROOT</strong>
+          </Tooltip>
+        ) : (
+          currentNode.id === activeNodeId && (
+            <div className="upload-node__navigation">
+              <DoubleAngleLeftIcon onClick={() => activeNodeHandler(treeId)} />
+              <AngleLeftIcon
+                onClick={() => activeNodeHandler(currentNode.prevId!)}
+              />
+            </div>
+          )
+        )}
+        <div
+          className="upload-node__title"
+          style={
+            currentNode.id === activeNodeId
+              ? { pointerEvents: 'none' }
+              : undefined
+          }
+          onClick={() => activeNodeHandler(currentNode.id)}
+        >
+          {nodeInfo.name}
+        </div>
+        <div className="upload-node__action">
+          <Tooltip text="Show preview" direction="left">
+            <PreviewIcon onClick={() => activeVideoHandler(currentNode.id)} />
+          </Tooltip>
+          {currentNode.children.length < 4 && (
+            <Tooltip text="Append next video" direction="left">
+              <PlusIcon
+                onClick={addChildHandler}
+                style={{ width: '1.7rem', height: '1.7rem' }}
+              />
+            </Tooltip>
+          )}
+        </div>
       </div>
 
       <div className="upload-node__progress">
@@ -85,7 +133,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
             <p>Mark timeline with a button below Video Player.</p>
           </div>
         </label>
-        <div className="upload-node__info__children" data-label="NextVideos">
+        <div className="upload-node__info__children" data-label="Next Videos">
           <div className="upload-node__info__children__status">
             {currentNode.children.length
               ? currentNode.children.map((node) => {

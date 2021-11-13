@@ -156,12 +156,13 @@ export const uploadVideo = (
 
       dispatch(saveUpload());
     } catch (err) {
-      dispatch(
-        uploadActions.setNode({
-          info: { error: `${(err as Error).message}` },
-          nodeId,
-        })
-      );
+      console.log(err);
+      // dispatch(
+      //   uploadActions.setNode({
+      //     info: { error: `${(err as Error).message}` },
+      //     nodeId,
+      //   })
+      // );
     }
   };
 };

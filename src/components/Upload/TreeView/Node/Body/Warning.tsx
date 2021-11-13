@@ -12,8 +12,12 @@ const Warning: React.FC<WarningProps> = ({ onRemove, onCancel }) => {
         This will remove all videos appended to it. Are you sure to proceed?
       </div>
       <div className="upload-node__warning__action">
-        <Button onClick={onRemove}>REMOVE</Button>
-        <Button onClick={onCancel}>CANCEL</Button>
+        <Button invalid onClick={onRemove}>
+          REMOVE
+        </Button>
+        <Button inversed onClick={onCancel}>
+          CANCEL
+        </Button>
       </div>
     </div>
   );

@@ -49,12 +49,12 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
       message = 'Title is empty';
     }
 
-    if (isEmptyNode) {
-      message = 'Empty file exists';
-    }
-
     if (isUncomletedNode) {
       message = 'Unfinished process exists';
+    }
+
+    if (isEmptyNode) {
+      message = 'Empty file exists';
     }
 
     return message;

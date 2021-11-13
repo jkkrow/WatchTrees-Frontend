@@ -18,12 +18,6 @@
     > svg {
       position: absolute;
     }
-
-    > svg,
-    > .tooltip > svg {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
   }
 
   &__content {
@@ -34,28 +28,44 @@
     gap: 2rem;
   }
 
-  &__title {
+  &__header {
     display: flex;
-    align-items: center;
-    max-width: 100%;
-    width: max-content;
+    width: 100%;
+    height: 2.5rem;
+    gap: 1.5rem;
+  }
+
+  &__navigation {
+    display: flex;
+    gap: 0.5rem;
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  &__action {
+    display: flex;
+    margin-left: auto;
+    gap: 1.5rem;
+
+    svg {
+      width: 2rem;
+      height: 2rem;
+    }
+  }
+
+  &__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-weight: 700;
-    word-break: break-all;
     cursor: pointer;
     transition: opacity 200ms ease-out;
 
     &:hover {
       opacity: 0.7;
-    }
-
-    &.parent {
-      max-width: calc(100% - 8rem);
-      transform: translateX(5.5rem);
-      cursor: initial;
-
-      &:hover {
-        opacity: 1;
-      }
     }
   }
 

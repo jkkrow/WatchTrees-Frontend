@@ -35,6 +35,7 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
               currentNode.layer % 2 === 0 ? '#242424' : '#424242',
           }}
         >
+          <Controls currentNode={currentNode} treeId={treeId} />
           {currentNode.info ? (
             <>
               <Content currentNode={currentNode} treeId={treeId} />
@@ -43,7 +44,6 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
           ) : (
             <DragDrop type="video" onFile={fileChangeHandler} />
           )}
-          <Controls currentNode={currentNode} treeId={treeId} />
         </div>
       )}
 

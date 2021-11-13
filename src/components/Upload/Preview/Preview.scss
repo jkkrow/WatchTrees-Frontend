@@ -45,15 +45,12 @@
       position: absolute;
       transform: scale(0);
       transition: all 400ms;
+      pointer-events: none;
 
       &.active {
         transform: scale(1);
         transition: transform 400ms;
         transition-delay: 400ms;
-      }
-
-      &:hover {
-        opacity: 1;
       }
     }
   }
