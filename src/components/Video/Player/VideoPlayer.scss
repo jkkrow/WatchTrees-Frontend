@@ -121,11 +121,12 @@ $vp-range--timeline: #ececec;
 
   &__background {
     position: absolute;
-    top: -30%;
+    top: -50%;
     bottom: -1px;
     left: -1px;
     right: -1px;
     background-image: linear-gradient(transparent, $vp-bg);
+    z-index: -1;
   }
 
   &__header {
@@ -193,7 +194,7 @@ $vp-range--timeline: #ececec;
     align-items: center;
 
     &:hover button {
-      transform: translateX(-100%) scale(1.5);
+      transform: translateX(clamp(-6rem, -50%, -3rem)) scale(1.5);
     }
 
     &:hover &__range {
@@ -223,11 +224,6 @@ $vp-range--timeline: #ececec;
       height: 100%;
     }
 
-    &:hover &__tooltip {
-      opacity: 1;
-      visibility: visible;
-    }
-
     &__tooltip {
       position: absolute;
       top: -3rem;
@@ -243,6 +239,11 @@ $vp-range--timeline: #ececec;
       transition-duration: 200ms;
       transition-timing-function: ease-out;
     }
+
+    &:hover &__tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
   }
 
   &__time {
@@ -251,7 +252,6 @@ $vp-range--timeline: #ececec;
     font-size: clamp(1.3rem, 2vw, 1.7rem);
     color: $vp-text;
     text-align: center;
-    z-index: 1;
   }
 }
 
@@ -270,6 +270,7 @@ $vp-range--timeline: #ececec;
   opacity: 0;
   visibility: hidden;
   transition: all 400ms ease-out;
+  z-index: 15;
 
   &.active {
     opacity: 1;
@@ -282,22 +283,15 @@ $vp-range--timeline: #ececec;
   }
 
   &__btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 40%;
-    border-radius: 5px;
     height: 30%;
-    padding: 0.5rem;
-    margin-top: auto;
+    border-radius: 5px;
     text-align: center;
     cursor: pointer;
     font-size: clamp(1.2rem, 1vw, 1.7rem);
     color: $vp-text;
     background-color: rgba($color: $vp-bg, $alpha: 0.8);
-    transition-property: background-color, opacity, visibility, transform;
-    transition-duration: 200ms;
-    transition-timing-function: ease-out;
+    transition: background-color 200ms ease-out;
   }
 
   &__btn:hover {
@@ -315,7 +309,7 @@ $vp-range--timeline: #ececec;
   justify-content: center;
   align-items: center;
   background-color: rgba($color: $vp-bg, $alpha: 0.5);
-  z-index: 20;
+  z-index: 30;
 
   div {
     width: 4rem;
@@ -386,7 +380,7 @@ $vp-range--timeline: #ececec;
 
       &--background,
       &--current {
-        height: 30%;
+        height: 20%;
         transition: width 200ms ease-out;
       }
     }

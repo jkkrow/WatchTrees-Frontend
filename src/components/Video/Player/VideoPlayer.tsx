@@ -421,11 +421,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           const targetSVG = target.firstElementChild as HTMLElement;
 
           target.style.display = 'flex';
-          target.animate([{ opacity: 1 }, { opacity: 0 }], {
-            duration: 1000,
-            easing: 'ease-in',
-            fill: 'forwards',
-          });
+          target.animate(
+            [{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }],
+            {
+              duration: 1000,
+              easing: 'ease-out',
+              fill: 'forwards',
+            }
+          );
           targetSVG.animate(
             [
               { opacity: 1, transform: 'translateX(0)' },
@@ -437,8 +440,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               },
             ],
             {
-              duration: 500,
-              easing: 'ease-in',
+              duration: 1000,
+              easing: 'ease-in-out',
               fill: 'forwards',
             }
           );
@@ -704,7 +707,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           !displayControls ? ' hide' : ''
         }`}
       >
-        <div className="vp-controls__background" />
+        <div className="vp-controls__background" onClick={togglePlayHandler} />
         <div className="vp-controls__header">
           <Time time={currentTimeUI} />
           <Progress
