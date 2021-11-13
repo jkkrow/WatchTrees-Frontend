@@ -7,8 +7,8 @@ interface ProgressProps {
   seekProgress: number;
   seekTooltipPosition: string;
   seekTooltip: string;
-  timelineStart: number | null;
-  timelineEnd: number | null;
+  selectionTimeStart: number | null;
+  selectionTimeEnd: number | null;
   editMode: boolean;
   onHover: (event: React.MouseEvent) => void;
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -24,8 +24,8 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       seekProgress,
       seekTooltipPosition,
       seekTooltip,
-      timelineStart,
-      timelineEnd,
+      selectionTimeStart,
+      selectionTimeEnd,
       editMode,
       onHover,
       onSeek,
@@ -33,17 +33,20 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
     },
     ref
   ) => {
-    const timelineStartPosition =
-      ((timelineStart as number) >= videoDuration
+    const selectionTimeStartPosition =
+      ((selectionTimeStart as number) >= videoDuration
         ? videoDuration - 10
-        : timelineStart) ?? videoDuration - 10;
+        : selectionTimeStart) ?? videoDuration - 10;
 
-    const timelineEndPosition =
-      ((timelineEnd as number) > videoDuration ? videoDuration : timelineEnd) ??
-      videoDuration;
+    const selectionTimeEndPosition =
+      ((selectionTimeEnd as number) > videoDuration
+        ? videoDuration
+        : selectionTimeEnd) ?? videoDuration;
 
-    const timelineDuration =
-      ((timelineEndPosition - timelineStartPosition) / videoDuration) * 100 +
+    const selectionTimeDuration =
+      ((selectionTimeEndPosition - selectionTimeStartPosition) /
+        videoDuration) *
+        100 +
       '%';
 
     return (
@@ -56,10 +59,10 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
           />
           {editMode && (
             <div
-              className="vp-controls__progress__range--timeline"
+              className="vp-controls__progress__range--selection-time"
               style={{
-                left: (timelineStartPosition / videoDuration) * 100 + '%',
-                width: timelineDuration,
+                left: (selectionTimeStartPosition / videoDuration) * 100 + '%',
+                width: selectionTimeDuration,
               }}
             />
           )}

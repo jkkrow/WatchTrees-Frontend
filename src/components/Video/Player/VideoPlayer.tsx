@@ -82,7 +82,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [displayKeyAction, setDisplayKeyAction] = useState(false);
 
   // vp-navigation
-  const [timelineMarked, setTimelineMarked] = useState(false);
+  const [selectionTimeMarked, setSelectionTimeMarked] = useState(false);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -279,12 +279,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
 
     // Selector
-    const timelineStart = videoInfo!.timelineStart || duration - 10;
-    const timelineEnd = videoInfo!.timelineEnd || timelineStart + 10;
+    const selectionTimeStart = videoInfo!.selectionTimeStart || duration - 10;
+    const selectionTimeEnd =
+      videoInfo!.selectionTimeEnd || selectionTimeStart + 10;
 
     if (
-      currentTime >= timelineStart &&
-      currentTime < timelineEnd &&
+      currentTime >= selectionTimeStart &&
+      currentTime < selectionTimeEnd &&
       currentVideo.children.length > 0 &&
       !selectedNextVideoId
     ) {
@@ -533,13 +534,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     dispatch(updateActiveVideo(currentVideo.prevId));
   }, [dispatch, currentVideo.prevId]);
 
-  const navigateToSelectorTimelineHandler = useCallback(() => {
+  const navigateToSelectorSelectionTimeHandler = useCallback(() => {
     const video = videoRef.current!;
 
-    const timelineStart = videoInfo!.timelineStart || video.duration - 10;
+    const selectionTimeStart =
+      videoInfo!.selectionTimeStart || video.duration - 10;
 
-    if (video.currentTime < timelineStart) {
-      video.currentTime = timelineStart;
+    if (video.currentTime < selectionTimeStart) {
+      video.currentTime = selectionTimeStart;
     } else {
       video.currentTime = video.duration;
     }
@@ -547,26 +549,26 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     video.play();
   }, [videoInfo]);
 
-  const markTimelineHandler = useCallback(() => {
+  const markSelectionTimeHandler = useCallback(() => {
     const video = videoRef.current!;
-    const { timelineStart, timelineEnd } = videoInfo!;
+    const { selectionTimeStart, selectionTimeEnd } = videoInfo!;
 
-    if (!timelineMarked) {
+    if (!selectionTimeMarked) {
       // Mark start point
       dispatch(
         updateNode(
           {
-            timelineStart: +video.currentTime.toFixed(2),
+            selectionTimeStart: +video.currentTime.toFixed(2),
           },
           currentVideo.id
         )
       );
 
-      if (video.currentTime > (timelineEnd || 0)) {
+      if (video.currentTime > (selectionTimeEnd || 0)) {
         dispatch(
           updateNode(
             {
-              timelineEnd: +(
+              selectionTimeEnd: +(
                 video.currentTime + 10 > videoDuration
                   ? videoDuration
                   : video.currentTime + 10
@@ -581,17 +583,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       dispatch(
         updateNode(
           {
-            timelineEnd: +video.currentTime.toFixed(2),
+            selectionTimeEnd: +video.currentTime.toFixed(2),
           },
           currentVideo.id
         )
       );
 
-      if (video.currentTime < (timelineStart || 0)) {
+      if (video.currentTime < (selectionTimeStart || 0)) {
         dispatch(
           updateNode(
             {
-              timelineStart: +(
+              selectionTimeStart: +(
                 video.currentTime - 10 < 0 ? 0 : video.currentTime - 10
               ).toFixed(2),
             },
@@ -601,8 +603,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
     }
 
-    setTimelineMarked((prev) => !prev);
-  }, [dispatch, currentVideo.id, videoInfo, timelineMarked, videoDuration]);
+    setSelectionTimeMarked((prev) => !prev);
+  }, [
+    dispatch,
+    currentVideo.id,
+    videoInfo,
+    selectionTimeMarked,
+    videoDuration,
+  ]);
 
   /*
    * USEEFFECT
@@ -718,8 +726,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             seekProgress={seekProgress}
             seekTooltip={seekTooltip}
             seekTooltipPosition={seekTooltipPosition}
-            timelineStart={videoInfo!.timelineStart}
-            timelineEnd={videoInfo!.timelineEnd}
+            selectionTimeStart={videoInfo!.selectionTimeStart}
+            selectionTimeEnd={videoInfo!.selectionTimeEnd}
             editMode={editMode}
             onHover={seekMouseMoveHandler}
             onSeek={seekInputHandler}
@@ -757,11 +765,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         <Navigation
           currentId={currentVideo.id}
           treeId={treeId}
-          marked={timelineMarked}
+          marked={selectionTimeMarked}
           onRestart={restartVideoTreeHandler}
           onPrev={navigateToPreviousVideoHandler}
-          onNext={navigateToSelectorTimelineHandler}
-          onMark={markTimelineHandler}
+          onNext={navigateToSelectorSelectionTimeHandler}
+          onMark={markSelectionTimeHandler}
         />
       )}
     </div>

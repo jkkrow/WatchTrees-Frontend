@@ -3,7 +3,7 @@ $vp-text: #ffffff;
 $vp-accent--primary: var(--accent-primary);
 $vp-accent--secondary: var(--accent-secondary);
 $vp-range--background: #858585;
-$vp-range--timeline: #ececec;
+$vp-range--selection-time: #ececec;
 
 @mixin vp-range($color) {
   position: relative;
@@ -47,12 +47,12 @@ $vp-range--timeline: #ececec;
     }
   }
 
-  &--timeline {
+  &--selection-time {
     position: absolute;
     width: 100%;
     height: 10%;
     border-radius: 50px;
-    background-color: $vp-range--timeline;
+    background-color: $vp-range--selection-time;
   }
 
   &--seek {

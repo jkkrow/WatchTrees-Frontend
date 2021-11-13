@@ -125,12 +125,17 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
             </div>
           </label>
         )}
-        <label className="upload-node__info__timeline" data-label="Timeline">
+        <label
+          className="upload-node__info__selection-time"
+          data-label="Selection Time"
+        >
           <div className="upload-node__info__input">
-            <input readOnly value={nodeInfo.timelineStart || '-'} />
+            <input readOnly value={nodeInfo.selectionTimeStart || '-'} />
             <span>to</span>
-            <input readOnly value={nodeInfo.timelineEnd || '-'} />
-            <p>Mark timeline with a button below Video Player.</p>
+            <input readOnly value={nodeInfo.selectionTimeEnd || '-'} />
+            <p>
+              Mark selection time position with a button below Video Player.
+            </p>
           </div>
         </label>
         <div className="upload-node__info__children" data-label="Next Videos">

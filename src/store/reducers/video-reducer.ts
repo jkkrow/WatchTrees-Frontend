@@ -28,8 +28,8 @@ export interface VideoInfo {
   label: string;
   size: number;
   duration: number;
-  timelineStart: number | null;
-  timelineEnd: number | null;
+  selectionTimeStart: number | null;
+  selectionTimeEnd: number | null;
   error: string | null;
   progress: number;
   isConverted: boolean;

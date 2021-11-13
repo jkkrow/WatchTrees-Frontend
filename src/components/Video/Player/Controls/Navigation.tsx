@@ -51,7 +51,11 @@ const Navigation: React.FC<NavigationProps> = ({
         <AngleRightIcon onClick={onNext} />
       </Tooltip>
       <Tooltip
-        text={marked ? 'Mark timeline end point' : 'Mark timeline start point'}
+        text={
+          marked
+            ? 'Mark selection time end point'
+            : 'Mark selection time start point'
+        }
         direction="bottom"
       >
         <MarkerIcon onClick={onMark} />
