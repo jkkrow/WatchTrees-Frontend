@@ -10,13 +10,8 @@ import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video-reducer';
-import {
-  appendNode,
-  updateNode,
-  updateActiveNode,
-} from 'store/actions/upload-action';
-import { updateActiveVideo } from 'store/actions/video-action';
+import { uploadActions } from 'store/reducers/upload-reducer';
+import { VideoNode, videoActions } from 'store/reducers/video-reducer';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 
@@ -39,21 +34,27 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
     setLabelInput(event.target.value);
 
     labelTimeout(
-      () => dispatch(updateNode({ label: event.target.value }, currentNode.id)),
+      () =>
+        dispatch(
+          uploadActions.setNode({
+            info: { label: event.target.value },
+            nodeId: currentNode.id,
+          })
+        ),
       300
     );
   };
 
   const addChildHandler = () => {
-    dispatch(appendNode(currentNode.id));
+    dispatch(uploadActions.appendNode({ nodeId: currentNode.id }));
   };
 
   const activeNodeHandler = (id: string) => {
-    dispatch(updateActiveNode(id));
+    dispatch(uploadActions.setActiveNode(id));
   };
 
   const activeVideoHandler = (id: string) => {
-    dispatch(updateActiveVideo(id));
+    dispatch(videoActions.setActiveVideo(id));
   };
 
   return (

@@ -3,7 +3,7 @@ import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
 import Preview from 'components/Upload/Preview/Preview';
 import { useAppSelector } from 'hooks/store-hook';
 
-const UploadVideoPage: React.FC = () => {
+const UploadPage: React.FC = () => {
   const { previewTree } = useAppSelector((state) => state.upload);
 
   const isPreview = previewTree?.root.info?.url;
@@ -19,4 +19,4 @@ const UploadVideoPage: React.FC = () => {
   );
 };
 
-export default UploadVideoPage;
+export default UploadPage;

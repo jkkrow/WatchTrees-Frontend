@@ -1,7 +1,7 @@
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useAppDispatch } from 'hooks/store-hook';
 import { VideoNode } from 'store/reducers/video-reducer';
-import { updateNode } from 'store/actions/upload-action';
+import { uploadActions } from 'store/reducers/upload-reducer';
 
 interface ErrorProps {
   currentNode: VideoNode;
@@ -12,7 +12,7 @@ const Error: React.FC<ErrorProps> = ({ currentNode, error }) => {
   const dispatch = useAppDispatch();
 
   const cancelHandler = () => {
-    dispatch(updateNode(null, currentNode.id));
+    dispatch(uploadActions.setNode({ info: null, nodeId: currentNode.id }));
   };
 
   return error ? (

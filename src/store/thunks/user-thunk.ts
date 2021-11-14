@@ -1,4 +1,4 @@
-import { AppDispatch, AppState, AppThunk } from 'store';
+import { AppThunk } from 'store';
 import { userActions, UserData } from 'store/reducers/user-reducer';
 
 export const fetchUserVideos = (
@@ -33,18 +33,12 @@ export const fetchUserVideos = (
 
 export const updateUserData = (info: {
   [key in keyof UserData]?: UserData[key];
-}) => {
-  return (dispatch: AppDispatch, getState: () => AppState) => {
+}): AppThunk => {
+  return (dispatch, getState) => {
     dispatch(userActions.setUserData(info));
 
     const { userData } = getState().user;
 
     localStorage.setItem('userData', JSON.stringify(userData));
-  };
-};
-
-export const clearResponse = () => {
-  return (dispatch: AppDispatch) => {
-    dispatch(userActions.clearResponse());
   };
 };

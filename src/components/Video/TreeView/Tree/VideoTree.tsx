@@ -2,8 +2,11 @@ import { useEffect } from 'react';
 
 import VideoNode from '../Node/VideoNode';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree as VideoTreeType } from 'store/reducers/video-reducer';
-import { setVideoTree, updateActiveVideo } from 'store/actions/video-action';
+import {
+  VideoTree as VideoTreeType,
+  videoActions,
+} from 'store/reducers/video-reducer';
+
 import './VideoTree.scss';
 
 interface VideoTreeProps {
@@ -21,11 +24,11 @@ const VideoTree: React.FC<VideoTreeProps> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(setVideoTree(tree));
+    dispatch(videoActions.setVideoTree(tree));
   }, [dispatch, tree]);
 
   useEffect(() => {
-    dispatch(updateActiveVideo(tree.root.id));
+    dispatch(videoActions.setActiveVideo(tree.root.id));
   }, [dispatch, tree.root.id]);
 
   return (

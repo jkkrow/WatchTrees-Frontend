@@ -1,8 +1,8 @@
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
-import { AppDispatch, AppThunk } from 'store';
+import { AppThunk } from 'store';
 import { authActions } from 'store/reducers/auth-reducer';
-import { loadMessage } from './ui-action';
+import { uiActions } from 'store/reducers/ui-reducer';
 
 export const register = (credentials: {
   name: string;
@@ -62,8 +62,8 @@ export const login = (
   };
 };
 
-export const logout = () => {
-  return (dispatch: AppDispatch) => {
+export const logout = (): AppThunk => {
+  return (dispatch) => {
     dispatch(authActions.logout());
 
     localStorage.removeItem('refreshToken');
@@ -116,7 +116,7 @@ export const fetchTokenOnload = (): AppThunk => {
       });
     } catch (err) {
       dispatch(
-        loadMessage({
+        uiActions.setMessage({
           content: `${
             (err as Error).message
           }: Fetching user credential failed. Please reload page or re-signin`,
@@ -215,11 +215,5 @@ export const postResetPassword = (
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
     }
-  };
-};
-
-export const clearResponse = () => {
-  return (dispatch: AppDispatch) => {
-    dispatch(authActions.clearResponse());
   };
 };

@@ -9,7 +9,8 @@ import Button from 'components/Common/Element/Button/Button';
 import GoogleLoginButton from 'components/Auth/Google/GoogleLoginButton';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { register, login, clearResponse } from 'store/actions/auth-action';
+import { authActions } from 'store/reducers/auth-reducer';
+import { register, login } from 'store/thunks/auth-thunk';
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_PASSWORD,
@@ -58,7 +59,7 @@ const AuthPage: React.FC = () => {
   };
 
   const toggleMode = (): void => {
-    dispatch(clearResponse());
+    dispatch(authActions.clearResponse());
 
     setIsLogin((prevMode) => {
       if (prevMode) {

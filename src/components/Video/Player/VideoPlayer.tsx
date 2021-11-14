@@ -13,12 +13,8 @@ import KeyAction from './Controls/KeyAction';
 import { useTimeout } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video-reducer';
-import {
-  updateActiveVideo,
-  updateVideoVolume,
-} from 'store/actions/video-action';
-import { updateNode } from 'store/actions/upload-action';
+import { VideoNode, videoActions } from 'store/reducers/video-reducer';
+import { uploadActions } from 'store/reducers/upload-reducer';
 import { formatTime } from 'util/format';
 import { videoUrl } from 'util/src';
 import './VideoPlayer.scss';
@@ -176,11 +172,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     if (selectedNextVideoId) {
-      dispatch(updateActiveVideo(selectedNextVideoId));
+      dispatch(videoActions.setActiveVideo(selectedNextVideoId));
     } else {
       const firstValidItem = currentVideo.children.find((item) => item.info);
 
-      firstValidItem && dispatch(updateActiveVideo(firstValidItem.id));
+      firstValidItem &&
+        dispatch(videoActions.setActiveVideo(firstValidItem.id));
     }
   }, [dispatch, currentVideo.children, selectedNextVideoId]);
 
@@ -224,7 +221,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (active) {
       volumeTimeout(() => {
-        dispatch(updateVideoVolume(video.volume));
+        dispatch(videoActions.setVideoVolume(video.volume));
         localStorage.setItem('video-volume', `${video.volume}`);
       }, 300);
     }
@@ -525,13 +522,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    */
 
   const restartVideoTreeHandler = useCallback(() => {
-    dispatch(updateActiveVideo(treeId));
+    dispatch(videoActions.setActiveVideo(treeId));
   }, [dispatch, treeId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
     if (!currentVideo.prevId) return;
 
-    dispatch(updateActiveVideo(currentVideo.prevId));
+    dispatch(videoActions.setActiveVideo(currentVideo.prevId));
   }, [dispatch, currentVideo.prevId]);
 
   const navigateToSelectorSelectionTimeHandler = useCallback(() => {
@@ -556,49 +553,49 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (!selectionTimeMarked) {
       // Mark start point
       dispatch(
-        updateNode(
-          {
+        uploadActions.setNode({
+          info: {
             selectionTimeStart: +video.currentTime.toFixed(2),
           },
-          currentVideo.id
-        )
+          nodeId: currentVideo.id,
+        })
       );
 
       if (video.currentTime > (selectionTimeEnd || 0)) {
         dispatch(
-          updateNode(
-            {
+          uploadActions.setNode({
+            info: {
               selectionTimeEnd: +(
                 video.currentTime + 10 > videoDuration
                   ? videoDuration
                   : video.currentTime + 10
               ).toFixed(2),
             },
-            currentVideo.id
-          )
+            nodeId: currentVideo.id,
+          })
         );
       }
     } else {
       // Mark end point
       dispatch(
-        updateNode(
-          {
+        uploadActions.setNode({
+          info: {
             selectionTimeEnd: +video.currentTime.toFixed(2),
           },
-          currentVideo.id
-        )
+          nodeId: currentVideo.id,
+        })
       );
 
       if (video.currentTime < (selectionTimeStart || 0)) {
         dispatch(
-          updateNode(
-            {
+          uploadActions.setNode({
+            info: {
               selectionTimeStart: +(
                 video.currentTime - 10 < 0 ? 0 : video.currentTime - 10
               ).toFixed(2),
             },
-            currentVideo.id
-          )
+            nodeId: currentVideo.id,
+          })
         );
       }
     }

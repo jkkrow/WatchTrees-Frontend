@@ -11,12 +11,12 @@ import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoTree, VideoStatus } from 'store/reducers/video-reducer';
+import { uploadActions } from 'store/reducers/upload-reducer';
 import {
   saveUpload,
-  updateTree,
   uploadThumbnail,
   deleteThumbnail,
-} from 'store/actions/upload-action';
+} from 'store/thunks/upload-thunk';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';
@@ -65,7 +65,10 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     setTitleInput(event.target.value);
 
     titleTimeout(
-      () => dispatch(updateTree({ title: event.target.value })),
+      () =>
+        dispatch(
+          uploadActions.setTree({ info: { title: event.target.value } })
+        ),
       300
     );
   };
@@ -76,7 +79,10 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     setDescriptionInput(event.target.value);
 
     descriptionTimeout(
-      () => dispatch(updateTree({ description: event.target.value })),
+      () =>
+        dispatch(
+          uploadActions.setTree({ info: { description: event.target.value } })
+        ),
       300
     );
   };
@@ -98,7 +104,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
       const newTags = [...tagArray, newTag];
 
       setTagArray(newTags);
-      dispatch(updateTree({ tags: newTags }));
+      dispatch(uploadActions.setTree({ info: { tags: newTags } }));
     }
 
     setTagInput('');
@@ -108,7 +114,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     const filteredTags = tagArray.filter((item: string) => item !== tag);
 
     setTagArray(filteredTags);
-    dispatch(updateTree({ tags: filteredTags }));
+    dispatch(uploadActions.setTree({ info: { tags: filteredTags } }));
   };
 
   const thumbnailChangeHandler = (files: File[]) => {
@@ -120,7 +126,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const statusChangeHandler = (value: string) => {
-    dispatch(updateTree({ status: value as VideoStatus }));
+    dispatch(uploadActions.setTree({ info: { status: value as VideoStatus } }));
   };
 
   const saveUploadHandler = async () => {

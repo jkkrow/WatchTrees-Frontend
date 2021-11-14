@@ -2,7 +2,8 @@ import Button from 'components/Common/Element/Button/Button';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Modal from 'components/Common/UI/Modal/Modal';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { sendVerifyEmail, clearResponse } from 'store/actions/auth-action';
+import { authActions } from 'store/reducers/auth-reducer';
+import { sendVerifyEmail } from 'store/thunks/auth-thunk';
 import './AccountProfile.scss';
 
 const AccountProfile: React.FC = () => {
@@ -15,7 +16,7 @@ const AccountProfile: React.FC = () => {
   };
 
   const closeModalHandler = () => {
-    dispatch(clearResponse());
+    dispatch(authActions.clearResponse());
   };
 
   return (

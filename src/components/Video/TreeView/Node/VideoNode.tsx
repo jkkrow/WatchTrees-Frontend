@@ -1,8 +1,10 @@
 import VideoPlayer from '../../Player/VideoPlayer';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoNode as VideoNodeType } from 'store/reducers/video-reducer';
-import { updateActiveVideo } from 'store/actions/video-action';
+import {
+  VideoNode as VideoNodeType,
+  videoActions,
+} from 'store/reducers/video-reducer';
 import './VideoNode.scss';
 
 interface VideoNodeProps {
@@ -49,7 +51,9 @@ const VideoNode: React.FC<VideoNodeProps> = ({
           >
             <p>Not Found</p>
             <AngleLeftIcon
-              onClick={() => dispatch(updateActiveVideo(currentVideo.prevId!))}
+              onClick={() =>
+                dispatch(videoActions.setActiveVideo(currentVideo.prevId!))
+              }
             />
           </div>
         ))}

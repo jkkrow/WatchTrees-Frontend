@@ -14,15 +14,17 @@ const Tooltip: React.FC<TooltipProps> = ({
   invalid = false,
   children,
 }) => {
-  return text ? (
+  return (
     <div
-      className={`tooltip ${direction}${invalid ? ' invalid' : ''}`}
+      className={`tooltip ${direction}${invalid ? ' invalid' : ''}${
+        !text ? ' hide' : ''
+      }`}
       data-text={text}
       style={style}
     >
       {children}
     </div>
-  ) : null;
+  );
 };
 
 export default Tooltip;

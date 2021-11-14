@@ -4,6 +4,11 @@
   justify-content: center;
   align-items: center;
 
+  &.hide::before,
+  &.hide::after {
+    display: none;
+  }
+
   /* Arrow */
 
   &::before {

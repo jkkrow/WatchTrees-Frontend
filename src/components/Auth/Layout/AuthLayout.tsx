@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useAppDispatch } from 'hooks/store-hook';
-import { clearResponse } from 'store/actions/auth-action';
+import { authActions } from 'store/reducers/auth-reducer';
 import './AuthLayout.scss';
 
 const AuthLayout: React.FC = ({ children }) => {
@@ -9,7 +9,7 @@ const AuthLayout: React.FC = ({ children }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(clearResponse());
+      dispatch(authActions.clearResponse());
     };
   }, [dispatch]);
 

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useAppDispatch } from 'hooks/store-hook';
-import { clearResponse } from 'store/actions/user-action';
+import { userActions } from 'store/reducers/user-reducer';
 import './UserLayout.scss';
 
 const UserLayout: React.FC = ({ children }) => {
@@ -9,7 +9,7 @@ const UserLayout: React.FC = ({ children }) => {
 
   useEffect(() => {
     return () => {
-      dispatch(clearResponse());
+      dispatch(userActions.clearResponse());
     };
   }, [dispatch]);
 

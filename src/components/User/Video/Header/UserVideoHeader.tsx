@@ -5,8 +5,8 @@ import { ReactComponent as ReloadIcon } from 'assets/icons/reload.svg';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { initiateUpload } from 'store/actions/upload-action';
-import { fetchUserVideos } from 'store/actions/user-action';
+import { initiateUpload } from 'store/thunks/upload-thunk';
+import { fetchUserVideos } from 'store/thunks/user-thunk';
 import './UserVideoHeader.scss';
 
 interface UserVideoHeaderProps {

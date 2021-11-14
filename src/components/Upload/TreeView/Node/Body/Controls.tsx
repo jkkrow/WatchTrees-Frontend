@@ -5,9 +5,8 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video-reducer';
-import { updateActiveNode, removeNode } from 'store/actions/upload-action';
-import { updateActiveVideo } from 'store/actions/video-action';
+import { VideoNode, videoActions } from 'store/reducers/video-reducer';
+import { uploadActions } from 'store/reducers/upload-reducer';
 import { validateNodes } from 'util/tree';
 
 interface ControlsProps {
@@ -23,11 +22,11 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
   const [warning, setWarning] = useState(false);
 
   const activeNodeHandler = (id: string) => {
-    dispatch(updateActiveNode(id));
+    dispatch(uploadActions.setActiveNode(id));
   };
 
   const activeVideoHandler = (id: string) => {
-    dispatch(updateActiveVideo(id));
+    dispatch(videoActions.setActiveVideo(id));
   };
 
   const removeNodeHandler = () => {
@@ -36,7 +35,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
     if (isNotEmpty && !warning) {
       setWarning(true);
     } else {
-      dispatch(removeNode(currentNode.id));
+      dispatch(uploadActions.removeNode({ nodeId: currentNode.id }));
 
       if (currentNode.id === activeNodeId) {
         activeNodeHandler(currentNode.prevId!);

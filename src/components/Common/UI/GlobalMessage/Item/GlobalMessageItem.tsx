@@ -4,8 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch } from 'hooks/store-hook';
-import { Message } from 'store/reducers/ui-reducer';
-import { clearMessage } from 'store/actions/ui-action';
+import { Message, uiActions } from 'store/reducers/ui-reducer';
 import './GlobalMessageItem.scss';
 
 interface GlobalMessageItemProps {
@@ -36,7 +35,7 @@ const GlobalMessageItem: React.FC<GlobalMessageItemProps> = ({ message }) => {
   };
 
   const messageExitedHandler = () => {
-    dispatch(clearMessage(message));
+    dispatch(uiActions.clearMessage(message));
   };
 
   return (

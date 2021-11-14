@@ -1,13 +1,12 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { AppDispatch, AppThunk } from 'store';
+import { AppThunk } from 'store';
 import { uploadActions } from 'store/reducers/upload-reducer';
 import { uiActions } from 'store/reducers/ui-reducer';
-import { VideoTree, VideoInfo } from 'store/reducers/video-reducer';
 import { beforeunloadHandler } from 'util/event-handlers';
 
-export const initiateUpload = () => {
-  return (dispatch: AppDispatch) => {
+export const initiateUpload = (): AppThunk => {
+  return (dispatch) => {
     dispatch(uploadActions.initiateUpload());
 
     window.addEventListener('beforeunload', beforeunloadHandler);
@@ -305,43 +304,8 @@ export const deleteThumbnail = (): AppThunk => {
   };
 };
 
-export const appendNode = (nodeId: string) => {
-  return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.appendNode({ nodeId }));
-  };
-};
-
-export const updateNode = (
-  info: { [key in keyof VideoInfo]?: VideoInfo[key] } | null,
-  nodeId: string
-) => {
-  return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.setNode({ info, nodeId }));
-  };
-};
-
-export const removeNode = (nodeId: string) => {
-  return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.removeNode({ nodeId }));
-  };
-};
-
-export const updateTree = (info: {
-  [key in keyof VideoTree]?: VideoTree[key];
-}) => {
-  return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.setTree({ info }));
-  };
-};
-
-export const updateActiveNode = (nodeId: string) => {
-  return (dispatch: AppDispatch) => {
-    dispatch(uploadActions.setActiveNode(nodeId));
-  };
-};
-
-export const finishUpload = () => {
-  return (dispatch: AppDispatch) => {
+export const finishUpload = (): AppThunk => {
+  return (dispatch) => {
     dispatch(uploadActions.finishUpload());
 
     window.removeEventListener('beforeunload', beforeunloadHandler);

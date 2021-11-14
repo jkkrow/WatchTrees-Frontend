@@ -10,7 +10,7 @@ import Button from 'components/Common/Element/Button/Button';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { getResetPassword, postResetPassword } from 'store/actions/auth-action';
+import { getResetPassword, postResetPassword } from 'store/thunks/auth-thunk';
 import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
 
 const ResetPasswordPage: React.FC = () => {

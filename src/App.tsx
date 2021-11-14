@@ -8,7 +8,7 @@ import VideoListPage from 'pages/Video/VideoListPage';
 import VerifyEmailPage from 'pages/Auth/VerifyEmailPage';
 import AccountPage from 'pages/User/AccountPage';
 import UserVideoListPage from 'pages/User/UserVideoListPage';
-import UploadVideoPage from 'pages/Upload/UploadVideoPage';
+import UploadPage from 'pages/Upload/UploadPage';
 import HistoryPage from 'pages/User/HistoryPage';
 import LoginPage from 'pages/Auth/LoginPage';
 import SendRecoveryEmailPage from 'pages/Auth/SendRecoveryEmailPage';
@@ -16,11 +16,12 @@ import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
 import NotFoundPage from 'pages/Error/NotFoundPage';
 import ProtectedRoute from 'service/ProtectedRoute';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { fetchTokenOnload } from 'store/actions/auth-action';
+import { fetchTokenOnload } from 'store/thunks/auth-thunk';
 import './App.scss';
 
 const App: React.FC = () => {
   const { refreshToken } = useAppSelector((state) => state.auth);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -76,7 +77,7 @@ const App: React.FC = () => {
             redirect="/auth"
             exact
             path="/new-video"
-            component={UploadVideoPage}
+            component={UploadPage}
           />
           <ProtectedRoute
             exact

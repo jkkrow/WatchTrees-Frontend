@@ -4,8 +4,8 @@ import { CSSTransition } from 'react-transition-group';
 
 import Backdrop from 'components/Common/UI/Backdrop/Backdrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { logout } from 'store/actions/auth-action';
-import { finishUpload } from 'store/actions/upload-action';
+import { logout } from 'store/thunks/auth-thunk';
+import { finishUpload } from 'store/thunks/upload-thunk';
 import './Menu.scss';
 
 interface MenuProps {
