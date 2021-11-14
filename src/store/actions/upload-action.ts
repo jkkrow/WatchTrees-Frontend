@@ -55,7 +55,7 @@ export const uploadVideo = (
       );
 
       // Initiate Upload
-      const response = await client.get('/upload/video-initiate', {
+      const response = await client.get('/upload/multipart-id', {
         params: {
           treeId,
           nodeId,
@@ -102,12 +102,12 @@ export const uploadVideo = (
           index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
         // Get Urls
-        const getUploadUrlResponse = await client.get('/upload/video-url', {
+        const getUploadUrlResponse = await client.get('/upload/multipart-url', {
           params: {
             uploadId,
-            partNumber: index,
             treeId,
             fileName: file.name,
+            partNumber: index,
           },
         });
 
@@ -134,17 +134,14 @@ export const uploadVideo = (
       });
 
       // Complete Upload
-      const completeUploadReseponse = await client.post(
-        '/upload/video-complete',
-        {
-          params: {
-            uploadId,
-            parts: uploadPartsArray,
-            treeId,
-            fileName: file.name,
-          },
-        }
-      );
+      const completeUploadReseponse = await client.post('/upload/video', {
+        params: {
+          uploadId,
+          treeId,
+          fileName: file.name,
+          parts: uploadPartsArray,
+        },
+      });
 
       dispatch(uploadActions.setNode({ info: { progress: 100 }, nodeId }));
 
@@ -157,52 +154,10 @@ export const uploadVideo = (
       dispatch(saveUpload());
     } catch (err) {
       console.log(err);
-      // dispatch(
-      //   uploadActions.setNode({
-      //     info: { error: `${(err as Error).message}` },
-      //     nodeId,
-      //   })
-      // );
-    }
-  };
-};
-
-export const uploadThumbnail = (file: File): AppThunk => {
-  return async (dispatch, _, api) => {
-    const client = dispatch(api());
-
-    try {
-      const thumbnailInfo = {
-        name: file.name,
-        url: URL.createObjectURL(file),
-      };
-
-      dispatch(uploadActions.setTree({ info: { thumbnail: thumbnailInfo } }));
-
-      const response = await client.get('/upload/image', {
-        params: { fileType: file.type },
-      });
-
-      const { presignedUrl, key } = response.data;
-
-      await client.put(presignedUrl, file, {
-        headers: { 'Content-Type': file.type },
-      });
-
       dispatch(
-        uploadActions.setTree({
-          type: 'uploadTree',
-          info: { thumbnail: { name: file.name, url: key } },
-        })
-      );
-
-      dispatch(saveUpload());
-    } catch (err) {
-      dispatch(
-        uiActions.setMessage({
-          content: `${(err as Error).message}: Uploading thumbnail failed`,
-          type: 'error',
-          timer: 5000,
+        uploadActions.setNode({
+          info: { error: `${(err as Error).message}` },
+          nodeId,
         })
       );
     }
@@ -211,14 +166,14 @@ export const uploadThumbnail = (file: File): AppThunk => {
 
 export const saveUpload = (): AppThunk => {
   return async (dispatch, getState, api) => {
+    const { uploadTree } = getState().upload;
+
+    if (!uploadTree) return;
+
     const client = dispatch(api());
 
     try {
-      const { upload } = getState();
-
-      const uploadTree = upload.uploadTree as VideoTree;
-
-      const saveRepsonse = await client.post('/upload/save-upload', {
+      const saveRepsonse = await client.put('/upload/video', {
         uploadTree,
       });
 
@@ -235,6 +190,113 @@ export const saveUpload = (): AppThunk => {
       dispatch(
         uiActions.setMessage({
           content: `${(err as Error).message}: Saving upload failed`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
+    }
+  };
+};
+
+export const uploadThumbnail = (file: File): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { uploadTree } = getState().upload;
+
+    if (!uploadTree) return;
+
+    const client = dispatch(api());
+
+    try {
+      const thumbnailInfo = {
+        name: file.name,
+        url: URL.createObjectURL(file),
+      };
+
+      dispatch(
+        uploadActions.setTree({
+          type: 'previewTree',
+          info: { thumbnail: thumbnailInfo },
+        })
+      );
+
+      const response = await client.put('/upload/thumbnail', {
+        thumbnail: uploadTree.thumbnail,
+        fileType: file.type,
+      });
+
+      const { presignedUrl, key } = response.data;
+
+      await axios.put(presignedUrl, file, {
+        headers: { 'Content-Type': file.type },
+      });
+
+      dispatch(
+        uploadActions.setTree({
+          type: 'uploadTree',
+          info: { thumbnail: { name: file.name, url: key } },
+        })
+      );
+
+      dispatch(saveUpload());
+    } catch (err) {
+      dispatch(
+        uploadActions.setTree({ info: { thumbnail: { name: '', url: '' } } })
+      );
+      dispatch(
+        uiActions.setMessage({
+          content: `${
+            (err as Error).message
+          }: Uploading thumbnail failed. Please try again`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
+    }
+  };
+};
+
+export const deleteThumbnail = (): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { uploadTree, previewTree } = getState().upload;
+
+    if (!uploadTree || !previewTree) return;
+
+    const client = dispatch(api());
+
+    const previewThumbnailInfo = previewTree.thumbnail;
+
+    try {
+      dispatch(
+        uploadActions.setTree({
+          type: 'previewTree',
+          info: { thumbnail: { name: '', url: '' } },
+        })
+      );
+
+      await client.delete('/upload/thumbnail', {
+        params: { key: uploadTree.thumbnail.url },
+      });
+
+      dispatch(
+        uploadActions.setTree({
+          type: 'uploadTree',
+          info: { thumbnail: { name: '', url: '' } },
+        })
+      );
+
+      dispatch(saveUpload());
+    } catch (err) {
+      dispatch(
+        uploadActions.setTree({
+          type: 'previewTree',
+          info: { thumbnail: previewThumbnailInfo },
+        })
+      );
+      dispatch(
+        uiActions.setMessage({
+          content: `${
+            (err as Error).message
+          }: Deleting thumbnail failed. Please try again`,
           type: 'error',
           timer: 5000,
         })

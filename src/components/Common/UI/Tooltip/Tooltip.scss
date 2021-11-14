@@ -89,6 +89,10 @@
     transform: initial;
   }
 
+  &.invalid::after {
+    background-color: var(--bg-invalid);
+  }
+
   &:hover::after,
   &:hover::before {
     opacity: 1;

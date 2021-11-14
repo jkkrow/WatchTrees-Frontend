@@ -26,7 +26,9 @@ const uiSlice = createSlice({
     },
 
     clearMessage: (state, { payload }: PayloadAction<Message>) => {
-      state.messages = state.messages.filter((message) => message.id !== payload.id);
+      state.messages = state.messages.filter(
+        (message) => message.id !== payload.id
+      );
     },
   },
 });

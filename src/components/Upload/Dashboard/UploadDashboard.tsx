@@ -15,6 +15,7 @@ import {
   saveUpload,
   updateTree,
   uploadThumbnail,
+  deleteThumbnail,
 } from 'store/actions/upload-action';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
@@ -115,7 +116,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const thumbnailDeleteHandler = (fileName: string) => {
-    dispatch(updateTree({ thumbnail: { name: '', url: '' } }));
+    dispatch(deleteThumbnail());
   };
 
   const statusChangeHandler = (value: string) => {
@@ -140,6 +141,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
 
   return (
     <div className="upload-dashboard">
+      <LoadingSpinner on={loading} overlay />
       <div className="upload-dashboard__header">
         <div className="upload-dashboard__title">
           <Input
@@ -219,15 +221,20 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
           </div>
         </div>
         <div className="upload-dashboard__buttons">
-          <LoadingSpinner on={loading} overlay />
-          <Button disabled={isUploadSaved} onClick={saveUploadHandler}>
+          <Button
+            disabled={isUploadSaved || loading}
+            onClick={saveUploadHandler}
+          >
             <SaveIcon
               className="upload-dashboard__save"
               style={{ width: '2.5rem', height: '2.5rem' }}
             />
           </Button>
-          <Tooltip text={disableSubmit} direction="bottom">
-            <Button onClick={submitUploadHandler} disabled={!!disableSubmit}>
+          <Tooltip text={disableSubmit} direction="bottom" invalid>
+            <Button
+              onClick={submitUploadHandler}
+              disabled={!!disableSubmit || loading}
+            >
               SUBMIT
             </Button>
           </Tooltip>

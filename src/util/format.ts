@@ -13,7 +13,7 @@ export const formatTime = (timeInSeconds: number): string => {
 };
 
 export const formatSize = (bytes: number, decimals = 2): string => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return '0 B';
 
   const k = 1000;
   const dm = decimals < 0 ? 0 : decimals;

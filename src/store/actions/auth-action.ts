@@ -186,7 +186,7 @@ export const getResetPassword = (token: string): AppThunk => {
     try {
       dispatch(authActions.authRequest());
 
-      await client.get(`/auth/reset-password/${token}`);
+      await client.get(`/auth/user-password/${token}`);
 
       return true;
     } catch (err) {
@@ -206,7 +206,7 @@ export const postResetPassword = (
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await client.put(`/auth/reset-password/${token}`, {
+      const { data } = await client.patch(`/auth/user-password/${token}`, {
         password,
         confirmPassword,
       });
