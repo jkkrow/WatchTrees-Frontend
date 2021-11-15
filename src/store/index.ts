@@ -1,11 +1,11 @@
 import { configureStore, Action } from '@reduxjs/toolkit';
 import { ThunkAction } from 'redux-thunk';
 
-import authReducer from './reducers/auth-reducer';
-import uploadReducer from './reducers/upload-reducer';
-import userReducer from './reducers/user-reducer';
-import videoReducer from './reducers/video-reducer';
-import uiReducer from './reducers/ui-reducer';
+import authReducer from './slices/auth-slice';
+import uploadReducer from './slices/upload-slice';
+import userReducer from './slices/user-slice';
+import videoReducer from './slices/video-slice';
+import uiReducer from './slices/ui-slice';
 import { api } from './middlwares/api';
 
 const store = configureStore({

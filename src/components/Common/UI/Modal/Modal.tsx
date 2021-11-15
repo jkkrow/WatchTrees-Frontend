@@ -14,7 +14,8 @@ interface ModalProps {
   footer?: string;
   loading?: boolean;
   disabled?: boolean;
-  onConfirm?: () => void;
+  invalid?: boolean;
+  onConfirm?: () => Promise<any>;
   onClose?: () => void;
 }
 
@@ -26,6 +27,7 @@ const Modal: React.FC<ModalProps> = ({
   footer,
   loading,
   disabled,
+  invalid,
   onConfirm,
   onClose,
   children,
@@ -36,14 +38,14 @@ const Modal: React.FC<ModalProps> = ({
     on && setDisplayModal(!!on);
   }, [on]);
 
-  const submitHandler = (event: React.FormEvent): void => {
+  const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    onConfirm && onConfirm();
+    onConfirm && (await onConfirm());
     setDisplayModal(false);
   };
 
-  const closeModalHandler = (): void => {
+  const closeModalHandler = () => {
     setDisplayModal(false);
   };
 
@@ -64,7 +66,12 @@ const Modal: React.FC<ModalProps> = ({
               <div className="modal__content">{content}</div>
               <div className="modal__footer">
                 {footer && (
-                  <Button small loading={loading} disabled={disabled}>
+                  <Button
+                    small
+                    invalid={invalid}
+                    loading={loading}
+                    disabled={disabled}
+                  >
                     {footer}
                   </Button>
                 )}

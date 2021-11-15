@@ -13,10 +13,10 @@ import KeyAction from './Controls/KeyAction';
 import { useTimeout } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode, videoActions } from 'store/reducers/video-reducer';
-import { uploadActions } from 'store/reducers/upload-reducer';
+import { VideoNode, videoActions } from 'store/slices/video-slice';
+import { uploadActions } from 'store/slices/upload-slice';
 import { formatTime } from 'util/format';
-import { videoUrl } from 'util/src';
+import { videoUrl } from 'util/video';
 import './VideoPlayer.scss';
 
 interface VideoPlayerProps {

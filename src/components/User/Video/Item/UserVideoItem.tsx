@@ -1,8 +1,8 @@
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
-import { VideoTree } from 'store/reducers/video-reducer';
-import { formatTime, formatNumber } from 'util/format';
-import { thumbanilUrl } from 'util/src';
+import { VideoTree } from 'store/slices/video-slice';
+import { formatNumber } from 'util/format';
+import { thumbanilUrl, videoDuration } from 'util/video';
 import './UserVideoItem.scss';
 
 interface UserVideoItemProps {
@@ -30,9 +30,9 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({
         <div className="user-video-item__info__tags">
           {item.tags.map((tag) => `#${tag}`).join(', ')}
         </div>
-        <div className="user-video-item__info__duration">{`${formatTime(
-          item.minDuration
-        )} - ${formatTime(item.maxDuration)}`}</div>
+        <div className="user-video-item__info__duration">
+          {videoDuration(item)}
+        </div>
         <div className="user-video-item__info__views">
           Views: {formatNumber(item.views)}
         </div>

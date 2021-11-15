@@ -10,12 +10,13 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree, VideoStatus } from 'store/reducers/video-reducer';
-import { uploadActions } from 'store/reducers/upload-reducer';
+import { VideoTree, VideoStatus } from 'store/slices/video-slice';
+import { uploadActions } from 'store/slices/upload-slice';
 import {
   saveUpload,
   uploadThumbnail,
   deleteThumbnail,
+  finishUpload,
 } from 'store/thunks/upload-thunk';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
@@ -140,7 +141,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const submitUploadHandler = async () => {
     setLoading(true);
 
-    await dispatch(saveUpload());
+    await dispatch(finishUpload());
 
     setLoading(false);
   };

@@ -4,7 +4,7 @@ import { useAppDispatch } from 'hooks/store-hook';
 import {
   VideoNode as VideoNodeType,
   videoActions,
-} from 'store/reducers/video-reducer';
+} from 'store/slices/video-slice';
 import './VideoNode.scss';
 
 interface VideoNodeProps {

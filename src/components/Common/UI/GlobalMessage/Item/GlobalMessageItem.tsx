@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch } from 'hooks/store-hook';
-import { Message, uiActions } from 'store/reducers/ui-reducer';
+import { Message, uiActions } from 'store/slices/ui-slice';
 import './GlobalMessageItem.scss';
 
 interface GlobalMessageItemProps {

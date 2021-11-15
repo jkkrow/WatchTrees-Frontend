@@ -1,8 +1,8 @@
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import { AppThunk } from 'store';
-import { authActions } from 'store/reducers/auth-reducer';
-import { uiActions } from 'store/reducers/ui-reducer';
+import { authActions } from 'store/slices/auth-slice';
+import { uiActions } from 'store/slices/ui-slice';
 
 export const register = (credentials: {
   name: string;

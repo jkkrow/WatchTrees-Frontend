@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface VideoTree {
   _id?: string;
+  user?: string;
   root: VideoNode;
   title: string;
   tags: string[];

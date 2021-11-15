@@ -1,8 +1,5 @@
-import { VideoTree } from 'store/reducers/video-reducer';
-
-export const imageUrl = (src: string): string => {
-  return `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
-};
+import { VideoTree } from 'store/slices/video-slice';
+import { formatTime } from './format';
 
 export const videoUrl = (src: string, isConverted: boolean): string => {
   return isConverted
@@ -24,4 +21,19 @@ export const thumbanilUrl = (video: VideoTree): string | undefined => {
   }
 
   return src;
+};
+
+export const videoDuration = (video: VideoTree): string => {
+  let duration: string;
+
+  const minDuration = formatTime(video.minDuration);
+  const maxDuration = formatTime(video.maxDuration);
+
+  if (minDuration === maxDuration) {
+    duration = maxDuration;
+  } else {
+    duration = `${minDuration} - ${maxDuration}`;
+  }
+
+  return duration;
 };

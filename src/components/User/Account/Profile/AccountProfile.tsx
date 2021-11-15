@@ -2,7 +2,7 @@ import Button from 'components/Common/Element/Button/Button';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Modal from 'components/Common/UI/Modal/Modal';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { authActions } from 'store/reducers/auth-reducer';
+import { authActions } from 'store/slices/auth-slice';
 import { sendVerifyEmail } from 'store/thunks/auth-thunk';
 import './AccountProfile.scss';
 

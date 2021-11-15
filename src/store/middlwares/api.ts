@@ -3,7 +3,7 @@ import { cacheAdapterEnhancer } from 'axios-extensions';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import { AppDispatch, AppState } from 'store';
-import { authActions } from 'store/reducers/auth-reducer';
+import { authActions } from 'store/slices/auth-slice';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,

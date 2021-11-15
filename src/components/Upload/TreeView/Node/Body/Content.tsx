@@ -10,8 +10,8 @@ import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { uploadActions } from 'store/reducers/upload-reducer';
-import { VideoNode, videoActions } from 'store/reducers/video-reducer';
+import { uploadActions } from 'store/slices/upload-slice';
+import { VideoNode, videoActions } from 'store/slices/video-slice';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 

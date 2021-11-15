@@ -3,7 +3,7 @@ import Controls from './Body/Controls';
 import Error from './Body/Error';
 import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode } from 'store/reducers/video-reducer';
+import { VideoNode } from 'store/slices/video-slice';
 import { uploadVideo } from 'store/thunks/upload-thunk';
 import './UploadNode.scss';
 

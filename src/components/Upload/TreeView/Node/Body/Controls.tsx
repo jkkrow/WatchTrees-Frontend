@@ -5,8 +5,8 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoNode, videoActions } from 'store/reducers/video-reducer';
-import { uploadActions } from 'store/reducers/upload-reducer';
+import { VideoNode, videoActions } from 'store/slices/video-slice';
+import { uploadActions } from 'store/slices/upload-slice';
 import { validateNodes } from 'util/tree';
 
 interface ControlsProps {

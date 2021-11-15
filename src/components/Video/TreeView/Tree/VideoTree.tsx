@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import {
   VideoTree as VideoTreeType,
   videoActions,
-} from 'store/reducers/video-reducer';
+} from 'store/slices/video-slice';
 
 import './VideoTree.scss';
 

@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 
 import { AppThunk } from 'store';
-import { uploadActions } from 'store/reducers/upload-reducer';
-import { uiActions } from 'store/reducers/ui-reducer';
+import { uploadActions } from 'store/slices/upload-slice';
+import { uiActions } from 'store/slices/ui-slice';
 import { beforeunloadHandler } from 'util/event-handlers';
 
 export const initiateUpload = (): AppThunk => {
@@ -152,45 +152,10 @@ export const uploadVideo = (
 
       dispatch(saveUpload());
     } catch (err) {
-      console.log(err);
       dispatch(
         uploadActions.setNode({
           info: { error: `${(err as Error).message}` },
           nodeId,
-        })
-      );
-    }
-  };
-};
-
-export const saveUpload = (): AppThunk => {
-  return async (dispatch, getState, api) => {
-    const { uploadTree } = getState().upload;
-
-    if (!uploadTree) return;
-
-    const client = dispatch(api());
-
-    try {
-      const saveRepsonse = await client.put('/upload/video', {
-        uploadTree,
-      });
-
-      dispatch(uploadActions.saveUpload());
-
-      dispatch(
-        uiActions.setMessage({
-          content: saveRepsonse.data.message,
-          type: 'message',
-          timer: 3000,
-        })
-      );
-    } catch (err) {
-      dispatch(
-        uiActions.setMessage({
-          content: `${(err as Error).message}: Saving upload failed`,
-          type: 'error',
-          timer: 5000,
         })
       );
     }
@@ -236,7 +201,7 @@ export const uploadThumbnail = (file: File): AppThunk => {
         })
       );
 
-      dispatch(saveUpload());
+      dispatch(saveUpload('Thumbnail uploaded'));
     } catch (err) {
       dispatch(
         uploadActions.setTree({ info: { thumbnail: { name: '', url: '' } } })
@@ -283,7 +248,7 @@ export const deleteThumbnail = (): AppThunk => {
         })
       );
 
-      dispatch(saveUpload());
+      dispatch(saveUpload('Thumbnail deleted'));
     } catch (err) {
       dispatch(
         uploadActions.setTree({
@@ -304,8 +269,50 @@ export const deleteThumbnail = (): AppThunk => {
   };
 };
 
+export const saveUpload = (message?: string): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { uploadTree } = getState().upload;
+
+    if (!uploadTree) return;
+
+    const client = dispatch(api());
+
+    try {
+      const saveRepsonse = await client.put('/upload/video', {
+        uploadTree,
+      });
+
+      dispatch(uploadActions.saveUpload());
+
+      dispatch(
+        uiActions.setMessage({
+          content: message || saveRepsonse.data.message,
+          type: 'message',
+          timer: 3000,
+        })
+      );
+    } catch (err) {
+      dispatch(
+        uiActions.setMessage({
+          content: `${(err as Error).message}: Saving upload failed`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
+    }
+  };
+};
+
 export const finishUpload = (): AppThunk => {
-  return (dispatch) => {
+  return async (dispatch) => {
+    dispatch(
+      uploadActions.setTree({
+        info: { isEditing: false },
+      })
+    );
+
+    await dispatch(saveUpload('Video uploaded successfully'));
+
     dispatch(uploadActions.finishUpload());
 
     window.removeEventListener('beforeunload', beforeunloadHandler);

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { authActions } from './auth-reducer';
-import { VideoTree } from './video-reducer';
+import { authActions } from './auth-slice';
+import { VideoTree } from './video-slice';
 
 export interface UserData {
   name: string;

@@ -4,7 +4,9 @@ import UserVideoItem from '../Item/UserVideoItem';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { useForm } from 'hooks/form-hook';
-import { VideoTree } from 'store/reducers/video-reducer';
+import { useAppDispatch } from 'hooks/store-hook';
+import { VideoTree } from 'store/slices/video-slice';
+import { deleteVideo } from 'store/thunks/user-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import './UserVideoList.scss';
 
@@ -15,27 +17,36 @@ interface UserVideoListProps {
 const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const { formState, setFormInput } = useForm({
     video: { value: '', isValid: false },
   });
 
-  const openWarningHandler = (item: VideoTree): void => {
+  const dispatch = useAppDispatch();
+
+  const openWarningHandler = (item: VideoTree) => {
     setDisplayModal(true);
     setTargetItem(item);
   };
 
-  const closeWarningHandler = (): void => {
+  const closeWarningHandler = () => {
     setDisplayModal(false);
     setTargetItem(null);
   };
 
-  const editHandler = (): void => {
+  const editHandler = () => {
     console.log('EDIT');
   };
 
-  const deleteHandler = (): void => {
-    console.log('DELETE');
+  const deleteHandler = async () => {
+    if (!targetItem || !targetItem._id) return;
+
+    setLoading(true);
+
+    await dispatch(deleteVideo(targetItem._id));
+
+    setLoading(false);
   };
 
   return (
@@ -60,8 +71,9 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
           </>
         }
         footer="DELETE"
-        loading={false}
+        loading={loading}
         disabled={!formState.isValid}
+        invalid
         onConfirm={deleteHandler}
         onClose={closeWarningHandler}
       />

@@ -1,10 +1,17 @@
+import { RouteComponentProps } from 'react-router';
+
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
 import Preview from 'components/Upload/Preview/Preview';
 import { useAppSelector } from 'hooks/store-hook';
+import { useEffect } from 'react';
 
-const UploadPage: React.FC = () => {
+const UploadPage: React.FC<RouteComponentProps> = ({ history }) => {
   const { previewTree } = useAppSelector((state) => state.upload);
+
+  useEffect(() => {
+    !previewTree && history.push('/my-videos');
+  }, [previewTree, history]);
 
   const isPreview = previewTree?.root.info?.url;
 
