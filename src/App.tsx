@@ -5,13 +5,13 @@ import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
 import VideoListPage from 'pages/Video/VideoListPage';
-import VerifyEmailPage from 'pages/Auth/VerifyEmailPage';
+import VerificationPage from 'pages/Auth/VerificationPage';
 import AccountPage from 'pages/User/AccountPage';
 import UserVideoListPage from 'pages/User/UserVideoListPage';
 import UploadPage from 'pages/Upload/UploadPage';
 import HistoryPage from 'pages/User/HistoryPage';
 import LoginPage from 'pages/Auth/LoginPage';
-import SendRecoveryEmailPage from 'pages/Auth/SendRecoveryEmailPage';
+import SendRecoveryPage from 'pages/Auth/SendRecoveryPage';
 import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
 import NotFoundPage from 'pages/Error/NotFoundPage';
 import ProtectedRoute from 'service/ProtectedRoute';
@@ -37,8 +37,8 @@ const App: React.FC = () => {
           <Route exact path="/" component={VideoListPage} />
           <Route
             exact
-            path="/auth/verify-email/:token"
-            component={VerifyEmailPage}
+            path="/auth/verification/:token"
+            component={VerificationPage}
           />
           <ProtectedRoute
             require={!refreshToken}
@@ -49,8 +49,8 @@ const App: React.FC = () => {
           <ProtectedRoute
             require={!refreshToken}
             exact
-            path="/auth/send-recovery-email"
-            component={SendRecoveryEmailPage}
+            path="/auth/recovery"
+            component={SendRecoveryPage}
           />
           <ProtectedRoute
             require={!refreshToken}

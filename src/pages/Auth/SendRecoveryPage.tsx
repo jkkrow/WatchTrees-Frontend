@@ -5,10 +5,10 @@ import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { sendRecoveryEmail } from 'store/thunks/auth-thunk';
+import { sendRecovery } from 'store/thunks/auth-thunk';
 import { VALIDATOR_EMAIL } from 'util/validators';
 
-const SendRecoveryEmailPage: React.FC = () => {
+const SendRecoveryPage: React.FC = () => {
   const { loading, error, message } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
@@ -19,7 +19,7 @@ const SendRecoveryEmailPage: React.FC = () => {
   const submitHandler = (): void => {
     if (!formState.isValid) return;
 
-    dispatch(sendRecoveryEmail(formState.inputs.email.value));
+    dispatch(sendRecovery(formState.inputs.email.value));
   };
 
   return (
@@ -43,4 +43,4 @@ const SendRecoveryEmailPage: React.FC = () => {
   );
 };
 
-export default SendRecoveryEmailPage;
+export default SendRecoveryPage;

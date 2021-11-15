@@ -6,7 +6,7 @@ import Input from 'components/Common/Element/Input/Input';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { VideoTree } from 'store/slices/video-slice';
-import { deleteVideo } from 'store/thunks/user-thunk';
+import { deleteVideo } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import './UserVideoList.scss';
 

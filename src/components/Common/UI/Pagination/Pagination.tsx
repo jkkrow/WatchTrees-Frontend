@@ -40,7 +40,7 @@ const Pagination: React.FC<PaginationProps> = ({
     history.push(destinationUrl);
   };
 
-  return count > 0 ? (
+  return totalPage > 0 ? (
     <div className="pagination">
       <Button inversed onClick={() => pageHandler(1)}>
         <DoubleAngleLeftIcon />

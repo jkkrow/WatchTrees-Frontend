@@ -13,11 +13,11 @@ import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoTree, VideoStatus } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import {
-  saveUpload,
   uploadThumbnail,
   deleteThumbnail,
   finishUpload,
 } from 'store/thunks/upload-thunk';
+import { saveVideo } from 'store/thunks/video-thunk';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';
@@ -133,7 +133,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const saveUploadHandler = async () => {
     setLoading(true);
 
-    await dispatch(saveUpload());
+    await dispatch(saveVideo());
 
     setLoading(false);
   };

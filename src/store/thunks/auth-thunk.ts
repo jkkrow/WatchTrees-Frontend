@@ -127,14 +127,14 @@ export const fetchTokenOnload = (): AppThunk => {
   };
 };
 
-export const sendVerifyEmail = (email: string): AppThunk => {
+export const sendVerification = (email: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await client.post('/auth/send-verify-email', { email });
+      const { data } = await client.post('/auth/verification', { email });
 
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
@@ -143,14 +143,14 @@ export const sendVerifyEmail = (email: string): AppThunk => {
   };
 };
 
-export const verifyEmail = (token: string): AppThunk => {
+export const checkVerification = (token: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await client.get(`/auth/verify-email/${token}`);
+      const { data } = await client.get(`/auth/verification/${token}`);
 
       dispatch(authActions.authSuccess(data.message));
 
@@ -161,14 +161,14 @@ export const verifyEmail = (token: string): AppThunk => {
   };
 };
 
-export const sendRecoveryEmail = (email: string): AppThunk => {
+export const sendRecovery = (email: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await client.post('/auth/send-recovery-email', {
+      const { data } = await client.post('/auth/recovery', {
         email,
       });
 
@@ -179,14 +179,14 @@ export const sendRecoveryEmail = (email: string): AppThunk => {
   };
 };
 
-export const getResetPassword = (token: string): AppThunk => {
+export const checkRecovery = (token: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     try {
       dispatch(authActions.authRequest());
 
-      await client.get(`/auth/user-password/${token}`);
+      await client.get(`/auth/recovery/${token}`);
 
       return true;
     } catch (err) {
@@ -195,7 +195,7 @@ export const getResetPassword = (token: string): AppThunk => {
   };
 };
 
-export const postResetPassword = (
+export const resetPassword = (
   password: string,
   confirmPassword: string,
   token: string
@@ -206,7 +206,7 @@ export const postResetPassword = (
     try {
       dispatch(authActions.authRequest());
 
-      const { data } = await client.patch(`/auth/user-password/${token}`, {
+      const { data } = await client.patch(`/auth/recovery/${token}/password`, {
         password,
         confirmPassword,
       });

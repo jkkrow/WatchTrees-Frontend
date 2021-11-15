@@ -3,7 +3,7 @@ import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Modal from 'components/Common/UI/Modal/Modal';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { authActions } from 'store/slices/auth-slice';
-import { sendVerifyEmail } from 'store/thunks/auth-thunk';
+import { sendVerification } from 'store/thunks/auth-thunk';
 import './AccountProfile.scss';
 
 const AccountProfile: React.FC = () => {
@@ -12,7 +12,7 @@ const AccountProfile: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const verifyEmailHandler = () => {
-    dispatch(sendVerifyEmail(userData!.email));
+    dispatch(sendVerification(userData!.email));
   };
 
   const closeModalHandler = () => {

@@ -109,7 +109,7 @@ const AuthPage: React.FC = () => {
           />
           <>
             <Link
-              to="/auth/send-recovery-email"
+              to="/auth/recovery"
               style={{ margin: '0 1rem 0 auto', fontSize: '1.2rem' }}
               tabIndex={-1}
             >
