@@ -11,7 +11,7 @@ import './Header.scss';
 const Header: React.FC = () => {
   const [displayMenu, setDisplayMenu] = useState(false);
 
-  const { userData } = useAppSelector((state) => state.user);
+  const { userData } = useAppSelector((state) => state.auth);
 
   const location = useLocation();
 

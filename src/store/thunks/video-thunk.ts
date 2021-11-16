@@ -39,7 +39,7 @@ export const saveVideo = (message?: string): AppThunk => {
 
 export const deleteVideo = (videoId: string): AppThunk => {
   return async (dispatch, getState, api) => {
-    const { userData } = getState().user;
+    const { userData } = getState().auth;
 
     if (!userData) return;
 

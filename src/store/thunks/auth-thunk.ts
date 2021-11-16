@@ -18,9 +18,29 @@ export const register = (credentials: {
 
       const { data } = await client.post('/auth/register', credentials);
 
-      dispatch(authActions.authSuccess(data.message));
+      dispatch(authActions.authSuccess());
+      dispatch(authActions.setRefreshToken(data.refreshToken));
+      dispatch(authActions.setAccessToken(data.accessToken));
+      dispatch(authActions.setUserData(data.userData));
 
-      return true;
+      dispatch(
+        uiActions.setMessage({
+          content: data.message,
+          type: 'message',
+          timer: 5000,
+        })
+      );
+
+      localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
+      localStorage.setItem('userData', JSON.stringify(data.userData));
+
+      window.addEventListener('storage', (event) => {
+        if (event.key !== 'refreshToken') return;
+
+        if (event.oldValue && !event.newValue) {
+          dispatch(logout());
+        }
+      });
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
     }
@@ -38,13 +58,10 @@ export const login = (
 
       const { data } = await client.post('/auth/login', credentials);
 
-      dispatch(
-        authActions.login({
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken,
-          userData: data.userData,
-        })
-      );
+      dispatch(authActions.authSuccess());
+      dispatch(authActions.setRefreshToken(data.refreshToken));
+      dispatch(authActions.setAccessToken(data.accessToken));
+      dispatch(authActions.setUserData(data.userData));
 
       localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
       localStorage.setItem('userData', JSON.stringify(data.userData));
@@ -53,7 +70,7 @@ export const login = (
         if (event.key !== 'refreshToken') return;
 
         if (event.oldValue && !event.newValue) {
-          dispatch(authActions.logout());
+          dispatch(logout());
         }
       });
     } catch (err) {
@@ -64,7 +81,9 @@ export const login = (
 
 export const logout = (): AppThunk => {
   return (dispatch) => {
-    dispatch(authActions.logout());
+    dispatch(authActions.setRefreshToken(null));
+    dispatch(authActions.setAccessToken(null));
+    dispatch(authActions.setUserData(null));
 
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userData');
@@ -144,17 +163,30 @@ export const sendVerification = (email: string): AppThunk => {
 };
 
 export const checkVerification = (token: string): AppThunk => {
-  return async (dispatch, _, api) => {
+  return async (dispatch, getState, api) => {
     const client = dispatch(api());
 
     try {
+      const { refreshToken } = getState().auth;
+
+      const isLoggedIn = !!refreshToken;
+
       dispatch(authActions.authRequest());
 
-      const { data } = await client.get(`/auth/verification/${token}`);
+      const { data } = await client.get(`/auth/verification/${token}`, {
+        params: { isLoggedIn },
+      });
 
       dispatch(authActions.authSuccess(data.message));
 
-      return true;
+      if (isLoggedIn && data.refreshToken) {
+        dispatch(authActions.setRefreshToken(data.refreshToken));
+        dispatch(authActions.setAccessToken(data.accessToken));
+        dispatch(authActions.setUserData(data.userData));
+
+        localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
+        localStorage.setItem('userData', JSON.stringify(data.userData));
+      }
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
     }

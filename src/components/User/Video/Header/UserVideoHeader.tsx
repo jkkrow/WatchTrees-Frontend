@@ -1,30 +1,20 @@
-import { useHistory } from 'react-router';
-
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as ReloadIcon } from 'assets/icons/reload.svg';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { initiateUpload } from 'store/thunks/upload-thunk';
+import { useAppSelector } from 'hooks/store-hook';
 import './UserVideoHeader.scss';
 
 interface UserVideoHeaderProps {
   onReload: () => void;
+  onAdd: () => void;
 }
 
-const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ onReload }) => {
+const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({
+  onReload,
+  onAdd,
+}) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
-  const dispatch = useAppDispatch();
-
-  const history = useHistory();
-
-  const addNewVideoHandler = () => {
-    if (!uploadTree) {
-      dispatch(initiateUpload());
-    }
-
-    history.push('/upload');
-  };
 
   return (
     <div className="user-video-header">
@@ -34,7 +24,7 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ onReload }) => {
         </Button>
       </div>
       <div>
-        <Button inversed onClick={addNewVideoHandler}>
+        <Button inversed onClick={onAdd}>
           {!uploadTree ? (
             <>
               <PlusIcon style={{ width: '1.2rem', height: '1.2rem' }} />

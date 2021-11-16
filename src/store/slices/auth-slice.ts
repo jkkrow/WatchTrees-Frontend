@@ -1,22 +1,31 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { UserData } from './user-slice';
+export interface UserData {
+  name: string;
+  email: string;
+  picture: string;
+  isVerified: boolean;
+  isPremium: boolean;
+}
 
 interface AuthSliceState {
   accessToken: string | null;
   refreshToken: string | null;
+  userData: UserData | null;
   loading: boolean;
   error: string | null;
   message: string | null;
 }
 
 const refreshTokenStorage = localStorage.getItem('refreshToken');
+const userDataStorage = localStorage.getItem('userData');
 
 const initialState: AuthSliceState = {
   accessToken: null,
   refreshToken: refreshTokenStorage
     ? (JSON.parse(refreshTokenStorage) as string)
     : null,
+  userData: userDataStorage ? (JSON.parse(userDataStorage) as UserData) : null,
   loading: false,
   error: null,
   message: null,
@@ -29,11 +38,12 @@ const authSlice = createSlice({
     authRequest: (state) => {
       state.loading = true;
       state.error = null;
+      state.message = null;
     },
 
-    authSuccess: (state, { payload }: PayloadAction<string>) => {
+    authSuccess: (state, { payload }: PayloadAction<string | undefined>) => {
       state.loading = false;
-      state.message = payload;
+      state.message = payload || null;
     },
 
     authFail: (state, { payload }: PayloadAction<string>) => {
@@ -41,32 +51,25 @@ const authSlice = createSlice({
       state.error = payload;
     },
 
-    login: (
+    setRefreshToken: (
       state,
-      {
-        payload,
-      }: PayloadAction<{
-        accessToken: string;
-        refreshToken: string;
-        userData: UserData;
-      }>
+      { payload }: PayloadAction<AuthSliceState['refreshToken']>
     ) => {
-      state.loading = false;
-      state.accessToken = payload.accessToken;
-      state.refreshToken = payload.refreshToken;
-    },
-
-    logout: (state) => {
-      state.accessToken = null;
-      state.refreshToken = null;
-    },
-
-    setRefreshToken: (state, { payload }: PayloadAction<string>) => {
       state.refreshToken = payload;
     },
 
-    setAccessToken: (state, { payload }: PayloadAction<string>) => {
+    setAccessToken: (
+      state,
+      { payload }: PayloadAction<AuthSliceState['accessToken']>
+    ) => {
       state.accessToken = payload;
+    },
+
+    setUserData: (
+      state,
+      { payload }: PayloadAction<AuthSliceState['userData']>
+    ) => {
+      state.userData = payload;
     },
 
     clearResponse: (state) => {

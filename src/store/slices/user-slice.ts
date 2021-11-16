@@ -1,27 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { authActions } from './auth-slice';
-
-export interface UserData {
-  name: string;
-  email: string;
-  picture: string;
-  isVerified: boolean;
-  isPremium: boolean;
-}
-
 interface userSliceState {
-  userData: UserData | null;
   loading: boolean;
   error: string | null;
+  message: string | null;
 }
 
-const userDataStorage = localStorage.getItem('userData');
-
 const initialState: userSliceState = {
-  userData: userDataStorage ? (JSON.parse(userDataStorage) as UserData) : null,
   loading: false,
   error: null,
+  message: null,
 };
 
 const userSlice = createSlice({
@@ -31,10 +19,12 @@ const userSlice = createSlice({
     userRequest: (state) => {
       state.loading = true;
       state.error = null;
+      state.message = null;
     },
 
-    userSuccess: (state) => {
+    userSuccess: (state, { payload }: PayloadAction<string | undefined>) => {
       state.loading = false;
+      state.message = payload || null;
     },
 
     userFail: (state, { payload }: PayloadAction<string>) => {
@@ -42,44 +32,9 @@ const userSlice = createSlice({
       state.error = payload;
     },
 
-    setUserData: (
-      state,
-      { payload }: PayloadAction<{ [key in keyof UserData]?: UserData[key] }>
-    ) => {
-      state.loading = false;
-      if (!state.userData) {
-        state.userData = payload as UserData;
-      } else {
-        state.userData = {
-          ...state.userData,
-          ...payload,
-        };
-      }
-    },
-
     clearResponse: (state) => {
       state.error = null;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(
-      authActions.login,
-      (
-        state,
-        {
-          payload,
-        }: PayloadAction<{
-          accessToken: string;
-          refreshToken: string;
-          userData: UserData;
-        }>
-      ) => {
-        state.userData = payload.userData;
-      }
-    );
-    builder.addCase(authActions.logout, (state) => {
-      state.userData = null;
-    });
   },
 });
 

@@ -15,7 +15,7 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
-  const { userData } = useAppSelector((state) => state.user);
+  const { userData } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const history = useHistory();

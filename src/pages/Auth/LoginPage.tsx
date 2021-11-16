@@ -34,7 +34,7 @@ const AuthPage: React.FC = () => {
     dispatch(login({ tokenId: response.tokenId }));
   };
 
-  const submitHandler = async (): Promise<void> => {
+  const submitHandler = () => {
     if (!formState.isValid) return;
 
     if (isLogin) {
@@ -45,7 +45,7 @@ const AuthPage: React.FC = () => {
         })
       );
     } else {
-      const success = await dispatch(
+      dispatch(
         register({
           name: formState.inputs.name.value,
           email: formState.inputs.email.value,
@@ -53,8 +53,6 @@ const AuthPage: React.FC = () => {
           confirmPassword: formState.inputs.confirmPassword.value,
         })
       );
-
-      success && setIsLogin(true);
     }
   };
 

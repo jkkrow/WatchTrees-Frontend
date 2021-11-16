@@ -12,22 +12,25 @@ import { VideoTree } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { userActions } from 'store/slices/user-slice';
+import { initiateUpload } from 'store/thunks/upload-thunk';
 import { deleteVideo } from 'store/thunks/video-thunk';
 import { fetchUserVideos } from 'store/thunks/user-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import { RouteComponentProps } from 'react-router';
 
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
+  const { accessToken, userData } = useAppSelector((state) => state.auth);
+  const { uploadTree } = useAppSelector((state) => state.upload);
+  const { loading, error } = useAppSelector((state) => state.user);
+
   const [videos, setVideos] = useState([]);
   const [count, setCount] = useState(0);
   const [isFetched, setIsFetched] = useState(false);
-
-  const { currentPage, itemsPerPage } = usePaginate(3);
-  const { accessToken } = useAppSelector((state) => state.auth);
-  const { loading, error } = useAppSelector((state) => state.user);
-
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
+
+  const { currentPage, itemsPerPage } = usePaginate(3);
 
   const { formState, setFormInput } = useForm({
     video: { value: '', isValid: false },
@@ -35,18 +38,32 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
 
   const dispatch = useAppDispatch();
 
+  const addNewVideoHandler = () => {
+    if (userData && !userData.isVerified) {
+      return dispatch(
+        userActions.userFail('You need to verify account before upload video')
+      );
+    }
+
+    if (!uploadTree) {
+      dispatch(initiateUpload());
+    }
+
+    history.push('/upload');
+  };
+
   const openWarningHandler = (item: VideoTree) => {
     setDisplayModal(true);
     setTargetItem(item);
   };
 
-  const editHandler = () => {
-    console.log('EDIT');
-  };
-
   const closeWarningHandler = () => {
     setDisplayModal(false);
     setTargetItem(null);
+  };
+
+  const editHandler = () => {
+    console.log('EDIT');
   };
 
   const deleteHandler = async () => {
@@ -104,7 +121,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
           onForm={setFormInput}
         />
       </Modal>
-      <UserVideoHeader onReload={fetchVideos} />
+      <UserVideoHeader onReload={fetchVideos} onAdd={addNewVideoHandler} />
       <LoadingSpinner on={loading} />
       <Response type="error" content={error} />
       {!loading && isFetched && (

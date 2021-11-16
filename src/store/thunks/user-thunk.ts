@@ -1,5 +1,5 @@
 import { AppThunk } from 'store';
-import { userActions, UserData } from 'store/slices/user-slice';
+import { userActions } from 'store/slices/user-slice';
 
 export const fetchUserVideos = (
   pageNumber: number,
@@ -28,17 +28,5 @@ export const fetchUserVideos = (
         userActions.userFail(`${(err as Error).message}: Failed to load videos`)
       );
     }
-  };
-};
-
-export const updateUserData = (info: {
-  [key in keyof UserData]?: UserData[key];
-}): AppThunk => {
-  return (dispatch, getState) => {
-    dispatch(userActions.setUserData(info));
-
-    const { userData } = getState().user;
-
-    localStorage.setItem('userData', JSON.stringify(userData));
   };
 };

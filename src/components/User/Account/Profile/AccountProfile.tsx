@@ -7,8 +7,9 @@ import { sendVerification } from 'store/thunks/auth-thunk';
 import './AccountProfile.scss';
 
 const AccountProfile: React.FC = () => {
-  const { loading, error, message } = useAppSelector((state) => state.auth);
-  const { userData } = useAppSelector((state) => state.user);
+  const { userData, loading, error, message } = useAppSelector(
+    (state) => state.auth
+  );
   const dispatch = useAppDispatch();
 
   const verifyEmailHandler = () => {
@@ -18,6 +19,8 @@ const AccountProfile: React.FC = () => {
   const closeModalHandler = () => {
     dispatch(authActions.clearResponse());
   };
+
+  console.log(error || message);
 
   return (
     <div className="account-profile">
