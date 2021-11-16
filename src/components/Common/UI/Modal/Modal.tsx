@@ -7,12 +7,10 @@ import Button from 'components/Common/Element/Button/Button';
 import './Modal.scss';
 
 interface ModalProps {
-  style?: React.CSSProperties;
   on: boolean;
+  type: 'form' | 'image' | 'message';
   header?: string;
-  content?: string | JSX.Element;
   footer?: string;
-  loading?: boolean;
   disabled?: boolean;
   invalid?: boolean;
   onConfirm?: () => Promise<any>;
@@ -20,12 +18,10 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({
-  style,
   on,
+  type,
   header,
-  content,
   footer,
-  loading,
   disabled,
   invalid,
   onConfirm,
@@ -33,6 +29,7 @@ const Modal: React.FC<ModalProps> = ({
   children,
 }) => {
   const [displayModal, setDisplayModal] = useState(on);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     on && setDisplayModal(!!on);
@@ -40,8 +37,10 @@ const Modal: React.FC<ModalProps> = ({
 
   const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
+    setLoading(true);
 
     onConfirm && (await onConfirm());
+    setLoading(false);
     setDisplayModal(false);
   };
 
@@ -60,12 +59,13 @@ const Modal: React.FC<ModalProps> = ({
         onExited={onClose}
       >
         <div className="modal">
-          {children || (
-            <form style={style} onSubmit={submitHandler}>
+          {type === 'image' && children}
+          {type !== 'image' && (
+            <form onSubmit={submitHandler}>
               <h3 className="modal__header">{header}</h3>
-              <div className="modal__content">{content}</div>
+              <div className="modal__content">{children}</div>
               <div className="modal__footer">
-                {footer && (
+                {type === 'form' && (
                   <Button
                     small
                     invalid={invalid}
@@ -76,7 +76,7 @@ const Modal: React.FC<ModalProps> = ({
                   </Button>
                 )}
                 <Button type="button" small onClick={closeModalHandler}>
-                  {footer ? 'CANCEL' : 'OK'}
+                  {type === 'form' ? 'CANCEL' : 'OK'}
                 </Button>
               </div>
             </form>

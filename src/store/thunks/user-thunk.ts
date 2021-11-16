@@ -3,6 +3,7 @@ import { userActions, UserData } from 'store/slices/user-slice';
 
 export const fetchUserVideos = (
   pageNumber: number,
+  itemsPerPage: number,
   forceUpdate: boolean = true
 ): AppThunk => {
   return async (dispatch, _, api) => {
@@ -11,18 +12,17 @@ export const fetchUserVideos = (
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.get(`/users/videos?page=${pageNumber}`, {
-        forceUpdate,
-        cache: true,
-      });
-
-      dispatch(
-        updateUserData({
-          videos: { data: data.videos, count: data.count },
-        })
+      const { data } = await client.get(
+        `/users/videos?page=${pageNumber}&max=${itemsPerPage}`,
+        {
+          forceUpdate,
+          cache: true,
+        }
       );
 
-      return true;
+      dispatch(userActions.userSuccess());
+
+      return data;
     } catch (err) {
       dispatch(
         userActions.userFail(`${(err as Error).message}: Failed to load videos`)

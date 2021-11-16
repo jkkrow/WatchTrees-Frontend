@@ -1,13 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { authActions } from './auth-slice';
-import { VideoTree } from './video-slice';
 
 export interface UserData {
   name: string;
   email: string;
   picture: string;
-  videos: { data: VideoTree[]; count: number };
   isVerified: boolean;
   isPremium: boolean;
 }

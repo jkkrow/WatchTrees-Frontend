@@ -20,34 +20,34 @@ const AccountProfile: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="account-profile">
       <Modal
         on={!!error || !!message}
+        type="message"
         header={error ? 'Error' : 'Email has sent'}
-        content={error || message || ''}
         onClose={closeModalHandler}
-      />
-      <div className="account-profile">
-        <div className="account-profile__picture">
-          <Avatar width="5rem" height="5rem" />
-        </div>
-        <div className="account-profile__info">
-          <div data-label="Name">{userData!.name}</div>
-          <div data-label="Email">{userData!.email}</div>
-          <span className="link">Edit</span>
-        </div>
-        <div className="account-profile__buttons">
-          {!userData!.isVerified && (
-            <Button loading={loading} onClick={verifyEmailHandler}>
-              Verify Email
-            </Button>
-          )}
-          {userData!.isVerified && !userData!.isPremium && (
-            <Button>Upgrade to Premium</Button>
-          )}
-        </div>
+      >
+        <div>{error || message}</div>
+      </Modal>
+      <div className="account-profile__picture">
+        <Avatar width="5rem" height="5rem" />
       </div>
-    </>
+      <div className="account-profile__info">
+        <div data-label="Name">{userData!.name}</div>
+        <div data-label="Email">{userData!.email}</div>
+        <span className="link">Edit</span>
+      </div>
+      <div className="account-profile__buttons">
+        {!userData!.isVerified && (
+          <Button loading={loading} onClick={verifyEmailHandler}>
+            Verify Email
+          </Button>
+        )}
+        {userData!.isVerified && !userData!.isPremium && (
+          <Button>Upgrade to Premium</Button>
+        )}
+      </div>
+    </div>
   );
 };
 

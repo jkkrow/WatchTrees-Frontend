@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router';
 
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
@@ -9,20 +9,19 @@ import { ReactComponent as DoubleAngleRightIcon } from 'assets/icons/double-angl
 import './Pagination.scss';
 
 interface PaginationProps {
-  baseUrl: string;
   count: number;
   currentPage: number;
+  itemsPerPage: number;
   keyword?: string;
-  itemsPerPage?: number;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
-  baseUrl,
   count,
   currentPage = 1,
-  itemsPerPage = 10,
+  itemsPerPage,
   keyword,
 }) => {
+  const location = useLocation();
   const history = useHistory();
   const totalPage = useMemo(
     () => Math.ceil(count / itemsPerPage),
@@ -33,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
     if (pageNumber < 1 || pageNumber > totalPage || pageNumber === currentPage)
       return;
 
-    const destinationUrl = `${baseUrl}${
+    const destinationUrl = `${location.pathname}${
       keyword ? `${keyword}/` : ''
     }?page=${pageNumber}`;
 

@@ -128,7 +128,11 @@ const FileInput: React.FC<FileInputProps> = ({
         )}
       </ul>
       {type === 'image' && (
-        <Modal on={!!filePreview} onClose={() => setFilePreview(null)}>
+        <Modal
+          on={!!filePreview}
+          type="image"
+          onClose={() => setFilePreview(null)}
+        >
           <img
             src={
               filePreview?.url.substr(0, 4) === 'blob'
