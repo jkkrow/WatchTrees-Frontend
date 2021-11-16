@@ -10,7 +10,7 @@ const UploadPage: React.FC<RouteComponentProps> = ({ history }) => {
   const { previewTree } = useAppSelector((state) => state.upload);
 
   useEffect(() => {
-    !previewTree && history.push('/my-videos');
+    !previewTree && history.push('/user/videos');
   }, [previewTree, history]);
 
   const isPreview = previewTree?.root.info?.url;

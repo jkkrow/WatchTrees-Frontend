@@ -12,9 +12,10 @@ import './UserVideoList.scss';
 
 interface UserVideoListProps {
   items: VideoTree[];
+  onDelete: () => void;
 }
 
-const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
+const UserVideoList: React.FC<UserVideoListProps> = ({ items, onDelete }) => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
   const [loading, setLoading] = useState(false);
@@ -44,9 +45,10 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items }) => {
 
     setLoading(true);
 
-    await dispatch(deleteVideo(targetItem._id));
+    const success = await dispatch(deleteVideo(targetItem._id));
 
     setLoading(false);
+    success && onDelete();
   };
 
   return (

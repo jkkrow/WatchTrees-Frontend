@@ -4,8 +4,8 @@ import { CSSTransition } from 'react-transition-group';
 
 import Backdrop from 'components/Common/UI/Backdrop/Backdrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { uploadActions } from 'store/slices/upload-slice';
 import { logout } from 'store/thunks/auth-thunk';
-import { finishUpload } from 'store/thunks/upload-thunk';
 import './Menu.scss';
 
 interface MenuProps {
@@ -29,7 +29,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
       if (!result) return;
     }
 
-    dispatch(finishUpload());
+    dispatch(uploadActions.finishUpload());
     dispatch(logout());
     history.push('/auth');
   };
@@ -46,17 +46,17 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
         <div className="menu">
           <ul className="menu__list">
             <li>
-              <NavLink activeStyle={{ opacity: 0.7 }} to="/account">
+              <NavLink activeStyle={{ opacity: 0.7 }} to="/user/account">
                 Account
               </NavLink>
             </li>
             <li>
-              <NavLink activeStyle={{ opacity: 0.7 }} to="/my-videos">
+              <NavLink activeStyle={{ opacity: 0.7 }} to="/user/videos">
                 My Videos
               </NavLink>
             </li>
             <li>
-              <NavLink activeStyle={{ opacity: 0.7 }} to="/history">
+              <NavLink activeStyle={{ opacity: 0.7 }} to="/user/history">
                 History
               </NavLink>
             </li>

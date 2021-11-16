@@ -17,7 +17,7 @@ export const fetchUserVideos = (
       });
 
       dispatch(
-        userActions.setUserData({
+        updateUserData({
           videos: { data: data.videos, count: data.count },
         })
       );

@@ -46,8 +46,6 @@ export const api = () => {
         return res;
       },
       (err) => {
-        console.log(err);
-
         let axiosError: AxiosError | undefined;
 
         if (err.response) {

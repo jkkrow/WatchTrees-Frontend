@@ -53,12 +53,18 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({
     })();
   }, [dispatch, accessToken, currentPage, history]);
 
+  const fetchVideos = () => {
+    dispatch(fetchUserVideos(currentPage));
+  };
+
   return (
     <UserLayout>
-      <UserVideoHeader currentPage={currentPage} />
+      <UserVideoHeader onReload={fetchVideos} />
       <LoadingSpinner on={loading} />
       <Response type="error" content={error} />
-      {!loading && isFetched && <UserVideoList items={videos} />}
+      {!loading && isFetched && (
+        <UserVideoList items={videos} onDelete={fetchVideos} />
+      )}
       {count > 0 && (
         <Pagination
           baseUrl={location.pathname}

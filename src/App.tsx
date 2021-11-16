@@ -62,29 +62,29 @@ const App: React.FC = () => {
             require={refreshToken}
             redirect="/auth"
             exact
-            path="/account"
+            path="/user/account"
             component={AccountPage}
           />
           <ProtectedRoute
             require={refreshToken}
             redirect="/auth"
             exact
-            path="/my-videos"
+            path="/user/videos"
             component={UserVideoListPage}
           />
           <ProtectedRoute
-            require={refreshToken}
-            redirect="/auth"
             exact
-            path="/new-video"
-            component={UploadPage}
-          />
-          <ProtectedRoute
-            exact
-            path="/history"
+            path="/user/history"
             redirect="/auth"
             require={refreshToken}
             component={HistoryPage}
+          />
+          <ProtectedRoute
+            require={refreshToken}
+            redirect="/auth"
+            exact
+            path="/upload"
+            component={UploadPage}
           />
           <Route component={NotFoundPage} />
         </Switch>

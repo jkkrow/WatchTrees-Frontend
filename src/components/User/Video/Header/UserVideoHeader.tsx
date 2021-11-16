@@ -6,14 +6,13 @@ import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { initiateUpload } from 'store/thunks/upload-thunk';
-import { fetchUserVideos } from 'store/thunks/user-thunk';
 import './UserVideoHeader.scss';
 
 interface UserVideoHeaderProps {
-  currentPage: number;
+  onReload: () => void;
 }
 
-const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ currentPage }) => {
+const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ onReload }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
   const dispatch = useAppDispatch();
 
@@ -24,17 +23,13 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ currentPage }) => {
       dispatch(initiateUpload());
     }
 
-    history.push('/new-video');
-  };
-
-  const fetchVideosHandler = async () => {
-    await dispatch(fetchUserVideos(currentPage));
+    history.push('/upload');
   };
 
   return (
     <div className="user-video-header">
       <div>
-        <Button inversed onClick={fetchVideosHandler}>
+        <Button inversed onClick={onReload}>
           <ReloadIcon />
         </Button>
       </div>

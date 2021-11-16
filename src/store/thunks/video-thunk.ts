@@ -2,7 +2,6 @@ import { AppThunk } from 'store';
 
 import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
-import { updateUserData } from './user-thunk';
 
 export const saveVideo = (message?: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -47,18 +46,9 @@ export const deleteVideo = (videoId: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.delete(`/videos/${videoId}`);
+      await client.delete(`/videos/${videoId}`);
 
-      const newVideos = {
-        data: userData.videos.data.filter(
-          (video) => video._id !== data.videoId
-        ),
-        count: userData.videos.count - 1,
-      };
-
-      // TODO: update user videos and error handler
-
-      dispatch(updateUserData({ videos: newVideos }));
+      return true;
     } catch (err) {
       dispatch(
         uiActions.setMessage({
