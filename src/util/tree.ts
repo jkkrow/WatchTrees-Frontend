@@ -119,8 +119,21 @@ export const getAllPaths = (tree: VideoTree): VideoNode[][] => {
 
 export const getFullSize = (tree: VideoTree): number => {
   const nodes = traverseNodes(tree.root);
+  const filteredNodes: VideoNode[] = [];
+  const seen: { [key: string]: boolean } = {};
 
-  return nodes.reduce((acc, cur) => acc + (cur.info?.size ?? 0), 0);
+  for (let node of nodes) {
+    if (!node.info) continue;
+
+    const duplicated = seen.hasOwnProperty(node.info.name);
+
+    if (!duplicated) {
+      filteredNodes.push(node);
+      seen[node.info.name] = true;
+    }
+  }
+
+  return filteredNodes.reduce((acc, cur) => acc + (cur.info?.size ?? 0), 0);
 };
 
 export const getMinMaxDuration = (

@@ -74,10 +74,8 @@ const uploadSlice = createSlice({
         newNode.prevId = node.id;
         node.children.push(newNode);
 
-        const fullSize = getFullSize(tree);
         const { max, min } = getMinMaxDuration(tree);
 
-        tree.size = fullSize;
         tree.maxDuration = max;
         tree.minDuration = min;
       }

@@ -72,7 +72,6 @@ export const uploadVideo = (
 
         if (node.info.name === file.name && node.info.size === file.size) {
           // match current node's prgress state and url
-
           const previewUrl = findById(previewTree, node.id)!.info!.url;
 
           dispatch(
@@ -94,7 +93,9 @@ export const uploadVideo = (
         }
       }
 
-      // Initiate upload
+      /**
+       * Initiate upload
+       */
 
       const response = await client.get('/upload/multipart-id', {
         params: {
@@ -195,7 +196,10 @@ export const uploadVideo = (
         });
       });
 
-      // Complete upload
+      /**
+       * Complete upload
+       */
+
       const completeUploadReseponse = await client.post(
         '/upload/multipart-parts',
         {
