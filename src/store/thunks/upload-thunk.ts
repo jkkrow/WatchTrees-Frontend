@@ -276,15 +276,17 @@ export const deleteThumbnail = (): AppThunk => {
   };
 };
 
-export const finishUpload = (): AppThunk => {
+export const finishUpload = (save: boolean = false): AppThunk => {
   return async (dispatch) => {
-    dispatch(
-      uploadActions.setTree({
-        info: { isEditing: false },
-      })
-    );
+    if (save) {
+      dispatch(
+        uploadActions.setTree({
+          info: { isEditing: false },
+        })
+      );
 
-    await dispatch(saveVideo('Video uploaded successfully'));
+      await dispatch(saveVideo('Video uploaded successfully'));
+    }
 
     dispatch(uploadActions.finishUpload());
 

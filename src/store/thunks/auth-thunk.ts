@@ -18,11 +18,6 @@ export const register = (credentials: {
 
       const { data } = await client.post('/auth/register', credentials);
 
-      dispatch(authActions.authSuccess());
-      dispatch(authActions.setRefreshToken(data.refreshToken));
-      dispatch(authActions.setAccessToken(data.accessToken));
-      dispatch(authActions.setUserData(data.userData));
-
       dispatch(
         uiActions.setMessage({
           content: data.message,
@@ -30,6 +25,11 @@ export const register = (credentials: {
           timer: 5000,
         })
       );
+
+      dispatch(authActions.authSuccess());
+      dispatch(authActions.setRefreshToken(data.refreshToken));
+      dispatch(authActions.setAccessToken(data.accessToken));
+      dispatch(authActions.setUserData(data.userData));
 
       localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
       localStorage.setItem('userData', JSON.stringify(data.userData));

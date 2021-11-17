@@ -2,6 +2,7 @@ import { AppThunk } from 'store';
 
 import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
+import { finishUpload } from './upload-thunk';
 
 export const saveVideo = (message?: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -39,14 +40,28 @@ export const saveVideo = (message?: string): AppThunk => {
 
 export const deleteVideo = (videoId: string): AppThunk => {
   return async (dispatch, getState, api) => {
-    const { userData } = getState().auth;
+    const { auth, upload } = getState();
+    const { userData } = auth;
+    const { uploadTree } = upload;
 
     if (!userData) return;
 
     const client = dispatch(api());
 
     try {
-      await client.delete(`/videos/${videoId}`);
+      const { data } = await client.delete(`/videos/${videoId}`);
+
+      if (uploadTree) {
+        uploadTree.root.id === data.treeId && dispatch(finishUpload());
+      }
+
+      dispatch(
+        uiActions.setMessage({
+          content: data.message,
+          type: 'message',
+          timer: 5000,
+        })
+      );
 
       return true;
     } catch (err) {

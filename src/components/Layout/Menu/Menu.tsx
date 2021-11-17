@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 
 import Backdrop from 'components/Common/UI/Backdrop/Backdrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { uploadActions } from 'store/slices/upload-slice';
+import { finishUpload } from 'store/thunks/upload-thunk';
 import { logout } from 'store/thunks/auth-thunk';
 import './Menu.scss';
 
@@ -29,7 +29,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
       if (!result) return;
     }
 
-    dispatch(uploadActions.finishUpload());
+    dispatch(finishUpload());
     dispatch(logout());
     history.push('/auth');
   };

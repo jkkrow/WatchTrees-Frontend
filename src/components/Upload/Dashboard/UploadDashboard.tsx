@@ -141,7 +141,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const submitUploadHandler = async () => {
     setLoading(true);
 
-    await dispatch(finishUpload());
+    await dispatch(finishUpload(true));
 
     setLoading(false);
   };
