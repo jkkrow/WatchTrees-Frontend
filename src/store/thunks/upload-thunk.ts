@@ -5,6 +5,7 @@ import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { saveVideo } from './video-thunk';
 import { beforeunloadHandler } from 'util/event-handlers';
+import { findById, traverseNodes } from 'util/tree';
 
 export const initiateUpload = (): AppThunk => {
   return (dispatch) => {
@@ -19,7 +20,11 @@ export const uploadVideo = (
   nodeId: string,
   treeId: string
 ): AppThunk => {
-  return async (dispatch, _, api) => {
+  return async (dispatch, getState, api) => {
+    const { uploadTree, previewTree } = getState().upload;
+
+    if (!uploadTree || !previewTree) return;
+
     const client = dispatch(api());
 
     try {
@@ -44,7 +49,11 @@ export const uploadVideo = (
       };
 
       dispatch(
-        uploadActions.setNode({ type: 'uploadTree', info: nodeInfo, nodeId })
+        uploadActions.setNode({
+          type: 'uploadTree',
+          info: nodeInfo,
+          nodeId,
+        })
       );
       dispatch(
         uploadActions.setNode({
@@ -54,7 +63,39 @@ export const uploadVideo = (
         })
       );
 
-      // Initiate Upload
+      // Check if file is duplicated
+
+      const uploadNodes = traverseNodes(uploadTree.root);
+
+      for (let node of uploadNodes) {
+        if (!node.info) continue;
+
+        if (node.info.name === file.name && node.info.size === file.size) {
+          // match current node's prgress state and url
+
+          const previewUrl = findById(previewTree, node.id)!.info!.url;
+
+          dispatch(
+            uploadActions.setNode({
+              type: 'uploadTree',
+              info: { progress: node.info.progress, url: node.info.url },
+              nodeId,
+            })
+          );
+          dispatch(
+            uploadActions.setNode({
+              type: 'previewTree',
+              info: { progress: node.info.progress, url: previewUrl },
+              nodeId,
+            })
+          );
+
+          return;
+        }
+      }
+
+      // Initiate upload
+
       const response = await client.get('/upload/multipart-id', {
         params: {
           treeId,
@@ -75,24 +116,42 @@ export const uploadVideo = (
 
       let start, end, blob;
 
+      const getDuplicatedNodeIds = () => {
+        const uploadTree = getState().upload.uploadTree!;
+        const uploadNodes = traverseNodes(uploadTree.root);
+
+        const duplicatedNodeIds: string[] = [];
+
+        for (let node of uploadNodes) {
+          if (!node.info) continue;
+
+          if (node.info.name === file.name && node.info.size === file.size) {
+            duplicatedNodeIds.push(node.id);
+          }
+        }
+
+        return duplicatedNodeIds;
+      };
       const uploadProgressHandler = async (
-        progressEvent: ProgressEvent,
+        event: ProgressEvent,
         index: number
       ) => {
-        if (progressEvent.loaded >= progressEvent.total) return;
+        if (event.loaded >= event.total) return;
 
-        const currentProgress =
-          Math.round(progressEvent.loaded * 100) / progressEvent.total;
+        const currentProgress = Math.round(event.loaded * 100) / event.total;
 
         progressArray[index - 1] = currentProgress;
         const sum = progressArray.reduce((acc, cur) => acc + cur);
+        const progress = Math.round(sum / CHUNKS_COUNT);
 
-        dispatch(
-          uploadActions.setNode({
-            info: { progress: Math.round(sum / CHUNKS_COUNT) },
-            nodeId,
-          })
-        );
+        for (let id of getDuplicatedNodeIds()) {
+          dispatch(
+            uploadActions.setNode({
+              info: { progress },
+              nodeId: id,
+            })
+          );
+        }
       };
 
       for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
@@ -101,7 +160,7 @@ export const uploadVideo = (
         blob =
           index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
-        // Get Urls
+        // Get presigned urls
         const getUploadUrlResponse = await client.get(
           '/upload/multipart-presigned-url',
           {
@@ -116,7 +175,7 @@ export const uploadVideo = (
 
         const { presignedUrl } = getUploadUrlResponse.data;
 
-        // Save Promises
+        // Save promises
         const uploadPromise = axios.put(presignedUrl, blob, {
           onUploadProgress: (e) => uploadProgressHandler(e, index),
           headers: {
@@ -126,7 +185,7 @@ export const uploadVideo = (
         promisesArray.push(uploadPromise);
       }
 
-      // Upload Parts
+      // Upload parts
       const resolvedArray = await Promise.all(promisesArray);
 
       resolvedArray.forEach((resolvedPromise, index) => {
@@ -136,7 +195,7 @@ export const uploadVideo = (
         });
       });
 
-      // Complete Upload
+      // Complete upload
       const completeUploadReseponse = await client.post(
         '/upload/multipart-parts',
         {
@@ -149,22 +208,32 @@ export const uploadVideo = (
         }
       );
 
-      dispatch(uploadActions.setNode({ info: { progress: 100 }, nodeId }));
-
       const { url } = completeUploadReseponse.data;
 
-      dispatch(
-        uploadActions.setNode({ type: 'uploadTree', info: { url }, nodeId })
-      );
+      for (let id of getDuplicatedNodeIds()) {
+        dispatch(
+          uploadActions.setNode({
+            info: { progress: 100 },
+            nodeId: id,
+          })
+        );
+        dispatch(
+          uploadActions.setNode({
+            type: 'uploadTree',
+            info: { url },
+            nodeId: id,
+          })
+        );
+      }
 
       dispatch(saveVideo());
     } catch (err) {
-      dispatch(
-        uploadActions.setNode({
-          info: { error: `${(err as Error).message}` },
-          nodeId,
-        })
-      );
+      // dispatch(
+      //   uploadActions.setNode({
+      //     info: { error: `${(err as Error).message}` },
+      //     nodeId,
+      //   })
+      // );
     }
   };
 };
