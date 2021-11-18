@@ -43,6 +43,25 @@ const FileInput: React.FC<FileInputProps> = ({
       );
   }, [validFiles, initialValue]);
 
+  useEffect(() => {
+    if (!initialValue.length) return;
+
+    setValidFiles((prevFiles) => {
+      const initialFileNames: { [key: string]: string } = {};
+      const filteredFiles: File[] = [];
+
+      for (let value of initialValue) {
+        initialFileNames[value.name] = value.name;
+      }
+
+      for (let file of prevFiles) {
+        initialFileNames.hasOwnProperty(file.name) && filteredFiles.push(file);
+      }
+
+      return filteredFiles;
+    });
+  }, [initialValue]);
+
   const fileChangeHandler = (selectedFiles: File[]) => {
     if (!selectedFiles.length) return;
 
