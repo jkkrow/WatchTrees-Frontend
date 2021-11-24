@@ -220,6 +220,8 @@ export const checkRecovery = (token: string): AppThunk => {
 
       await client.get(`/auth/recovery/${token}`);
 
+      dispatch(authActions.authSuccess());
+
       return true;
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
