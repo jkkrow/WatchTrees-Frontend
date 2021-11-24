@@ -1,5 +1,6 @@
 import { AppThunk } from 'store';
 
+import { VideoTree } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { finishUpload } from './upload-thunk';
@@ -13,15 +14,19 @@ export const saveVideo = (message?: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const saveRepsonse = await client.put(`/videos/${uploadTree._id}`, {
+      const { data } = await client.put(`/videos/${uploadTree._id}`, {
         uploadTree,
       });
+
+      if (data.treeId) {
+        dispatch(uploadActions.setTree({ info: { _id: data.treeId } }));
+      }
 
       dispatch(uploadActions.saveUpload());
 
       dispatch(
         uiActions.setMessage({
-          content: message || saveRepsonse.data.message,
+          content: message || data.message,
           type: 'message',
           timer: 3000,
         })
@@ -38,7 +43,7 @@ export const saveVideo = (message?: string): AppThunk => {
   };
 };
 
-export const deleteVideo = (videoId: string): AppThunk => {
+export const deleteVideo = (video: VideoTree): AppThunk => {
   return async (dispatch, getState, api) => {
     const { auth, upload } = getState();
     const { userData } = auth;
@@ -49,10 +54,10 @@ export const deleteVideo = (videoId: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.delete(`/videos/${videoId}`);
+      const { data } = await client.delete(`/videos/${video._id}`);
 
       if (uploadTree) {
-        uploadTree.root.id === data.treeId && dispatch(finishUpload());
+        uploadTree.root.id === video.root.id && dispatch(finishUpload());
       }
 
       dispatch(
