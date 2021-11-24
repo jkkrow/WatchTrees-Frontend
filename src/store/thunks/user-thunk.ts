@@ -13,7 +13,7 @@ export const fetchUserVideos = (
       dispatch(userActions.userRequest());
 
       const { data } = await client.get(
-        `/users/videos?page=${pageNumber}&max=${itemsPerPage}`,
+        `/videos/user?page=${pageNumber}&max=${itemsPerPage}`,
         {
           forceUpdate,
           cache: true,
