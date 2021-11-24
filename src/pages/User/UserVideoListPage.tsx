@@ -69,7 +69,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const deleteHandler = async () => {
     if (!targetItem || !targetItem._id) return;
 
-    const success = await dispatch(deleteVideo(targetItem._id));
+    const success = await dispatch(deleteVideo(targetItem));
 
     success && fetchVideos();
   };
