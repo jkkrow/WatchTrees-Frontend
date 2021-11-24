@@ -20,8 +20,6 @@ const AccountProfile: React.FC = () => {
     dispatch(authActions.clearResponse());
   };
 
-  console.log(error || message);
-
   return (
     <div className="account-profile">
       <Modal
