@@ -24,7 +24,11 @@ const Form: React.FC<FormProps> = ({
   };
 
   return (
-    <form className={className} style={style} onSubmit={submitHandler}>
+    <form
+      className={`form${className ? className : ''}`}
+      style={style}
+      onSubmit={submitHandler}
+    >
       {Children.map(children, (child: any) =>
         cloneElement(child, { isValidated: isSubmitted })
       )}

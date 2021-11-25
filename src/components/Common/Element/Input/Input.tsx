@@ -79,7 +79,7 @@ const Input: React.FC<InputProps> = ({
 }) => {
   const [inputState, dispatch] = useReducer(inputReducer, {
     value: initialValue || '',
-    isValid: formInput ? false : true,
+    isValid: formInput ? (initialValue ? true : false) : true,
     isBlured: false,
   });
 
