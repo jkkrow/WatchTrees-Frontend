@@ -2,7 +2,7 @@ import { ReactComponent as UserIcon } from 'assets/icons/user.svg';
 import './Avatar.scss';
 
 interface AvatarProps {
-  src?: string;
+  src: string;
   width?: string;
   height?: string;
   button?: boolean;
@@ -24,7 +24,11 @@ const Avatar: React.FC<AvatarProps> = ({
     >
       {src ? (
         <img
-          src={`${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`}
+          src={
+            src.substr(0, 4) === 'blob'
+              ? src
+              : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`
+          }
           alt=""
         />
       ) : (
