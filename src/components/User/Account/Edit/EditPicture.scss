@@ -16,17 +16,17 @@
       margin: 0;
     }
   }
-}
 
-.drag-drop {
-  width: 10rem;
-  height: 10rem;
-  padding: 0;
-  border: 2px solid var(--text-primary);
-  border-radius: 100px;
+  &__drag-drop {
+    width: 10rem;
+    height: 10rem;
+    padding: 0;
+    border: 2px solid var(--text-primary);
+    border-radius: 100px;
 
-  svg {
-    width: 100%;
-    height: 100%;
+    svg {
+      width: 100%;
+      height: 100%;
+    }
   }
 }

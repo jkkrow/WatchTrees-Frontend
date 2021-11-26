@@ -45,7 +45,12 @@ const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
   return (
     <div className="edit-picture">
       <div>
-        <DragDrop type="image" onFile={fileChangeHandler} ref={dragDropRef}>
+        <DragDrop
+          className="edit-picture__drag-drop"
+          type="image"
+          onFile={fileChangeHandler}
+          ref={dragDropRef}
+        >
           <Avatar width="100%" height="100%" button src={userPicture} />
         </DragDrop>
         <div className="edit-picture__controls">
