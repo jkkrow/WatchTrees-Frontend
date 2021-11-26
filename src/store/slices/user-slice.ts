@@ -33,7 +33,9 @@ const userSlice = createSlice({
     },
 
     clearResponse: (state) => {
+      state.loading = false;
       state.error = null;
+      state.message = null;
     },
   },
 });
