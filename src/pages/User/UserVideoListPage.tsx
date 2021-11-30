@@ -30,7 +30,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
 
-  const { currentPage, itemsPerPage } = usePaginate(3);
+  const { currentPage, itemsPerPage } = usePaginate(10);
 
   const { formState, setFormInput } = useForm({
     video: { value: '', isValid: false },
@@ -90,11 +90,9 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   );
 
   useEffect(() => {
-    (async () => {
-      if (!accessToken) return;
+    if (!accessToken) return;
 
-      fetchVideos(history.action !== 'POP');
-    })();
+    fetchVideos(history.action !== 'POP');
   }, [accessToken, fetchVideos, history]);
 
   return (
