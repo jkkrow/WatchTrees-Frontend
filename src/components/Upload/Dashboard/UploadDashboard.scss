@@ -105,10 +105,11 @@
     grid-template-columns: 1fr 4fr;
     gap: 1rem;
     border-radius: 5px;
-    // overflow: hidden;
   }
 
   &__save {
+    min-width: 2rem;
+    min-height: 2rem;
     stroke: #121212;
   }
 }
