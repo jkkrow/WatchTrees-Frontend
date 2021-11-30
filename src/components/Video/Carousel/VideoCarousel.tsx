@@ -61,16 +61,17 @@ const VideoCarousel: React.FC = () => {
     (async () => {
       setLoading(true);
 
-      const fetchedVideos = await dispatch(
+      const { videos } = await dispatch(
         fetchVideos(
           {
             max: CAROUSEL_VIDEOS_NUMBER,
+            count: false,
           },
           history.action !== 'POP'
         )
       );
 
-      setVideos(fetchedVideos);
+      setVideos(videos);
       setLoading(false);
     })();
   }, [dispatch, history]);
