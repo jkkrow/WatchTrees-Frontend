@@ -12,16 +12,13 @@ import { VideoTree } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { userActions } from 'store/slices/user-slice';
-import { initiateUpload } from 'store/thunks/upload-thunk';
 import { deleteVideo } from 'store/thunks/video-thunk';
 import { fetchUserVideos } from 'store/thunks/user-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import { RouteComponentProps } from 'react-router';
 
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
-  const { accessToken, userData } = useAppSelector((state) => state.auth);
-  const { uploadTree } = useAppSelector((state) => state.upload);
+  const { accessToken } = useAppSelector((state) => state.auth);
   const { loading, error } = useAppSelector((state) => state.user);
 
   const [videos, setVideos] = useState([]);
@@ -37,20 +34,6 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   });
 
   const dispatch = useAppDispatch();
-
-  const addNewVideoHandler = () => {
-    if (userData && !userData.isVerified) {
-      return dispatch(
-        userActions.userFail('You need to verify account before upload video')
-      );
-    }
-
-    if (!uploadTree) {
-      dispatch(initiateUpload());
-    }
-
-    history.push('/upload');
-  };
 
   const openWarningHandler = (item: VideoTree) => {
     setDisplayModal(true);
@@ -108,18 +91,19 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
         onClose={closeWarningHandler}
       >
         <div>
-          To proceed type the video name <strong>{targetItem?.title}</strong>.
+          To proceed type the video name{' '}
+          <strong>{targetItem?.info.title}</strong>.
         </div>
         <Input
           id="video"
           formInput
           validators={
-            targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined
+            targetItem ? [VALIDATOR_EQUAL(targetItem.info.title)] : undefined
           }
           onForm={setFormInput}
         />
       </Modal>
-      <UserVideoHeader onReload={fetchVideos} onAdd={addNewVideoHandler} />
+      <UserVideoHeader onReload={fetchVideos} />
       <LoadingSpinner on={loading} />
       <Response type="error" content={error} />
       {!loading && isFetched && (

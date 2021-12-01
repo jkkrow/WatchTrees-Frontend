@@ -1,20 +1,46 @@
+import { useState } from 'react';
+import { useHistory } from 'react-router';
+
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as ReloadIcon } from 'assets/icons/reload.svg';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
-import { useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { userActions } from 'store/slices/user-slice';
+import { initiateUpload } from 'store/thunks/upload-thunk';
 import './UserVideoHeader.scss';
 
 interface UserVideoHeaderProps {
   onReload: () => void;
-  onAdd: () => void;
 }
 
-const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({
-  onReload,
-  onAdd,
-}) => {
+const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ onReload }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
+  const { userData } = useAppSelector((state) => state.auth);
+
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const history = useHistory();
+
+  const addNewVideoHandler = async () => {
+    if (userData && !userData.isVerified) {
+      return dispatch(
+        userActions.userFail('You need to verify account before upload video')
+      );
+    }
+
+    if (!uploadTree) {
+      setLoading(true);
+
+      await dispatch(initiateUpload());
+
+      setLoading(false);
+    }
+
+    history.push('/upload');
+  };
 
   return (
     <div className="user-video-header">
@@ -24,7 +50,7 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({
         </Button>
       </div>
       <div>
-        <Button inversed onClick={onAdd}>
+        <Button inversed onClick={addNewVideoHandler} loading={loading}>
           {!uploadTree ? (
             <>
               <PlusIcon style={{ width: '1.2rem', height: '1.2rem' }} />
