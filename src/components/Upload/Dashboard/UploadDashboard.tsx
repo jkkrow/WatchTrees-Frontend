@@ -10,7 +10,7 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree, VideoStatus } from 'store/slices/video-slice';
+import { VideoTree } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import {
   uploadThumbnail,
@@ -29,10 +29,12 @@ interface UploadDashboardProps {
 
 const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const { isUploadSaved } = useAppSelector((state) => state.upload);
-  const [titleInput, setTitleInput] = useState(tree.title);
-  const [descriptionInput, setDescriptionInput] = useState(tree.description);
+  const [titleInput, setTitleInput] = useState(tree.info.title);
+  const [descriptionInput, setDescriptionInput] = useState(
+    tree.info.description
+  );
   const [tagInput, setTagInput] = useState('');
-  const [tagArray, setTagArray] = useState(tree.tags);
+  const [tagArray, setTagArray] = useState(tree.info.tags);
   const [loading, setLoading] = useState(false);
 
   const [titleTimeout] = useTimeout();
@@ -45,7 +47,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
 
     const isEmptyNode = validateNodes(tree.root, 'info');
     const isUncomletedNode = validateNodes(tree.root, 'progress', 100, false);
-    const isTitleEmpty = !tree.title;
+    const isTitleEmpty = !tree.info.title;
 
     if (isTitleEmpty) {
       message = 'Title is empty';
@@ -60,7 +62,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     }
 
     return message;
-  }, [tree.root, tree.title]);
+  }, [tree.root, tree.info.title]);
 
   const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleInput(event.target.value);
@@ -127,7 +129,9 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const statusChangeHandler = (value: string) => {
-    dispatch(uploadActions.setTree({ info: { status: value as VideoStatus } }));
+    dispatch(
+      uploadActions.setTree({ info: { status: value as 'public' | 'private' } })
+    );
   };
 
   const saveUploadHandler = async () => {
@@ -198,7 +202,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
         <FileInput
           type="image"
           label="Add thumbnail"
-          initialValue={[tree.thumbnail]}
+          initialValue={[tree.info.thumbnail]}
           onFileChange={thumbnailChangeHandler}
           onFileDelete={thumbnailDeleteHandler}
         />
@@ -207,24 +211,24 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
             <Radio
               name="video-status"
               options={['public', 'private']}
-              initialValue={tree.status}
+              initialValue={tree.info.status}
               onRadioChange={statusChangeHandler}
             />
           </div>
           <div className="upload-dashboard__size" data-label="Size">
-            {formatSize(tree.size)}
+            {formatSize(tree.info.size)}
           </div>
           <div
             className="upload-dashboard__min-duration"
             data-label="Min Duration"
           >
-            {formatTime(tree.minDuration)}
+            {formatTime(tree.info.minDuration)}
           </div>
           <div
             className="upload-dashboard__max-duration"
             data-label="Max Duration"
           >
-            {formatTime(tree.maxDuration)}
+            {formatTime(tree.info.maxDuration)}
           </div>
         </div>
         <div className="upload-dashboard__buttons">

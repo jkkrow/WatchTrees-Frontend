@@ -8,18 +8,16 @@ import { beforeunloadHandler } from 'util/event-handlers';
 import { findById, traverseNodes } from 'util/tree';
 
 export const initiateUpload = (): AppThunk => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(uploadActions.initiateUpload());
+
+    await dispatch(saveVideo(false));
 
     window.addEventListener('beforeunload', beforeunloadHandler);
   };
 };
 
-export const uploadVideo = (
-  file: File,
-  nodeId: string,
-  treeId: string
-): AppThunk => {
+export const uploadVideo = (file: File, nodeId: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const { uploadTree, previewTree } = getState().upload;
 
@@ -99,8 +97,8 @@ export const uploadVideo = (
 
       const response = await client.get('/upload/multipart-id', {
         params: {
-          treeId,
-          nodeId,
+          videoId: uploadTree._id,
+          isRoot: nodeId === uploadTree.root.id,
           fileName: file.name,
           fileType: file.type,
         },
@@ -167,7 +165,7 @@ export const uploadVideo = (
           {
             params: {
               uploadId,
-              treeId,
+              videoId: uploadTree._id,
               fileName: file.name,
               partNumber: index,
             },
@@ -205,7 +203,7 @@ export const uploadVideo = (
         {
           params: {
             uploadId,
-            treeId,
+            videoId: uploadTree._id,
             fileName: file.name,
             parts: uploadPartsArray,
           },
@@ -264,7 +262,7 @@ export const uploadThumbnail = (file: File): AppThunk => {
       );
 
       const response = await client.put('/upload/thumbnail', {
-        thumbnail: uploadTree.thumbnail,
+        thumbnail: uploadTree.info.thumbnail,
         fileType: file.type,
       });
 
@@ -307,7 +305,7 @@ export const deleteThumbnail = (): AppThunk => {
 
     const client = dispatch(api());
 
-    const previewThumbnailInfo = previewTree.thumbnail;
+    const previewThumbnailInfo = previewTree.info.thumbnail;
 
     try {
       dispatch(
@@ -318,7 +316,7 @@ export const deleteThumbnail = (): AppThunk => {
       );
 
       await client.delete('/upload/thumbnail', {
-        params: { key: uploadTree.thumbnail.url },
+        params: { key: uploadTree.info.thumbnail.url },
       });
 
       dispatch(

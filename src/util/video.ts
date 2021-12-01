@@ -16,8 +16,8 @@ export const thumbanilUrl = (video: VideoTree): string | undefined => {
     }/${video.root.info.url.replace(/\.\w+$/, '.0000001.jpg')}`;
   }
 
-  if (video.thumbnail.url) {
-    src = `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${video.thumbnail.url}`;
+  if (video.info.thumbnail.url) {
+    src = `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${video.info.thumbnail.url}`;
   }
 
   return src;
@@ -26,8 +26,8 @@ export const thumbanilUrl = (video: VideoTree): string | undefined => {
 export const videoDuration = (video: VideoTree): string => {
   let duration: string;
 
-  const minDuration = formatTime(video.minDuration);
-  const maxDuration = formatTime(video.maxDuration);
+  const minDuration = formatTime(video.info.minDuration);
+  const maxDuration = formatTime(video.info.maxDuration);
 
   if (minDuration === maxDuration) {
     duration = maxDuration;

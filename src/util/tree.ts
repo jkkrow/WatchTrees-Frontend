@@ -1,6 +1,6 @@
 import { v1 as uuidv1 } from 'uuid';
 
-import { VideoInfo, VideoNode, VideoTree } from 'store/slices/video-slice';
+import { NodeInfo, VideoNode, VideoTree } from 'store/slices/video-slice';
 
 export const createNode = (prevNode?: VideoNode): VideoNode => {
   const node: VideoNode = {
@@ -79,7 +79,7 @@ export const traverseNodes = (root: VideoNode): VideoNode[] => {
 
 export const validateNodes = (
   root: VideoNode,
-  key: keyof VideoInfo | 'info',
+  key: keyof NodeInfo | 'info',
   value: any = null,
   type = true
 ): boolean => {

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { VideoTree, VideoInfo, VideoStatus } from 'store/slices/video-slice';
+import { VideoTree, NodeInfo } from 'store/slices/video-slice';
 import {
   createNode,
   findById,
@@ -33,16 +33,21 @@ const uploadSlice = createSlice({
       const node = createNode();
       const tree: VideoTree = {
         root: node,
-        title: '',
-        tags: [],
-        description: '',
-        size: 0,
-        maxDuration: 0,
-        minDuration: 0,
-        thumbnail: { name: '', url: '' },
-        views: 0,
-        isEditing: true,
-        status: VideoStatus.Public,
+        info: {
+          title: '',
+          tags: [],
+          description: '',
+          size: 0,
+          maxDuration: 0,
+          minDuration: 0,
+          thumbnail: { name: '', url: '' },
+          status: 'public',
+          isEditing: true,
+        },
+        data: {
+          views: 0,
+          favorites: 0,
+        },
       };
 
       state.uploadTree = tree;
@@ -76,8 +81,8 @@ const uploadSlice = createSlice({
 
         const { max, min } = getMinMaxDuration(tree);
 
-        tree.maxDuration = max;
-        tree.minDuration = min;
+        tree.info.maxDuration = max;
+        tree.info.minDuration = min;
       }
 
       state.isUploadSaved = false;
@@ -89,7 +94,7 @@ const uploadSlice = createSlice({
         payload,
       }: PayloadAction<{
         type?: TreeType;
-        info: { [key in keyof VideoInfo]?: VideoInfo[key] } | null;
+        info: { [key in keyof NodeInfo]?: NodeInfo[key] } | null;
         nodeId: string;
       }>
     ) => {
@@ -108,7 +113,7 @@ const uploadSlice = createSlice({
         if (!node) return;
 
         if (!node.info) {
-          node.info = payload.info as VideoInfo;
+          node.info = payload.info as NodeInfo;
         } else {
           if (payload.info === null) {
             node.info = null;
@@ -120,9 +125,9 @@ const uploadSlice = createSlice({
         const fullSize = getFullSize(tree);
         const { max, min } = getMinMaxDuration(tree);
 
-        tree.size = fullSize;
-        tree.maxDuration = max;
-        tree.minDuration = min;
+        tree.info.size = fullSize;
+        tree.info.maxDuration = max;
+        tree.info.minDuration = min;
       }
 
       state.isUploadSaved = false;
@@ -155,9 +160,9 @@ const uploadSlice = createSlice({
         const fullSize = getFullSize(tree);
         const { max, min } = getMinMaxDuration(tree);
 
-        tree.size = fullSize;
-        tree.maxDuration = max;
-        tree.minDuration = min;
+        tree.info.size = fullSize;
+        tree.info.maxDuration = max;
+        tree.info.minDuration = min;
       }
 
       state.isUploadSaved = false;
@@ -169,30 +174,30 @@ const uploadSlice = createSlice({
         payload,
       }: PayloadAction<{
         type?: TreeType;
-        info: { [key in keyof VideoTree]?: VideoTree[key] };
+        info: { [key in keyof VideoTree['info']]?: VideoTree['info'][key] };
       }>
     ) => {
       switch (payload.type) {
         case 'uploadTree':
           state.uploadTree = {
             ...state.uploadTree,
-            ...payload.info,
+            info: { ...state.uploadTree?.info, ...payload.info },
           } as VideoTree;
           break;
         case 'previewTree':
           state.previewTree = {
             ...state.previewTree,
-            ...payload.info,
+            info: { ...state.previewTree?.info, ...payload.info },
           } as VideoTree;
           break;
         default:
           state.uploadTree = {
             ...state.uploadTree,
-            ...payload.info,
+            info: { ...state.uploadTree?.info, ...payload.info },
           } as VideoTree;
           state.previewTree = {
             ...state.previewTree,
-            ...payload.info,
+            info: { ...state.previewTree?.info, ...payload.info },
           } as VideoTree;
       }
 
@@ -203,7 +208,11 @@ const uploadSlice = createSlice({
       state.activeNodeId = payload;
     },
 
-    saveUpload: (state) => {
+    saveUpload: (state, { payload }: PayloadAction<string | undefined>) => {
+      if (payload && state.uploadTree) {
+        state.uploadTree._id = payload;
+      }
+
       state.isUploadSaved = true;
     },
 

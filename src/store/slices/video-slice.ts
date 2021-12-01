@@ -2,8 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface VideoTree {
   _id?: string;
-  creator?: string;
   root: VideoNode;
+  info: TreeInfo;
+  data: TreeData;
+}
+
+export interface TreeInfo {
+  creator?: string;
   title: string;
   tags: string[];
   description: string;
@@ -11,20 +16,24 @@ export interface VideoTree {
   size: number;
   maxDuration: number;
   minDuration: number;
-  views: number;
+  status: 'public' | 'private';
   isEditing: boolean;
-  status: VideoStatus;
+}
+
+export interface TreeData {
+  views: number;
+  favorites: number;
 }
 
 export interface VideoNode {
   id: string;
   prevId?: string;
   layer: number;
-  info: VideoInfo | null;
+  info: NodeInfo | null;
   children: VideoNode[];
 }
 
-export interface VideoInfo {
+export interface NodeInfo {
   name: string;
   label: string;
   size: number;
@@ -37,9 +46,16 @@ export interface VideoInfo {
   url: string;
 }
 
-export enum VideoStatus {
-  Public = 'public',
-  Private = 'private',
+export interface VideoTreeWithCreatorInfo extends VideoTree {
+  info: TreeInfoWithCreator;
+}
+
+export interface TreeInfoWithCreator extends TreeInfo {
+  creatorInfo: {
+    _id: string;
+    name: string;
+    picture: string;
+  };
 }
 
 interface VideoSliceState {

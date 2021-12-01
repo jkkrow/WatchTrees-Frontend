@@ -17,7 +17,7 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, treeId }) => {
   const dispatch = useAppDispatch();
 
   const fileChangeHandler = (files: File[]): void => {
-    dispatch(uploadVideo(files[0], currentNode.id, treeId));
+    dispatch(uploadVideo(files[0], currentNode.id));
   };
 
   return (
