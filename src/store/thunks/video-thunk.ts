@@ -5,7 +5,31 @@ import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { finishUpload } from './upload-thunk';
 
-export const saveVideo = (message?: string): AppThunk => {
+export const fetchVideos = (options?: any, forceUpdate = true): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.get('/videos', {
+        params: options,
+        forceUpdate,
+        cache: true,
+      });
+
+      return data;
+    } catch (err) {
+      dispatch(
+        uiActions.setMessage({
+          type: 'error',
+          content: `${(err as Error).message}: Fetching video failed`,
+          timer: 5000,
+        })
+      );
+    }
+  };
+};
+
+export const saveVideo = (message?: string | false): AppThunk => {
   return async (dispatch, getState, api) => {
     const { uploadTree } = getState().upload;
 
@@ -18,24 +42,22 @@ export const saveVideo = (message?: string): AppThunk => {
         uploadTree,
       });
 
-      if (data.treeId) {
-        dispatch(uploadActions.setTree({ info: { _id: data.treeId } }));
+      dispatch(uploadActions.saveUpload(data.videoId));
+
+      if (message !== false) {
+        dispatch(
+          uiActions.setMessage({
+            type: 'message',
+            content: message || data.message,
+            timer: 3000,
+          })
+        );
       }
-
-      dispatch(uploadActions.saveUpload());
-
-      dispatch(
-        uiActions.setMessage({
-          content: message || data.message,
-          type: 'message',
-          timer: 3000,
-        })
-      );
     } catch (err) {
       dispatch(
         uiActions.setMessage({
-          content: `${(err as Error).message}: Saving upload failed`,
           type: 'error',
+          content: `${(err as Error).message}: Saving upload failed`,
           timer: 5000,
         })
       );
