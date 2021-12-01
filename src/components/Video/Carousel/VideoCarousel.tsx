@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router';
 
 import LoadingCard from 'components/Common/UI/Loader/Card/LoadingCard';
+import VideoThumbnail from '../Thumbnail/VideoThumbnail';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as AngleRightIcon } from 'assets/icons/angle-right.svg';
 import { useInterval } from 'hooks/timer-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { VideoTree } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
-import { thumbanilUrl } from 'util/video';
 import './VideoCarousel.scss';
 
 const CAROUSEL_VIDEOS_NUMBER = 5;
@@ -61,7 +61,7 @@ const VideoCarousel: React.FC = () => {
     (async () => {
       setLoading(true);
 
-      const { videos } = await dispatch(
+      const data = await dispatch(
         fetchVideos(
           {
             max: CAROUSEL_VIDEOS_NUMBER,
@@ -71,8 +71,10 @@ const VideoCarousel: React.FC = () => {
         )
       );
 
-      setVideos(videos);
-      setLoading(false);
+      if (data) {
+        setVideos(data.videos);
+        setLoading(false);
+      }
     })();
   }, [dispatch, history]);
 
@@ -91,7 +93,7 @@ const VideoCarousel: React.FC = () => {
           >
             {videos.map((item) => (
               <li key={item._id} className="video-carousel__item">
-                <img src={thumbanilUrl(item)} alt={item.title} />
+                <VideoThumbnail video={item} />
               </li>
             ))}
           </ul>

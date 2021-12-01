@@ -7,14 +7,9 @@
   gap: 2rem;
 
   &__thumbnail {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     width: 40rem;
     min-width: 23rem;
     margin-bottom: auto;
-    background-color: var(--bg-secondary);
-    aspect-ratio: 16/9;
   }
 
   &__info {
@@ -43,15 +38,22 @@
     }
   }
 
+  &__buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    svg {
+      margin: 0;
+    }
+  }
+
   &__editing {
     position: absolute;
     top: 0;
-    padding: 1rem;
+    padding: 1rem 3rem 1rem 1.5rem;
     font-size: 1.3rem;
-    background-color: var(--bg-tertiary);
-  }
-
-  svg {
-    margin-left: 1rem;
+    background-color: var(--bg-secondary);
+    clip-path: polygon(0 0, 100% 0, 70% 100%, 0% 100%);
   }
 }
