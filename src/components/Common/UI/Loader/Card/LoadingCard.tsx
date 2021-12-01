@@ -11,10 +11,10 @@ const LoadingCard: React.FC<LoadingCardProps> = ({ on, detail }) =>
       <div className="loading-card__thumbnail" />
       {detail ? (
         <div className="loading-card__info">
-          <div className="loading-card__info__avatar" />
-          <div className="loading-card__info__detail">
-            <div className="loading-card__info__detail__title" />
-            <div className="loading-card__info__detail__description" />
+          <div className="loading-card__avatar" />
+          <div className="loading-card__detail">
+            <div className="loading-card__detail__title" />
+            <div className="loading-card__detail__description" />
           </div>
         </div>
       ) : null}
