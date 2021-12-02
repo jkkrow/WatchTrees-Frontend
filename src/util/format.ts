@@ -30,14 +30,23 @@ export const formatString = (string: string): string => {
   return convertedString.charAt(0).toUpperCase() + convertedString.slice(1);
 };
 
-export const formatNumber = (number: number, decimal = 0): string => {
-  const convertedNumber = (
-    Math.round(number * 10 ** decimal) /
-    10 ** decimal
-  ).toFixed(decimal);
+export const formatNumber = (number: number, digits = 1) => {
+  const lookup = [
+    { value: 1, symbol: '' },
+    { value: 1e3, symbol: 'k' },
+    { value: 1e6, symbol: 'M' },
+    { value: 1e9, symbol: 'G' },
+    { value: 1e12, symbol: 'T' },
+    { value: 1e15, symbol: 'P' },
+    { value: 1e18, symbol: 'E' },
+  ];
 
-  const intDec = convertedNumber.split('.');
-  intDec[0] = intDec[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-  return intDec.join('.');
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  const item = lookup
+    .slice()
+    .reverse()
+    .find((item) => number >= item.value);
+  return item
+    ? (number / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+    : '0';
 };
