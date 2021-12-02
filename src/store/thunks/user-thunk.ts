@@ -5,9 +5,8 @@ import { userActions } from 'store/slices/user-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
 
-export const fetchUserVideos = (
-  pageNumber: number,
-  itemsPerPage: number,
+export const fetchMyVideos = (
+  params?: any,
   forceUpdate: boolean = true
 ): AppThunk => {
   return async (dispatch, _, api) => {
@@ -16,13 +15,11 @@ export const fetchUserVideos = (
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.get(
-        `/videos/user?page=${pageNumber}&max=${itemsPerPage}`,
-        {
-          forceUpdate,
-          cache: true,
-        }
-      );
+      const { data } = await client.get('/videos/my-videos', {
+        params,
+        forceUpdate,
+        cache: true,
+      });
 
       dispatch(userActions.userSuccess());
 
@@ -46,7 +43,7 @@ export const updateUserName = (name: string): AppThunk => {
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.patch('users/account/name', {
+      const { data } = await client.patch('users/profile/name', {
         name,
       });
 
@@ -87,7 +84,7 @@ export const updateUserPassword = (payload: {
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.patch('users/account/password', {
+      const { data } = await client.patch('users/profile/password', {
         ...payload,
       });
 
@@ -124,7 +121,7 @@ export const updateUserPicture = (file: File | null): AppThunk => {
 
       const isNewFile = !!file;
 
-      const { data } = await client.patch('users/account/picture', {
+      const { data } = await client.patch('users/profile/picture', {
         isNewFile,
         fileType: file ? file.type : null,
       });

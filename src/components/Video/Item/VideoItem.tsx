@@ -1,3 +1,5 @@
+import { useHistory } from 'react-router';
+
 import VideoThumbnail from '../Thumbnail/VideoThumbnail';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { ReactComponent as ViewIcon } from 'assets/icons/view.svg';
@@ -11,6 +13,8 @@ interface VideoItemProps {
 }
 
 const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
+  const history = useHistory();
+
   return (
     <div className="video-item">
       <div className="video-item__thumnbnail">
@@ -22,6 +26,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
           width="3rem"
           height="3rem"
           button
+          onClick={() => history.push(`/user/${video.info.creator}`)}
         />
         <div className="video-item__detail">
           <div className="video-item__title link">{video.info.title}</div>

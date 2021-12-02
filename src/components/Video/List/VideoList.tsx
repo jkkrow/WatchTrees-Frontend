@@ -10,35 +10,36 @@ import { VideoTreeWithCreatorInfo } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
 import './VideoList.scss';
 
-const VideoList: React.FC = () => {
+interface VideoListProps {
+  params?: {
+    max?: number;
+    userId?: string;
+  };
+}
+
+const VideoList: React.FC<VideoListProps> = ({ params }) => {
   const dispatch = useAppDispatch();
 
-  const [loading, setLoading] = useState(false);
-  const [loaders, setLoaders] = useState([undefined]);
+  const [loaders, setLoaders] = useState<undefined[]>([]);
   const [videos, setVideos] = useState<VideoTreeWithCreatorInfo[]>([]);
   const [count, setCount] = useState(0);
 
   const listRef = useRef<HTMLDivElement>(null);
-  const itemRef = useRef<HTMLDivElement>(null);
 
-  const { currentPage, itemsPerPage } = usePaginate(20);
+  const { currentPage, itemsPerPage } = usePaginate(params?.max || 20);
 
   const history = useHistory();
 
   useEffect(() => {
     (async () => {
-      setLoading(true);
-
       const listWidth = listRef.current!.offsetWidth;
-      const itemWidth = itemRef.current!.offsetWidth;
-
-      let rows = Math.floor(listWidth / itemWidth);
+      const rows = Math.floor(listWidth / 300);
 
       setLoaders(Array.from(Array(rows * 3)));
 
       const data = await dispatch(
         fetchVideos(
-          { page: currentPage, max: itemsPerPage },
+          { page: currentPage, max: itemsPerPage, ...params },
           history.action !== 'POP'
         )
       );
@@ -46,20 +47,20 @@ const VideoList: React.FC = () => {
       if (data) {
         setVideos(data.videos);
         setCount(data.count);
-        setLoading(false);
+        setLoaders([]);
       }
     })();
-  }, [dispatch, history, currentPage, itemsPerPage]);
+  }, [dispatch, history, currentPage, itemsPerPage, params]);
 
   return (
     <>
       <div className="video-list" ref={listRef}>
         {loaders.map((item, index) => (
-          <div key={index} className="video-item" ref={itemRef}>
-            <LoadingCard on={loading} detail />
+          <div key={index}>
+            <LoadingCard on={!!loaders.length} detail />
           </div>
         ))}
-        {!loading &&
+        {!loaders.length &&
           videos.map((item) => <VideoItem key={item._id} video={item} />)}
       </div>
       <Pagination

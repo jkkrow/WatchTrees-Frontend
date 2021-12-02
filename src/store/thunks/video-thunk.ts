@@ -5,13 +5,41 @@ import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { finishUpload } from './upload-thunk';
 
-export const fetchVideos = (options?: any, forceUpdate = true): AppThunk => {
+export const fetchVideos = (params?: any, forceUpdate = true): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     try {
       const { data } = await client.get('/videos', {
-        params: options,
+        params,
+        forceUpdate,
+        cache: true,
+      });
+
+      return data;
+    } catch (err) {
+      dispatch(
+        uiActions.setMessage({
+          type: 'error',
+          content: `${(err as Error).message}: Fetching video failed`,
+          timer: 5000,
+        })
+      );
+    }
+  };
+};
+
+export const fetchUserVideos = (
+  id: string,
+  params?: any,
+  forceUpdate = true
+): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.get(`/videos/user/${id}`, {
+        params,
         forceUpdate,
         cache: true,
       });

@@ -62,13 +62,7 @@ const VideoCarousel: React.FC = () => {
       setLoading(true);
 
       const data = await dispatch(
-        fetchVideos(
-          {
-            max: CAROUSEL_VIDEOS_NUMBER,
-            count: false,
-          },
-          history.action !== 'POP'
-        )
+        fetchVideos({ max: CAROUSEL_VIDEOS_NUMBER }, history.action !== 'POP')
       );
 
       if (data) {
