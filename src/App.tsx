@@ -6,11 +6,11 @@ import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
 import VideoListPage from 'pages/Video/VideoListPage';
 import VerificationPage from 'pages/Auth/VerificationPage';
-import AccountPage from 'pages/User/ProfilePage';
-import UserVideoListPage from 'pages/User/MyVideosPage';
+import AccountPage from 'pages/User/AccountPage';
+import UserVideoListPage from 'pages/User/UserVideoListPage';
 import UploadPage from 'pages/Upload/UploadPage';
 import HistoryPage from 'pages/User/HistoryPage';
-import UserPage from 'pages/User/UserPage';
+import ChannelPage from 'pages/User/ChannelPage';
 import LoginPage from 'pages/Auth/LoginPage';
 import SendRecoveryPage from 'pages/Auth/SendRecoveryPage';
 import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
@@ -36,7 +36,7 @@ const App: React.FC = () => {
       <main>
         <Switch>
           <Route exact path="/" component={VideoListPage} />
-          <Route exact path="/user/:id" component={UserPage} />
+          <Route exact path="/channel/:id" component={ChannelPage} />
           <Route
             exact
             path="/auth/verification/:token"
@@ -64,19 +64,19 @@ const App: React.FC = () => {
             require={refreshToken}
             redirect="/auth"
             exact
-            path="/account/profile"
+            path="/user/account"
             component={AccountPage}
           />
           <ProtectedRoute
             require={refreshToken}
             redirect="/auth"
             exact
-            path="/account/videos"
+            path="/user/videos"
             component={UserVideoListPage}
           />
           <ProtectedRoute
             exact
-            path="/account/history"
+            path="/user/history"
             redirect="/auth"
             require={refreshToken}
             component={HistoryPage}

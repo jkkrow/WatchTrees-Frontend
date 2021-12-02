@@ -26,7 +26,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
           width="3rem"
           height="3rem"
           button
-          onClick={() => history.push(`/user/${video.info.creator}`)}
+          onClick={() => history.push(`/channel/${video.info.creator}`)}
         />
         <div className="video-item__detail">
           <div className="video-item__title link">{video.info.title}</div>

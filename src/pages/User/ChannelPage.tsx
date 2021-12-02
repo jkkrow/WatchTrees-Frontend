@@ -2,7 +2,7 @@ import { useParams } from 'react-router';
 
 import VideoList from 'components/Video/List/VideoList';
 
-const UserPage: React.FC = () => {
+const ChannelPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   return (
@@ -12,4 +12,4 @@ const UserPage: React.FC = () => {
   );
 };
 
-export default UserPage;
+export default ChannelPage;
