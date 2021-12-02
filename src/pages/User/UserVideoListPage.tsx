@@ -13,7 +13,7 @@ import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { deleteVideo } from 'store/thunks/video-thunk';
-import { fetchUserVideos } from 'store/thunks/user-thunk';
+import { fetchMyVideos } from 'store/thunks/user-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import { RouteComponentProps } from 'react-router';
 
@@ -60,7 +60,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const fetchVideos = useCallback(
     async (forceUpdate = true) => {
       const data = await dispatch(
-        fetchUserVideos(currentPage, itemsPerPage, forceUpdate)
+        fetchMyVideos({ page: currentPage, max: itemsPerPage }, forceUpdate)
       );
 
       if (data) {

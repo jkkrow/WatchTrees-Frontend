@@ -29,34 +29,6 @@ export const fetchVideos = (params?: any, forceUpdate = true): AppThunk => {
   };
 };
 
-export const fetchUserVideos = (
-  id: string,
-  params?: any,
-  forceUpdate = true
-): AppThunk => {
-  return async (dispatch, _, api) => {
-    const client = dispatch(api());
-
-    try {
-      const { data } = await client.get(`/videos/user/${id}`, {
-        params,
-        forceUpdate,
-        cache: true,
-      });
-
-      return data;
-    } catch (err) {
-      dispatch(
-        uiActions.setMessage({
-          type: 'error',
-          content: `${(err as Error).message}: Fetching video failed`,
-          timer: 5000,
-        })
-      );
-    }
-  };
-};
-
 export const saveVideo = (message?: string | false): AppThunk => {
   return async (dispatch, getState, api) => {
     const { uploadTree } = getState().upload;

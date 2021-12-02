@@ -15,7 +15,7 @@ export const fetchMyVideos = (
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.get('/videos/my-videos', {
+      const { data } = await client.get('/videos/user', {
         params,
         forceUpdate,
         cache: true,
@@ -43,7 +43,7 @@ export const updateUserName = (name: string): AppThunk => {
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.patch('users/profile/name', {
+      const { data } = await client.patch('users/account/name', {
         name,
       });
 
@@ -84,7 +84,7 @@ export const updateUserPassword = (payload: {
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.patch('users/profile/password', {
+      const { data } = await client.patch('users/account/password', {
         ...payload,
       });
 
@@ -121,7 +121,7 @@ export const updateUserPicture = (file: File | null): AppThunk => {
 
       const isNewFile = !!file;
 
-      const { data } = await client.patch('users/profile/picture', {
+      const { data } = await client.patch('users/account/picture', {
         isNewFile,
         fileType: file ? file.type : null,
       });
