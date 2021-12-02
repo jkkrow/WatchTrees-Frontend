@@ -3,6 +3,7 @@ import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { ReactComponent as ViewIcon } from 'assets/icons/view.svg';
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
 import { VideoTreeWithCreatorInfo } from 'store/slices/video-slice';
+import { formatNumber } from 'util/format';
 import './VideoItem.scss';
 
 interface VideoItemProps {
@@ -24,12 +25,15 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
         />
         <div className="video-item__detail">
           <div className="video-item__title link">{video.info.title}</div>
-          <div className="video-item__views">
-            <ViewIcon />
-            <div>{video.data.views}</div>
-          </div>
-          <div className="video-item__favorites">
-            <FavoriteIcon />
+          <div className="video-item__data">
+            <div className="video-item__views">
+              <ViewIcon />
+              <span>{formatNumber(video.data.views)}</span>
+            </div>
+            <div className="video-item__favorites">
+              <FavoriteIcon />
+              <span>{formatNumber(video.data.favorites)}</span>
+            </div>
           </div>
         </div>
       </div>

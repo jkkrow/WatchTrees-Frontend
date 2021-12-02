@@ -24,12 +24,17 @@
     white-space: nowrap;
   }
 
-  &__views {
+  &__data {
     display: flex;
+    justify-content: flex-end;
     width: 100%;
+    gap: 1rem;
+  }
 
-    svg {
-      margin: 0 1rem 0 auto;
-    }
+  &__views,
+  &__favorites {
+    display: flex;
+    gap: 1rem;
+    pointer-events: none;
   }
 }
