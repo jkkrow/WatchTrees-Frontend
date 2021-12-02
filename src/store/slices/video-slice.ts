@@ -52,7 +52,6 @@ export interface VideoTreeWithCreatorInfo extends VideoTree {
 
 export interface TreeInfoWithCreator extends TreeInfo {
   creatorInfo: {
-    _id: string;
     name: string;
     picture: string;
   };
