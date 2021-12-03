@@ -1,4 +1,4 @@
-.loading-card {
+.video-loader {
   width: 100%;
   height: max-content;
   border-radius: 5px;
@@ -42,20 +42,20 @@
     height: 5rem;
     padding: 1rem;
     gap: 1rem;
+  }
 
-    &__title {
-      width: 100%;
-      height: 1rem;
-      border-radius: 5px;
-      background-color: var(--bg-secondary);
-    }
+  &__title {
+    width: 100%;
+    height: 1rem;
+    border-radius: 5px;
+    background-color: var(--bg-secondary);
+  }
 
-    &__description {
-      width: 60%;
-      height: 1rem;
-      border-radius: 5px;
-      background-color: var(--bg-secondary);
-    }
+  &__description {
+    width: 60%;
+    height: 1rem;
+    border-radius: 5px;
+    background-color: var(--bg-secondary);
   }
 }
 
