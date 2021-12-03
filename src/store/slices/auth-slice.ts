@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface UserData {
+  _id: string;
   type: 'native' | 'google';
   name: string;
   email: string;
