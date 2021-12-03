@@ -23,8 +23,8 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
       <div className="video-item__info">
         <Avatar
           src={video.info.creatorInfo.picture}
-          width="3rem"
-          height="3rem"
+          width="4rem"
+          height="4rem"
           button
           onClick={() => history.push(`/channel/${video.info.creator}`)}
         />

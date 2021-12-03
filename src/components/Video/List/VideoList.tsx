@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import VideoItem from '../Item/VideoItem';
-import LoadingCard from 'components/Common/UI/Loader/Card/LoadingCard';
+import VideoLoader from 'components/Common/UI/Loader/Video/VIdeoLoader';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppDispatch } from 'hooks/store-hook';
@@ -57,7 +57,7 @@ const VideoList: React.FC<VideoListProps> = ({ params }) => {
       <div className="video-list" ref={listRef}>
         {loaders.map((item, index) => (
           <div key={index}>
-            <LoadingCard on={!!loaders.length} detail />
+            <VideoLoader on={!!loaders.length} detail />
           </div>
         ))}
         {!loaders.length &&
