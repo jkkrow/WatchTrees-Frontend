@@ -32,6 +32,54 @@ export const fetchMyVideos = (
   };
 };
 
+export const fetchChannel = (userId: string): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { userData } = getState().auth;
+
+    const client = dispatch(api());
+    const currentUserId = userData ? userData._id : '';
+
+    try {
+      dispatch(userActions.userRequest());
+
+      const { data } = await client.get(`/users/channel/${userId}`, {
+        params: { currentUserId },
+      });
+
+      dispatch(userActions.userSuccess());
+
+      return data.channelInfo;
+    } catch (err) {
+      dispatch(
+        userActions.userFail(
+          `${(err as Error).message}: Failed to load channel info`
+        )
+      );
+    }
+  };
+};
+
+export const subscribeChannel = (userId: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+    let result = '';
+
+    try {
+      const { data } = await client.patch(
+        `/users/channel/subscribers/${userId}`
+      );
+
+      result = data.isSubscribed ? 'unsubscribe' : 'subscribe';
+
+      return data;
+    } catch (err) {
+      userActions.userFail(
+        `${(err as Error).message}: Failed to ${result} to channel`
+      );
+    }
+  };
+};
+
 export const updateUserName = (name: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const { userData } = getState().auth;
