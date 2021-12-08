@@ -387,15 +387,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       const video = videoRef.current!;
       const activeElement = document.activeElement;
 
-      if (!activeElement) return;
-
       if (
+        !activeElement ||
         (activeElement.localName === 'input' &&
           (activeElement as HTMLInputElement).type !== 'range') ||
         activeElement.localName === 'textarea'
       ) {
         return;
       }
+
+      event.preventDefault();
 
       const { key } = event;
 
