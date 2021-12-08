@@ -5,6 +5,30 @@ import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { finishUpload } from './upload-thunk';
 
+export const fetchVideo = (id: string): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { userData } = getState().auth;
+
+    const currentUserId = userData ? userData._id : '';
+
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.get(`/videos/${id}`, {
+        params: { currentUserId },
+      });
+
+      return data.video;
+    } catch (err) {
+      uiActions.setMessage({
+        type: 'error',
+        content: `${(err as Error).message}: Fetching video failed`,
+        timer: 5000,
+      });
+    }
+  };
+};
+
 export const fetchVideos = (params?: any, forceUpdate = true): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
@@ -21,7 +45,7 @@ export const fetchVideos = (params?: any, forceUpdate = true): AppThunk => {
       dispatch(
         uiActions.setMessage({
           type: 'error',
-          content: `${(err as Error).message}: Fetching video failed`,
+          content: `${(err as Error).message}: Fetching videos failed`,
           timer: 5000,
         })
       );
@@ -99,6 +123,24 @@ export const deleteVideo = (video: VideoTree): AppThunk => {
           timer: 5000,
         })
       );
+    }
+  };
+};
+
+export const addToFavorites = (videoId: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.patch(`/videos/${videoId}/favorites`);
+
+      return data;
+    } catch (err) {
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Adding to favorites failed`,
+        type: 'error',
+        timer: 5000,
+      });
     }
   };
 };
