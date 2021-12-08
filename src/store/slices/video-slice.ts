@@ -1,10 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface VideoTree {
-  _id?: string;
-  root: VideoNode;
-  info: TreeInfo;
-  data: TreeData;
+export interface NodeInfo {
+  name: string;
+  label: string;
+  size: number;
+  duration: number;
+  selectionTimeStart: number | null;
+  selectionTimeEnd: number | null;
+  error: string | null;
+  progress: number;
+  isConverted: boolean;
+  url: string;
+}
+
+export interface VideoNode {
+  id: string;
+  prevId?: string;
+  layer: number;
+  info: NodeInfo | null;
+  children: VideoNode[];
 }
 
 export interface TreeInfo {
@@ -20,40 +34,35 @@ export interface TreeInfo {
   isEditing: boolean;
 }
 
+export interface TreeInfoWithCreator extends TreeInfo {
+  creatorInfo: {
+    name: string;
+    picture: string;
+  };
+}
+
 export interface TreeData {
   views: number;
   favorites: number;
 }
 
-export interface VideoNode {
-  id: string;
-  prevId?: string;
-  layer: number;
-  info: NodeInfo | null;
-  children: VideoNode[];
+export interface VideoTree {
+  _id?: string;
+  root: VideoNode;
+  info: TreeInfo;
+  data: TreeData;
+  createdAt: string;
 }
 
-export interface NodeInfo {
-  name: string;
-  label: string;
-  size: number;
-  duration: number;
-  selectionTimeStart: number | null;
-  selectionTimeEnd: number | null;
-  error: string | null;
-  progress: number;
-  isConverted: boolean;
-  url: string;
-}
-
-export interface VideoTreeWithCreatorInfo extends VideoTree {
+export interface VideoListDetail extends VideoTree {
   info: TreeInfoWithCreator;
 }
 
-export interface TreeInfoWithCreator extends TreeInfo {
-  creatorInfo: {
-    name: string;
-    picture: string;
+export interface VideoItemDetail extends VideoListDetail {
+  data: {
+    views: number;
+    favorites: number;
+    isFavorite: boolean;
   };
 }
 

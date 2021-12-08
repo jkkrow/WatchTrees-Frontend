@@ -6,7 +6,7 @@ import VideoLoader from 'components/Common/UI/Loader/Video/VIdeoLoader';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoTreeWithCreatorInfo } from 'store/slices/video-slice';
+import { VideoListDetail } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
 import './VideoList.scss';
 
@@ -21,7 +21,7 @@ const VideoList: React.FC<VideoListProps> = ({ params }) => {
   const dispatch = useAppDispatch();
 
   const [loaders, setLoaders] = useState<undefined[]>([]);
-  const [videos, setVideos] = useState<VideoTreeWithCreatorInfo[]>([]);
+  const [videos, setVideos] = useState<VideoListDetail[]>([]);
   const [count, setCount] = useState(0);
 
   const listRef = useRef<HTMLDivElement>(null);

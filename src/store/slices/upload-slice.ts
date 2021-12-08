@@ -48,6 +48,7 @@ const uploadSlice = createSlice({
           views: 0,
           favorites: 0,
         },
+        createdAt: new Date().toString(),
       };
 
       state.uploadTree = tree;
@@ -94,7 +95,7 @@ const uploadSlice = createSlice({
         payload,
       }: PayloadAction<{
         type?: TreeType;
-        info: { [key in keyof NodeInfo]?: NodeInfo[key] } | null;
+        info: Partial<NodeInfo> | null;
         nodeId: string;
       }>
     ) => {
@@ -174,7 +175,7 @@ const uploadSlice = createSlice({
         payload,
       }: PayloadAction<{
         type?: TreeType;
-        info: { [key in keyof VideoTree['info']]?: VideoTree['info'][key] };
+        info: Partial<VideoTree['info']>;
       }>
     ) => {
       switch (payload.type) {
