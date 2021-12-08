@@ -1,9 +1,12 @@
-import VideoThumbnail from 'components/Video/Thumbnail/VideoThumbnail';
+import VideoThumbnail from 'components/Video/UI/Thumbnail/VideoThumbnail';
+import VideoViews from 'components/Video/UI/Views/VideoViews';
+import VideoFavorites from 'components/Video/UI/Favorites/VideoFavorites';
+import VideoDuration from 'components/Video/UI/Duration/VideoDuration';
+import VideoStatus from 'components/Video/UI/Status/VideoStatus';
+import VideoTags from 'components/Video/UI/Tags/VideoTags';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { VideoTree } from 'store/slices/video-slice';
-import { formatNumber } from 'util/format';
-import { videoDuration } from 'util/video';
 import './UserVideoItem.scss';
 
 interface UserVideoItemProps {
@@ -23,21 +26,23 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({
         <VideoThumbnail video={item} />
       </div>
       <div className="user-video-item__info">
-        <div className="user-video-item__info__title">
+        <h3 className="user-video-item__info__title">
           {item.info.title || '_'}
-        </div>
+        </h3>
         <div className="user-video-item__info__tags">
-          {item.info.tags.map((tag) => `#${tag}`).join(', ')}
-        </div>
-        <div className="user-video-item__info__duration">
-          {videoDuration(item)}
-        </div>
-        <div className="user-video-item__info__views">
-          Views: {formatNumber(item.data.views)}
+          <VideoTags tags={item.info.tags} />
         </div>
         <div className="user-video-item__info__status">
-          Status: {item.info.status}
+          <VideoStatus video={item} brief />
         </div>
+        <div className="user-video-item__info__duration">
+          <VideoDuration video={item} brief />
+        </div>
+        <div className="user-video-item__info__data">
+          <VideoViews video={item} brief />
+          <VideoFavorites video={item} />
+        </div>
+        <div>{new Date(item.createdAt).toLocaleDateString()}</div>
         <div className="user-video-item__buttons">
           <EditIcon onClick={onEdit} />
           <DeleteIcon onClick={() => onDelete(item)} />

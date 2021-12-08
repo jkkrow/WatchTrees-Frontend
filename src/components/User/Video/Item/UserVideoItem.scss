@@ -24,17 +24,19 @@
     gap: 1rem;
 
     div {
+      display: flex;
+      margin-left: auto;
+    }
+
+    &__title {
+      font-weight: 500;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    &__title {
-      font-weight: 500;
-    }
-
-    &__tags {
-      font-style: italic;
+    &__data {
+      gap: 1rem;
     }
   }
 
