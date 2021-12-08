@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
+import VideoPage from 'pages/Video/VideoPage';
 import VideoListPage from 'pages/Video/VideoListPage';
 import VerificationPage from 'pages/Auth/VerificationPage';
 import AccountPage from 'pages/User/AccountPage';
@@ -37,6 +38,7 @@ const App: React.FC = () => {
         <Switch>
           <Route exact path="/" component={VideoListPage} />
           <Route exact path="/channel/:id" component={ChannelPage} />
+          <Route exact path="/video/:id" component={VideoPage} />
           <Route
             exact
             path="/auth/verification/:token"
