@@ -6,7 +6,7 @@ import uploadReducer from './slices/upload-slice';
 import userReducer from './slices/user-slice';
 import videoReducer from './slices/video-slice';
 import uiReducer from './slices/ui-slice';
-import { api } from './middlwares/api';
+import { api } from './middlewares/api';
 
 const store = configureStore({
   reducer: {

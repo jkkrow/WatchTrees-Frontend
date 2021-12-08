@@ -1,3 +1,5 @@
+import { useHistory } from 'react-router';
+
 import VideoPlayer from '../../Player/VideoPlayer';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { useAppDispatch } from 'hooks/store-hook';
@@ -23,6 +25,15 @@ const VideoNode: React.FC<VideoNodeProps> = ({
   editMode,
 }) => {
   const dispatch = useAppDispatch();
+  const history = useHistory();
+
+  const returnHandler = () => {
+    if (currentVideo.layer !== 0) {
+      dispatch(videoActions.setActiveVideo(currentVideo.prevId!));
+    } else {
+      history.goBack();
+    }
+  };
 
   return (
     <>
@@ -50,11 +61,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
             key={currentVideo.id}
           >
             <p>Not Found</p>
-            <AngleLeftIcon
-              onClick={() =>
-                dispatch(videoActions.setActiveVideo(currentVideo.prevId!))
-              }
-            />
+            <AngleLeftIcon onClick={returnHandler} />
           </div>
         ))}
 

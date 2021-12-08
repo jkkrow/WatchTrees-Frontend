@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router';
 
 import VideoLoader from 'components/Common/UI/Loader/Video/VIdeoLoader';
-import VideoThumbnail from '../Thumbnail/VideoThumbnail';
+import VideoThumbnail from '../UI/Thumbnail/VideoThumbnail';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as AngleRightIcon } from 'assets/icons/angle-right.svg';
 import { useInterval } from 'hooks/timer-hook';
