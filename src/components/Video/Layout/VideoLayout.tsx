@@ -83,9 +83,9 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
         <div className="video-layout__detail">
           <VideoViews video={videoTree} />
           <VideoDuration video={videoTree} />
-          <div className="video-layout__description">
+          <p className="video-layout__description">
             {videoTree.info.description}
-          </div>
+          </p>
         </div>
       </div>
     </div>
