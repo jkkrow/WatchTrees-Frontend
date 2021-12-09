@@ -386,5 +386,7 @@ export const finishUpload = (save: boolean = false): AppThunk => {
 
     dispatch(uploadActions.finishUpload());
     window.removeEventListener('beforeunload', beforeunloadHandler);
+
+    return true;
   };
 };
