@@ -26,26 +26,30 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({
         <VideoThumbnail video={item} />
       </div>
       <div className="user-video-item__info">
-        <h3 className="user-video-item__info__title">
-          {item.info.title || '_'}
-        </h3>
-        <div className="user-video-item__info__tags">
+        <h3 className="user-video-item__title">{item.info.title || '_'}</h3>
+        <div className="user-video-item__tags">
           <VideoTags tags={item.info.tags} />
         </div>
-        <div className="user-video-item__info__status">
-          <VideoStatus video={item} brief />
-        </div>
-        <div className="user-video-item__info__duration">
-          <VideoDuration video={item} brief />
-        </div>
-        <div className="user-video-item__info__data">
-          <VideoViews video={item} brief />
-          <VideoFavorites video={item} />
-        </div>
-        <div>{new Date(item.createdAt).toLocaleDateString()}</div>
-        <div className="user-video-item__buttons">
-          <EditIcon onClick={onEdit} />
-          <DeleteIcon onClick={() => onDelete(item)} />
+        <div className="user-video-item__detail">
+          <div>
+            <div className="user-video-item__status">
+              <VideoStatus video={item} brief />
+            </div>
+            <div className="user-video-item__duration">
+              <VideoDuration video={item} brief />
+            </div>
+            <div className="user-video-item__data">
+              <VideoViews video={item} brief />
+              <VideoFavorites video={item} />
+            </div>
+          </div>
+          <div>
+            <div>{new Date(item.createdAt).toLocaleDateString()}</div>
+            <div className="user-video-item__buttons">
+              <EditIcon onClick={onEdit} />
+              <DeleteIcon onClick={() => onDelete(item)} />
+            </div>
+          </div>
         </div>
       </div>
       {item.info.isEditing && (

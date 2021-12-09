@@ -8,8 +8,7 @@
 
   &__thumbnail {
     width: 40rem;
-    min-width: 23rem;
-    margin-bottom: auto;
+    min-width: 30rem;
   }
 
   &__info {
@@ -18,44 +17,63 @@
     justify-content: center;
     width: 100%;
     max-width: 60%;
-    margin-left: auto;
     overflow: hidden;
     text-align: end;
     gap: 1rem;
 
-    div {
-      display: flex;
+    > div {
       margin-left: auto;
     }
+  }
 
-    &__title {
-      font-weight: 500;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+  &__detail {
+    display: flex;
+    gap: 3rem;
 
-    &__data {
-      gap: 1rem;
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
+  }
+
+  &__title {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__data {
+    display: flex;
+    gap: 1rem;
   }
 
   &__buttons {
     display: flex;
-    justify-content: flex-end;
+    margin-top: auto;
     gap: 1rem;
-
-    svg {
-      margin: 0;
-    }
   }
 
   &__editing {
     position: absolute;
     top: 0;
+    left: 0;
     padding: 1rem 3rem 1rem 1.5rem;
     font-size: 1.3rem;
     background-color: var(--bg-secondary);
     clip-path: polygon(0 0, 100% 0, 70% 100%, 0% 100%);
+  }
+
+  @media (max-width: 550px) {
+    flex-direction: column;
+
+    &__thumbnail {
+      width: 100%;
+    }
+
+    &__info {
+      max-width: 100%;
+    }
   }
 }
