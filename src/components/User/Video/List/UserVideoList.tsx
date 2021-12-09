@@ -13,7 +13,9 @@ const UserVideoList: React.FC<UserVideoListProps> = ({ items, onDelete }) => {
       {items.map((item) => (
         <UserVideoItem key={item._id} item={item} onDelete={onDelete} />
       ))}
-      {!items.length && <div className="user-video-list__empty">No Video</div>}
+      {!items.length && (
+        <div className="user-video-list__empty">No video found</div>
+      )}
     </ul>
   );
 };

@@ -17,7 +17,6 @@
     justify-content: center;
     width: 100%;
     max-width: 60%;
-    overflow: hidden;
     text-align: end;
     gap: 1rem;
 
@@ -42,6 +41,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  &__tags {
+    > div {
+      justify-content: flex-end;
+    }
   }
 
   &__data {
