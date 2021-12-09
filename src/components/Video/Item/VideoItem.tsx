@@ -32,7 +32,12 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
           onClick={() => history.push(`/channel/${video.info.creator}`)}
         />
         <div className="video-item__detail">
-          <div className="video-item__title link">{video.info.title}</div>
+          <div
+            className="video-item__title link"
+            onClick={() => history.push(`/video/${video._id}`)}
+          >
+            {video.info.title}
+          </div>
           <div className="video-item__data">
             <VideoViews video={video} brief />
             <VideoFavorites video={video} />

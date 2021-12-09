@@ -33,8 +33,8 @@ const Pagination: React.FC<PaginationProps> = ({
       return;
 
     const destinationUrl = `${location.pathname}${
-      keyword ? `${keyword}/` : ''
-    }?page=${pageNumber}`;
+      keyword ? `?search=${keyword}&page=${pageNumber}` : `?page=${pageNumber}`
+    }`;
 
     history.push(destinationUrl);
   };

@@ -5,6 +5,7 @@ import VideoItem from '../Item/VideoItem';
 import VideoLoader from 'components/Common/UI/Loader/Video/VIdeoLoader';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
+import { useSearch } from 'hooks/search-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { VideoListDetail } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
@@ -18,16 +19,16 @@ interface VideoListProps {
 }
 
 const VideoList: React.FC<VideoListProps> = ({ params }) => {
-  const dispatch = useAppDispatch();
-
-  const [loaders, setLoaders] = useState<undefined[]>([]);
   const [videos, setVideos] = useState<VideoListDetail[]>([]);
   const [count, setCount] = useState(0);
-
-  const listRef = useRef<HTMLDivElement>(null);
+  const [loaders, setLoaders] = useState<undefined[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   const { currentPage, itemsPerPage } = usePaginate(params?.max || 20);
+  const { keyword } = useSearch();
 
+  const dispatch = useAppDispatch();
+  const listRef = useRef<HTMLDivElement>(null);
   const history = useHistory();
 
   useEffect(() => {
@@ -39,7 +40,7 @@ const VideoList: React.FC<VideoListProps> = ({ params }) => {
 
       const data = await dispatch(
         fetchVideos(
-          { page: currentPage, max: itemsPerPage, ...params },
+          { page: currentPage, max: itemsPerPage, search: keyword, ...params },
           history.action !== 'POP'
         )
       );
@@ -47,10 +48,12 @@ const VideoList: React.FC<VideoListProps> = ({ params }) => {
       if (data) {
         setVideos(data.videos);
         setCount(data.count);
-        setLoaders([]);
       }
+
+      setLoaders([]);
+      setLoaded(true);
     })();
-  }, [dispatch, history, currentPage, itemsPerPage, params]);
+  }, [dispatch, history, currentPage, itemsPerPage, keyword, params]);
 
   return (
     <>
@@ -60,13 +63,17 @@ const VideoList: React.FC<VideoListProps> = ({ params }) => {
             <VideoLoader on={!!loaders.length} detail />
           </div>
         ))}
-        {!loaders.length &&
+        {loaded &&
           videos.map((item) => <VideoItem key={item._id} video={item} />)}
       </div>
+      {loaded && !videos.length && (
+        <div className="video-list__empty">No video found</div>
+      )}
       <Pagination
         count={count}
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
+        keyword={keyword}
       />
     </>
   );
