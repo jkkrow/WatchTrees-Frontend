@@ -31,15 +31,19 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ onReload }) => {
       );
     }
 
+    let result = true;
+
     if (!uploadTree) {
+      result = false;
       setLoading(true);
 
       await dispatch(initiateUpload());
 
+      result = true;
       setLoading(false);
     }
 
-    history.push('/upload');
+    result && history.push('/upload');
   };
 
   return (
