@@ -36,59 +36,66 @@ const App: React.FC = () => {
       <Header />
       <main>
         <Switch>
-          <Route exact path="/" component={VideoListPage} />
-          <Route exact path="/channel/:id" component={ChannelPage} />
-          <Route exact path="/video/:id" component={VideoPage} />
+          <Route component={VideoListPage} exact path="/" />
+          <Route component={ChannelPage} exact path="/channel/:id" />
+          <Route component={VideoPage} exact path="/video/:id" />
           <Route
+            component={VerificationPage}
             exact
             path="/auth/verification/:token"
-            component={VerificationPage}
           />
           <ProtectedRoute
             require={!refreshToken}
+            component={LoginPage}
             exact
             path="/auth"
-            component={LoginPage}
           />
           <ProtectedRoute
             require={!refreshToken}
+            component={SendRecoveryPage}
             exact
             path="/auth/recovery"
-            component={SendRecoveryPage}
           />
           <ProtectedRoute
             require={!refreshToken}
+            component={ResetPasswordPage}
             exact
             path="/auth/reset-password/:token"
-            component={ResetPasswordPage}
           />
           <ProtectedRoute
             require={refreshToken}
-            redirect="/auth"
+            component={AccountPage}
             exact
             path="/user/account"
-            component={AccountPage}
+            redirect="/auth"
           />
           <ProtectedRoute
             require={refreshToken}
-            redirect="/auth"
+            component={UserVideoListPage}
             exact
             path="/user/videos"
-            component={UserVideoListPage}
+            redirect="/auth"
           />
           <ProtectedRoute
+            require={refreshToken}
+            component={HistoryPage}
             exact
             path="/user/history"
             redirect="/auth"
-            require={refreshToken}
-            component={HistoryPage}
           />
           <ProtectedRoute
             require={refreshToken}
-            redirect="/auth"
+            component={UploadPage}
             exact
             path="/upload"
+            redirect="/auth"
+          />
+          <ProtectedRoute
+            require={refreshToken}
             component={UploadPage}
+            exact
+            path="/upload/:id"
+            redirect="/auth"
           />
           <Route component={NotFoundPage} />
         </Switch>

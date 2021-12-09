@@ -29,10 +29,12 @@ const uploadSlice = createSlice({
   name: 'upload',
   initialState,
   reducers: {
-    initiateUpload: (state) => {
-      const node = createNode();
-      const tree: VideoTree = {
-        root: node,
+    initiateUpload: (
+      state,
+      { payload }: PayloadAction<VideoTree | undefined>
+    ) => {
+      const tree: VideoTree = payload || {
+        root: createNode(),
         info: {
           title: '',
           tags: [],
@@ -53,7 +55,7 @@ const uploadSlice = createSlice({
 
       state.uploadTree = tree;
       state.previewTree = tree;
-      state.activeNodeId = node.id;
+      state.activeNodeId = tree.root.id;
       state.isUploadSaved = true;
     },
 

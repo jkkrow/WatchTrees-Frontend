@@ -77,6 +77,8 @@ export const saveVideo = (message?: string | false): AppThunk => {
           })
         );
       }
+
+      return true;
     } catch (err) {
       dispatch(
         uiActions.setMessage({

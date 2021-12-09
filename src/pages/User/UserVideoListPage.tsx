@@ -45,10 +45,6 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
     setTargetItem(null);
   };
 
-  const editHandler = () => {
-    console.log('EDIT');
-  };
-
   const deleteHandler = async () => {
     if (!targetItem || !targetItem._id) return;
 
@@ -107,11 +103,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
       <LoadingSpinner on={loading} />
       <Response type="error" content={error} />
       {!loading && isFetched && (
-        <UserVideoList
-          items={videos}
-          onEdit={editHandler}
-          onDelete={openWarningHandler}
-        />
+        <UserVideoList items={videos} onDelete={openWarningHandler} />
       )}
       <Pagination
         count={count}

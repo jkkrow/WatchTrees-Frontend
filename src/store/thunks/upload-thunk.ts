@@ -3,17 +3,44 @@ import axios, { AxiosResponse } from 'axios';
 import { AppThunk } from 'store';
 import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
+import { VideoTree } from 'store/slices/video-slice';
 import { saveVideo } from './video-thunk';
 import { beforeunloadHandler } from 'util/event-handlers';
 import { findById, traverseNodes } from 'util/tree';
 
-export const initiateUpload = (): AppThunk => {
-  return async (dispatch) => {
-    dispatch(uploadActions.initiateUpload());
+export const initiateUpload = (id?: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    try {
+      let video: VideoTree | undefined;
 
-    await dispatch(saveVideo(false));
+      if (id) {
+        const client = dispatch(api());
 
-    window.addEventListener('beforeunload', beforeunloadHandler);
+        const { data } = await client.get(`/videos/user/${id}`);
+
+        video = data.video;
+      }
+
+      dispatch(uploadActions.initiateUpload(video));
+
+      if (!id) {
+        await dispatch(saveVideo(false));
+      }
+
+      window.addEventListener('beforeunload', beforeunloadHandler);
+
+      return true;
+    } catch (err) {
+      dispatch(
+        uiActions.setMessage({
+          content: `${
+            (err as Error).message
+          }: Initiating upload failed. Please try again`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
+    }
   };
 };
 
@@ -350,17 +377,14 @@ export const deleteThumbnail = (): AppThunk => {
 export const finishUpload = (save: boolean = false): AppThunk => {
   return async (dispatch) => {
     if (save) {
-      dispatch(
-        uploadActions.setTree({
-          info: { isEditing: false },
-        })
-      );
+      dispatch(uploadActions.setTree({ info: { isEditing: false } }));
 
-      await dispatch(saveVideo('Video uploaded successfully'));
+      const result = await dispatch(saveVideo('Video uploaded successfully'));
+
+      if (!result) return;
     }
 
     dispatch(uploadActions.finishUpload());
-
     window.removeEventListener('beforeunload', beforeunloadHandler);
   };
 };
