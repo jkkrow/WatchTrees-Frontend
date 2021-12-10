@@ -9,7 +9,7 @@ import VideoDuration from '../UI/Duration/VideoDuration';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoItemDetail } from 'store/slices/video-slice';
-import { addToFavorites } from 'store/thunks/video-thunk';
+import { addToFavorites } from 'store/thunks/user-thunk';
 import './VideoLayout.scss';
 
 interface VideoLayoutProps {

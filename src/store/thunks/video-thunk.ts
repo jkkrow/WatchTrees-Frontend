@@ -29,7 +29,7 @@ export const fetchVideo = (id: string): AppThunk => {
   };
 };
 
-export const fetchVideos = (params?: any, forceUpdate = true): AppThunk => {
+export const fetchVideos = (params: any, forceUpdate = true): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
@@ -125,24 +125,6 @@ export const deleteVideo = (video: VideoTree): AppThunk => {
           timer: 5000,
         })
       );
-    }
-  };
-};
-
-export const addToFavorites = (videoId: string): AppThunk => {
-  return async (dispatch, _, api) => {
-    const client = dispatch(api());
-
-    try {
-      const { data } = await client.patch(`/videos/${videoId}/favorites`);
-
-      return data;
-    } catch (err) {
-      uiActions.setMessage({
-        content: `${(err as Error).message}: Adding to favorites failed`,
-        type: 'error',
-        timer: 5000,
-      });
     }
   };
 };
