@@ -8,7 +8,6 @@ import { usePaginate } from 'hooks/page-hook';
 import { useSearch } from 'hooks/search-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { VideoListDetail } from 'store/slices/video-slice';
-import { fetchVideos } from 'store/thunks/video-thunk';
 import './VideoList.scss';
 
 interface VideoListProps {
@@ -16,9 +15,13 @@ interface VideoListProps {
     max?: number;
     userId?: string;
   };
+  onFetch: (
+    params: any,
+    forceUpdate: boolean
+  ) => Promise<{ videos: VideoListDetail[]; count: number }>;
 }
 
-const VideoList: React.FC<VideoListProps> = ({ params }) => {
+const VideoList: React.FC<VideoListProps> = ({ params, onFetch }) => {
   const [videos, setVideos] = useState<VideoListDetail[]>([]);
   const [count, setCount] = useState(0);
   const [loaders, setLoaders] = useState<undefined[]>([]);
@@ -38,22 +41,25 @@ const VideoList: React.FC<VideoListProps> = ({ params }) => {
 
       setLoaders(Array.from(Array(rows * 3)));
 
-      const data = await dispatch(
-        fetchVideos(
-          { page: currentPage, max: itemsPerPage, search: keyword, ...params },
-          history.action !== 'POP'
-        )
+      const { videos, count } = await onFetch(
+        {
+          page: currentPage,
+          max: itemsPerPage,
+          search: keyword,
+          ...params,
+        },
+        history.action !== 'POP'
       );
 
-      if (data) {
-        setVideos(data.videos);
-        setCount(data.count);
+      if (videos && count) {
+        setVideos(videos);
+        setCount(count);
       }
 
       setLoaders([]);
       setLoaded(true);
     })();
-  }, [dispatch, history, currentPage, itemsPerPage, keyword, params]);
+  }, [dispatch, history, currentPage, itemsPerPage, keyword, params, onFetch]);
 
   return (
     <>
