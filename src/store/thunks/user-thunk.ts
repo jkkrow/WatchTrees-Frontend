@@ -5,81 +5,6 @@ import { userActions } from 'store/slices/user-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
 
-export const fetchMyVideos = (
-  params?: any,
-  forceUpdate: boolean = true
-): AppThunk => {
-  return async (dispatch, _, api) => {
-    const client = dispatch(api());
-
-    try {
-      dispatch(userActions.userRequest());
-
-      const { data } = await client.get('/videos/user', {
-        params,
-        forceUpdate,
-        cache: true,
-      });
-
-      dispatch(userActions.userSuccess());
-
-      return data;
-    } catch (err) {
-      dispatch(
-        userActions.userFail(`${(err as Error).message}: Failed to load videos`)
-      );
-    }
-  };
-};
-
-export const fetchChannel = (userId: string): AppThunk => {
-  return async (dispatch, getState, api) => {
-    const { userData } = getState().auth;
-
-    const client = dispatch(api());
-    const currentUserId = userData ? userData._id : '';
-
-    try {
-      dispatch(userActions.userRequest());
-
-      const { data } = await client.get(`/users/channel/${userId}`, {
-        params: { currentUserId },
-      });
-
-      dispatch(userActions.userSuccess());
-
-      return data.channelInfo;
-    } catch (err) {
-      dispatch(
-        userActions.userFail(
-          `${(err as Error).message}: Failed to load channel info`
-        )
-      );
-    }
-  };
-};
-
-export const subscribeChannel = (userId: string): AppThunk => {
-  return async (dispatch, _, api) => {
-    const client = dispatch(api());
-    let result = '';
-
-    try {
-      const { data } = await client.patch(
-        `/users/channel/subscribers/${userId}`
-      );
-
-      result = data.isSubscribed ? 'unsubscribe' : 'subscribe';
-
-      return data;
-    } catch (err) {
-      userActions.userFail(
-        `${(err as Error).message}: Failed to ${result} to channel`
-      );
-    }
-  };
-};
-
 export const updateUserName = (name: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const { userData } = getState().auth;
@@ -202,6 +127,112 @@ export const updateUserPicture = (file: File | null): AppThunk => {
           `${(err as Error).message}: Failed to update picture`
         )
       );
+    }
+  };
+};
+
+export const fetchChannel = (userId: string): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { userData } = getState().auth;
+
+    const client = dispatch(api());
+    const currentUserId = userData ? userData._id : '';
+
+    try {
+      dispatch(userActions.userRequest());
+
+      const { data } = await client.get(`/users/channel/${userId}`, {
+        params: { currentUserId },
+      });
+
+      dispatch(userActions.userSuccess());
+
+      return data.channelInfo;
+    } catch (err) {
+      dispatch(
+        userActions.userFail(
+          `${(err as Error).message}: Failed to load channel info`
+        )
+      );
+    }
+  };
+};
+
+export const fetchMyVideos = (
+  params?: any,
+  forceUpdate: boolean = true
+): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      dispatch(userActions.userRequest());
+
+      const { data } = await client.get('/videos/user', {
+        params,
+        forceUpdate,
+        cache: true,
+      });
+
+      dispatch(userActions.userSuccess());
+
+      return data;
+    } catch (err) {
+      dispatch(
+        userActions.userFail(`${(err as Error).message}: Failed to load videos`)
+      );
+    }
+  };
+};
+
+export const fetchFavorites = (params: any, forceUpdate = true): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.get('/users/favorites', {
+        params,
+        forceUpdate,
+        cache: true,
+      });
+
+      return data;
+    } catch (err) {
+      userActions.userFail(`${(err as Error).message}: Failed to load videos`);
+    }
+  };
+};
+
+export const subscribeChannel = (userId: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.patch(
+        `/users/channel/subscribers/${userId}`
+      );
+
+      return data;
+    } catch (err) {
+      userActions.userFail(`${(err as Error).message}: Failed to subscribe`);
+    }
+  };
+};
+
+export const addToFavorites = (videoId: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.patch('/users/favorites', { videoId });
+
+      return data;
+    } catch (err) {
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Failed to add to favorites`,
+        type: 'error',
+        timer: 5000,
+      });
     }
   };
 };

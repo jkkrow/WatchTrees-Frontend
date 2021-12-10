@@ -56,6 +56,11 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
               </NavLink>
             </li>
             <li>
+              <NavLink activeStyle={{ opacity: 0.7 }} to="/user/favorites">
+                Favorites
+              </NavLink>
+            </li>
+            <li>
               <NavLink activeStyle={{ opacity: 0.7 }} to="/user/history">
                 History
               </NavLink>

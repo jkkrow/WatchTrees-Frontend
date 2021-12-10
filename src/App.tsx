@@ -20,6 +20,7 @@ import ProtectedRoute from 'service/ProtectedRoute';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { fetchTokenOnload } from 'store/thunks/auth-thunk';
 import './App.scss';
+import FavoritesPage from 'pages/User/FavoritesPage';
 
 const App: React.FC = () => {
   const { refreshToken } = useAppSelector((state) => state.auth);
@@ -81,6 +82,13 @@ const App: React.FC = () => {
             component={HistoryPage}
             exact
             path="/user/history"
+            redirect="/auth"
+          />
+          <ProtectedRoute
+            require={refreshToken}
+            component={FavoritesPage}
+            exact
+            path="/user/favorites"
             redirect="/auth"
           />
           <ProtectedRoute
