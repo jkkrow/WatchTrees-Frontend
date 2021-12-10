@@ -10,7 +10,11 @@ const Search = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const history = useHistory();
 
-  const searchInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const inputFocusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
+    event.target.select();
+  };
+
+  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(event.target.value);
   };
 
@@ -32,7 +36,8 @@ const Search = () => {
         placeholder="Search Videos"
         autoComplete="off"
         value={keyword}
-        onChange={searchInputHandler}
+        onChange={inputChangeHandler}
+        onFocus={inputFocusHandler}
       />
       <label htmlFor="search-input">
         <SearchIcon />
