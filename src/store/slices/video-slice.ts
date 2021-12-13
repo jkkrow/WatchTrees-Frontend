@@ -47,7 +47,7 @@ export interface TreeData {
 }
 
 export interface VideoTree {
-  _id?: string;
+  _id: string;
   root: VideoNode;
   info: TreeInfo;
   data: TreeData;

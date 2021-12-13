@@ -34,6 +34,7 @@ const uploadSlice = createSlice({
       { payload }: PayloadAction<VideoTree | undefined>
     ) => {
       const tree: VideoTree = payload || {
+        _id: '',
         root: createNode(),
         info: {
           title: '',
