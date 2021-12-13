@@ -11,7 +11,8 @@ import './VideoNode.scss';
 
 interface VideoNodeProps {
   currentVideo: VideoNodeType;
-  treeId: string;
+  videoId: string;
+  rootId: string;
   activeVideoId: string;
   autoPlay: boolean;
   editMode: boolean;
@@ -19,7 +20,8 @@ interface VideoNodeProps {
 
 const VideoNode: React.FC<VideoNodeProps> = ({
   currentVideo,
-  treeId,
+  videoId,
+  rootId,
   activeVideoId,
   autoPlay,
   editMode,
@@ -47,7 +49,8 @@ const VideoNode: React.FC<VideoNodeProps> = ({
           >
             <VideoPlayer
               currentVideo={currentVideo}
-              treeId={treeId}
+              videoId={videoId}
+              rootId={rootId}
               autoPlay={autoPlay}
               editMode={editMode}
               active={activeVideoId === currentVideo.id}
@@ -69,7 +72,8 @@ const VideoNode: React.FC<VideoNodeProps> = ({
         <VideoNode
           key={video.id}
           currentVideo={video}
-          treeId={treeId}
+          videoId={videoId}
+          rootId={rootId}
           activeVideoId={activeVideoId}
           autoPlay={false}
           editMode={editMode}

@@ -11,10 +11,10 @@ import { validateNodes } from 'util/tree';
 
 interface ControlsProps {
   currentNode: VideoNode;
-  treeId: string;
+  rootId: string;
 }
 
-const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
+const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
   const { activeNodeId } = useAppSelector((state) => state.upload);
   const { activeVideoId } = useAppSelector((state) => state.video);
   const dispatch = useAppDispatch();
@@ -56,7 +56,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
       {warning && (
         <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />
       )}
-      {currentNode.id !== treeId && currentNode.id !== activeNodeId && (
+      {currentNode.id !== rootId && currentNode.id !== activeNodeId && (
         <RemoveIcon
           style={{
             top: '2rem',
@@ -68,7 +68,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
         />
       )}
       {!currentNode.info &&
-        currentNode.id !== treeId &&
+        currentNode.id !== rootId &&
         currentNode.id === activeNodeId && (
           <div
             className="upload-node__navigation"
@@ -79,7 +79,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, treeId }) => {
               zIndex: 1,
             }}
           >
-            <DoubleAngleLeftIcon onClick={() => activeNodeHandler(treeId)} />
+            <DoubleAngleLeftIcon onClick={() => activeNodeHandler(rootId)} />
             <AngleLeftIcon
               onClick={() => activeNodeHandler(currentNode.prevId!)}
             />

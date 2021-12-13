@@ -17,10 +17,10 @@ import { validateNodes } from 'util/tree';
 
 interface ContentProps {
   currentNode: VideoNode;
-  treeId: string;
+  rootId: string;
 }
 
-const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
+const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   const nodeInfo = useMemo(() => currentNode.info!, [currentNode.info]);
 
   const [labelInput, setLabelInput] = useState(nodeInfo.label);
@@ -60,14 +60,14 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
   return (
     <div className="upload-node__content">
       <div className="upload-node__header">
-        {currentNode.id === treeId ? (
+        {currentNode.id === rootId ? (
           <Tooltip text="This is first video">
             <strong>ROOT</strong>
           </Tooltip>
         ) : (
           currentNode.id === activeNodeId && (
             <div className="upload-node__navigation">
-              <DoubleAngleLeftIcon onClick={() => activeNodeHandler(treeId)} />
+              <DoubleAngleLeftIcon onClick={() => activeNodeHandler(rootId)} />
               <AngleLeftIcon
                 onClick={() => activeNodeHandler(currentNode.prevId!)}
               />
@@ -115,7 +115,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, treeId }) => {
         <div className="upload-node__info__duration" data-label="Duration">
           {formatTime(nodeInfo.duration)}
         </div>
-        {currentNode.id !== treeId && (
+        {currentNode.id !== rootId && (
           <label className="upload-node__info__label" data-label="Label">
             <div className="upload-node__info__input">
               <input

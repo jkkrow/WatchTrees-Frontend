@@ -7,7 +7,7 @@ import { ReactComponent as AngleRightIcon } from 'assets/icons/angle-right.svg';
 import { ReactComponent as MarkerIcon } from 'assets/icons/marker.svg';
 
 interface NavigationProps {
-  treeId: string;
+  rootId: string;
   currentId: string;
   marked: boolean;
   onRestart: () => void;
@@ -18,7 +18,7 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({
   currentId,
-  treeId,
+  rootId,
   marked,
   onRestart,
   onPrev,
@@ -26,24 +26,24 @@ const Navigation: React.FC<NavigationProps> = ({
   onMark,
 }) => {
   const restartHandler = () => {
-    currentId !== treeId && onRestart();
+    currentId !== rootId && onRestart();
   };
 
   const prevHandler = () => {
-    currentId !== treeId && onPrev();
+    currentId !== rootId && onPrev();
   };
 
   return (
     <div className="vp-navigation">
       <Tooltip text="Return to first video" direction="bottom">
         <DoubleAngleLeftIcon
-          className={currentId === treeId ? 'disabled' : ''}
+          className={currentId === rootId ? 'disabled' : ''}
           onClick={restartHandler}
         />
       </Tooltip>
       <Tooltip text="Back to previous video" direction="bottom">
         <AngleLeftIcon
-          className={currentId === treeId ? 'disabled' : ''}
+          className={currentId === rootId ? 'disabled' : ''}
           onClick={prevHandler}
         />
       </Tooltip>

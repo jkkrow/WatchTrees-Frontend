@@ -21,6 +21,7 @@ const VideoTree: React.FC<VideoTreeProps> = ({
   editMode = false,
 }) => {
   const { videoTree, activeVideoId } = useAppSelector((state) => state.video);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -36,7 +37,8 @@ const VideoTree: React.FC<VideoTreeProps> = ({
       {videoTree && activeVideoId && (
         <VideoNode
           currentVideo={videoTree.root}
-          treeId={videoTree.root.id}
+          videoId={videoTree._id}
+          rootId={videoTree.root.id}
           activeVideoId={activeVideoId}
           autoPlay={autoPlay}
           editMode={editMode}
