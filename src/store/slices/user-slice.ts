@@ -1,5 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export interface ChannelData {
+  _id: string;
+  name: string;
+  picture: string;
+  subscribers: number;
+  subsscribes: number;
+  isSubscribed: boolean;
+}
+
 interface userSliceState {
   loading: boolean;
   error: string | null;
