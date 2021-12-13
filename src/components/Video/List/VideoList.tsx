@@ -64,7 +64,7 @@ const VideoList: React.FC<VideoListProps> = ({ params, onFetch }) => {
   return (
     <>
       <div className="video-list" ref={listRef}>
-        {loaders.map((item, index) => (
+        {loaders.map((_, index) => (
           <div key={index}>
             <VideoLoader on={!!loaders.length} detail />
           </div>
