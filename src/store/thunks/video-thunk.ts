@@ -62,9 +62,7 @@ export const saveVideo = (message?: string | false): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.put(`/videos/${uploadTree._id}`, {
-        uploadTree,
-      });
+      const { data } = await client.put('/videos/', { uploadTree });
 
       dispatch(uploadActions.saveUpload(data.videoId));
 
