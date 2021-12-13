@@ -1,0 +1,16 @@
+.channel-list {
+  width: 100%;
+  overflow-x: auto;
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+    gap: 2rem;
+  }
+
+  &__loader,
+  &__item {
+    grid-row: 1;
+    height: 32rem;
+  }
+}

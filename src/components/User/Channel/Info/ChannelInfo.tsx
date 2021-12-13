@@ -2,41 +2,51 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import ChannelLoader from 'components/Common/UI/Loader/Channel/ChannelLoader';
-import Response from 'components/Common/UI/Response/Response';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as SubscribeIcon } from 'assets/icons/subscribe.svg';
 import { ReactComponent as CheckIcon } from 'assets/icons/circle-check.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { fetchChannel, subscribeChannel } from 'store/thunks/user-thunk';
+import { ChannelData } from 'store/slices/user-slice';
+import { subscribeChannel } from 'store/thunks/user-thunk';
 import { formatNumber } from 'util/format';
-import './ChannelHeader.scss';
+import './ChannelInfo.scss';
 
-interface ChannelHeaderProps {
-  userId: string;
+interface ChannelInfoProps {
+  data: ChannelData | null;
+  loading: boolean;
+  column?: boolean;
+  button?: boolean;
 }
 
-interface ChannelInfo {
-  _id: string;
-  name: string;
-  picture: string;
-  subscribers: number;
-  subsscribes: number;
-  isSubscribed: boolean;
-}
-
-const ChannelHeader: React.FC<ChannelHeaderProps> = ({ userId }) => {
-  const { loading, error } = useAppSelector((state) => state.user);
+const ChannelInfo: React.FC<ChannelInfoProps> = ({
+  data,
+  loading,
+  column,
+  button,
+}) => {
   const { userData } = useAppSelector((state) => state.auth);
 
-  const [channelInfo, setChannelInfo] = useState<ChannelInfo | null>(null);
+  const [detail, setDetail] = useState<ChannelData | null>(data);
   const [subscribeLoading, setSubscribeLoading] = useState(false);
 
   const dispatch = useAppDispatch();
 
   const history = useHistory();
 
+  useEffect(() => {
+    setDetail(data);
+  }, [data]);
+
+  const navigateHandler = () => {
+    detail && button && history.push(`/channel/${detail._id}`);
+  };
+
   const subscribeHandler = async () => {
+    if (!detail) {
+      return;
+    }
+
     if (!userData) {
       return history.push('/auth');
     }
@@ -44,42 +54,44 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({ userId }) => {
     setSubscribeLoading(true);
 
     const { isSubscribed, subscribers } = await dispatch(
-      subscribeChannel(userId)
+      subscribeChannel(detail._id)
     );
 
     setSubscribeLoading(false);
-    setChannelInfo((prevInfo) => ({
-      ...(prevInfo as ChannelInfo),
+    setDetail((prev) => ({
+      ...(prev as ChannelData),
       subscribers,
       isSubscribed,
     }));
   };
 
-  useEffect(() => {
-    (async () => {
-      const channelInfo = await dispatch(fetchChannel(userId));
-
-      setChannelInfo(channelInfo);
-    })();
-  }, [dispatch, userId]);
-
   return (
-    <div className="channel-header">
-      <Response type="error" content={error} />
-      <ChannelLoader on={loading} />
-      {channelInfo && !loading && (
-        <div className="channel-header__container">
-          <Avatar src={channelInfo.picture} width="8rem" height="8rem" />
-          <div className="channel-header__detail">
-            <h2 className="channel-header__title">{channelInfo.name}</h2>
-            <div className="channel-header__subscribers">
+    <div className={`channel-info${column ? ' column' : ''}`}>
+      <ChannelLoader on={loading} column={column} />
+      {detail && !loading && (
+        <div className="channel-info__container">
+          <Avatar
+            src={detail.picture}
+            width="8rem"
+            height="8rem"
+            button={button}
+            onClick={navigateHandler}
+          />
+          <div className="channel-info__detail">
+            <h3
+              className={`channel-info__title${button ? ' link' : ''}`}
+              onClick={navigateHandler}
+            >
+              {detail.name}
+            </h3>
+            <div className="channel-info__subscribers">
               <span>Subscribers: </span>
-              <span>{formatNumber(channelInfo.subscribers)}</span>
+              <span>{formatNumber(detail.subscribers)}</span>
             </div>
           </div>
-          <div className="channel-header__subscribe">
+          <div className="channel-info__subscribe">
             <Button onClick={subscribeHandler} loading={subscribeLoading}>
-              {channelInfo.isSubscribed ? (
+              {detail.isSubscribed ? (
                 <>
                   <CheckIcon stroke="black" />
                   <span>Subscribed</span>
@@ -98,4 +110,4 @@ const ChannelHeader: React.FC<ChannelHeaderProps> = ({ userId }) => {
   );
 };
 
-export default ChannelHeader;
+export default ChannelInfo;
