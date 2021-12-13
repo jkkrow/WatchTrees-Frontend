@@ -1,15 +1,15 @@
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 
 import UserLayout from 'components/User/Layout/UserLayout';
-import ChannelHeader from 'components/User/Channel/ChannelHeader';
+import ChannelHeader from 'components/User/Channel/Header/ChannelHeader';
 import VideoList from 'components/Video/List/VideoList';
 import { useAppDispatch } from 'hooks/store-hook';
 import { fetchVideos } from 'store/thunks/video-thunk';
 
 const ChannelPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-
   const dispatch = useAppDispatch();
+
+  const { id } = useParams<{ id: string }>();
 
   const fetchVideosHandler = async (params: any, forceUpdate: boolean) => {
     return await dispatch(fetchVideos(params, forceUpdate));
@@ -17,7 +17,7 @@ const ChannelPage: React.FC = () => {
 
   return (
     <UserLayout>
-      <ChannelHeader userId={id} />
+      <ChannelHeader channelId={id} />
       <VideoList params={{ userId: id }} onFetch={fetchVideosHandler} />
     </UserLayout>
   );
