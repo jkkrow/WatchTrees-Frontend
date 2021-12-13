@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
@@ -17,11 +17,16 @@ interface VideoLayoutProps {
 }
 
 const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
-  const { userData } = useAppSelector((state) => state.auth);
+  const { refreshToken } = useAppSelector((state) => state.auth);
   const [videoTree, setVideoTree] = useState(video);
 
   const dispatch = useAppDispatch();
   const history = useHistory();
+
+  useEffect(() => {
+    // Fetch history
+    // Add + 1 view
+  }, []);
 
   const addToFavoritesHandler = async () => {
     setVideoTree((prev) => ({
@@ -35,7 +40,7 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
       },
     }));
 
-    if (!userData) {
+    if (!refreshToken) {
       return history.push('/auth');
     }
 

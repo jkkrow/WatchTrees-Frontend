@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { AppThunk } from 'store';
-import { userActions } from 'store/slices/user-slice';
+import { userActions, History } from 'store/slices/user-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
 
@@ -242,6 +242,26 @@ export const subscribeChannel = (userId: string): AppThunk => {
         content: `${(err as Error).message}: Failed to subscribe`,
         type: 'error',
         timer: 5000,
+      });
+    }
+  };
+};
+
+export const addToHistory = (history: History): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { refreshToken } = getState().auth;
+
+    const client = dispatch(api());
+
+    try {
+      if (refreshToken) {
+        await client.patch('/users/history', { history });
+      }
+    } catch (err) {
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Failed to add to favorites`,
+        type: 'error',
+        timer: 3000,
       });
     }
   };

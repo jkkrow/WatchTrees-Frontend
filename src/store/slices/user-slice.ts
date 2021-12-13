@@ -9,6 +9,15 @@ export interface ChannelData {
   isSubscribed: boolean;
 }
 
+export interface History {
+  video: string; // ref to Video Document
+  progress: {
+    activeVideoId: string;
+    time: number;
+  };
+  updatedAt: Date;
+}
+
 interface userSliceState {
   loading: boolean;
   error: string | null;

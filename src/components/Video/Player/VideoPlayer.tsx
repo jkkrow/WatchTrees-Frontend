@@ -10,18 +10,20 @@ import Selector from './Controls/Selector';
 import Navigation from './Controls/Navigation';
 import Loader from './Controls/Loader';
 import KeyAction from './Controls/KeyAction';
-import { useTimeout } from 'hooks/timer-hook';
+import { useTimeout, useInterval } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode, videoActions } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
+import { addToHistory } from 'store/thunks/user-thunk';
 import { formatTime } from 'util/format';
 import { videoUrl } from 'util/video';
 import './VideoPlayer.scss';
 
 interface VideoPlayerProps {
   currentVideo: VideoNode;
-  treeId: string;
+  videoId: string;
+  rootId: string;
   autoPlay: boolean;
   editMode: boolean;
   active: boolean;
@@ -29,12 +31,14 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   currentVideo,
-  treeId,
+  videoId,
+  rootId,
   autoPlay,
   editMode,
   active,
 }) => {
   const { videoVolume } = useAppSelector((state) => state.video);
+
   const dispatch = useAppDispatch();
 
   // vp-container
@@ -93,6 +97,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [keyActionSkipTimeout] = useTimeout();
   const [keyActionVolumeTimeout] = useTimeout();
   const [loaderTimeout, clearLoaderTimeout] = useTimeout();
+  const [historyInterval, clearHistoryInterval] = useInterval();
 
   const activeChange = useCompare(active);
   const firstRender = useFirstRender();
@@ -157,11 +162,35 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const videoPlayHandler = useCallback(() => {
     setPlaybackState(true);
-  }, []);
+
+    if (editMode) return;
+
+    // Update history
+    historyInterval(
+      () => {
+        const history = {
+          video: videoId,
+          progress: {
+            activeVideoId: currentVideo.id,
+            time: videoRef.current!.currentTime,
+          },
+          updatedAt: new Date(),
+        };
+
+        dispatch(addToHistory(history));
+      },
+      5000,
+      true
+    );
+  }, [editMode, currentVideo.id, videoId, dispatch, historyInterval]);
 
   const videoPauseHandler = useCallback(() => {
     setPlaybackState(false);
-  }, []);
+
+    if (editMode) return;
+
+    clearHistoryInterval();
+  }, [editMode, clearHistoryInterval]);
 
   const videoEndedHandler = useCallback(() => {
     if (
@@ -523,8 +552,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    */
 
   const restartVideoTreeHandler = useCallback(() => {
-    dispatch(videoActions.setActiveVideo(treeId));
-  }, [dispatch, treeId]);
+    dispatch(videoActions.setActiveVideo(rootId));
+  }, [dispatch, rootId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
     if (!currentVideo.prevId) return;
@@ -762,7 +791,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       {editMode && (
         <Navigation
           currentId={currentVideo.id}
-          treeId={treeId}
+          rootId={rootId}
           marked={selectionTimeMarked}
           onRestart={restartVideoTreeHandler}
           onPrev={navigateToPreviousVideoHandler}
