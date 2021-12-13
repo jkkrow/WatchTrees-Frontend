@@ -139,20 +139,18 @@ export const fetchChannel = (userId: string): AppThunk => {
     const currentUserId = userData ? userData._id : '';
 
     try {
-      dispatch(userActions.userRequest());
-
       const { data } = await client.get(`/users/channel/${userId}`, {
         params: { currentUserId },
       });
 
-      dispatch(userActions.userSuccess());
-
       return data.channelInfo;
     } catch (err) {
       dispatch(
-        userActions.userFail(
-          `${(err as Error).message}: Failed to load channel info`
-        )
+        uiActions.setMessage({
+          content: `${(err as Error).message}: Failed to load channel info`,
+          type: 'error',
+          timer: 5000,
+        })
       );
     }
   };
@@ -179,7 +177,11 @@ export const fetchMyVideos = (
       return data;
     } catch (err) {
       dispatch(
-        userActions.userFail(`${(err as Error).message}: Failed to load videos`)
+        uiActions.setMessage({
+          content: `${(err as Error).message}: Failed to load videos`,
+          type: 'error',
+          timer: 5000,
+        })
       );
     }
   };
@@ -198,7 +200,29 @@ export const fetchFavorites = (params: any, forceUpdate = true): AppThunk => {
 
       return data;
     } catch (err) {
-      userActions.userFail(`${(err as Error).message}: Failed to load videos`);
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Failed to load videos`,
+        type: 'error',
+        timer: 5000,
+      });
+    }
+  };
+};
+
+export const fetchSubscribes = (): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    try {
+      const { data } = await client.get('/users/subscribes');
+
+      return data;
+    } catch (err) {
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Failed to load subscribes`,
+        type: 'error',
+        timer: 5000,
+      });
     }
   };
 };
@@ -214,7 +238,11 @@ export const subscribeChannel = (userId: string): AppThunk => {
 
       return data;
     } catch (err) {
-      userActions.userFail(`${(err as Error).message}: Failed to subscribe`);
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Failed to subscribe`,
+        type: 'error',
+        timer: 5000,
+      });
     }
   };
 };
