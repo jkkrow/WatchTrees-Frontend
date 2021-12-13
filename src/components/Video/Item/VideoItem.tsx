@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import VideoThumbnail from '../UI/Thumbnail/VideoThumbnail';
 import VideoViews from '../UI/Views/VideoViews';
@@ -7,6 +7,7 @@ import VideoDuration from '../UI/Duration/VideoDuration';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { VideoListDetail } from 'store/slices/video-slice';
 import './VideoItem.scss';
+import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 
 interface VideoItemProps {
   video: VideoListDetail;
@@ -14,6 +15,7 @@ interface VideoItemProps {
 
 const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
   const history = useHistory();
+  const location = useLocation();
 
   return (
     <div className="video-item">
@@ -24,13 +26,17 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
         </div>
       </div>
       <div className="video-item__info">
-        <Avatar
-          src={video.info.creatorInfo.picture}
-          width="4rem"
-          height="4rem"
-          button
-          onClick={() => history.push(`/channel/${video.info.creator}`)}
-        />
+        {!location.pathname.includes('/channel/') && (
+          <Tooltip text={video.info.creatorInfo.name} direction={'bottom'}>
+            <Avatar
+              src={video.info.creatorInfo.picture}
+              width="4rem"
+              height="4rem"
+              button
+              onClick={() => history.push(`/channel/${video.info.creator}`)}
+            />
+          </Tooltip>
+        )}
         <div className="video-item__detail">
           <div
             className="video-item__title link"
