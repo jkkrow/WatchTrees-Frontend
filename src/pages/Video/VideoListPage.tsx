@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import VideoCarousel from 'components/Video/Carousel/VideoCarousel';
 import VideoList from 'components/Video/List/VideoList';
 import { useSearch } from 'hooks/search-hook';
@@ -9,9 +11,12 @@ const VideoListPage: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const fetchVideosHandler = async (params: any, forceUpdate: boolean) => {
-    return await dispatch(fetchVideos(params, forceUpdate));
-  };
+  const fetchVideosHandler = useCallback(
+    async (params: any, forceUpdate: boolean) => {
+      return await dispatch(fetchVideos(params, forceUpdate));
+    },
+    [dispatch]
+  );
 
   return (
     <div className="layout">

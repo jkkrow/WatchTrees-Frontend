@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import UserLayout from 'components/User/Layout/UserLayout';
 import VideoList from 'components/Video/List/VideoList';
@@ -27,9 +27,12 @@ const FavoritesPage: React.FC = () => {
     })();
   }, [dispatch, accessToken]);
 
-  const fetchVideosHandler = async (params: any, forceUpdate: boolean) => {
-    return await dispatch(fetchFavorites(params, forceUpdate));
-  };
+  const fetchVideosHandler = useCallback(
+    async (params: any, forceUpdate: boolean) => {
+      return await dispatch(fetchFavorites(params, true));
+    },
+    [dispatch]
+  );
 
   return (
     <UserLayout>
