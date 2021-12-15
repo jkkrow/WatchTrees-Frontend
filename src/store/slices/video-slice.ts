@@ -54,8 +54,14 @@ export interface VideoTree {
   createdAt: string;
 }
 
+export interface History {
+  progress: { activeVideId: string; time: number };
+  updatedAt: string;
+}
+
 export interface VideoListDetail extends VideoTree {
   info: TreeInfoWithCreator;
+  history: History | null;
 }
 
 export interface VideoItemDetail extends VideoListDetail {
