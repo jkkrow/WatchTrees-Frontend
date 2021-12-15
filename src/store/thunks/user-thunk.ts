@@ -187,6 +187,46 @@ export const fetchMyVideos = (
   };
 };
 
+export const fetchHistory = (params: any, forceUpdate = true): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const { accessToken } = getState().auth;
+
+    const client = dispatch(api());
+
+    try {
+      let data: History[];
+
+      if (accessToken) {
+        const response = await client.get('/users/history', {
+          params,
+          forceUpdate,
+          cache: true,
+        });
+
+        data = response.data;
+      } else {
+        const historyStorage = localStorage.getItem('history');
+
+        if (!historyStorage) {
+          data = [];
+        } else {
+          data = JSON.parse(historyStorage);
+        }
+      }
+
+      console.log(data);
+
+      return data;
+    } catch (err) {
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Failed to load videos`,
+        type: 'error',
+        timer: 5000,
+      });
+    }
+  };
+};
+
 export const fetchFavorites = (params: any, forceUpdate = true): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
@@ -256,6 +296,32 @@ export const addToHistory = (history: History): AppThunk => {
     try {
       if (refreshToken) {
         await client.patch('/users/history', { history });
+      } else {
+        const historyStorage = localStorage.getItem('history');
+
+        if (!historyStorage) {
+          const histories: History[] = [];
+
+          histories.push(history);
+          localStorage.setItem('history', JSON.stringify(histories));
+        } else {
+          const localHistories: History[] = JSON.parse(historyStorage);
+
+          const existingHistory = localHistories.find(
+            (item) => item.video === history.video
+          );
+
+          if (existingHistory) {
+            existingHistory.progress = history.progress;
+            existingHistory.updatedAt = history.updatedAt;
+          } else {
+            localHistories.push(history);
+          }
+
+          console.log(localHistories);
+
+          localStorage.setItem('history', JSON.stringify(localHistories));
+        }
       }
     } catch (err) {
       uiActions.setMessage({
