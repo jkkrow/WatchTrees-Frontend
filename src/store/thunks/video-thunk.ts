@@ -18,7 +18,13 @@ export const fetchVideo = (id: string): AppThunk => {
         params: { currentUserId },
       });
 
-      return data.video;
+      let video = data.video;
+
+      if (!currentUserId) {
+        // TODO: Get history from localStorage and add to video
+      }
+
+      return video;
     } catch (err) {
       uiActions.setMessage({
         type: 'error',
@@ -30,15 +36,25 @@ export const fetchVideo = (id: string): AppThunk => {
 };
 
 export const fetchVideos = (params: any, forceUpdate = true): AppThunk => {
-  return async (dispatch, _, api) => {
+  return async (dispatch, getState, api) => {
+    const { userData } = getState().auth;
+
+    const currentUserId = userData ? userData._id : '';
+
     const client = dispatch(api());
 
     try {
       const { data } = await client.get('/videos', {
-        params,
+        params: { ...params, currentUserId },
         forceUpdate,
         cache: true,
       });
+
+      console.log(data);
+
+      if (!currentUserId) {
+        // TODO: Get history from localStorage and add to each video
+      }
 
       return data;
     } catch (err) {
