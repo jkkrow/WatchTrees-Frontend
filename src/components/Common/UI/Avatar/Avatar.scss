@@ -17,6 +17,11 @@
 
   img {
     object-fit: cover;
+    transition: opacity 200ms ease-out;
+
+    &:hover {
+      opacity: 0.7;
+    }
   }
 
   &.default {
