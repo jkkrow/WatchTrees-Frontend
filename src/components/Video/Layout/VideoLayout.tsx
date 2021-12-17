@@ -8,7 +8,7 @@ import VideoViews from '../UI/Views/VideoViews';
 import VideoDuration from '../UI/Duration/VideoDuration';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoItemDetail } from 'store/slices/video-slice';
+import { VideoItemDetail, videoActions } from 'store/slices/video-slice';
 import { addToFavorites } from 'store/thunks/user-thunk';
 import './VideoLayout.scss';
 
@@ -24,9 +24,13 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
   const history = useHistory();
 
   useEffect(() => {
-    // Fetch history
-    // Add + 1 view
-  }, []);
+    if (!videoTree.history || videoTree.history.progress.isEnded) return;
+
+    dispatch(
+      videoActions.setActiveVideo(videoTree.history.progress.activeVideoId)
+    );
+    dispatch(videoActions.setInitialProgress(videoTree.history.progress.time));
+  }, [dispatch, videoTree]);
 
   const addToFavoritesHandler = async () => {
     setVideoTree((prev) => ({
