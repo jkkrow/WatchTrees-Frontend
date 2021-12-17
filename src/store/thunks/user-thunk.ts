@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 import { AppThunk } from 'store';
-import { userActions, History } from 'store/slices/user-slice';
+import { userActions } from 'store/slices/user-slice';
+import { History } from 'store/slices/video-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
 
