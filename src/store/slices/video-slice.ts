@@ -55,7 +55,7 @@ export interface VideoTree {
 }
 
 export interface History {
-  progress: { activeVideId: string; time: number };
+  progress: { activeVideoId: string; time: number };
   updatedAt: string;
 }
 
@@ -75,6 +75,7 @@ export interface VideoItemDetail extends VideoListDetail {
 interface VideoSliceState {
   videoTree: VideoTree | null;
   activeVideoId: string;
+  initialProgress: number;
   videoVolume: number;
 }
 
@@ -83,6 +84,7 @@ const videoVolumeStorage = localStorage.getItem('video-volume');
 const initialState: VideoSliceState = {
   videoTree: null,
   activeVideoId: '',
+  initialProgress: 0,
   videoVolume: videoVolumeStorage ? +videoVolumeStorage : 1,
 };
 
@@ -100,6 +102,10 @@ const videoSlice = createSlice({
 
     setVideoVolume: (state, { payload }: PayloadAction<number>) => {
       state.videoVolume = payload;
+    },
+
+    setInitialProgress: (state, { payload }: PayloadAction<number>) => {
+      state.initialProgress = payload;
     },
   },
 });
