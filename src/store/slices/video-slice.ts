@@ -55,8 +55,13 @@ export interface VideoTree {
 }
 
 export interface History {
-  progress: { activeVideoId: string; time: number };
-  updatedAt: string;
+  video: string;
+  progress: {
+    activeVideoId: string;
+    time: number;
+    isEnded: boolean;
+  };
+  updatedAt: Date;
 }
 
 export interface VideoListDetail extends VideoTree {

@@ -37,7 +37,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   editMode,
   active,
 }) => {
-  const { videoVolume } = useAppSelector((state) => state.video);
+  const { activeVideoId, initialProgress, videoVolume } = useAppSelector(
+    (state) => state.video
+  );
 
   const dispatch = useAppDispatch();
 
@@ -161,6 +163,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
+    const video = videoRef.current!;
     setPlaybackState(true);
 
     if (editMode) return;
@@ -168,11 +171,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     // Update history
     historyInterval(
       () => {
+        const endPoint = (video.duration * 95) / 100;
+        const isLastVideo = currentVideo.children.length === 0;
+        const endTime = endPoint > 180 ? 180 : endPoint;
+        const isEnded =
+          isLastVideo && video.currentTime > endTime ? true : false;
+
         const history = {
           video: videoId,
           progress: {
             activeVideoId: currentVideo.id,
-            time: videoRef.current!.currentTime,
+            time: video.currentTime,
+            isEnded: isEnded,
           },
           updatedAt: new Date(),
         };
@@ -182,7 +192,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       5000,
       true
     );
-  }, [editMode, currentVideo.id, videoId, dispatch, historyInterval]);
+  }, [
+    editMode,
+    currentVideo.id,
+    currentVideo.children,
+    videoId,
+    dispatch,
+    historyInterval,
+  ]);
 
   const videoPauseHandler = useCallback(() => {
     setPlaybackState(false);
@@ -193,10 +210,24 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [editMode, clearHistoryInterval]);
 
   const videoEndedHandler = useCallback(() => {
-    if (
+    const video = videoRef.current!;
+    const isLastVideo =
       currentVideo.children.length === 0 ||
-      !currentVideo.children.find((item) => item.info)
-    ) {
+      !currentVideo.children.find((item) => item.info);
+
+    if (isLastVideo) {
+      const history = {
+        video: videoId,
+        progress: {
+          activeVideoId: currentVideo.id,
+          time: video.currentTime,
+          isEnded: true,
+        },
+        updatedAt: new Date(),
+      };
+
+      dispatch(addToHistory(history));
+
       return;
     }
 
@@ -208,7 +239,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       firstValidItem &&
         dispatch(videoActions.setActiveVideo(firstValidItem.id));
     }
-  }, [dispatch, currentVideo.children, selectedNextVideoId]);
+  }, [
+    dispatch,
+    videoId,
+    currentVideo.id,
+    currentVideo.children,
+    selectedNextVideoId,
+  ]);
 
   /*
    * LOADING CONTROL
@@ -425,8 +462,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         return;
       }
 
-      event.preventDefault();
-
       const { key } = event;
 
       switch (key) {
@@ -506,6 +541,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
           break;
         case ' ':
+          event.preventDefault();
+
           togglePlayHandler();
           break;
 
@@ -538,6 +575,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       setCanPlayType(false);
     }
 
+    if (activeVideoId === currentVideo.id && initialProgress > 0) {
+      video.currentTime = initialProgress;
+      video.play();
+    }
+
     video.volume = videoVolume || 1;
 
     setVideoDuration(video.duration);
@@ -545,7 +587,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     timeChangeHandler();
 
     document.addEventListener('fullscreenchange', fullscreenChangeHandler);
-  }, [videoVolume, timeChangeHandler, fullscreenChangeHandler]);
+  }, [
+    activeVideoId,
+    initialProgress,
+    videoVolume,
+    currentVideo.id,
+    timeChangeHandler,
+    fullscreenChangeHandler,
+  ]);
 
   /*
    * NAVIGATION
