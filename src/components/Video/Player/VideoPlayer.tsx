@@ -699,7 +699,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         let src = videoInfo.url;
 
         // Edit mode
-        if (src.substr(0, 4) === 'blob') {
+        if (src.substring(0, 4) === 'blob') {
           return video.setAttribute('src', src);
         }
 

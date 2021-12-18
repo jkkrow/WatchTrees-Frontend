@@ -25,7 +25,7 @@ const Avatar: React.FC<AvatarProps> = ({
       {src ? (
         <img
           src={
-            src.substr(0, 4) === 'blob'
+            src.substring(0, 4) === 'blob'
               ? src
               : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`
           }

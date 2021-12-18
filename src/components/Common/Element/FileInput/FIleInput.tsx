@@ -154,7 +154,7 @@ const FileInput: React.FC<FileInputProps> = ({
         >
           <img
             src={
-              filePreview?.url.substr(0, 4) === 'blob'
+              filePreview?.url.substring(0, 4) === 'blob'
                 ? filePreview.url
                 : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${filePreview?.url}`
             }

@@ -31,7 +31,7 @@ const Radio: React.FC<RadioProps> = ({
             onChange={radioHandler}
           />
           <span className="radio__checkmark" />
-          <span>{option[0].toUpperCase() + option.substr(1)}</span>
+          <span>{option[0].toUpperCase() + option.substring(1)}</span>
         </label>
       ))}
     </div>
