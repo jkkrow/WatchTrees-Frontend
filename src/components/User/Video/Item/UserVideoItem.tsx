@@ -8,6 +8,7 @@ import VideoFavorites from 'components/Video/UI/Favorites/VideoFavorites';
 import VideoDuration from 'components/Video/UI/Duration/VideoDuration';
 import VideoStatus from 'components/Video/UI/Status/VideoStatus';
 import VideoTags from 'components/Video/UI/Tags/VideoTags';
+import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
@@ -55,18 +56,22 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({ item, onDelete }) => {
         <div className="user-video-item__detail">
           <div>
             <div className="user-video-item__status">
-              <VideoStatus video={item} brief />
+              <VideoStatus status={item.info.status} brief />
             </div>
             <div className="user-video-item__duration">
-              <VideoDuration video={item} brief />
+              <VideoDuration
+                minDuration={item.info.minDuration}
+                maxDuration={item.info.maxDuration}
+                brief
+              />
             </div>
             <div className="user-video-item__data">
               <VideoViews video={item} brief />
-              <VideoFavorites video={item} />
+              <VideoFavorites favorites={item.data.favorites} />
             </div>
           </div>
           <div>
-            <div>{new Date(item.createdAt).toLocaleDateString()}</div>
+            <VideoTimestamp createdAt={item.createdAt} timeSince={false} />
             <div className="user-video-item__buttons">
               <EditIcon onClick={() => editHandler(item._id!)} />
               <DeleteIcon onClick={() => onDelete(item)} />

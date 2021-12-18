@@ -1,14 +1,14 @@
 export const formatTime = (timeInSeconds: number): string => {
   const result = new Date(Math.round(timeInSeconds) * 1000)
     .toISOString()
-    .substr(11, 8);
+    .substring(11, 19);
   // if duration is over hour
-  if (+result.substr(0, 2) > 0) {
+  if (+result.substring(0, 2) > 0) {
     // show 00:00:00
     return result;
   } else {
     // else show 00:00
-    return result.substr(3);
+    return result.substring(3);
   }
 };
 
@@ -49,4 +49,23 @@ export const formatNumber = (number: number, digits = 1) => {
   return item
     ? (number / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
     : '0';
+};
+
+export const formatDate = (date: string | Date) => {
+  const intervals = [
+    { label: 'year', seconds: 31536000 },
+    { label: 'month', seconds: 2592000 },
+    { label: 'day', seconds: 86400 },
+    { label: 'hour', seconds: 3600 },
+    { label: 'minute', seconds: 60 },
+    { label: 'second', seconds: 1 },
+  ];
+
+  const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+  const interval = intervals.find((i) => i.seconds < seconds);
+
+  const count = interval ? Math.floor(seconds / interval.seconds) : seconds;
+  const label = interval ? interval.label : 'second';
+
+  return `${count} ${label}${count !== 1 ? 's' : ''} ago`;
 };

@@ -21,6 +21,7 @@ const VideoListPage: React.FC = () => {
   return (
     <div className="layout">
       {!keyword && <VideoCarousel />}
+      {keyword && <h2>Tag: #{keyword}</h2>}
       <VideoList onFetch={fetchVideosHandler} />
     </div>
   );

@@ -1,29 +1,41 @@
 import { ReactComponent as TimeIcon } from 'assets/icons/time.svg';
-import { VideoTree } from 'store/slices/video-slice';
-import { videoDuration } from 'util/video';
 import { formatTime } from 'util/format';
 import './VideoDuration.scss';
 
 interface VideoDurationProps {
-  video: VideoTree;
+  minDuration: number;
+  maxDuration: number;
   brief?: boolean;
 }
 
-const VideoDuration: React.FC<VideoDurationProps> = ({ video, brief }) => {
+const VideoDuration: React.FC<VideoDurationProps> = ({
+  minDuration,
+  maxDuration,
+  brief,
+}) => {
+  const formatted = {
+    minDuration: formatTime(minDuration),
+    maxDuration: formatTime(maxDuration),
+  };
+
   return brief ? (
     <div className="video-duration">
       <TimeIcon />
-      <span>{videoDuration(video)}</span>
+      <span>
+        {minDuration === maxDuration
+          ? formatted.maxDuration
+          : `${formatted.minDuration} - ${formatted.maxDuration}`}
+      </span>
     </div>
   ) : (
     <>
       <div className="video-duration">
         <TimeIcon />
-        <span>MinDuration: {formatTime(video.info.minDuration)}</span>
+        <span>MinDuration: {formatted.minDuration}</span>
       </div>
       <div className="video-duration">
         <TimeIcon />
-        <span>MaxDuration: {formatTime(video.info.maxDuration)}</span>
+        <span>MaxDuration: {formatted.maxDuration}</span>
       </div>
     </>
   );

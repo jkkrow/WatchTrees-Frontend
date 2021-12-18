@@ -4,10 +4,11 @@ import VideoThumbnail from '../UI/Thumbnail/VideoThumbnail';
 import VideoViews from '../UI/Views/VideoViews';
 import VideoFavorites from '../UI/Favorites/VideoFavorites';
 import VideoDuration from '../UI/Duration/VideoDuration';
+import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
+import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 import { VideoListDetail } from 'store/slices/video-slice';
 import './VideoItem.scss';
-import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 
 interface VideoItemProps {
   video: VideoListDetail;
@@ -22,7 +23,11 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
       <div className="video-item__thumbnail">
         <VideoThumbnail video={video} />
         <div className="video-item__duration">
-          <VideoDuration video={video} brief />
+          <VideoDuration
+            minDuration={video.info.minDuration}
+            maxDuration={video.info.maxDuration}
+            brief
+          />
         </div>
       </div>
       <div className="video-item__info">
@@ -46,7 +51,8 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
           </div>
           <div className="video-item__data">
             <VideoViews video={video} brief />
-            <VideoFavorites video={video} />
+            <VideoFavorites favorites={video.data.favorites} />
+            <VideoTimestamp createdAt={video.createdAt} />
           </div>
         </div>
       </div>

@@ -1,16 +1,15 @@
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
-import { VideoTree } from 'store/slices/video-slice';
 import { formatNumber } from 'util/format';
 import './VideoFavorites.scss';
 
 interface VideoFavoritesProps {
-  video: VideoTree;
+  favorites: number;
   active?: boolean;
   onClick?: () => void;
 }
 
 const VideoFavorites: React.FC<VideoFavoritesProps> = ({
-  video,
+  favorites,
   active = false,
   onClick,
 }) => {
@@ -21,7 +20,7 @@ const VideoFavorites: React.FC<VideoFavoritesProps> = ({
       }`}
     >
       <FavoriteIcon onClick={onClick} />
-      <span>{formatNumber(video.data.favorites)}</span>
+      <span>{formatNumber(favorites)}</span>
     </div>
   );
 };

@@ -1,19 +1,18 @@
 import { ReactComponent as PublicIcon } from 'assets/icons/public.svg';
 import { ReactComponent as PrivateIcon } from 'assets/icons/private.svg';
-import { VideoTree } from 'store/slices/video-slice';
 import './VideoStatus.scss';
 
 interface VideoStatusProps {
-  video: VideoTree;
+  status: string;
   brief?: boolean;
 }
 
-const VideoStatus: React.FC<VideoStatusProps> = ({ video, brief }) => {
+const VideoStatus: React.FC<VideoStatusProps> = ({ status, brief }) => {
   return (
     <div className="video-status">
-      {video.info.status === 'public' ? <PublicIcon /> : <PrivateIcon />}
+      {status === 'public' ? <PublicIcon /> : <PrivateIcon />}
       {!brief && <span>Status: </span>}
-      <span>{video.info.status.toUpperCase()}</span>
+      <span>{status.toUpperCase()}</span>
     </div>
   );
 };

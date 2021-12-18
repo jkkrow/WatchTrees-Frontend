@@ -6,6 +6,7 @@ import VideoFavorites from '../UI/Favorites/VideoFavorites';
 import VideoTags from 'components/Video/UI/Tags/VideoTags';
 import VideoViews from '../UI/Views/VideoViews';
 import VideoDuration from '../UI/Duration/VideoDuration';
+import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoItemDetail, videoActions } from 'store/slices/video-slice';
@@ -71,14 +72,14 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
             <h2>{videoTree.info.title}</h2>
             <div className="video-layout__favorites">
               <VideoFavorites
-                video={videoTree}
+                favorites={videoTree.data.favorites}
                 onClick={addToFavoritesHandler}
                 active={videoTree.data.isFavorite}
               />
             </div>
           </div>
           <div className="video-layout__createdAt">
-            {new Date(videoTree.createdAt).toLocaleDateString()}
+            <VideoTimestamp createdAt={videoTree.createdAt} />
           </div>
         </div>
         <div
@@ -91,7 +92,10 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
         <VideoTags tags={videoTree.info.tags} />
         <div className="video-layout__detail">
           <VideoViews video={videoTree} />
-          <VideoDuration video={videoTree} />
+          <VideoDuration
+            minDuration={videoTree.info.minDuration}
+            maxDuration={videoTree.info.maxDuration}
+          />
           <p className="video-layout__description">
             {videoTree.info.description}
           </p>
