@@ -4,7 +4,7 @@ import UserLayout from 'components/User/Layout/UserLayout';
 import UserVideoHeader from 'components/User/Video/Header/UserVideoHeader';
 import UserVideoList from 'components/User/Video/List/UserVideoList';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
-import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import Response from 'components/Common/UI/Response/Response';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';

@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 
 import AuthLayout from 'components/Auth/Layout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
-import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { checkVerification } from 'store/thunks/auth-thunk';
 

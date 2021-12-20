@@ -4,7 +4,7 @@ import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import FileInput from 'components/Common/Element/FileInput/FIleInput';
 import Radio from 'components/Common/Element/Radio/Radio';
-import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
