@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 
-import VideoCarousel from 'components/Video/Carousel/VideoCarousel';
+import VideoCarousel from 'components/Video/Slide/Carousel/VideoCarousel';
 import VideoList from 'components/Video/List/VideoList';
 import { useSearch } from 'hooks/search-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { fetchVideos } from 'store/thunks/video-thunk';
+import { fetchHistory } from 'store/thunks/user-thunk';
+import VideoGroup from 'components/Video/Slide/Group/VideoGroup';
 
 const VideoListPage: React.FC = () => {
   const { keyword } = useSearch();
@@ -18,11 +20,28 @@ const VideoListPage: React.FC = () => {
     [dispatch]
   );
 
+  const fetchHistoryHandler = useCallback(
+    async (forceUpdate: boolean) => {
+      const { videos } = await dispatch(fetchHistory({ max: 10 }, true));
+
+      return videos;
+    },
+    [dispatch]
+  );
+
   return (
     <div className="layout">
-      {!keyword && <VideoCarousel />}
+      {!keyword && (
+        <>
+          <VideoCarousel />
+          <VideoGroup label="Recently Watched" onFetch={fetchHistoryHandler} />
+        </>
+      )}
       {keyword && <h2>Tag: #{keyword}</h2>}
-      <VideoList onFetch={fetchVideosHandler} />
+      <VideoList
+        label={!keyword ? 'Recent Videos' : undefined}
+        onFetch={fetchVideosHandler}
+      />
     </div>
   );
 };
