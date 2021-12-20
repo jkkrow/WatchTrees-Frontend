@@ -14,7 +14,7 @@ import 'swiper/modules/navigation/navigation.min.css';
 
 interface VideoGroupProps {
   label?: string;
-  onFetch: (forceUpdate: boolean) => Promise<VideoListDetail[]>;
+  onFetch: (forceUpdate: boolean) => Promise<{ videos: VideoListDetail[] }>;
 }
 
 const VideoGroup: React.FC<VideoGroupProps> = ({ label, onFetch }) => {
@@ -31,10 +31,10 @@ const VideoGroup: React.FC<VideoGroupProps> = ({ label, onFetch }) => {
 
       setLoading(true);
 
-      const videos = await onFetch(history.action !== 'POP');
+      const data = await onFetch(history.action !== 'POP');
 
-      if (videos) {
-        setVideos(videos);
+      if (data) {
+        setVideos(data.videos);
       }
 
       setLoading(false);
@@ -46,11 +46,10 @@ const VideoGroup: React.FC<VideoGroupProps> = ({ label, onFetch }) => {
       <VideoLoaderList loading={loading} />
 
       {!loading && videos.length > 0 && (
-        <div className="video-group__slides">
+        <>
           {label && <h3 className="video-group__label">{label}</h3>}
           <Swiper
             modules={[Navigation]}
-            className="video-group__swiper"
             breakpoints={{
               675: { slidesPerView: 2, slidesPerGroup: 2 },
               995: { slidesPerView: 3, slidesPerGroup: 3 },
@@ -67,7 +66,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({ label, onFetch }) => {
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
+        </>
       )}
     </div>
   );

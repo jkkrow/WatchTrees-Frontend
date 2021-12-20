@@ -17,9 +17,9 @@ const HistoryPage: React.FC = () => {
   useEffect(() => {
     (async () => {
       if (accessToken) {
-        const videos = await dispatch(fetchHistory({ page: 1, max: 20 }));
+        const data = await dispatch(fetchHistory({ page: 1, max: 20 }));
 
-        setVideos(videos);
+        setVideos(data.videos);
       }
     })();
   }, [dispatch, history, accessToken]);

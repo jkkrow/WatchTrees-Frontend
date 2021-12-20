@@ -22,9 +22,7 @@ const VideoListPage: React.FC = () => {
 
   const fetchHistoryHandler = useCallback(
     async (forceUpdate: boolean) => {
-      const { videos } = await dispatch(fetchHistory({ max: 10 }, true));
-
-      return videos;
+      return await dispatch(fetchHistory({ max: 10 }, forceUpdate));
     },
     [dispatch]
   );
