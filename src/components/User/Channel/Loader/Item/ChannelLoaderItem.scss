@@ -1,4 +1,4 @@
-.channel-loader {
+.channel-loader-item {
   display: flex;
   align-items: center;
   width: 100%;
@@ -57,12 +57,12 @@
   &.column {
     flex-direction: column;
 
-    .channel-loader__detail {
+    .channel-loader-item__detail {
       width: 50%;
       margin-top: 1rem;
     }
 
-    .channel-loader__button {
+    .channel-loader-item__button {
       display: block;
     }
   }

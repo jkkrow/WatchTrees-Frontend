@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
-import ChannelLoader from 'components/User/Channel/Loader/ChannelLoader';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
+import ChannelLoaderItem from 'components/User/Channel/Loader/Item/ChannelLoaderItem';
 import { ReactComponent as SubscribeIcon } from 'assets/icons/subscribe.svg';
 import { ReactComponent as CheckIcon } from 'assets/icons/circle-check.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
@@ -67,7 +67,7 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
 
   return (
     <div className={`channel-info${column ? ' column' : ''}`}>
-      <ChannelLoader on={loading} column={column} />
+      <ChannelLoaderItem on={loading} column={column} />
       {detail && !loading && (
         <div className="channel-info__container">
           <Avatar

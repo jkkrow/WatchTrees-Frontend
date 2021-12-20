@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
+import ChannelInfo from '../Info/ChannelInfo';
 import { useAppDispatch } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import { fetchChannel } from 'store/thunks/user-thunk';
 import './ChannelHeader.scss';
-import ChannelInfo from '../Info/ChannelInfo';
 
 interface ChannelHeaderProps {
   channelId: string;
