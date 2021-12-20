@@ -1,24 +1,34 @@
-import UserLayout from 'components/User/Layout/UserLayout';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+
+import UserLayout from 'components/User/Layout/UserLayout';
+import UserHistoryList from 'components/User/History/List/UserHistoryList';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { VideoListDetail } from 'store/slices/video-slice';
 import { fetchHistory } from 'store/thunks/user-thunk';
 
 const HistoryPage: React.FC = () => {
-  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken } = useAppSelector((state) => state.auth);
+  const [videos, setVideos] = useState<VideoListDetail[]>([]);
 
   const dispatch = useAppDispatch();
   const history = useHistory();
 
   useEffect(() => {
     (async () => {
-      if (refreshToken) {
-        accessToken && (await dispatch(fetchHistory({ page: 1, max: 20 })));
+      if (accessToken) {
+        const videos = await dispatch(fetchHistory({ page: 1, max: 20 }));
+
+        setVideos(videos);
       }
     })();
-  }, [dispatch, history, refreshToken, accessToken]);
+  }, [dispatch, history, accessToken]);
 
-  return <UserLayout></UserLayout>;
+  return (
+    <UserLayout>
+      <UserHistoryList items={videos} />
+    </UserLayout>
+  );
 };
 
 export default HistoryPage;

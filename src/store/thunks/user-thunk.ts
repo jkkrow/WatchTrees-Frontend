@@ -211,11 +211,10 @@ export const fetchHistory = (params: any, forceUpdate = true): AppThunk => {
         if (!historyStorage) {
           data = [];
         } else {
+          // TODO: Fetch videos based on videoIds from history
           data = JSON.parse(historyStorage);
         }
       }
-
-      console.log(data);
 
       return data;
     } catch (err) {
@@ -318,8 +317,6 @@ export const addToHistory = (history: History): AppThunk => {
           } else {
             localHistories.push(history);
           }
-
-          console.log(localHistories);
 
           localStorage.setItem('history', JSON.stringify(localHistories));
         }
