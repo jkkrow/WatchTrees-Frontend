@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import ChannelInfo from '../Info/ChannelInfo';
-import ChannelLoader from 'components/Common/UI/Loader/Channel/ChannelLoader';
+import ChannelLoader from 'components/User/Channel/Loader/ChannelLoader';
 import { ChannelData } from 'store/slices/user-slice';
 import './ChannelList.scss';
 
@@ -13,7 +13,7 @@ interface ChannelListProps {
 const ChannelList: React.FC<ChannelListProps> = ({ list, loading }) => {
   const [loaders, setLoaders] = useState<undefined[]>([]);
 
-  const listRef = useRef<HTMLDivElement | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const listWidth = listRef.current!.offsetWidth;

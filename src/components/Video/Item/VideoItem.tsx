@@ -6,7 +6,6 @@ import VideoFavorites from '../UI/Favorites/VideoFavorites';
 import VideoDuration from '../UI/Duration/VideoDuration';
 import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
-import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 import { VideoListDetail } from 'store/slices/video-slice';
 import './VideoItem.scss';
 
@@ -32,15 +31,13 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
       </div>
       <div className="video-item__info">
         {!location.pathname.includes('/channel/') && (
-          <Tooltip text={video.info.creatorInfo.name} direction={'bottom'}>
-            <Avatar
-              src={video.info.creatorInfo.picture}
-              width="4rem"
-              height="4rem"
-              button
-              onClick={() => history.push(`/channel/${video.info.creator}`)}
-            />
-          </Tooltip>
+          <Avatar
+            src={video.info.creatorInfo.picture}
+            width="4rem"
+            height="4rem"
+            button
+            onClick={() => history.push(`/channel/${video.info.creator}`)}
+          />
         )}
         <div className="video-item__detail">
           <div

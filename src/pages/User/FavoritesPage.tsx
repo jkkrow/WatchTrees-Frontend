@@ -36,10 +36,11 @@ const FavoritesPage: React.FC = () => {
 
   return (
     <UserLayout>
-      {(loading || (!loading && subscribes.length)) > 0 && <h2>Subscribes</h2>}
+      {(!loading && subscribes.length) > 0 && <h3>Subscribes</h3>}
       <ChannelList list={subscribes} loading={loading} />
-      <h2>Favorite Videos</h2>
-      {accessToken && <VideoList onFetch={fetchVideosHandler} />}
+      {accessToken && (
+        <VideoList label="Favorite Videos" onFetch={fetchVideosHandler} />
+      )}
     </UserLayout>
   );
 };

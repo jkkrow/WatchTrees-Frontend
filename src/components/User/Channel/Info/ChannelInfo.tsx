@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 
-import ChannelLoader from 'components/Common/UI/Loader/Channel/ChannelLoader';
+import ChannelLoader from 'components/User/Channel/Loader/ChannelLoader';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as SubscribeIcon } from 'assets/icons/subscribe.svg';

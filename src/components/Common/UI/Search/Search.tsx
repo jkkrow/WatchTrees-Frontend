@@ -7,7 +7,7 @@ import './Search.scss';
 const Search = () => {
   const [keyword, setKeyword] = useState('');
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const history = useHistory();
 
   const inputFocusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
