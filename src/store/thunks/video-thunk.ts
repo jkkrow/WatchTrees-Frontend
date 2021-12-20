@@ -4,6 +4,7 @@ import { VideoTree } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { finishUpload } from './upload-thunk';
+import { attachLocalHistory } from 'util/video';
 
 export const fetchVideo = (id: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -18,13 +19,11 @@ export const fetchVideo = (id: string): AppThunk => {
         params: { currentUserId },
       });
 
-      let video = data.video;
-
       if (!currentUserId) {
-        // TODO: Get history from localStorage and add to video
+        attachLocalHistory(data.video);
       }
 
-      return video;
+      return data.video;
     } catch (err) {
       uiActions.setMessage({
         type: 'error',
@@ -50,10 +49,8 @@ export const fetchVideos = (params: any, forceUpdate = true): AppThunk => {
         cache: true,
       });
 
-      console.log(data);
-
       if (!currentUserId) {
-        // TODO: Get history from localStorage and add to each video
+        attachLocalHistory(data.videos);
       }
 
       return data;
