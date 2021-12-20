@@ -28,6 +28,17 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
             brief
           />
         </div>
+        {video.history && (
+          <div
+            className="video-item__history"
+            style={{
+              width: video.history.progress.isEnded
+                ? '100%'
+                : (video.history.progress.time / video.info.maxDuration) * 100 +
+                  '%',
+            }}
+          />
+        )}
       </div>
       <div className="video-item__info">
         {!location.pathname.includes('/channel/') && (
