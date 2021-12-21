@@ -14,20 +14,19 @@ import 'swiper/swiper.scss';
 import 'swiper/modules/navigation/navigation.min.css';
 
 interface VideoGroupProps {
-  max?: number;
+  params?: { max: number; skipFullyWatched: boolean };
   label?: string;
   forceUpdate?: boolean;
   onFetch: ReturnType<AppThunk>;
 }
 
 const VideoGroup: React.FC<VideoGroupProps> = ({
-  max = 10,
+  params = { max: 10 },
   label,
   forceUpdate,
   onFetch,
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
-
   const { dispatchThunk, data, loaded } = useAppDispatch<VideoListDetail[]>([]);
 
   const history = useHistory();
@@ -35,15 +34,15 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   useEffect(() => {
     if (refreshToken && !accessToken) return;
 
-    dispatchThunk(onFetch({ max }, forceUpdate || history.action !== 'POP'));
+    dispatchThunk(onFetch(params, forceUpdate || history.action !== 'POP'));
   }, [
     dispatchThunk,
     refreshToken,
     accessToken,
     history,
     onFetch,
+    params,
     forceUpdate,
-    max,
   ]);
 
   return (
