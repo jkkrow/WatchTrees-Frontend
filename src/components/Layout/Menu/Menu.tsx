@@ -16,7 +16,7 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
   const { userData } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   const history = useHistory();
 
@@ -31,6 +31,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
 
     dispatch(finishUpload());
     dispatch(logout());
+
     history.push('/auth');
   };
 

@@ -29,18 +29,18 @@ interface UploadDashboardProps {
 
 const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const { isUploadSaved } = useAppSelector((state) => state.upload);
+
   const [titleInput, setTitleInput] = useState(tree.info.title);
   const [descriptionInput, setDescriptionInput] = useState(
     tree.info.description
   );
   const [tagInput, setTagInput] = useState('');
   const [tagArray, setTagArray] = useState(tree.info.tags);
-  const [loading, setLoading] = useState(false);
+
+  const { dispatch, dispatchThunk, loading } = useAppDispatch(null);
 
   const [titleTimeout] = useTimeout();
   const [descriptionTimeout] = useTimeout();
-
-  const dispatch = useAppDispatch();
 
   const disableSubmit = useMemo(() => {
     let message: string = '';
@@ -120,34 +120,26 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     dispatch(uploadActions.setTree({ info: { tags: filteredTags } }));
   };
 
-  const thumbnailChangeHandler = (files: File[]) => {
-    dispatch(uploadThumbnail(files[0]));
-  };
-
-  const thumbnailDeleteHandler = (fileName: string) => {
-    dispatch(deleteThumbnail());
-  };
-
   const statusChangeHandler = (value: string) => {
     dispatch(
       uploadActions.setTree({ info: { status: value as 'public' | 'private' } })
     );
   };
 
-  const saveUploadHandler = async () => {
-    setLoading(true);
-
-    await dispatch(saveVideo());
-
-    setLoading(false);
+  const thumbnailChangeHandler = (files: File[]) => {
+    dispatchThunk(uploadThumbnail(files[0]));
   };
 
-  const submitUploadHandler = async () => {
-    setLoading(true);
+  const thumbnailDeleteHandler = (fileName: string) => {
+    dispatchThunk(deleteThumbnail());
+  };
 
-    const result = await dispatch(finishUpload(true));
+  const saveUploadHandler = () => {
+    dispatchThunk(saveVideo('Upload progress saved'));
+  };
 
-    !result && setLoading(false);
+  const submitUploadHandler = () => {
+    dispatchThunk(finishUpload(true));
   };
 
   return (

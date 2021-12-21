@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useHistory } from 'react-router';
 
 import Button from 'components/Common/Element/Button/Button';
@@ -18,32 +17,24 @@ const UserVideoHeader: React.FC<UserVideoHeaderProps> = ({ onReload }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
   const { userData } = useAppSelector((state) => state.auth);
 
-  const [loading, setLoading] = useState(false);
-
-  const dispatch = useAppDispatch();
+  const { dispatch, dispatchThunk, loading } = useAppDispatch(null);
 
   const history = useHistory();
 
   const addNewVideoHandler = async () => {
     if (userData && !userData.isVerified) {
-      return dispatch(
+      dispatch(
         userActions.userFail('You need to verify account before upload video')
       );
-    }
 
-    let result = true;
+      return;
+    }
 
     if (!uploadTree) {
-      result = false;
-      setLoading(true);
-
-      await dispatch(initiateUpload());
-
-      result = true;
-      setLoading(false);
+      await dispatchThunk(initiateUpload());
     }
 
-    result && history.push('/upload');
+    history.push('/upload');
   };
 
   return (

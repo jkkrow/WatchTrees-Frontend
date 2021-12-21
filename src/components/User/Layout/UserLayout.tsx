@@ -5,7 +5,7 @@ import { userActions } from 'store/slices/user-slice';
 import './UserLayout.scss';
 
 const UserLayout: React.FC = ({ children }) => {
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   useEffect(() => {
     return () => {

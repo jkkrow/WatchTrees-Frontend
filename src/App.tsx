@@ -25,7 +25,7 @@ import FavoritesPage from 'pages/User/FavoritesPage';
 const App: React.FC = () => {
   const { refreshToken } = useAppSelector((state) => state.auth);
 
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchTokenOnload());

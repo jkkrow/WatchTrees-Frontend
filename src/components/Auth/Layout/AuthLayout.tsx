@@ -5,7 +5,7 @@ import { authActions } from 'store/slices/auth-slice';
 import './AuthLayout.scss';
 
 const AuthLayout: React.FC = ({ children }) => {
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   useEffect(() => {
     return () => {

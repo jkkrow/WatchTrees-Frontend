@@ -22,14 +22,11 @@ export const initiateUpload = (id?: string): AppThunk => {
       }
 
       dispatch(uploadActions.initiateUpload(video));
-
-      if (!id) {
-        await dispatch(saveVideo(false));
-      }
-
       window.addEventListener('beforeunload', beforeunloadHandler);
 
-      return true;
+      if (!id) {
+        await dispatch(saveVideo());
+      }
     } catch (err) {
       dispatch(
         uiActions.setMessage({
@@ -40,6 +37,7 @@ export const initiateUpload = (id?: string): AppThunk => {
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };
@@ -255,14 +253,15 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
         );
       }
 
-      dispatch(saveVideo());
+      dispatch(saveVideo('Upload progress saved'));
     } catch (err) {
-      // dispatch(
-      //   uploadActions.setNode({
-      //     info: { error: `${(err as Error).message}` },
-      //     nodeId,
-      //   })
-      // );
+      dispatch(
+        uploadActions.setNode({
+          info: { error: `${(err as Error).message}` },
+          nodeId,
+        })
+      );
+      throw err;
     }
   };
 };
@@ -320,6 +319,7 @@ export const uploadThumbnail = (file: File): AppThunk => {
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };
@@ -370,23 +370,24 @@ export const deleteThumbnail = (): AppThunk => {
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };
 
 export const finishUpload = (save: boolean = false): AppThunk => {
   return async (dispatch) => {
-    if (save) {
-      dispatch(uploadActions.setTree({ info: { isEditing: false } }));
+    try {
+      if (save) {
+        dispatch(uploadActions.setTree({ info: { isEditing: false } }));
 
-      const result = await dispatch(saveVideo('Video uploaded successfully'));
+        await dispatch(saveVideo('Video uploaded successfully'));
+      }
 
-      if (!result) return;
+      dispatch(uploadActions.finishUpload());
+      window.removeEventListener('beforeunload', beforeunloadHandler);
+    } catch (err) {
+      throw err;
     }
-
-    dispatch(uploadActions.finishUpload());
-    window.removeEventListener('beforeunload', beforeunloadHandler);
-
-    return true;
   };
 };

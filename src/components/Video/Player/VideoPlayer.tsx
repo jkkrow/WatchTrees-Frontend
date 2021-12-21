@@ -40,8 +40,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const { activeVideoId, initialProgress, videoVolume } = useAppSelector(
     (state) => state.video
   );
-
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   // vp-container
   const [displayCursor, setDisplayCursor] = useState('default');

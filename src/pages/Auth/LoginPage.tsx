@@ -23,7 +23,7 @@ const AuthPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
 
   const { loading, error, message } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   const { formState, setFormInput, setFormData } = useForm({
     email: { value: '', isValid: false },

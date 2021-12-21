@@ -11,7 +11,7 @@ import Input from 'components/Common/Element/Input/Input';
 import { VideoTree } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
 import { deleteVideo } from 'store/thunks/video-thunk';
 import { fetchMyVideos } from 'store/thunks/user-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
@@ -19,21 +19,24 @@ import { RouteComponentProps } from 'react-router';
 
 const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const { accessToken } = useAppSelector((state) => state.auth);
-  const { loading, error } = useAppSelector((state) => state.user);
+  const { error } = useAppSelector((state) => state.user);
 
-  const [videos, setVideos] = useState([]);
-  const [count, setCount] = useState(0);
-  const [isFetched, setIsFetched] = useState(false);
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
+
+  const { dispatchThunk, data, loading, loaded } = useAppDispatch<{
+    videos: VideoTree[];
+    count: number;
+  }>({
+    videos: [],
+    count: 0,
+  });
 
   const { currentPage, itemsPerPage } = usePaginate(10);
 
   const { formState, setFormInput } = useForm({
     video: { value: '', isValid: false },
   });
-
-  const dispatch = useAppDispatch();
 
   const openWarningHandler = (item: VideoTree) => {
     setDisplayModal(true);
@@ -48,24 +51,18 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const deleteHandler = async () => {
     if (!targetItem || !targetItem._id) return;
 
-    const success = await dispatch(deleteVideo(targetItem));
+    await dispatchThunk(deleteVideo(targetItem));
 
-    success && fetchVideos();
+    fetchVideos();
   };
 
   const fetchVideos = useCallback(
-    async (forceUpdate = true) => {
-      const data = await dispatch(
+    (forceUpdate = true) => {
+      dispatchThunk(
         fetchMyVideos({ page: currentPage, max: itemsPerPage }, forceUpdate)
       );
-
-      if (data) {
-        setIsFetched(true);
-        setVideos(data.videos);
-        setCount(data.count);
-      }
     },
-    [dispatch, currentPage, itemsPerPage]
+    [dispatchThunk, currentPage, itemsPerPage]
   );
 
   useEffect(() => {
@@ -81,6 +78,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
         type="form"
         header="Delete Video"
         footer="DELETE"
+        loading={loading}
         invalid
         disabled={!formState.isValid}
         onConfirm={deleteHandler}
@@ -102,11 +100,11 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
       <UserVideoHeader onReload={fetchVideos} />
       <LoadingSpinner on={loading} />
       <Response type="error" content={error} />
-      {!loading && isFetched && (
-        <UserVideoList items={videos} onDelete={openWarningHandler} />
+      {loaded && (
+        <UserVideoList items={data.videos} onDelete={openWarningHandler} />
       )}
       <Pagination
-        count={count}
+        count={data.count}
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
       />

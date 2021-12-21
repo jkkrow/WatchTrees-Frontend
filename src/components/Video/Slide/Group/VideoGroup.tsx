@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Navigation } from 'swiper';
 
 import VideoItem from 'components/Video/Item/VideoItem';
 import VideoLoaderList from 'components/Video/Loader/List/VideoLoaderList';
-import { useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
+import { AppThunk } from 'store';
 import { VideoListDetail } from 'store/slices/video-slice';
 import './VideoGroup.scss';
 
@@ -13,39 +14,43 @@ import 'swiper/swiper.scss';
 import 'swiper/modules/navigation/navigation.min.css';
 
 interface VideoGroupProps {
+  max?: number;
   label?: string;
-  onFetch: (forceUpdate: boolean) => Promise<{ videos: VideoListDetail[] }>;
+  forceUpdate?: boolean;
+  onFetch: ReturnType<AppThunk>;
 }
 
-const VideoGroup: React.FC<VideoGroupProps> = ({ label, onFetch }) => {
+const VideoGroup: React.FC<VideoGroupProps> = ({
+  max = 10,
+  label,
+  forceUpdate,
+  onFetch,
+}) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
 
-  const [videos, setVideos] = useState<VideoListDetail[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { dispatchThunk, data, loaded } = useAppDispatch<VideoListDetail[]>([]);
 
   const history = useHistory();
 
   useEffect(() => {
-    (async () => {
-      if (refreshToken && !accessToken) return;
+    if (refreshToken && !accessToken) return;
 
-      setLoading(true);
-
-      const data = await onFetch(history.action !== 'POP');
-
-      if (data) {
-        setVideos(data.videos);
-      }
-
-      setLoading(false);
-    })();
-  }, [refreshToken, accessToken, history, onFetch]);
+    dispatchThunk(onFetch({ max }, forceUpdate || history.action !== 'POP'));
+  }, [
+    dispatchThunk,
+    refreshToken,
+    accessToken,
+    history,
+    onFetch,
+    forceUpdate,
+    max,
+  ]);
 
   return (
     <div className="video-group">
-      <VideoLoaderList loading={loading} />
+      <VideoLoaderList loading={!loaded} />
 
-      {!loading && videos.length > 0 && (
+      {loaded && data.length > 0 && (
         <>
           {label && <h3 className="video-group__label">{label}</h3>}
           <Swiper
@@ -60,7 +65,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({ label, onFetch }) => {
             spaceBetween={20}
             navigation
           >
-            {videos.map((video) => (
+            {data.map((video) => (
               <SwiperSlide key={video._id}>
                 <VideoItem video={video} />
               </SwiperSlide>

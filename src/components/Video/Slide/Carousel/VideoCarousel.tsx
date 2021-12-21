@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useHistory } from 'react-router';
+import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Navigation, Pagination, Autoplay } from 'swiper';
 
 import VideoThumbnail from '../../UI/Thumbnail/VideoThumbnail';
 import VideoLoaderItem from 'components/Video/Loader/Item/VideoLoaderItem';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoTree } from 'store/slices/video-slice';
+import { VideoItemDetail } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
 import './VideoCarousel.scss';
 
@@ -17,32 +17,26 @@ import 'swiper/modules/navigation/navigation.min.css';
 const CAROUSEL_VIDEOS_NUMBER = 5;
 
 const VideoCarousel: React.FC = () => {
-  const [videos, setVideos] = useState<VideoTree[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { dispatchThunk, data, loaded } = useAppDispatch<{
+    videos: VideoItemDetail[];
+    count: number;
+  }>({
+    videos: [],
+    count: 0,
+  });
 
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-
-      const data = await dispatch(
-        fetchVideos({ max: CAROUSEL_VIDEOS_NUMBER }, history.action !== 'POP')
-      );
-
-      if (data) {
-        setVideos(data.videos);
-      }
-
-      setLoading(false);
-    })();
-  }, [dispatch, history]);
+    dispatchThunk(
+      fetchVideos({ max: CAROUSEL_VIDEOS_NUMBER }, history.action !== 'POP')
+    );
+  }, [dispatchThunk, history]);
 
   return (
     <div className="video-carousel">
-      <VideoLoaderItem on={loading} />
-      {!loading && videos.length > 0 && (
+      <VideoLoaderItem on={!loaded} />
+      {loaded && data.videos.length > 0 && (
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           pagination={{ clickable: true }}
@@ -55,7 +49,7 @@ const VideoCarousel: React.FC = () => {
           navigation
           loop
         >
-          {videos.map((video) => (
+          {data.videos.map((video) => (
             <SwiperSlide key={video._id}>
               <VideoThumbnail video={video} />
             </SwiperSlide>

@@ -15,11 +15,10 @@ interface EditPictureProps {
 
 const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
   const { loading } = useAppSelector((state) => state.user);
-  const userData = useAppSelector((state) => state.auth).userData!;
+  const { userData } = useAppSelector((state) => state.auth);
+  const { dispatch } = useAppDispatch();
 
-  const dispatch = useAppDispatch();
-
-  const [userPicture, setUserPicture] = useState(userData.picture);
+  const [userPicture, setUserPicture] = useState(userData!.picture);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
 
   const dragDropRef = useRef<HTMLInputElement>(null);
@@ -35,11 +34,11 @@ const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
   };
 
   const submitPictureHandler = async () => {
-    if (userData.picture === userPicture) return;
+    if (userData!.picture === userPicture) return;
 
-    const success = await dispatch(updateUserPicture(pictureFile));
+    await dispatch(updateUserPicture(pictureFile));
 
-    success && onSuccess();
+    onSuccess();
   };
 
   return (
@@ -65,7 +64,7 @@ const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
         </div>
       </div>
       <Button
-        disabled={userPicture === userData.picture}
+        disabled={userPicture === userData!.picture}
         loading={loading}
         onClick={submitPictureHandler}
       >

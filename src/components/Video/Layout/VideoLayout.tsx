@@ -19,9 +19,9 @@ interface VideoLayoutProps {
 
 const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
   const { refreshToken } = useAppSelector((state) => state.auth);
+  const { dispatch } = useAppDispatch();
   const [videoTree, setVideoTree] = useState(video);
 
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   useEffect(() => {

@@ -13,22 +13,21 @@ interface EditNameProps {
 
 const EditName: React.FC<EditNameProps> = ({ onSuccess }) => {
   const { loading } = useAppSelector((state) => state.user);
-  const userData = useAppSelector((state) => state.auth).userData!;
+  const { userData } = useAppSelector((state) => state.auth);
+  const { dispatch } = useAppDispatch();
 
   const { formState, setFormInput } = useForm({ name: '' });
-
-  const dispatch = useAppDispatch();
 
   const submitHandler = async () => {
     if (!formState.isValid) return;
 
     const newName = formState.inputs.name.value;
 
-    if (newName === userData.name) return;
+    if (newName === userData!.name) return;
 
-    const success = await dispatch(updateUserName(formState.inputs.name.value));
+    await dispatch(updateUserName(formState.inputs.name.value));
 
-    success && onSuccess();
+    onSuccess();
   };
 
   return (
@@ -37,13 +36,13 @@ const EditName: React.FC<EditNameProps> = ({ onSuccess }) => {
         id="name"
         formInput
         label="Name *"
-        initialValue={userData.name}
+        initialValue={userData!.name}
         message="At least 4 characters"
         validators={[VALIDATOR_MINLENGTH(4)]}
         onForm={setFormInput}
       />
       <Button
-        disabled={formState.inputs.name.value === userData.name}
+        disabled={formState.inputs.name.value === userData!.name}
         loading={loading}
       >
         Change Name

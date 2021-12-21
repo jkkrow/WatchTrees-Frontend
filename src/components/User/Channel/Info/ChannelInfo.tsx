@@ -26,11 +26,10 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
   button,
 }) => {
   const { userData } = useAppSelector((state) => state.auth);
+  const { dispatch } = useAppDispatch();
 
   const [detail, setDetail] = useState<ChannelData | null>(data);
   const [subscribeLoading, setSubscribeLoading] = useState(false);
-
-  const dispatch = useAppDispatch();
 
   const history = useHistory();
 

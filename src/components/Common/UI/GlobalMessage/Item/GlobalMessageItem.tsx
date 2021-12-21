@@ -12,9 +12,8 @@ interface GlobalMessageItemProps {
 }
 
 const GlobalMessageItem: React.FC<GlobalMessageItemProps> = ({ message }) => {
-  const dispatch = useAppDispatch();
-
   const [displayMessage, setDisplayMessage] = useState(false);
+  const { dispatch } = useAppDispatch();
 
   const [closeTimeout] = useTimeout();
 

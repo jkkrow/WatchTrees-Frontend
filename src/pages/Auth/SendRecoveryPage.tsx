@@ -10,7 +10,7 @@ import { VALIDATOR_EMAIL } from 'util/validators';
 
 const SendRecoveryPage: React.FC = () => {
   const { loading, error, message } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   const { formState, setFormInput } = useForm({
     email: { value: '', isValid: false },

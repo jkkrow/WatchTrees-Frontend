@@ -26,7 +26,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   const [labelInput, setLabelInput] = useState(nodeInfo.label);
 
   const { activeNodeId } = useAppSelector((state) => state.upload);
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   const [labelTimeout] = useTimeout();
 

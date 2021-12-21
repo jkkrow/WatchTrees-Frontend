@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 import ChannelInfo from '../Info/ChannelInfo';
 import { useAppDispatch } from 'hooks/store-hook';
@@ -6,30 +7,20 @@ import { ChannelData } from 'store/slices/user-slice';
 import { fetchChannel } from 'store/thunks/user-thunk';
 import './ChannelHeader.scss';
 
-interface ChannelHeaderProps {
-  channelId: string;
-}
+const ChannelHeader: React.FC = () => {
+  const { dispatchThunk, data, loaded } = useAppDispatch<ChannelData | null>(
+    null
+  );
 
-const ChannelHeader: React.FC<ChannelHeaderProps> = ({ channelId }) => {
-  const [channelData, setChannelData] = useState<ChannelData | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const dispatch = useAppDispatch();
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-
-      const detail = await dispatch(fetchChannel(channelId));
-
-      setChannelData(detail);
-      setLoading(false);
-    })();
-  }, [dispatch, channelId]);
+    dispatchThunk(fetchChannel(id));
+  }, [dispatchThunk, id]);
 
   return (
     <div className="channel-header">
-      <ChannelInfo data={channelData} loading={loading} />
+      <ChannelInfo data={data} loading={!loaded} />
     </div>
   );
 };

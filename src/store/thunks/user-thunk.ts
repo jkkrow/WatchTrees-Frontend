@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { AppThunk } from 'store';
 import { userActions } from 'store/slices/user-slice';
-import { History } from 'store/slices/video-slice';
+import { VideoListDetail, History } from 'store/slices/video-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
 
@@ -35,14 +35,13 @@ export const updateUserName = (name: string): AppThunk => {
       dispatch(authActions.setUserData(newUserData));
 
       localStorage.setItem('userData', JSON.stringify(newUserData));
-
-      return true;
     } catch (err) {
       dispatch(
         userActions.userFail(
           `${(err as Error).message}: Failed to update user name`
         )
       );
+      throw err;
     }
   };
 };
@@ -70,14 +69,13 @@ export const updateUserPassword = (payload: {
           timer: 5000,
         })
       );
-
-      return true;
     } catch (err) {
       dispatch(
         userActions.userFail(
           `${(err as Error).message}: Failed to update password`
         )
       );
+      throw err;
     }
   };
 };
@@ -120,14 +118,13 @@ export const updateUserPicture = (file: File | null): AppThunk => {
       dispatch(authActions.setUserData(newUserData));
 
       localStorage.setItem('userData', JSON.stringify(newUserData));
-
-      return true;
     } catch (err) {
       dispatch(
         userActions.userFail(
           `${(err as Error).message}: Failed to update picture`
         )
       );
+      throw err;
     }
   };
 };
@@ -140,11 +137,13 @@ export const fetchChannel = (userId: string): AppThunk => {
     const currentUserId = userData ? userData._id : '';
 
     try {
-      const { data } = await client.get(`/users/channel/${userId}`, {
+      const response = await client.get(`/users/channel/${userId}`, {
         params: { currentUserId },
       });
 
-      return data.channelInfo;
+      const { channelInfo } = response.data;
+
+      return channelInfo;
     } catch (err) {
       dispatch(
         uiActions.setMessage({
@@ -153,29 +152,28 @@ export const fetchChannel = (userId: string): AppThunk => {
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };
 
 export const fetchMyVideos = (
-  params?: any,
+  params: any,
   forceUpdate: boolean = true
 ): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     try {
-      dispatch(userActions.userRequest());
-
-      const { data } = await client.get('/videos/user', {
+      const response = await client.get('/videos/user', {
         params,
         forceUpdate,
         cache: true,
       });
 
-      dispatch(userActions.userSuccess());
+      const { videos, count } = response.data;
 
-      return data;
+      return { videos, count };
     } catch (err) {
       dispatch(
         uiActions.setMessage({
@@ -184,6 +182,7 @@ export const fetchMyVideos = (
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };
@@ -195,34 +194,38 @@ export const fetchHistory = (params: any, forceUpdate = true): AppThunk => {
     const client = dispatch(api());
 
     try {
-      let data: History[];
+      let videos: VideoListDetail[];
 
       if (accessToken) {
-        const response = await client.get('/users/history', {
+        const { data } = await client.get('/users/history', {
           params,
           forceUpdate,
           cache: true,
         });
 
-        data = response.data;
+        videos = data.videos;
       } else {
         const historyStorage = localStorage.getItem('history');
+        let history: History[] = [];
 
-        if (!historyStorage) {
-          data = [];
-        } else {
+        if (historyStorage) {
           // TODO: Fetch videos based on videoIds from history
-          data = JSON.parse(historyStorage);
+          history = JSON.parse(historyStorage);
+
+          console.log(history);
         }
+
+        videos = []; //TODO:
       }
 
-      return data;
+      return videos;
     } catch (err) {
       uiActions.setMessage({
         content: `${(err as Error).message}: Failed to load videos`,
         type: 'error',
         timer: 5000,
       });
+      throw err;
     }
   };
 };
@@ -232,37 +235,47 @@ export const fetchFavorites = (params: any, forceUpdate = true): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.get('/users/favorites', {
+      const response = await client.get('/users/favorites', {
         params,
         forceUpdate,
         cache: true,
       });
 
-      return data;
+      const { videos, count } = response.data;
+
+      return { videos, count };
     } catch (err) {
       uiActions.setMessage({
         content: `${(err as Error).message}: Failed to load videos`,
         type: 'error',
         timer: 5000,
       });
+      throw err;
     }
   };
 };
 
-export const fetchSubscribes = (): AppThunk => {
+export const fetchSubscribes = (params: any, forceUpdate = true): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.get('/users/subscribes');
+      const response = await client.get('/users/subscribes', {
+        params,
+        forceUpdate,
+        cache: true,
+      });
 
-      return data;
+      const { subscribes } = response.data;
+
+      return subscribes;
     } catch (err) {
       uiActions.setMessage({
         content: `${(err as Error).message}: Failed to load subscribes`,
         type: 'error',
         timer: 5000,
       });
+      throw err;
     }
   };
 };
@@ -283,6 +296,7 @@ export const subscribeChannel = (userId: string): AppThunk => {
         type: 'error',
         timer: 5000,
       });
+      throw err;
     }
   };
 };
@@ -327,6 +341,7 @@ export const addToHistory = (history: History): AppThunk => {
         type: 'error',
         timer: 3000,
       });
+      throw err;
     }
   };
 };
@@ -345,6 +360,7 @@ export const addToFavorites = (videoId: string): AppThunk => {
         type: 'error',
         timer: 5000,
       });
+      throw err;
     }
   };
 };

@@ -9,7 +9,7 @@ import { checkVerification } from 'store/thunks/auth-thunk';
 
 const VerificationPage: React.FC = () => {
   const { loading, error, message } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   const { token } = useParams<{ token: string }>();
 

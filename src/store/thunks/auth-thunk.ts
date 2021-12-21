@@ -43,6 +43,7 @@ export const register = (credentials: {
       });
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
+      throw err;
     }
   };
 };
@@ -75,6 +76,7 @@ export const login = (
       });
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
+      throw err;
     }
   };
 };
@@ -142,6 +144,7 @@ export const fetchTokenOnload = (): AppThunk => {
           type: 'error',
         })
       );
+      throw err;
     }
   };
 };
@@ -158,6 +161,7 @@ export const sendVerification = (email: string): AppThunk => {
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
+      throw err;
     }
   };
 };
@@ -189,6 +193,7 @@ export const checkVerification = (token: string): AppThunk => {
       }
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
+      throw err;
     }
   };
 };
@@ -207,6 +212,7 @@ export const sendRecovery = (email: string): AppThunk => {
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
+      throw err;
     }
   };
 };
@@ -221,10 +227,9 @@ export const checkRecovery = (token: string): AppThunk => {
       await client.get(`/auth/recovery/${token}`);
 
       dispatch(authActions.authSuccess());
-
-      return true;
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
+      throw err;
     }
   };
 };
@@ -248,6 +253,7 @@ export const resetPassword = (
       dispatch(authActions.authSuccess(data.message));
     } catch (err) {
       dispatch(authActions.authFail(`${(err as Error).message}`));
+      throw err;
     }
   };
 };

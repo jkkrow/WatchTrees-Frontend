@@ -17,6 +17,7 @@ interface EditPasswordProps {
 
 const EditPassword: React.FC<EditPasswordProps> = ({ onSuccess }) => {
   const { loading } = useAppSelector((state) => state.user);
+  const { dispatch } = useAppDispatch();
 
   const { formState, setFormInput } = useForm({
     currentPassword: '',
@@ -24,12 +25,10 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onSuccess }) => {
     confirmPassword: '',
   });
 
-  const dispatch = useAppDispatch();
-
   const submitHandler = async () => {
     if (!formState.isValid) return;
 
-    const success = await dispatch(
+    await dispatch(
       updateUserPassword({
         currentPassword: formState.inputs.currentPassword.value,
         newPassword: formState.inputs.newPassword.value,
@@ -37,7 +36,7 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onSuccess }) => {
       })
     );
 
-    success && onSuccess();
+    onSuccess();
   };
 
   return (

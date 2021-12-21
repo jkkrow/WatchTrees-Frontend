@@ -10,8 +10,7 @@ const AccountPage: React.FC = () => {
   const { userData, loading, error, message } = useAppSelector(
     (state) => state.auth
   );
-
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   const verifyEmailHandler = () => {
     dispatch(sendVerification(userData!.email));

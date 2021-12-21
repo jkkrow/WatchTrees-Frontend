@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useHistory } from 'react-router';
 
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
@@ -23,23 +22,16 @@ interface UserVideoItemProps {
 
 const UserVideoItem: React.FC<UserVideoItemProps> = ({ item, onDelete }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
-  const [loading, setLoading] = useState(false);
+  const { dispatchThunk, loading } = useAppDispatch();
 
-  const dispatch = useAppDispatch();
   const history = useHistory();
 
   const editHandler = async (videoId: string) => {
-    let result = true;
-
     if (!uploadTree) {
-      result = false;
-      setLoading(true);
-
-      result = await dispatch(initiateUpload(videoId));
-      setLoading(false);
+      await dispatchThunk(initiateUpload(videoId));
     }
 
-    result && history.push(`/upload/${videoId}`);
+    history.push(`/upload/${videoId}`);
   };
 
   return (

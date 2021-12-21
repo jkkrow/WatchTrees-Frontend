@@ -30,6 +30,7 @@ export const fetchVideo = (id: string): AppThunk => {
         content: `${(err as Error).message}: Fetching video failed`,
         timer: 5000,
       });
+      throw err;
     }
   };
 };
@@ -43,17 +44,19 @@ export const fetchVideos = (params: any, forceUpdate = true): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.get('/videos', {
+      const response = await client.get('/videos', {
         params: { ...params, currentUserId },
         forceUpdate,
         cache: true,
       });
 
+      const { videos, count } = response.data;
+
       if (!currentUserId) {
-        attachLocalHistory(data.videos);
+        attachLocalHistory(videos);
       }
 
-      return data;
+      return { videos, count };
     } catch (err) {
       dispatch(
         uiActions.setMessage({
@@ -62,11 +65,12 @@ export const fetchVideos = (params: any, forceUpdate = true): AppThunk => {
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };
 
-export const saveVideo = (message?: string | false): AppThunk => {
+export const saveVideo = (message?: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const { uploadTree } = getState().upload;
 
@@ -79,17 +83,15 @@ export const saveVideo = (message?: string | false): AppThunk => {
 
       dispatch(uploadActions.saveUpload(data.videoId));
 
-      if (message !== false) {
+      if (message) {
         dispatch(
           uiActions.setMessage({
             type: 'message',
-            content: message || data.message,
+            content: message,
             timer: 3000,
           })
         );
       }
-
-      return true;
     } catch (err) {
       dispatch(
         uiActions.setMessage({
@@ -98,6 +100,7 @@ export const saveVideo = (message?: string | false): AppThunk => {
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };
@@ -126,8 +129,6 @@ export const deleteVideo = (video: VideoTree): AppThunk => {
           timer: 5000,
         })
       );
-
-      return true;
     } catch (err) {
       dispatch(
         uiActions.setMessage({
@@ -136,6 +137,7 @@ export const deleteVideo = (video: VideoTree): AppThunk => {
           timer: 5000,
         })
       );
+      throw err;
     }
   };
 };

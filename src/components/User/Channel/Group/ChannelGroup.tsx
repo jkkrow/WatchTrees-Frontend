@@ -1,36 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Navigation } from 'swiper';
 
 import ChannelInfo from '../Info/ChannelInfo';
 import ChannelLoaderList from '../Loader/List/ChannelLoaderList';
+import { AppThunk } from 'store';
+import { useAppDispatch } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import './ChannelGroup.scss';
 
 interface ChannelGroupProps {
   label?: string;
-  onFetch: () => Promise<{ subscribes: ChannelData[] }>;
+  forceUpdate?: boolean;
+  onFetch: ReturnType<AppThunk>;
 }
 
-const ChannelGroup: React.FC<ChannelGroupProps> = ({ label, onFetch }) => {
-  const [channels, setChannels] = useState<ChannelData[]>([]);
-  const [loading, setLoading] = useState(true);
+const ChannelGroup: React.FC<ChannelGroupProps> = ({
+  label,
+  forceUpdate,
+  onFetch,
+}) => {
+  const { dispatchThunk, data, loaded } = useAppDispatch<ChannelData[]>([]);
+
+  const history = useHistory();
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-
-      const data = await onFetch();
-
-      setChannels(data.subscribes);
-      setLoading(false);
-    })();
-  }, [onFetch]);
+    dispatchThunk(onFetch({}, forceUpdate || history.action !== 'POP'));
+  }, [dispatchThunk, onFetch, history, forceUpdate]);
 
   return (
     <div className="channel-group">
-      <ChannelLoaderList loading={loading} />
-      {!loading && channels.length > 0 && (
+      <ChannelLoaderList loading={!loaded} />
+      {loaded && data.length > 0 && (
         <>
           {label && <h3 className="channel-group__label">{label}</h3>}
           <Swiper
@@ -45,9 +47,9 @@ const ChannelGroup: React.FC<ChannelGroupProps> = ({ label, onFetch }) => {
             spaceBetween={20}
             navigation
           >
-            {channels.map((channel) => (
+            {data.map((channel) => (
               <SwiperSlide key={channel._id}>
-                <ChannelInfo data={channel} loading={loading} column button />
+                <ChannelInfo data={channel} loading={!loaded} column button />
               </SwiperSlide>
             ))}
           </Swiper>

@@ -11,6 +11,7 @@ interface ModalProps {
   type: 'form' | 'image' | 'message';
   header?: string;
   footer?: string;
+  loading?: boolean;
   disabled?: boolean;
   invalid?: boolean;
   onConfirm?: () => Promise<any>;
@@ -22,6 +23,7 @@ const Modal: React.FC<ModalProps> = ({
   type,
   header,
   footer,
+  loading,
   disabled,
   invalid,
   onConfirm,
@@ -29,7 +31,6 @@ const Modal: React.FC<ModalProps> = ({
   children,
 }) => {
   const [displayModal, setDisplayModal] = useState(on);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     on && setDisplayModal(!!on);
@@ -37,10 +38,9 @@ const Modal: React.FC<ModalProps> = ({
 
   const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
-    setLoading(true);
 
     onConfirm && (await onConfirm());
-    setLoading(false);
+
     setDisplayModal(false);
   };
 

@@ -26,7 +26,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
   autoPlay,
   editMode,
 }) => {
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
   const history = useHistory();
 
   const returnHandler = () => {

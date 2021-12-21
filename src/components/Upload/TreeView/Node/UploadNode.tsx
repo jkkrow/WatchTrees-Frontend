@@ -14,7 +14,7 @@ interface UploadNodeProps {
 
 const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, rootId }) => {
   const { activeNodeId } = useAppSelector((state) => state.upload);
-  const dispatch = useAppDispatch();
+  const { dispatch } = useAppDispatch();
 
   const fileChangeHandler = (files: File[]): void => {
     dispatch(uploadVideo(files[0], currentNode.id));
