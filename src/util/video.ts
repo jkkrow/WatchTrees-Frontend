@@ -40,10 +40,6 @@ export const getLocalHistory = (params: {
 
   const count = localHistory.length;
 
-  if (skipFullyWatched) {
-    localHistory = localHistory.filter((history) => !history.progress.isEnded);
-  }
-
   localHistory.sort((a, b) => {
     const dateA = new Date(a.updatedAt);
     const dateB = new Date(b.updatedAt);
@@ -56,6 +52,10 @@ export const getLocalHistory = (params: {
     }
     return 0;
   });
+
+  if (skipFullyWatched) {
+    localHistory = localHistory.filter((history) => !history.progress.isEnded);
+  }
 
   const startIndex = (page - 1) * max;
   const endIndex = page * max;
@@ -89,4 +89,21 @@ export const attachLocalHistory = (
       }
     });
   }
+};
+
+export const sortByHistory = (videos: VideoListDetail[]) => {
+  videos.sort((a, b) => {
+    if (!a.history || !b.history) return 0;
+
+    const dateA = new Date(a.history.updatedAt);
+    const dateB = new Date(b.history.updatedAt);
+
+    if (dateA > dateB) {
+      return -1;
+    }
+    if (dateA < dateB) {
+      return +1;
+    }
+    return 0;
+  });
 };

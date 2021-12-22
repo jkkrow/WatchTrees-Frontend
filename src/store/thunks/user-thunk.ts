@@ -5,7 +5,7 @@ import { userActions } from 'store/slices/user-slice';
 import { History } from 'store/slices/video-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
-import { attachLocalHistory, getLocalHistory } from 'util/video';
+import { attachLocalHistory, getLocalHistory, sortByHistory } from 'util/video';
 
 export const updateUserName = (name: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -206,7 +206,9 @@ export const fetchHistory = (params: any, forceUpdate = true): AppThunk => {
       } else {
         const result = getLocalHistory(params);
 
-        if (!result) return;
+        if (!result || !result.localHistory.length) {
+          return { videos: [], count: result?.count || 0 };
+        }
 
         const { localHistory, count } = result;
 
@@ -217,6 +219,7 @@ export const fetchHistory = (params: any, forceUpdate = true): AppThunk => {
         });
 
         attachLocalHistory(data.videos);
+        sortByHistory(data.videos);
         data.count = count;
 
         return data;
