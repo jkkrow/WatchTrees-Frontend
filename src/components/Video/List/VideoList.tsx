@@ -23,7 +23,7 @@ const VideoList: React.FC<VideoListProps> = ({
   onFetch,
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
-  const { dispatchThunk, data, loaded } = useAppDispatch<{
+  const { dispatchThunk, data, loading, loaded } = useAppDispatch<{
     videos: VideoListDetail[];
     count: number;
   }>({
@@ -66,24 +66,26 @@ const VideoList: React.FC<VideoListProps> = ({
 
   return (
     <div className="video-list__container">
-      <VideoLoaderList loading={!loaded} rows={3} />
+      <VideoLoaderList loading={loading} rows={3} />
       {loaded && data.videos.length > 0 && label && (
         <h3 className="video-list__label">{label}</h3>
       )}
       <div className="video-list">
-        {loaded &&
+        {!loading &&
           data.videos.length > 0 &&
           data.videos.map((item) => <VideoItem key={item._id} video={item} />)}
       </div>
       {loaded && !data.videos.length && (
         <div className="video-list__empty">No video found</div>
       )}
-      <Pagination
-        count={data.count}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-        keyword={keyword}
-      />
+      {!loading && (
+        <Pagination
+          count={data.count}
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          keyword={keyword}
+        />
+      )}
     </div>
   );
 };
