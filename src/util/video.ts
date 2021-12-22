@@ -22,15 +22,56 @@ export const thumbanilUrl = (video: VideoTree) => {
   return src;
 };
 
+export const getLocalHistory = (params: {
+  page: number;
+  max: number;
+  skipFullyWatched: boolean;
+}) => {
+  const historyStorage = localStorage.getItem('history');
+  if (!historyStorage) return;
+
+  let localHistory: History[] = JSON.parse(historyStorage);
+  if (!localHistory.length) return;
+
+  let { page, max, skipFullyWatched } = params;
+
+  page = page || 1;
+  max = max || 10;
+
+  const count = localHistory.length;
+
+  if (skipFullyWatched) {
+    localHistory = localHistory.filter((history) => !history.progress.isEnded);
+  }
+
+  localHistory.sort((a, b) => {
+    const dateA = new Date(a.updatedAt);
+    const dateB = new Date(b.updatedAt);
+
+    if (dateA > dateB) {
+      return -1;
+    }
+    if (dateA < dateB) {
+      return +1;
+    }
+    return 0;
+  });
+
+  const startIndex = (page - 1) * max;
+  const endIndex = page * max;
+
+  const slicedHistory = localHistory.slice(startIndex, endIndex);
+
+  return { localHistory: slicedHistory.map((history) => history.video), count };
+};
+
 export const attachLocalHistory = (
   videos: VideoListDetail | VideoListDetail[]
 ) => {
   const historyStorage = localStorage.getItem('history');
-
   if (!historyStorage) return;
 
   const localHistory: History[] = JSON.parse(historyStorage);
-
   if (!localHistory.length) return;
 
   if (videos instanceof Array) {

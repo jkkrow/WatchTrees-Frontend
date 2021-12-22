@@ -6,7 +6,7 @@ import VideoLoaderList from '../Loader/List/VideoLoaderList';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useSearch } from 'hooks/search-hook';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoListDetail } from 'store/slices/video-slice';
 import './VideoList.scss';
@@ -22,6 +22,7 @@ const VideoList: React.FC<VideoListProps> = ({
   forceUpdate,
   onFetch,
 }) => {
+  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
   const { dispatchThunk, data, loaded } = useAppDispatch<{
     videos: VideoListDetail[];
     count: number;
@@ -37,6 +38,8 @@ const VideoList: React.FC<VideoListProps> = ({
   const history = useHistory();
 
   useEffect(() => {
+    if (refreshToken && !accessToken) return;
+
     dispatchThunk(
       onFetch(
         {
@@ -49,6 +52,8 @@ const VideoList: React.FC<VideoListProps> = ({
       )
     );
   }, [
+    refreshToken,
+    accessToken,
     dispatchThunk,
     history,
     currentPage,

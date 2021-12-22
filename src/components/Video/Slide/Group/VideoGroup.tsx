@@ -16,6 +16,7 @@ import 'swiper/modules/navigation/navigation.min.css';
 interface VideoGroupProps {
   params?: { max: number; skipFullyWatched: boolean };
   label?: string;
+  to?: string;
   forceUpdate?: boolean;
   onFetch: ReturnType<AppThunk>;
 }
@@ -23,11 +24,15 @@ interface VideoGroupProps {
 const VideoGroup: React.FC<VideoGroupProps> = ({
   params = { max: 10 },
   label,
+  to,
   forceUpdate,
   onFetch,
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
-  const { dispatchThunk, data, loaded } = useAppDispatch<VideoListDetail[]>([]);
+  const { dispatchThunk, data, loaded } = useAppDispatch<{
+    videos: VideoListDetail[];
+    count: number;
+  }>({ videos: [], count: 0 });
 
   const history = useHistory();
 
@@ -49,9 +54,16 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
     <div className="video-group">
       <VideoLoaderList loading={!loaded} />
 
-      {loaded && data.length > 0 && (
+      {loaded && data.videos.length > 0 && (
         <>
-          {label && <h3 className="video-group__label">{label}</h3>}
+          {label && (
+            <h3
+              className={`video-group__label${to ? ' link' : ''}`}
+              onClick={() => to && history.push(to)}
+            >
+              {label}
+            </h3>
+          )}
           <Swiper
             modules={[Navigation]}
             breakpoints={{
@@ -64,7 +76,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
             spaceBetween={20}
             navigation
           >
-            {data.map((video) => (
+            {data.videos.map((video) => (
               <SwiperSlide key={video._id}>
                 <VideoItem video={video} />
               </SwiperSlide>

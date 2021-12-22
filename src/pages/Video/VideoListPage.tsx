@@ -15,6 +15,7 @@ const VideoListPage: React.FC = () => {
           <VideoCarousel />
           <VideoGroup
             label="Recently Watched"
+            to="/user/history"
             params={{ max: 10, skipFullyWatched: true }}
             forceUpdate
             onFetch={fetchHistory}

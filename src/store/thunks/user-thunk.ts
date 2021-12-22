@@ -2,9 +2,10 @@ import axios from 'axios';
 
 import { AppThunk } from 'store';
 import { userActions } from 'store/slices/user-slice';
-import { VideoListDetail, History } from 'store/slices/video-slice';
+import { History } from 'store/slices/video-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
+import { attachLocalHistory, getLocalHistory } from 'util/video';
 
 export const updateUserName = (name: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -189,36 +190,37 @@ export const fetchMyVideos = (
 
 export const fetchHistory = (params: any, forceUpdate = true): AppThunk => {
   return async (dispatch, getState, api) => {
-    const { accessToken } = getState().auth;
+    const { refreshToken } = getState().auth;
 
     const client = dispatch(api());
 
     try {
-      let videos: VideoListDetail[];
-
-      if (accessToken) {
+      if (refreshToken) {
         const { data } = await client.get('/users/history', {
           params,
           forceUpdate,
           cache: true,
         });
 
-        videos = data.videos;
+        return data;
       } else {
-        const historyStorage = localStorage.getItem('history');
-        let history: History[] = [];
+        const result = getLocalHistory(params);
 
-        if (historyStorage) {
-          // TODO: Fetch videos based on videoIds from history
-          history = JSON.parse(historyStorage);
+        if (!result) return;
 
-          console.log(history);
-        }
+        const { localHistory, count } = result;
 
-        videos = []; //TODO:
+        const { data } = await client.get('/users/history/local', {
+          params: { localHistory },
+          forceUpdate,
+          cache: true,
+        });
+
+        attachLocalHistory(data.videos);
+        data.count = count;
+
+        return data;
       }
-
-      return videos;
     } catch (err) {
       uiActions.setMessage({
         content: `${(err as Error).message}: Failed to load videos`,
