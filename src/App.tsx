@@ -40,6 +40,7 @@ const App: React.FC = () => {
           <Route component={VideoListPage} exact path="/" />
           <Route component={ChannelPage} exact path="/channel/:id" />
           <Route component={VideoPage} exact path="/video/:id" />
+          <Route component={HistoryPage} exact path="/user/history" />
           <Route
             component={VerificationPage}
             exact
@@ -75,13 +76,6 @@ const App: React.FC = () => {
             component={UserVideoListPage}
             exact
             path="/user/videos"
-            redirect="/auth"
-          />
-          <ProtectedRoute
-            require={refreshToken}
-            component={HistoryPage}
-            exact
-            path="/user/history"
             redirect="/auth"
           />
           <ProtectedRoute
