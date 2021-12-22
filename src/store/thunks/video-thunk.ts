@@ -15,15 +15,17 @@ export const fetchVideo = (id: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.get(`/videos/${id}`, {
+      const response = await client.get(`/videos/${id}`, {
         params: { currentUserId },
       });
 
+      const { video } = response.data;
+
       if (!currentUserId) {
-        attachLocalHistory(data.video);
+        attachLocalHistory(video);
       }
 
-      return data.video;
+      return video;
     } catch (err) {
       uiActions.setMessage({
         type: 'error',
