@@ -14,6 +14,7 @@ const VideoListPage: React.FC = () => {
         <>
           <VideoCarousel />
           <VideoGroup
+            id="history"
             label="Recently Watched"
             to="/user/history"
             params={{ max: 10, skipFullyWatched: true }}

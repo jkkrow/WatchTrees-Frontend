@@ -16,7 +16,11 @@ const FavoritesPage: React.FC = () => {
             forceUpdate={true}
             onFetch={fetchSubscribes}
           />
-          <VideoList label="Favorite Videos" onFetch={fetchFavorites} />
+          <VideoList
+            id="favorites"
+            label="Favorite Videos"
+            onFetch={fetchFavorites}
+          />
         </>
       )}
     </UserLayout>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Navigation } from 'swiper';
@@ -15,6 +15,7 @@ import 'swiper/modules/navigation/navigation.min.css';
 
 interface VideoGroupProps {
   params?: { max: number; skipFullyWatched: boolean };
+  id?: 'history' | 'favorites';
   label?: string;
   to?: string;
   forceUpdate?: boolean;
@@ -23,13 +24,14 @@ interface VideoGroupProps {
 
 const VideoGroup: React.FC<VideoGroupProps> = ({
   params = { max: 10 },
+  id,
   label,
   to,
   forceUpdate,
   onFetch,
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
-  const { dispatchThunk, data, loaded } = useAppDispatch<{
+  const { dispatchThunk, data, setData, loaded } = useAppDispatch<{
     videos: VideoListDetail[];
     count: number;
   }>({ videos: [], count: 0 });
@@ -49,6 +51,16 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
     params,
     forceUpdate,
   ]);
+
+  const filterList = useCallback(
+    (videoId: string) => {
+      setData((prevData) => ({
+        videos: prevData.videos.filter((video) => video._id !== videoId),
+        count: prevData.count--,
+      }));
+    },
+    [setData]
+  );
 
   return (
     <div className="video-group">
@@ -78,7 +90,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
           >
             {data.videos.map((video) => (
               <SwiperSlide key={video._id}>
-                <VideoItem video={video} />
+                <VideoItem id={id} video={video} onDelete={filterList} />
               </SwiperSlide>
             ))}
           </Swiper>

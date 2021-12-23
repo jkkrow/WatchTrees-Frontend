@@ -1,4 +1,5 @@
 .video-item {
+  position: relative;
   margin-bottom: auto;
 
   &__thumbnail {
@@ -23,7 +24,7 @@
   &__info {
     display: flex;
     align-items: center;
-    padding: 1.5rem;
+    padding: 1.5rem 0;
     gap: 2rem;
   }
 
@@ -35,8 +36,16 @@
     gap: 0.75rem;
   }
 
-  &__title {
+  &__header {
+    display: flex;
+    align-items: center;
     width: 100%;
+    gap: 1rem;
+  }
+
+  &__title {
+    width: fit-content;
+    margin-right: auto;
     font-weight: 600;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -51,12 +60,5 @@
     justify-content: flex-end;
     width: 100%;
     gap: 1rem;
-  }
-
-  &__views,
-  &__favorites {
-    display: flex;
-    gap: 1rem;
-    pointer-events: none;
   }
 }

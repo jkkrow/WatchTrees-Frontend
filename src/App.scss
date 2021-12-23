@@ -46,6 +46,7 @@ body {
   font-size: 1.6rem;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  overflow-y: scroll;
 }
 
 main {
@@ -147,7 +148,7 @@ video {
 }
 
 ::-webkit-scrollbar {
-  width: 15px;
+  width: 0;
   background-color: transparent;
 
   &-thumb {

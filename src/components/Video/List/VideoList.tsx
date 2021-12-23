@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useHistory, useParams } from 'react-router';
 
 import VideoItem from '../Item/VideoItem';
@@ -12,18 +12,20 @@ import { VideoListDetail } from 'store/slices/video-slice';
 import './VideoList.scss';
 
 interface VideoListProps {
+  id?: 'history' | 'favorites';
   label?: string;
   forceUpdate?: boolean;
   onFetch: ReturnType<AppThunk>;
 }
 
 const VideoList: React.FC<VideoListProps> = ({
+  id,
   label,
   forceUpdate,
   onFetch,
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
-  const { dispatchThunk, data, loading, loaded } = useAppDispatch<{
+  const { dispatchThunk, data, setData, loading, loaded } = useAppDispatch<{
     videos: VideoListDetail[];
     count: number;
   }>({
@@ -34,7 +36,7 @@ const VideoList: React.FC<VideoListProps> = ({
   const { currentPage, itemsPerPage } = usePaginate(20);
   const { keyword } = useSearch();
 
-  const { id } = useParams<{ id: string }>();
+  const { id: channelId } = useParams<{ id: string }>();
   const history = useHistory();
 
   useEffect(() => {
@@ -46,7 +48,7 @@ const VideoList: React.FC<VideoListProps> = ({
           page: currentPage,
           max: itemsPerPage,
           search: keyword,
-          channelId: id,
+          channelId,
         },
         forceUpdate || history.action !== 'POP'
       )
@@ -61,19 +63,34 @@ const VideoList: React.FC<VideoListProps> = ({
     keyword,
     onFetch,
     forceUpdate,
-    id,
+    channelId,
   ]);
+
+  const filterList = useCallback(
+    (videoId: string) => {
+      setData((prevData) => ({
+        videos: prevData.videos.filter((video) => video._id !== videoId),
+        count: prevData.count--,
+      }));
+    },
+    [setData]
+  );
 
   return (
     <div className="video-list__container">
       <VideoLoaderList loading={loading} rows={3} />
-      {loaded && data.videos.length > 0 && label && (
-        <h3 className="video-list__label">{label}</h3>
-      )}
+      {loaded && label && <h3 className="video-list__label">{label}</h3>}
       <div className="video-list">
         {!loading &&
           data.videos.length > 0 &&
-          data.videos.map((item) => <VideoItem key={item._id} video={item} />)}
+          data.videos.map((item) => (
+            <VideoItem
+              key={item._id}
+              id={id}
+              video={item}
+              onDelete={filterList}
+            />
+          ))}
       </div>
       {loaded && !data.videos.length && (
         <div className="video-list__empty">No video found</div>

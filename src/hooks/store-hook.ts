@@ -36,5 +36,5 @@ export const useAppDispatch = <T = any>(initialData?: T) => {
     [dispatch]
   );
 
-  return { dispatch, dispatchThunk, data, loading, loaded };
+  return { dispatch, dispatchThunk, data, setData, loading, loaded };
 };

@@ -4,7 +4,12 @@ import { fetchHistory } from 'store/thunks/user-thunk';
 const HistoryPage: React.FC = () => {
   return (
     <div className="layout">
-      <VideoList label="Watch History" forceUpdate onFetch={fetchHistory} />
+      <VideoList
+        id="history"
+        label="Watch History"
+        forceUpdate
+        onFetch={fetchHistory}
+      />
     </div>
   );
 };

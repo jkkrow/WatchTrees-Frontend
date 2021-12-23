@@ -5,20 +5,35 @@ import VideoViews from '../UI/Views/VideoViews';
 import VideoFavorites from '../UI/Favorites/VideoFavorites';
 import VideoDuration from '../UI/Duration/VideoDuration';
 import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
+import VideoDropdown from '../UI/Dropdown/VideoDropdown';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
+import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import { useAppDispatch } from 'hooks/store-hook';
+import { AppThunk } from 'store';
 import { VideoListDetail } from 'store/slices/video-slice';
 import './VideoItem.scss';
 
 interface VideoItemProps {
+  id?: 'history' | 'favorites';
   video: VideoListDetail;
+  onDelete: (videoId: string) => void;
 }
 
-const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
+const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
+  const { dispatchThunk, loading } = useAppDispatch();
+
   const history = useHistory();
   const location = useLocation();
 
+  const dispatchHandler = async (thunk: AppThunk) => {
+    await dispatchThunk(thunk);
+
+    onDelete(video._id);
+  };
+
   return (
     <div className="video-item">
+      <LoadingSpinner on={loading} overlay />
       <div className="video-item__thumbnail">
         <VideoThumbnail video={video} />
         <div className="video-item__duration">
@@ -51,11 +66,14 @@ const VideoItem: React.FC<VideoItemProps> = ({ video }) => {
           />
         )}
         <div className="video-item__detail">
-          <div
-            className="video-item__title link"
-            onClick={() => history.push(`/video/${video._id}`)}
-          >
-            {video.info.title}
+          <div className="video-item__header">
+            <div
+              className="video-item__title link"
+              onClick={() => history.push(`/video/${video._id}`)}
+            >
+              {video.info.title}
+            </div>
+            <VideoDropdown id={id} video={video} onDispatch={dispatchHandler} />
           </div>
           <div className="video-item__data">
             <VideoViews video={video} brief />
