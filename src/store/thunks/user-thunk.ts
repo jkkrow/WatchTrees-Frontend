@@ -2,10 +2,16 @@ import axios from 'axios';
 
 import { AppThunk } from 'store';
 import { userActions } from 'store/slices/user-slice';
-import { History } from 'store/slices/video-slice';
+import { History, VideoListDetail } from 'store/slices/video-slice';
 import { uiActions } from 'store/slices/ui-slice';
 import { authActions } from 'store/slices/auth-slice';
-import { attachLocalHistory, getLocalHistory, sortByHistory } from 'util/video';
+import {
+  addToLocalHistory,
+  attachLocalHistory,
+  getLocalHistory,
+  removeFromLocalHistory,
+  sortByHistory,
+} from 'util/video';
 
 export const updateUserName = (name: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -316,35 +322,42 @@ export const addToHistory = (history: History): AppThunk => {
       if (refreshToken) {
         await client.patch('/users/history', { history });
       } else {
-        const historyStorage = localStorage.getItem('history');
-
-        if (!historyStorage) {
-          const histories: History[] = [];
-
-          histories.push(history);
-          localStorage.setItem('history', JSON.stringify(histories));
-        } else {
-          const localHistories: History[] = JSON.parse(historyStorage);
-
-          const existingHistory = localHistories.find(
-            (item) => item.video === history.video
-          );
-
-          if (existingHistory) {
-            existingHistory.progress = history.progress;
-            existingHistory.updatedAt = history.updatedAt;
-          } else {
-            localHistories.push(history);
-          }
-
-          localStorage.setItem('history', JSON.stringify(localHistories));
-        }
+        addToLocalHistory(history);
       }
     } catch (err) {
       uiActions.setMessage({
         content: `${(err as Error).message}: Failed to add to favorites`,
         type: 'error',
         timer: 3000,
+      });
+      throw err;
+    }
+  };
+};
+
+export const removeFromHistory = (video: VideoListDetail): AppThunk => {
+  return async (dispatch, getState, api) => {
+    if (!video.history) return;
+
+    const { refreshToken } = getState().auth;
+
+    const client = dispatch(api());
+
+    try {
+      const historyId = video.history.video;
+
+      if (refreshToken) {
+        await client.delete('/users/history', { params: { historyId } });
+      } else {
+        removeFromLocalHistory(historyId);
+      }
+
+      video.history = null;
+    } catch (err) {
+      uiActions.setMessage({
+        content: `${(err as Error).message}: Failed to remove from history`,
+        type: 'error',
+        timer: 5000,
       });
       throw err;
     }

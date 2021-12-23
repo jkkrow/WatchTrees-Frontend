@@ -65,6 +65,43 @@ export const getLocalHistory = (params: {
   return { localHistory: slicedHistory.map((history) => history.video), count };
 };
 
+export const addToLocalHistory = (history: History) => {
+  const historyStorage = localStorage.getItem('history');
+
+  if (!historyStorage) {
+    localStorage.setItem('history', JSON.stringify(history));
+  } else {
+    const localHistory: History[] = JSON.parse(historyStorage);
+
+    const existingHistory = localHistory.find(
+      (item) => item.video === history.video
+    );
+
+    if (existingHistory) {
+      existingHistory.progress = history.progress;
+      existingHistory.updatedAt = history.updatedAt;
+    } else {
+      localHistory.push(history);
+    }
+
+    localStorage.setItem('history', JSON.stringify(localHistory));
+  }
+};
+
+export const removeFromLocalHistory = (videoId: string) => {
+  const historyStorage = localStorage.getItem('history');
+
+  if (!historyStorage) return;
+
+  const localHistory: History[] = JSON.parse(historyStorage);
+
+  const filteredHistory = localHistory.filter(
+    (history) => history.video !== videoId
+  );
+
+  localStorage.setItem('history', JSON.stringify(filteredHistory));
+};
+
 export const attachLocalHistory = (
   videos: VideoListDetail | VideoListDetail[]
 ) => {
