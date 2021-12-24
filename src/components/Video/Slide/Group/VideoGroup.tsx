@@ -13,6 +13,9 @@ import './VideoGroup.scss';
 import 'swiper/swiper.scss';
 import 'swiper/modules/navigation/navigation.min.css';
 
+const INITIAL_WIDTH = 660;
+const ITEM_WIDTH = 320;
+
 interface VideoGroupProps {
   params?: { max: number; skipFullyWatched: boolean };
   id?: 'history' | 'favorites';
@@ -64,37 +67,48 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
 
   return (
     <div className="video-group">
+      {label && (
+        <h3
+          className={`video-group__label${to ? ' link' : ''}${
+            !loaded ? ' loading' : ''
+          }`}
+          onClick={() => to && history.push(to)}
+        >
+          {label}
+        </h3>
+      )}
       <VideoLoaderList loading={!loaded} />
-
       {loaded && data.videos.length > 0 && (
-        <>
-          {label && (
-            <h3
-              className={`video-group__label${to ? ' link' : ''}`}
-              onClick={() => to && history.push(to)}
-            >
-              {label}
-            </h3>
-          )}
-          <Swiper
-            modules={[Navigation]}
-            breakpoints={{
-              675: { slidesPerView: 2, slidesPerGroup: 2 },
-              995: { slidesPerView: 3, slidesPerGroup: 3 },
-              1315: { slidesPerView: 4, slidesPerGroup: 4 },
-              1635: { slidesPerView: 5, slidesPerGroup: 5 },
-              1955: { slidesPerView: 6, slidesPerGroup: 6 },
-            }}
-            spaceBetween={20}
-            navigation
-          >
-            {data.videos.map((video) => (
-              <SwiperSlide key={video._id}>
-                <VideoItem id={id} video={video} onDelete={filterList} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </>
+        <Swiper
+          modules={[Navigation]}
+          breakpoints={{
+            [INITIAL_WIDTH]: { slidesPerView: 2, slidesPerGroup: 2 },
+            [INITIAL_WIDTH + ITEM_WIDTH]: {
+              slidesPerView: 3,
+              slidesPerGroup: 3,
+            },
+            [INITIAL_WIDTH + ITEM_WIDTH * 2]: {
+              slidesPerView: 4,
+              slidesPerGroup: 4,
+            },
+            [INITIAL_WIDTH + ITEM_WIDTH * 3]: {
+              slidesPerView: 5,
+              slidesPerGroup: 5,
+            },
+            [INITIAL_WIDTH + ITEM_WIDTH * 4]: {
+              slidesPerView: 6,
+              slidesPerGroup: 6,
+            },
+          }}
+          spaceBetween={20}
+          navigation
+        >
+          {data.videos.map((video) => (
+            <SwiperSlide key={video._id}>
+              <VideoItem id={id} video={video} onDelete={filterList} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
       )}
     </div>
   );

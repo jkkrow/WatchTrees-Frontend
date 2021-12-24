@@ -10,6 +10,9 @@ import { useAppDispatch } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import './ChannelGroup.scss';
 
+const INITIAL_WIDTH = 695;
+const ITEM_WIDTH = 200;
+
 interface ChannelGroupProps {
   label?: string;
   forceUpdate?: boolean;
@@ -31,18 +34,28 @@ const ChannelGroup: React.FC<ChannelGroupProps> = ({
 
   return (
     <div className="channel-group">
+      {label && (
+        <h3 className={`channel-group__label${!loaded ? ' loading' : ''}`}>
+          {label}
+        </h3>
+      )}
       <ChannelLoaderList loading={!loaded} />
       {loaded && data.length > 0 && (
         <>
-          {label && <h3 className="channel-group__label">{label}</h3>}
           <Swiper
             modules={[Navigation]}
             slidesPerView={2}
             slidesPerGroup={2}
             breakpoints={{
-              695: { slidesPerView: 3, slidesPerGroup: 3 },
-              915: { slidesPerView: 4, slidesPerGroup: 4 },
-              1135: { slidesPerView: 5, slidesPerGroup: 5 },
+              [INITIAL_WIDTH]: { slidesPerView: 3, slidesPerGroup: 3 },
+              [INITIAL_WIDTH + ITEM_WIDTH]: {
+                slidesPerView: 4,
+                slidesPerGroup: 4,
+              },
+              [INITIAL_WIDTH + ITEM_WIDTH * 2]: {
+                slidesPerView: 5,
+                slidesPerGroup: 5,
+              },
             }}
             spaceBetween={20}
             navigation

@@ -78,10 +78,14 @@ const VideoList: React.FC<VideoListProps> = ({
 
   return (
     <div className="video-list__container">
-      <VideoLoaderList loading={loading} rows={3} />
-      {loaded && label && <h3 className="video-list__label">{label}</h3>}
+      {label && (
+        <h3 className={`video-list__label${!loaded ? ' loading' : ''}`}>
+          {label}
+        </h3>
+      )}
+      <VideoLoaderList loading={!loaded} rows={3} />
       <div className="video-list">
-        {!loading &&
+        {loaded &&
           data.videos.length > 0 &&
           data.videos.map((item) => (
             <VideoItem
