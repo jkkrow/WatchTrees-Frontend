@@ -33,7 +33,7 @@ const VideoList: React.FC<VideoListProps> = ({
     count: 0,
   });
 
-  const { currentPage, itemsPerPage } = usePaginate(20);
+  const { currentPage, itemsPerPage } = usePaginate(12);
   const { keyword } = useSearch();
 
   const { id: channelId } = useParams<{ id: string }>();

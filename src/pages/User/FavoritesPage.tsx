@@ -1,4 +1,3 @@
-import UserLayout from 'components/User/Layout/UserLayout';
 import VideoList from 'components/Video/List/VideoList';
 import ChannelGroup from 'components/User/Channel/Group/ChannelGroup';
 import { useAppSelector } from 'hooks/store-hook';
@@ -8,7 +7,7 @@ const FavoritesPage: React.FC = () => {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   return (
-    <UserLayout>
+    <div className="layout">
       {accessToken && (
         <>
           <ChannelGroup
@@ -23,7 +22,7 @@ const FavoritesPage: React.FC = () => {
           />
         </>
       )}
-    </UserLayout>
+    </div>
   );
 };
 

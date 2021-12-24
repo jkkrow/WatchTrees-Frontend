@@ -17,7 +17,7 @@ const VideoListPage: React.FC = () => {
             id="history"
             label="Recently Watched"
             to="/user/history"
-            params={{ max: 10, skipFullyWatched: true }}
+            params={{ skipFullyWatched: true }}
             forceUpdate
             onFetch={fetchHistory}
           />

@@ -17,7 +17,7 @@ const INITIAL_WIDTH = 660;
 const ITEM_WIDTH = 320;
 
 interface VideoGroupProps {
-  params?: { max: number; skipFullyWatched: boolean };
+  params?: { max?: number; skipFullyWatched?: boolean };
   id?: 'history' | 'favorites';
   label?: string;
   to?: string;

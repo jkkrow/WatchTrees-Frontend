@@ -10,7 +10,7 @@ import { useAppDispatch } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import './ChannelGroup.scss';
 
-const INITIAL_WIDTH = 695;
+const INITIAL_WIDTH = 680;
 const ITEM_WIDTH = 200;
 
 interface ChannelGroupProps {
@@ -55,6 +55,14 @@ const ChannelGroup: React.FC<ChannelGroupProps> = ({
               [INITIAL_WIDTH + ITEM_WIDTH * 2]: {
                 slidesPerView: 5,
                 slidesPerGroup: 5,
+              },
+              [INITIAL_WIDTH + ITEM_WIDTH * 3]: {
+                slidesPerView: 6,
+                slidesPerGroup: 6,
+              },
+              [INITIAL_WIDTH + ITEM_WIDTH * 4]: {
+                slidesPerView: 7,
+                slidesPerGroup: 7,
               },
             }}
             spaceBetween={20}
