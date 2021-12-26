@@ -69,7 +69,7 @@ export const addToLocalHistory = (history: History) => {
   const historyStorage = localStorage.getItem('history');
 
   if (!historyStorage) {
-    localStorage.setItem('history', JSON.stringify(history));
+    localStorage.setItem('history', JSON.stringify([history]));
   } else {
     const localHistory: History[] = JSON.parse(historyStorage);
 
