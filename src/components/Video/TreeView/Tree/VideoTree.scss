@@ -2,4 +2,8 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16/9;
+
+  @media (max-aspect-ratio: 16/9) {
+    height: 100%;
+  }
 }

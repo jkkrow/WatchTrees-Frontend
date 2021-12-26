@@ -31,6 +31,10 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
       videoActions.setActiveVideo(videoTree.history.progress.activeVideoId)
     );
     dispatch(videoActions.setInitialProgress(videoTree.history.progress.time));
+
+    return () => {
+      dispatch(videoActions.setInitialProgress(0));
+    };
   }, [dispatch, videoTree]);
 
   const addToFavoritesHandler = async () => {

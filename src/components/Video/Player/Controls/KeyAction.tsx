@@ -41,10 +41,16 @@ const KeyAction: React.FC<KeyActionProps> = ({ on, volume }) => {
         </div>
       </CSSTransition>
       <div className="vp-key-action__skip rewind">
-        <DoubleArrowLeftIcon />
+        <div className="vp-key-action__skip__container">
+          <DoubleArrowLeftIcon />
+          <span>- 10 seconds</span>
+        </div>
       </div>
       <div className="vp-key-action__skip forward">
-        <DoubleArrowRightIcon />
+        <div className="vp-key-action__skip__container">
+          <DoubleArrowRightIcon />
+          <span>+ 10 seconds</span>
+        </div>
       </div>
     </div>
   );

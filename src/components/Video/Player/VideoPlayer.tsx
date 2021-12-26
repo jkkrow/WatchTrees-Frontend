@@ -466,6 +466,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       switch (key) {
         case 'ArrowLeft':
         case 'ArrowRight':
+          event.preventDefault();
+
           video.currentTime =
             key === 'ArrowLeft'
               ? video.currentTime - 10
@@ -478,12 +480,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             '.vp-key-action__skip.forward'
           ) as HTMLElement;
 
-          const target = key === 'ArrowLeft' ? rewind : forward;
+          const targetContainer = key === 'ArrowLeft' ? rewind : forward;
+          const targetElement =
+            targetContainer.firstElementChild as HTMLElement;
 
-          const targetSVG = target.firstElementChild as HTMLElement;
-
-          target.style.display = 'flex';
-          target.animate(
+          targetContainer.style.display = 'flex';
+          targetContainer.animate(
             [{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }],
             {
               duration: 1000,
@@ -491,13 +493,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               fill: 'forwards',
             }
           );
-          targetSVG.animate(
+          targetElement.animate(
             [
               { opacity: 1, transform: 'translateX(0)' },
               {
                 opacity: 0,
                 transform: `translateX(${
-                  key === 'ArrowLeft' ? '-100%' : '100%'
+                  key === 'ArrowLeft' ? '-20%' : '20%'
                 })`,
               },
             ],
@@ -514,6 +516,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
           break;
         case 'ArrowUp':
+          event.preventDefault();
+
           if (video.volume + 0.05 > 1) {
             video.volume = 1;
           } else {
@@ -527,6 +531,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
           break;
         case 'ArrowDown':
+          event.preventDefault();
+
           if (video.volume - 0.05 < 0) {
             video.volume = 0;
           } else {
@@ -549,6 +555,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         case '2':
         case '3':
         case '4':
+          event.preventDefault();
+
           if (!selectorData.current) return;
 
           selectNextVideoHandler(+key - 1);
@@ -790,7 +798,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           !displayControls ? ' hide' : ''
         }`}
       >
-        <div className="vp-controls__background" onClick={togglePlayHandler} />
         <div className="vp-controls__header">
           <Time time={currentTimeUI} />
           <Progress
