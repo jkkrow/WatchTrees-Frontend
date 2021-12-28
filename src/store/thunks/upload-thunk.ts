@@ -185,17 +185,14 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
           index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
 
         // Get presigned urls
-        const getUploadUrlResponse = await client.get(
-          '/upload/multipart-presigned-url',
-          {
-            params: {
-              uploadId,
-              videoId: uploadTree._id,
-              fileName: file.name,
-              partNumber: index,
-            },
-          }
-        );
+        const getUploadUrlResponse = await client.get('/upload/multipart-url', {
+          params: {
+            uploadId,
+            videoId: uploadTree._id,
+            fileName: file.name,
+            partNumber: index,
+          },
+        });
 
         const { presignedUrl } = getUploadUrlResponse.data;
 

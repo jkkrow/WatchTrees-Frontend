@@ -13,14 +13,14 @@ import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoTree } from 'store/slices/video-slice';
 import { initiateUpload } from 'store/thunks/upload-thunk';
-import './UserVideoItem.scss';
+import './MyVideoItem.scss';
 
-interface UserVideoItemProps {
+interface MyVideoItemProps {
   item: VideoTree;
   onDelete: (item: VideoTree) => void;
 }
 
-const UserVideoItem: React.FC<UserVideoItemProps> = ({ item, onDelete }) => {
+const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
   const { dispatchThunk, loading } = useAppDispatch();
 
@@ -35,36 +35,36 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({ item, onDelete }) => {
   };
 
   return (
-    <li className="user-video-item">
+    <li className="my-video-item">
       <LoadingSpinner on={loading} overlay />
-      <div className="user-video-item__thumbnail">
+      <div className="my-video-item__thumbnail">
         <VideoThumbnail video={item} />
       </div>
-      <div className="user-video-item__info">
-        <h3 className="user-video-item__title">{item.info.title || '_'}</h3>
-        <div className="user-video-item__tags">
+      <div className="my-video-item__info">
+        <h3 className="my-video-item__title">{item.info.title || '_'}</h3>
+        <div className="my-video-item__tags">
           <VideoTags tags={item.info.tags} />
         </div>
-        <div className="user-video-item__detail">
+        <div className="my-video-item__detail">
           <div>
-            <div className="user-video-item__status">
+            <div className="my-video-item__status">
               <VideoStatus status={item.info.status} brief />
             </div>
-            <div className="user-video-item__duration">
+            <div className="my-video-item__duration">
               <VideoDuration
                 minDuration={item.info.minDuration}
                 maxDuration={item.info.maxDuration}
                 brief
               />
             </div>
-            <div className="user-video-item__data">
+            <div className="my-video-item__data">
               <VideoViews video={item} brief />
               <VideoFavorites favorites={item.data.favorites} />
             </div>
           </div>
           <div>
             <VideoTimestamp createdAt={item.createdAt} timeSince={false} />
-            <div className="user-video-item__buttons">
+            <div className="my-video-item__buttons">
               <EditIcon onClick={() => editHandler(item._id!)} />
               <DeleteIcon onClick={() => onDelete(item)} />
             </div>
@@ -72,10 +72,10 @@ const UserVideoItem: React.FC<UserVideoItemProps> = ({ item, onDelete }) => {
         </div>
       </div>
       {item.info.isEditing && (
-        <div className="user-video-item__editing">EDITING</div>
+        <div className="my-video-item__editing">EDITING</div>
       )}
     </li>
   );
 };
 
-export default UserVideoItem;
+export default MyVideoItem;

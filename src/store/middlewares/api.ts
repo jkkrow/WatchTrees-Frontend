@@ -3,7 +3,7 @@ import { cacheAdapterEnhancer } from 'axios-extensions';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import { AppDispatch, AppState } from 'store';
-import { authActions } from 'store/slices/auth-slice';
+import { userActions } from 'store/slices/user-slice';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,
@@ -16,20 +16,20 @@ const axiosInstance = axios.create({
 export const api = () => {
   return (dispatch: AppDispatch, getState: () => AppState) => {
     axiosInstance.interceptors.request.use(async (req) => {
-      const { refreshToken, accessToken } = getState().auth;
+      const { refreshToken, accessToken } = getState().user;
 
       if (!refreshToken || !accessToken) return req;
 
       const { exp } = jwt_decode<JwtPayload>(accessToken);
 
       if ((exp as number) * 1000 < Date.now()) {
-        const { refreshToken } = getState().auth;
+        const { refreshToken } = getState().user;
 
-        const { data } = await axios.get('/auth/access-token', {
+        const { data } = await axios.get('/users/access-token', {
           headers: { Authorization: 'Bearer ' + refreshToken },
         });
 
-        dispatch(authActions.setAccessToken(data.accessToken));
+        dispatch(userActions.setAccessToken(data.accessToken));
 
         req.headers.Authorization = `Bearer ${data.accessToken}`;
 

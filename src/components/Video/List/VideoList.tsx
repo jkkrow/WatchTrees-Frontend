@@ -24,7 +24,7 @@ const VideoList: React.FC<VideoListProps> = ({
   forceUpdate,
   onFetch,
 }) => {
-  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
+  const { refreshToken, accessToken } = useAppSelector((state) => state.user);
   const { dispatchThunk, data, setData, loading, loaded } = useAppDispatch<{
     videos: VideoListDetail[];
     count: number;

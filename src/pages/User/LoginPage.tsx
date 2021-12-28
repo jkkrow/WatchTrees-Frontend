@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login';
 
-import AuthLayout from 'components/Auth/Layout/AuthLayout';
+import UserLayout from 'components/User/Layout/UserLayout';
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
-import GoogleLoginButton from 'components/Auth/Google/GoogleLoginButton';
+import { ReactComponent as GoogleIcon } from 'assets/icons/google.svg';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { authActions } from 'store/slices/auth-slice';
-import { register, login } from 'store/thunks/auth-thunk';
+import { userActions } from 'store/slices/user-slice';
+import { register, login } from 'store/thunks/user-thunk';
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_PASSWORD,
@@ -19,10 +20,10 @@ import {
   VALIDATOR_EQUAL,
 } from 'util/validators';
 
-const AuthPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
 
-  const { loading, error, message } = useAppSelector((state) => state.auth);
+  const { loading, error, message } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
 
   const { formState, setFormInput, setFormData } = useForm({
@@ -30,7 +31,7 @@ const AuthPage: React.FC = () => {
     password: { value: '', isValid: false },
   });
 
-  const googleLoginHandler = (response: { tokenId: string }): void => {
+  const googleLoginHandler = (response: any) => {
     dispatch(login({ tokenId: response.tokenId }));
   };
 
@@ -57,7 +58,7 @@ const AuthPage: React.FC = () => {
   };
 
   const toggleMode = (): void => {
-    dispatch(authActions.clearResponse());
+    dispatch(userActions.clearResponse());
 
     setIsLogin((prevMode) => {
       if (prevMode) {
@@ -84,7 +85,7 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <AuthLayout>
+    <UserLayout>
       <Response type={error ? 'error' : 'message'} content={error || message} />
       {isLogin && (
         <Form onSubmit={submitHandler}>
@@ -158,9 +159,22 @@ const AuthPage: React.FC = () => {
           <Button loading={loading}>SIGN UP</Button>
         </Form>
       )}
-      <GoogleLoginButton
-        onLoginSuccess={googleLoginHandler}
-        loading={loading}
+      <GoogleLogin
+        className="google-login-button"
+        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
+        prompt="select_account"
+        cookiePolicy={'single_host_origin'}
+        onSuccess={googleLoginHandler}
+        render={(renderProps) => (
+          <Button
+            onClick={renderProps.onClick}
+            disabled={renderProps.disabled || loading}
+            loading={renderProps.disabled}
+          >
+            <GoogleIcon />
+            GOOGLE SIGN IN
+          </Button>
+        )}
       />
       {isLogin ? (
         <p>
@@ -177,8 +191,8 @@ const AuthPage: React.FC = () => {
           </span>
         </p>
       )}
-    </AuthLayout>
+    </UserLayout>
   );
 };
 
-export default AuthPage;
+export default LoginPage;

@@ -1,8 +1,6 @@
-.user-video-list {
+.my-video-list {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   gap: 3rem;
 
   &__empty {

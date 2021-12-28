@@ -5,7 +5,7 @@ import { CSSTransition } from 'react-transition-group';
 import Backdrop from 'components/Common/UI/Backdrop/Backdrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { finishUpload } from 'store/thunks/upload-thunk';
-import { logout } from 'store/thunks/auth-thunk';
+import { logout } from 'store/thunks/user-thunk';
 import './Menu.scss';
 
 interface MenuProps {
@@ -15,7 +15,7 @@ interface MenuProps {
 
 const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
-  const { userData } = useAppSelector((state) => state.auth);
+  const { userData } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
 
   const history = useHistory();
@@ -62,7 +62,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
               </NavLink>
             </li>
             <li>
-              <NavLink activeStyle={{ opacity: 0.7 }} to="/user/history">
+              <NavLink activeStyle={{ opacity: 0.7 }} to="/history">
                 History
               </NavLink>
             </li>

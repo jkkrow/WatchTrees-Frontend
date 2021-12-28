@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import ChannelInfo from '../Info/ChannelInfo';
 import { useAppDispatch } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
-import { fetchChannel } from 'store/thunks/user-thunk';
+import { fetchChannelInfo } from 'store/thunks/user-thunk';
 import './ChannelHeader.scss';
 
 const ChannelHeader: React.FC = () => {
@@ -15,7 +15,7 @@ const ChannelHeader: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
-    dispatchThunk(fetchChannel(id));
+    dispatchThunk(fetchChannelInfo(id));
   }, [dispatchThunk, id]);
 
   return (

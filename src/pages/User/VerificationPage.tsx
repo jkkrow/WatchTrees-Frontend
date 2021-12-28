@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
-import AuthLayout from 'components/Auth/Layout/AuthLayout';
+import UserLayout from 'components/User/Layout/UserLayout';
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { checkVerification } from 'store/thunks/auth-thunk';
+import { checkVerification } from 'store/thunks/user-thunk';
 
 const VerificationPage: React.FC = () => {
-  const { loading, error, message } = useAppSelector((state) => state.auth);
+  const { loading, error, message } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
 
   const { token } = useParams<{ token: string }>();
@@ -18,10 +18,10 @@ const VerificationPage: React.FC = () => {
   }, [dispatch, token]);
 
   return (
-    <AuthLayout>
+    <UserLayout>
       <LoadingSpinner on={loading} />
       <Response type={error ? 'error' : 'message'} content={error || message} />
-    </AuthLayout>
+    </UserLayout>
   );
 };
 

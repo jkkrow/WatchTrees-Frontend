@@ -15,7 +15,7 @@ import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode, videoActions } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
-import { addToHistory } from 'store/thunks/user-thunk';
+import { addToHistory } from 'store/thunks/video-thunk';
 import { formatTime } from 'util/format';
 import { videoUrl } from 'util/video';
 import './VideoPlayer.scss';

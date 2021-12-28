@@ -6,7 +6,7 @@ import { ReactComponent as MoreIcon } from 'assets/icons/more.svg';
 import { ReactComponent as AngleRightIcon } from 'assets/icons/angle-right.svg';
 import { AppThunk } from 'store';
 import { VideoListDetail } from 'store/slices/video-slice';
-import { addToFavorites, removeFromHistory } from 'store/thunks/user-thunk';
+import { toggleFavorites, removeFromHistory } from 'store/thunks/video-thunk';
 import './VideoDropdown.scss';
 
 interface VideoDropdownProps {
@@ -36,7 +36,7 @@ const VideoDropdown: React.FC<VideoDropdownProps> = ({
     }
 
     if (id === 'favorites') {
-      onDispatch(addToFavorites(video._id));
+      onDispatch(toggleFavorites(video._id));
     }
   };
 

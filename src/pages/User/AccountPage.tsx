@@ -3,12 +3,12 @@ import Modal from 'components/Common/UI/Modal/Modal';
 import UserLayout from 'components/User/Layout/UserLayout';
 import AccountDashboard from 'components/User/Account/Dashboard/AccountDashboard';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { authActions } from 'store/slices/auth-slice';
-import { sendVerification } from 'store/thunks/auth-thunk';
+import { userActions } from 'store/slices/user-slice';
+import { sendVerification } from 'store/thunks/user-thunk';
 
 const AccountPage: React.FC = () => {
   const { userData, loading, error, message } = useAppSelector(
-    (state) => state.auth
+    (state) => state.user
   );
   const { dispatch } = useAppDispatch();
 
@@ -17,7 +17,7 @@ const AccountPage: React.FC = () => {
   };
 
   const closeModalHandler = () => {
-    dispatch(authActions.clearResponse());
+    dispatch(userActions.clearResponse());
   };
 
   return (
@@ -36,9 +36,9 @@ const AccountPage: React.FC = () => {
           Verify Email
         </Button>
       )}
-      {userData!.isVerified && !userData!.isPremium && (
+      {/* {userData!.isVerified && !userData!.isPremium && (
         <Button>Upgrade to Premium</Button>
-      )}
+      )} */}
     </UserLayout>
   );
 };

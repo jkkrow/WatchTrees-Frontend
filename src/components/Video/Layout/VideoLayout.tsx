@@ -10,7 +10,7 @@ import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoItemDetail, videoActions } from 'store/slices/video-slice';
-import { addToFavorites } from 'store/thunks/user-thunk';
+import { toggleFavorites } from 'store/thunks/video-thunk';
 import './VideoLayout.scss';
 
 interface VideoLayoutProps {
@@ -18,7 +18,7 @@ interface VideoLayoutProps {
 }
 
 const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
-  const { refreshToken } = useAppSelector((state) => state.auth);
+  const { refreshToken } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
   const [videoTree, setVideoTree] = useState(video);
 
@@ -37,7 +37,7 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
     };
   }, [dispatch, videoTree]);
 
-  const addToFavoritesHandler = async () => {
+  const toggleFavoritesHandler = async () => {
     setVideoTree((prev) => ({
       ...prev,
       data: {
@@ -53,7 +53,7 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
       return history.push('/auth');
     }
 
-    const data = await dispatch(addToFavorites(video._id!));
+    const data = await dispatch(toggleFavorites(video._id!));
 
     setVideoTree((prev) => ({
       ...prev,
@@ -77,7 +77,7 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
             <div className="video-layout__favorites">
               <VideoFavorites
                 favorites={videoTree.data.favorites}
-                onClick={addToFavoritesHandler}
+                onClick={toggleFavoritesHandler}
                 active={videoTree.data.isFavorite}
               />
             </div>

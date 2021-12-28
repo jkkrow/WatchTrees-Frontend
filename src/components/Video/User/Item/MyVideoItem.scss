@@ -1,4 +1,4 @@
-.user-video-item {
+.my-video-item {
   position: relative;
   display: flex;
   align-items: center;
@@ -18,8 +18,9 @@
     justify-content: center;
     width: 100%;
     max-width: 60%;
-    text-align: end;
+    margin-left: auto;
     gap: 1rem;
+    text-align: end;
 
     > div {
       margin-left: auto;
@@ -74,7 +75,7 @@
     clip-path: polygon(0 0, 100% 0, 70% 100%, 0% 100%);
   }
 
-  @media (max-width: 550px) {
+  @media (max-width: 600px) {
     flex-direction: column;
 
     &__thumbnail {

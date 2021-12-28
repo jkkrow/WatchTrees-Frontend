@@ -12,8 +12,7 @@ interface EditNameProps {
 }
 
 const EditName: React.FC<EditNameProps> = ({ onSuccess }) => {
-  const { loading } = useAppSelector((state) => state.user);
-  const { userData } = useAppSelector((state) => state.auth);
+  const { userData, loading } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
 
   const { formState, setFormInput } = useForm({ name: '' });

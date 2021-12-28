@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { Action } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -12,6 +12,14 @@ export const useAppDispatch = <T = any>(initialData?: T) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const dispatch =
     useDispatch<ThunkDispatch<AppState, AppExtraArgument, Action>>();
 
@@ -21,6 +29,10 @@ export const useAppDispatch = <T = any>(initialData?: T) => {
         setLoading(true);
 
         const data = await dispatch(thunk);
+
+        if (!isMounted.current) {
+          return;
+        }
 
         data && setData(data);
 

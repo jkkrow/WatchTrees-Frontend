@@ -8,7 +8,7 @@ import { ReactComponent as SubscribeIcon } from 'assets/icons/subscribe.svg';
 import { ReactComponent as CheckIcon } from 'assets/icons/circle-check.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
-import { subscribeChannel } from 'store/thunks/user-thunk';
+import { toggleSubscribe } from 'store/thunks/user-thunk';
 import { formatNumber } from 'util/format';
 import './ChannelInfo.scss';
 
@@ -25,7 +25,7 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
   column,
   button,
 }) => {
-  const { userData } = useAppSelector((state) => state.auth);
+  const { userData } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
 
   const [detail, setDetail] = useState<ChannelData | null>(data);
@@ -53,7 +53,7 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
     setSubscribeLoading(true);
 
     const { isSubscribed, subscribers } = await dispatch(
-      subscribeChannel(detail._id)
+      toggleSubscribe(detail._id)
     );
 
     setSubscribeLoading(false);

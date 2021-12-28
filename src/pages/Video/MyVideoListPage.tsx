@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import UserLayout from 'components/User/Layout/UserLayout';
-import UserVideoHeader from 'components/User/Video/Header/UserVideoHeader';
-import UserVideoList from 'components/User/Video/List/UserVideoList';
+import MyVideoList from 'components/Video/User/List/MyVideoList';
+import UploadButton from 'components/Upload/Button/UploadButton';
+import Reload from 'components/Common/UI/Reload/Reload';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
-import Response from 'components/Common/UI/Response/Response';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { VideoTree } from 'store/slices/video-slice';
@@ -13,13 +12,12 @@ import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
 import { deleteVideo } from 'store/thunks/video-thunk';
-import { fetchMyVideos } from 'store/thunks/user-thunk';
+import { fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import { RouteComponentProps } from 'react-router';
 
-const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
-  const { accessToken } = useAppSelector((state) => state.auth);
-  const { error } = useAppSelector((state) => state.user);
+const MyVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
+  const { accessToken } = useAppSelector((state) => state.user);
 
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
@@ -59,7 +57,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const fetchVideos = useCallback(
     (forceUpdate = true) => {
       dispatchThunk(
-        fetchMyVideos({ page: currentPage, max: itemsPerPage }, forceUpdate)
+        fetchCreated({ page: currentPage, max: itemsPerPage }, forceUpdate)
       );
     },
     [dispatchThunk, currentPage, itemsPerPage]
@@ -72,7 +70,7 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   }, [accessToken, fetchVideos, history]);
 
   return (
-    <UserLayout>
+    <div className="layout" style={{ maxWidth: '120rem' }}>
       <Modal
         on={displayModal}
         type="form"
@@ -97,19 +95,28 @@ const UserVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
           onForm={setFormInput}
         />
       </Modal>
-      <UserVideoHeader onReload={fetchVideos} />
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          width: '100%',
+          gap: '1rem',
+        }}
+      >
+        <Reload onReload={fetchVideos} />
+        <UploadButton />
+      </div>
       <LoadingSpinner on={loading} />
-      <Response type="error" content={error} />
       {loaded && (
-        <UserVideoList items={data.videos} onDelete={openWarningHandler} />
+        <MyVideoList items={data.videos} onDelete={openWarningHandler} />
       )}
       <Pagination
         count={data.count}
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
       />
-    </UserLayout>
+    </div>
   );
 };
 
-export default UserVideoListPage;
+export default MyVideoListPage;

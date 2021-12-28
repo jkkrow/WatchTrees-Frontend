@@ -33,7 +33,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   forceUpdate,
   onFetch,
 }) => {
-  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
+  const { refreshToken, accessToken } = useAppSelector((state) => state.user);
   const { dispatchThunk, data, setData, loaded } = useAppDispatch<{
     videos: VideoListDetail[];
     count: number;

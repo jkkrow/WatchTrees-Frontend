@@ -2,8 +2,7 @@ import VideoCarousel from 'components/Video/Slide/Carousel/VideoCarousel';
 import VideoGroup from 'components/Video/Slide/Group/VideoGroup';
 import VideoList from 'components/Video/List/VideoList';
 import { useSearch } from 'hooks/search-hook';
-import { fetchVideos } from 'store/thunks/video-thunk';
-import { fetchHistory } from 'store/thunks/user-thunk';
+import { fetchVideos, fetchHistory } from 'store/thunks/video-thunk';
 
 const VideoListPage: React.FC = () => {
   const { keyword } = useSearch();
@@ -16,7 +15,7 @@ const VideoListPage: React.FC = () => {
           <VideoGroup
             id="history"
             label="Recently Watched"
-            to="/user/history"
+            to="/history"
             params={{ skipFullyWatched: true }}
             forceUpdate
             onFetch={fetchHistory}

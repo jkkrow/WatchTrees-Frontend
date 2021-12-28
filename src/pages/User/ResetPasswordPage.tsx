@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import AuthLayout from 'components/Auth/Layout/AuthLayout';
+import UserLayout from 'components/User/Layout/UserLayout';
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
@@ -10,14 +10,14 @@ import Button from 'components/Common/Element/Button/Button';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { useForm } from 'hooks/form-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { checkRecovery, resetPassword } from 'store/thunks/auth-thunk';
+import { checkRecovery, resetPassword } from 'store/thunks/user-thunk';
 import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
 
 const ResetPasswordPage: React.FC = () => {
-  const [isAccessAllowed, setIsAccessAllowed] = useState(false);
-
-  const { loading, error, message } = useAppSelector((state) => state.auth);
+  const { loading, error, message } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
+
+  const [isAccessAllowed, setIsAccessAllowed] = useState(false);
 
   const { formState, setFormInput } = useForm({
     password: { value: '', isValid: false },
@@ -47,7 +47,7 @@ const ResetPasswordPage: React.FC = () => {
   }, [dispatch, token]);
 
   return (
-    <AuthLayout>
+    <UserLayout>
       {!isAccessAllowed && (
         <>
           <LoadingSpinner on={loading} />
@@ -89,7 +89,7 @@ const ResetPasswordPage: React.FC = () => {
           )}
         </>
       )}
-    </AuthLayout>
+    </UserLayout>
   );
 };
 

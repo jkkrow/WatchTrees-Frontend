@@ -1,10 +1,11 @@
 import VideoList from 'components/Video/List/VideoList';
 import ChannelGroup from 'components/User/Channel/Group/ChannelGroup';
 import { useAppSelector } from 'hooks/store-hook';
-import { fetchSubscribes, fetchFavorites } from 'store/thunks/user-thunk';
+import { fetchSubscribes } from 'store/thunks/user-thunk';
+import { fetchFavorites } from 'store/thunks/video-thunk';
 
 const FavoritesPage: React.FC = () => {
-  const { accessToken } = useAppSelector((state) => state.auth);
+  const { accessToken } = useAppSelector((state) => state.user);
 
   return (
     <div className="layout">

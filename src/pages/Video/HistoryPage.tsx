@@ -1,5 +1,5 @@
 import VideoList from 'components/Video/List/VideoList';
-import { fetchHistory } from 'store/thunks/user-thunk';
+import { fetchHistory } from 'store/thunks/video-thunk';
 
 const HistoryPage: React.FC = () => {
   return (

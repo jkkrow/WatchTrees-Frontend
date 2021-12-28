@@ -14,8 +14,7 @@ interface EditPictureProps {
 }
 
 const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
-  const { loading } = useAppSelector((state) => state.user);
-  const { userData } = useAppSelector((state) => state.auth);
+  const { userData, loading } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
 
   const [userPicture, setUserPicture] = useState(userData!.picture);

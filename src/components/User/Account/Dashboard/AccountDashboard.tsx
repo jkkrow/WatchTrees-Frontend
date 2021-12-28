@@ -7,7 +7,7 @@ import { useAppSelector } from 'hooks/store-hook';
 import './AccountDashboard.scss';
 
 const AccountDashboard: React.FC = () => {
-  const { userData } = useAppSelector((state) => state.auth);
+  const { userData } = useAppSelector((state) => state.user);
 
   const [editMode, setEditMode] = useState<
     'picture' | 'name' | 'password' | null

@@ -6,24 +6,24 @@ import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
 import VideoPage from 'pages/Video/VideoPage';
 import VideoListPage from 'pages/Video/VideoListPage';
-import VerificationPage from 'pages/Auth/VerificationPage';
-import AccountPage from 'pages/User/AccountPage';
-import UserVideoListPage from 'pages/User/UserVideoListPage';
+import MyVideoListPage from 'pages/Video/MyVideoListPage';
+import HistoryPage from 'pages/Video/HistoryPage';
+import ChannelPage from 'pages/Video/ChannelPage';
 import UploadPage from 'pages/Upload/UploadPage';
-import HistoryPage from 'pages/User/HistoryPage';
-import ChannelPage from 'pages/User/ChannelPage';
-import LoginPage from 'pages/Auth/LoginPage';
-import SendRecoveryPage from 'pages/Auth/SendRecoveryPage';
-import ResetPasswordPage from 'pages/Auth/ResetPasswordPage';
+import LoginPage from 'pages/User/LoginPage';
+import AccountPage from 'pages/User/AccountPage';
+import VerificationPage from 'pages/User/VerificationPage';
+import SendRecoveryPage from 'pages/User/SendRecoveryPage';
+import ResetPasswordPage from 'pages/User/ResetPasswordPage';
 import NotFoundPage from 'pages/Error/NotFoundPage';
 import ProtectedRoute from 'service/ProtectedRoute';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { fetchTokenOnload } from 'store/thunks/auth-thunk';
+import { fetchTokenOnload } from 'store/thunks/user-thunk';
 import './App.scss';
-import FavoritesPage from 'pages/User/FavoritesPage';
+import FavoritesPage from 'pages/Video/FavoritesPage';
 
 const App: React.FC = () => {
-  const { refreshToken } = useAppSelector((state) => state.auth);
+  const { refreshToken } = useAppSelector((state) => state.user);
 
   const { dispatch } = useAppDispatch();
 
@@ -38,9 +38,9 @@ const App: React.FC = () => {
       <main>
         <Switch>
           <Route component={VideoListPage} exact path="/" />
-          <Route component={ChannelPage} exact path="/channel/:id" />
           <Route component={VideoPage} exact path="/video/:id" />
-          <Route component={HistoryPage} exact path="/user/history" />
+          <Route component={ChannelPage} exact path="/channel/:id" />
+          <Route component={HistoryPage} exact path="/history" />
           <Route
             component={VerificationPage}
             exact
@@ -73,7 +73,7 @@ const App: React.FC = () => {
           />
           <ProtectedRoute
             require={refreshToken}
-            component={UserVideoListPage}
+            component={MyVideoListPage}
             exact
             path="/user/videos"
             redirect="/auth"
