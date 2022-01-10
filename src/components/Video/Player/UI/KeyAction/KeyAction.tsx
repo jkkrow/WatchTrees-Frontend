@@ -1,11 +1,13 @@
+import { memo } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { ReactComponent as VolumeHighIcon } from 'assets/icons/volume-high.svg';
 import { ReactComponent as VolumeMiddleIcon } from 'assets/icons/volume-middle.svg';
 import { ReactComponent as VolumeLowIcon } from 'assets/icons/volume-low.svg';
 import { ReactComponent as VolumeMuteIcon } from 'assets/icons/volume-mute.svg';
-import { ReactComponent as DoubleArrowLeftIcon } from 'assets/icons/double-arrow-left.svg';
-import { ReactComponent as DoubleArrowRightIcon } from 'assets/icons/double-arrow-right.svg';
+import { ReactComponent as AngleBackwardIcon } from 'assets/icons/angle-backward.svg';
+import { ReactComponent as AngleForwardIcon } from 'assets/icons/angle-forward.svg';
+import './KeyAction.scss';
 
 interface KeyActionProps {
   on: boolean;
@@ -42,13 +44,13 @@ const KeyAction: React.FC<KeyActionProps> = ({ on, volume }) => {
       </CSSTransition>
       <div className="vp-key-action__skip rewind">
         <div className="vp-key-action__skip__container">
-          <DoubleArrowLeftIcon />
+          <AngleBackwardIcon />
           <span>- 10 seconds</span>
         </div>
       </div>
       <div className="vp-key-action__skip forward">
         <div className="vp-key-action__skip__container">
-          <DoubleArrowRightIcon />
+          <AngleForwardIcon />
           <span>+ 10 seconds</span>
         </div>
       </div>
@@ -56,4 +58,4 @@ const KeyAction: React.FC<KeyActionProps> = ({ on, volume }) => {
   );
 };
 
-export default KeyAction;
+export default memo(KeyAction);

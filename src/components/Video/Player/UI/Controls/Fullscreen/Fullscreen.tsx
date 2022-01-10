@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { ReactComponent as FullscreenIcon } from 'assets/icons/fullscreen.svg';
 import { ReactComponent as FullscreenExitIcon } from 'assets/icons/fullscreen-exit.svg';
+import './Fullscreen.scss';
 
 interface FullscreenProps {
   fullscreenState: boolean;

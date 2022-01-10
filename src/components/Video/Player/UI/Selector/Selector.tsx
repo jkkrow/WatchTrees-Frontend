@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
 import { VideoNode } from 'store/slices/video-slice';
+import './Selector.scss';
 
 interface SelectorProps {
   on: boolean;

@@ -4,8 +4,8 @@ import { useHistory, useLocation } from 'react-router';
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as AngleRightIcon } from 'assets/icons/angle-right.svg';
-import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
-import { ReactComponent as DoubleAngleRightIcon } from 'assets/icons/double-angle-right.svg';
+import { ReactComponent as AngleLeftDoubleIcon } from 'assets/icons/angle-left-double.svg';
+import { ReactComponent as AngleRightDoubleIcon } from 'assets/icons/angle-right-double.svg';
 import './Pagination.scss';
 
 interface PaginationProps {
@@ -42,7 +42,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return totalPage > 1 ? (
     <div className="pagination">
       <Button inversed onClick={() => pageHandler(1)}>
-        <DoubleAngleLeftIcon />
+        <AngleLeftDoubleIcon />
       </Button>
       <Button inversed onClick={() => pageHandler(currentPage - 1)}>
         <AngleLeftIcon />
@@ -72,7 +72,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <AngleRightIcon />
       </Button>
       <Button inversed onClick={() => pageHandler(totalPage)}>
-        <DoubleAngleRightIcon />
+        <AngleRightDoubleIcon />
       </Button>
     </div>
   ) : null;

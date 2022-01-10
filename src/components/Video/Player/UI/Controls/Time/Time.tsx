@@ -1,5 +1,7 @@
 import { memo } from 'react';
 
+import './Time.scss';
+
 interface TimeProps {
   time: string;
 }

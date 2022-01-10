@@ -34,7 +34,7 @@ const ChannelGroup: React.FC<ChannelGroupProps> = ({
 
   return (
     <div className="channel-group">
-      {label && (
+      {label && data.length && (
         <h3 className={`channel-group__label${!loaded ? ' loading' : ''}`}>
           {label}
         </h3>

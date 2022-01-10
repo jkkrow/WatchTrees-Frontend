@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 
 import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
-import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
+import { ReactComponent as AngleLeftDoubleIcon } from 'assets/icons/angle-left-double.svg';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
 import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
@@ -67,7 +67,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
         ) : (
           currentNode.id === activeNodeId && (
             <div className="upload-node__navigation">
-              <DoubleAngleLeftIcon onClick={() => activeNodeHandler(rootId)} />
+              <AngleLeftDoubleIcon onClick={() => activeNodeHandler(rootId)} />
               <AngleLeftIcon
                 onClick={() => activeNodeHandler(currentNode.prevId!)}
               />

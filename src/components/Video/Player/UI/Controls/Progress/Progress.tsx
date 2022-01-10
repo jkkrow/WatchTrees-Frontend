@@ -1,5 +1,7 @@
 import { memo, forwardRef } from 'react';
 
+import './Progress.scss';
+
 interface ProgressProps {
   videoDuration: number;
   bufferProgress: number;

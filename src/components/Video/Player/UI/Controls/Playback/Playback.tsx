@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { ReactComponent as PlayIcon } from 'assets/icons/play.svg';
 import { ReactComponent as PauseIcon } from 'assets/icons/pause.svg';
+import './Playback.scss';
 
 interface PlaybackProps {
   play: boolean;

@@ -1,0 +1,46 @@
+@use '../../VideoPlayer' as *;
+
+.vp-selector {
+  position: absolute;
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  align-content: flex-end;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  max-height: 15rem;
+  gap: 2rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 400ms ease-out;
+  z-index: 15;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-30%);
+  }
+
+  &.high {
+    transform: translateY(-100%);
+  }
+
+  &__btn {
+    width: 40%;
+    height: clamp(4rem, 30%, 10rem);
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    font-size: clamp(1.2rem, 1vw, 1.7rem);
+    color: $vp-text;
+    background-color: rgba($color: $vp-bg, $alpha: 0.8);
+    transition: all 200ms ease-out;
+  }
+
+  &__btn:hover {
+    color: $vp-bg--secondary;
+    background-color: $vp-bg;
+  }
+}

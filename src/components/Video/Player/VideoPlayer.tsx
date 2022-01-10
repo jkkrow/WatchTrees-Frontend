@@ -1,15 +1,16 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import shaka from 'shaka-player';
 
-import Playback from './Controls/Playback';
-import Volume from './Controls/Volume';
-import Progress from './Controls/Progress';
-import Time from './Controls/Time';
-import Fullscreen from './Controls/Fullscreen';
-import Selector from './Controls/Selector';
-import Navigation from './Controls/Navigation';
-import Loader from './Controls/Loader';
-import KeyAction from './Controls/KeyAction';
+import Playback from './UI/Controls/Playback/Playback';
+import Volume from './UI/Controls/Volume/Volume';
+import Progress from './UI/Controls/Progress/Progress';
+import Time from './UI/Controls/Time/Time';
+import Fullscreen from './UI/Controls/Fullscreen/Fullscreen';
+import Settings from './UI/Controls/Settings/Settings';
+import Selector from './UI/Selector/Selector';
+import Navigation from './UI/Navigation/Navigation';
+import Loader from './UI/Loader/Loader';
+import KeyAction from './UI/KeyAction/KeyAction';
 import { useTimeout, useInterval } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
@@ -72,6 +73,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // fullscreen button
   const [fullscreen, setFullscreen] = useState(false);
 
+  // resolutions
+  const [resolutions, setResolutions] = useState<shaka.extern.TrackList>([]);
+  const [activeResolution, setActiveResolution] = useState<number | 'auto'>(
+    'auto'
+  );
+
+  // playbackRate
+  const [playbackRates] = useState([0.5, 0.75, 1, 1.25, 1.5, 2]);
+  const [activePlaybackRate, setActivePlaybackRate] = useState(1);
+
   // vp-loader
   const [displayLoader, setDisplayLoader] = useState(true);
 
@@ -89,23 +100,25 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoProgressRef = useRef<HTMLDivElement>(null);
 
+  const shakaPlayer = useRef<shaka.Player>();
   const volumeData = useRef(videoVolume || 1);
   const progressSeekData = useRef(0);
   const selectorData = useRef(false);
 
-  const [controlsTimeout] = useTimeout();
-  const [volumeTimeout] = useTimeout();
-  const [keyActionSkipTimeout] = useTimeout();
-  const [keyActionVolumeTimeout] = useTimeout();
-  const [loaderTimeout, clearLoaderTimeout] = useTimeout();
-  const [historyInterval, clearHistoryInterval] = useInterval();
+  const [setControlsTimeout] = useTimeout();
+  const [setVolumeTimeout] = useTimeout();
+  const [setKeyActionSkipTimeout] = useTimeout();
+  const [setKeyActionVolumeTimeout] = useTimeout();
+  const [setLoaderTimeout, clearLoaderTimeout] = useTimeout();
+  const [setHistoryInterval, clearHistoryInterval] = useInterval();
+  const [setResolutionInterval, clearResolutionInterval] = useInterval();
 
   const activeChange = useCompare(active);
   const firstRender = useFirstRender();
 
   const videoInfo = useMemo(() => currentVideo.info!, [currentVideo.info]);
 
-  /*
+  /**
    * PREVENT DEFAULT
    */
 
@@ -113,7 +126,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     event.preventDefault();
   }, []);
 
-  /*
+  /**
    * TOGGLE SHOWING CONTROLS
    */
 
@@ -136,16 +149,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (video.paused) return;
 
-    controlsTimeout(() => {
+    setControlsTimeout(() => {
       hideControlsHandler();
 
       if (!video.paused) {
         setDisplayCursor('none');
       }
     }, 2000);
-  }, [hideControlsHandler, controlsTimeout]);
+  }, [hideControlsHandler, setControlsTimeout]);
 
-  /*
+  /**
    * PLAYBACK CONTROL
    */
 
@@ -168,7 +181,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (editMode) return;
 
     // Update history
-    historyInterval(
+    setHistoryInterval(
       () => {
         const endPoint = (video.duration * 95) / 100;
         const isLastVideo = currentVideo.children.length === 0;
@@ -191,13 +204,23 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       5000,
       true
     );
+
+    // Update Resolution
+    setResolutionInterval(() => {
+      const player = shakaPlayer.current;
+
+      if (!player) return;
+
+      setResolutions(player.getVariantTracks());
+    }, 5000);
   }, [
     editMode,
     currentVideo.id,
     currentVideo.children,
     videoId,
     dispatch,
-    historyInterval,
+    setHistoryInterval,
+    setResolutionInterval,
   ]);
 
   const videoPauseHandler = useCallback(() => {
@@ -206,7 +229,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (editMode) return;
 
     clearHistoryInterval();
-  }, [editMode, clearHistoryInterval]);
+    clearResolutionInterval();
+  }, [editMode, clearHistoryInterval, clearResolutionInterval]);
 
   const videoEndedHandler = useCallback(() => {
     const video = videoRef.current!;
@@ -246,20 +270,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     selectedNextVideoId,
   ]);
 
-  /*
+  /**
    * LOADING CONTROL
    */
 
   const showLoaderHandler = useCallback(() => {
-    loaderTimeout(() => setDisplayLoader(true), 300);
-  }, [loaderTimeout]);
+    setLoaderTimeout(() => setDisplayLoader(true), 300);
+  }, [setLoaderTimeout]);
 
   const hideLoaderHandler = useCallback(() => {
     clearLoaderTimeout();
     setDisplayLoader(false);
   }, [clearLoaderTimeout]);
 
-  /*
+  /**
    * VOLUME CONTROL
    */
 
@@ -285,12 +309,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     if (active) {
-      volumeTimeout(() => {
+      setVolumeTimeout(() => {
         dispatch(videoActions.setVideoVolume(video.volume));
         localStorage.setItem('video-volume', `${video.volume}`);
       }, 300);
     }
-  }, [dispatch, active, volumeTimeout]);
+  }, [dispatch, active, setVolumeTimeout]);
 
   const toggleMuteHandler = useCallback(() => {
     const video = videoRef.current!;
@@ -305,7 +329,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
   }, []);
 
-  /*
+  /**
    * TIME CONTROL
    */
 
@@ -365,7 +389,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     hideControlsHandler,
   ]);
 
-  /*
+  /**
    * SKIP CONTROL
    */
 
@@ -406,7 +430,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     []
   );
 
-  /*
+  /**
    * FULLSCREEN CONTROL
    */
 
@@ -443,7 +467,34 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     [currentVideo.children]
   );
 
-  /*
+  /**
+   * Settings
+   */
+
+  const changeResolutionHandler = useCallback(
+    (resolution: shaka.extern.Track | 'auto') => {
+      const player = shakaPlayer.current!;
+
+      if (resolution === 'auto') {
+        player.configure({ abr: { enabled: true } });
+        setActiveResolution('auto');
+      } else {
+        player.configure({ abr: { enabled: false } });
+        player.selectVariantTrack(resolution);
+        setActiveResolution(resolution.height!);
+      }
+    },
+    []
+  );
+
+  const changePlaybackRateHandler = useCallback((playbackRate: number) => {
+    const video = videoRef.current!;
+
+    video.playbackRate = playbackRate;
+    setActivePlaybackRate(playbackRate);
+  }, []);
+
+  /**
    * KEYBOARD SHORTKUTS
    */
 
@@ -509,7 +560,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               fill: 'forwards',
             }
           );
-          keyActionSkipTimeout(() => {
+          setKeyActionSkipTimeout(() => {
             rewind.style.display = 'none';
             forward.style.display = 'none';
           }, 1000);
@@ -525,7 +576,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           }
 
           setDisplayKeyAction(true);
-          keyActionVolumeTimeout(() => {
+          setKeyActionVolumeTimeout(() => {
             setDisplayKeyAction(false);
           }, 1500);
 
@@ -540,7 +591,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           }
 
           setDisplayKeyAction(true);
-          keyActionVolumeTimeout(() => {
+          setKeyActionVolumeTimeout(() => {
             setDisplayKeyAction(false);
           }, 1500);
 
@@ -565,12 +616,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     [
       togglePlayHandler,
       selectNextVideoHandler,
-      keyActionSkipTimeout,
-      keyActionVolumeTimeout,
+      setKeyActionSkipTimeout,
+      setKeyActionVolumeTimeout,
     ]
   );
 
-  /*
+  /**
    * INITIALIZE VIDEO
    */
 
@@ -603,7 +654,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     fullscreenChangeHandler,
   ]);
 
-  /*
+  /**
    * NAVIGATION
    */
 
@@ -695,31 +746,30 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     videoDuration,
   ]);
 
-  /*
+  /**
    * USEEFFECT
    */
 
   useEffect(() => {
     (async () => {
-      try {
-        const video = videoRef.current!;
-        let src = videoInfo.url;
+      const video = videoRef.current!;
+      let src = videoInfo.url;
 
-        // Edit mode
-        if (src.substring(0, 4) === 'blob') {
-          return video.setAttribute('src', src);
-        }
-
-        src = videoUrl(src, videoInfo.isConverted);
-
-        // Connect video to Shaka Player
-        const player = new shaka.Player(video);
-
-        // Try to load a manifest (async process).
-        await player.load(src);
-      } catch (err) {
-        alert(err);
+      // Edit mode
+      if (src.substring(0, 4) === 'blob') {
+        return video.setAttribute('src', src);
       }
+
+      src = videoUrl(src, videoInfo.isConverted);
+
+      // Connect video to Shaka Player
+      const player = new shaka.Player(video);
+
+      await player.load(src);
+
+      shakaPlayer.current = player;
+
+      setResolutions(player.getVariantTracks());
     })();
   }, [videoInfo.isConverted, videoInfo.url]);
 
@@ -764,7 +814,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     };
   }, [active, keyEventHandler]);
 
-  /*
+  /**
    * RENDER
    */
 
@@ -793,6 +843,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       />
       <Loader on={displayLoader} />
       <KeyAction on={displayKeyAction} volume={volumeState} />
+      <Selector
+        on={displaySelector}
+        high={displayControls}
+        next={currentVideo.children}
+        onSelect={selectNextVideoHandler}
+      />
       <div
         className={`vp-controls${!canPlayType ? ' hidden' : ''}${
           !displayControls ? ' hide' : ''
@@ -818,30 +874,38 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <Time time={remainedTimeUI} />
         </div>
         <div className="vp-controls__body">
-          <Volume
-            volume={volumeState}
-            onToggle={toggleMuteHandler}
-            onSeek={volumeInputHandler}
-            onKey={preventDefault}
-          />
-          <Playback
-            play={playbackState}
-            onToggle={togglePlayHandler}
-            onKey={preventDefault}
-          />
-          <Fullscreen
-            fullscreenState={fullscreen}
-            onToggle={toggleFullscreenHandler}
-            onKey={preventDefault}
-          />
+          <div className="vp-controls__body__left">
+            <Volume
+              volume={volumeState}
+              onToggle={toggleMuteHandler}
+              onSeek={volumeInputHandler}
+              onKey={preventDefault}
+            />
+          </div>
+          <div className="vp-controls__body__center">
+            <Playback
+              play={playbackState}
+              onToggle={togglePlayHandler}
+              onKey={preventDefault}
+            />
+          </div>
+          <div className="vp-controls__body__right">
+            <Settings
+              resolutions={resolutions}
+              playbackRates={playbackRates}
+              activeResolution={activeResolution}
+              activePlaybackRate={activePlaybackRate}
+              onChangeResolution={changeResolutionHandler}
+              onChangePlaybackRate={changePlaybackRateHandler}
+            />
+            <Fullscreen
+              fullscreenState={fullscreen}
+              onToggle={toggleFullscreenHandler}
+              onKey={preventDefault}
+            />
+          </div>
         </div>
       </div>
-      <Selector
-        on={displaySelector}
-        high={displayControls}
-        next={currentVideo.children}
-        onSelect={selectNextVideoHandler}
-      />
 
       {editMode && (
         <Navigation

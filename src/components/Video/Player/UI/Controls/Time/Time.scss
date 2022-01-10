@@ -1,0 +1,9 @@
+@use '../../../VideoPlayer' as *;
+
+.vp-controls__time {
+  width: clamp(6rem, 10%, 15rem);
+  padding: 1rem;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  color: $vp-text;
+  text-align: center;
+}

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Warning from './Warning';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
-import { ReactComponent as DoubleAngleLeftIcon } from 'assets/icons/double-angle-left.svg';
+import { ReactComponent as AngleLeftDoubleIcon } from 'assets/icons/angle-left-double.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode, videoActions } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
@@ -79,7 +79,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
               zIndex: 1,
             }}
           >
-            <DoubleAngleLeftIcon onClick={() => activeNodeHandler(rootId)} />
+            <AngleLeftDoubleIcon onClick={() => activeNodeHandler(rootId)} />
             <AngleLeftIcon
               onClick={() => activeNodeHandler(currentNode.prevId!)}
             />

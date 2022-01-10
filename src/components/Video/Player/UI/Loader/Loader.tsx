@@ -1,5 +1,7 @@
 import { memo } from 'react';
 
+import './Loader.scss';
+
 interface LoaderProps {
   on: boolean;
 }

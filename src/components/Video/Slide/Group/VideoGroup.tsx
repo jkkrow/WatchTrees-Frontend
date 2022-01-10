@@ -67,7 +67,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
 
   return (
     <div className="video-group">
-      {label && (
+      {label && data.videos.length > 0 && (
         <h3
           className={`video-group__label${to ? ' link' : ''}${
             !loaded ? ' loading' : ''

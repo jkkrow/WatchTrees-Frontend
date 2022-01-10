@@ -1,0 +1,106 @@
+@use '../../../VideoPlayer' as *;
+
+.vp-controls__settings {
+  &__dropdown {
+    position: absolute;
+    display: none;
+    bottom: 100%;
+    right: 0;
+    overflow: hidden;
+    animation: show-settings 200ms;
+    z-index: 20;
+
+    @keyframes show-settings {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    &.active {
+      display: flex;
+    }
+
+    &__menu {
+      position: relative;
+      bottom: 0;
+      width: 25rem;
+      background-color: rgba($color: $vp-bg, $alpha: 0.8);
+      transition: transform 300ms ease;
+    }
+
+    &__list {
+      max-height: 20rem;
+      overflow: auto;
+    }
+
+    &__label,
+    &__item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 2rem;
+      cursor: pointer;
+      transition: background-color 200ms;
+
+      &:hover {
+        background-color: rgba($color: #333333, $alpha: 0.8);
+      }
+
+      svg {
+        margin: 0;
+      }
+    }
+
+    &__label {
+      font-weight: 600;
+    }
+
+    &__item.active::after {
+      content: '';
+      display: flex;
+      width: 1rem;
+      height: 1rem;
+      margin-left: auto;
+      border-radius: 50px;
+      background-color: $vp-text;
+    }
+  }
+}
+
+/* CSS Transition */
+
+.menu-index-enter {
+  position: absolute;
+  transform: translateX(-110%);
+}
+
+.menu-index-enter-active {
+  transform: translateX(0%);
+}
+
+.menu-index-exit {
+  position: absolute;
+  transform: translateX(0%);
+}
+
+.menu-index-exit-active {
+  transform: translateX(-110%);
+}
+
+.menu-main-enter {
+  transform: translateX(110%);
+}
+
+.menu-main-enter-active {
+  transform: translateX(0%);
+}
+
+.menu-main-exit {
+}
+
+.menu-main-exit-active {
+  transform: translateX(110%);
+}

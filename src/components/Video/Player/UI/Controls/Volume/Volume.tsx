@@ -4,6 +4,7 @@ import { ReactComponent as VolumeHighIcon } from 'assets/icons/volume-high.svg';
 import { ReactComponent as VolumeMiddleIcon } from 'assets/icons/volume-middle.svg';
 import { ReactComponent as VolumeLowIcon } from 'assets/icons/volume-low.svg';
 import { ReactComponent as VolumeMuteIcon } from 'assets/icons/volume-mute.svg';
+import './Volume.scss';
 
 interface VolumeProps {
   volume: number;
