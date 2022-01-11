@@ -5,40 +5,52 @@ import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import {
   VideoTree as VideoTreeType,
   videoActions,
+  History,
 } from 'store/slices/video-slice';
 
 import './VideoTree.scss';
 
 interface VideoTreeProps {
   tree: VideoTreeType;
+  history?: History | null;
   autoPlay?: boolean;
   editMode?: boolean;
 }
 
 const VideoTree: React.FC<VideoTreeProps> = ({
   tree,
+  history,
   autoPlay = true,
   editMode = false,
 }) => {
-  const { videoTree, activeVideoId } = useAppSelector((state) => state.video);
+  const { activeVideoId, initialProgress } = useAppSelector(
+    (state) => state.video
+  );
   const { dispatch } = useAppDispatch();
 
   useEffect(() => {
-    dispatch(videoActions.setVideoTree(tree));
-  }, [dispatch, tree]);
+    let initialNodeId = tree.root.id;
+    let initialTime = 0;
 
-  useEffect(() => {
-    dispatch(videoActions.setActiveVideo(tree.root.id));
-  }, [dispatch, tree.root.id]);
+    if (history && !history.progress.isEnded) {
+      initialNodeId = history.progress.activeVideoId;
+      initialTime = history.progress.time;
+    }
+    dispatch(videoActions.setActiveVideo(initialNodeId));
+    dispatch(videoActions.setInitialProgress(initialTime));
+
+    return () => {
+      dispatch(videoActions.setInitialProgress(null));
+    };
+  }, [dispatch, tree.root.id, history]);
 
   return (
     <div className="video-tree">
-      {videoTree && activeVideoId && (
+      {activeVideoId && initialProgress !== null && (
         <VideoNode
-          currentVideo={videoTree.root}
-          videoId={videoTree._id}
-          rootId={videoTree.root.id}
-          activeVideoId={activeVideoId}
+          currentVideo={tree.root}
+          videoId={tree._id}
+          rootId={tree.root.id}
           autoPlay={autoPlay}
           editMode={editMode}
         />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useHistory } from 'react-router';
 
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
@@ -9,7 +9,7 @@ import VideoDuration from '../UI/Duration/VideoDuration';
 import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoItemDetail, videoActions } from 'store/slices/video-slice';
+import { VideoItemDetail } from 'store/slices/video-slice';
 import { toggleFavorites } from 'store/thunks/video-thunk';
 import './VideoLayout.scss';
 
@@ -20,22 +20,10 @@ interface VideoLayoutProps {
 const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
   const { refreshToken } = useAppSelector((state) => state.user);
   const { dispatch } = useAppDispatch();
+
   const [videoTree, setVideoTree] = useState(video);
 
   const history = useHistory();
-
-  useEffect(() => {
-    if (!videoTree.history || videoTree.history.progress.isEnded) return;
-
-    dispatch(
-      videoActions.setActiveVideo(videoTree.history.progress.activeVideoId)
-    );
-    dispatch(videoActions.setInitialProgress(videoTree.history.progress.time));
-
-    return () => {
-      dispatch(videoActions.setInitialProgress(0));
-    };
-  }, [dispatch, videoTree]);
 
   const toggleFavoritesHandler = async () => {
     setVideoTree((prev) => ({
@@ -68,7 +56,7 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
   return (
     <div className="video-layout">
       <div className="video-layout__video">
-        <VideoTree tree={videoTree} />
+        <VideoTree tree={videoTree} history={videoTree.history} />
       </div>
       <div className="video-layout__info">
         <div className="video-layout__header">

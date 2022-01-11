@@ -2,7 +2,7 @@ import { useHistory } from 'react-router';
 
 import VideoPlayer from '../../Player/VideoPlayer';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import {
   VideoNode as VideoNodeType,
   videoActions,
@@ -13,7 +13,6 @@ interface VideoNodeProps {
   currentVideo: VideoNodeType;
   videoId: string;
   rootId: string;
-  activeVideoId: string;
   autoPlay: boolean;
   editMode: boolean;
 }
@@ -22,11 +21,12 @@ const VideoNode: React.FC<VideoNodeProps> = ({
   currentVideo,
   videoId,
   rootId,
-  activeVideoId,
   autoPlay,
   editMode,
 }) => {
+  const { activeVideoId } = useAppSelector((state) => state.video);
   const { dispatch } = useAppDispatch();
+
   const history = useHistory();
 
   const returnHandler = () => {
@@ -74,8 +74,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
           currentVideo={video}
           videoId={videoId}
           rootId={rootId}
-          activeVideoId={activeVideoId}
-          autoPlay={false}
+          autoPlay={autoPlay}
           editMode={editMode}
         />
       ))}

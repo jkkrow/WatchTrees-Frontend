@@ -638,7 +638,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   );
 
   /**
-   * INITIALIZE VIDEO
+   * LOAD VIDEO
    */
 
   const videoLoadHandler = useCallback(() => {
@@ -668,8 +668,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setVideoDuration(video.duration);
     timeChangeHandler();
 
+    if (active && autoPlay) {
+      video.play();
+    }
+
     document.addEventListener('fullscreenchange', fullscreenChangeHandler);
   }, [
+    active,
+    autoPlay,
     videoVolume,
     videoPlaybackRate,
     videoResolution,
@@ -770,18 +776,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   ]);
 
   /**
-   * USEEFFECT
+   * INITIATE PLAYER
    */
 
   useEffect(() => {
     (async () => {
       if (!firstRender) return;
 
-      console.log('run');
-
       const video = videoRef.current!;
       let src = videoInfo.url;
-      let startTime = 0;
+      let startTime: number | null = null;
 
       // Edit mode
       if (src.substring(0, 4) === 'blob') {
@@ -795,7 +799,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       // Connect video to Shaka Player
       const player = new shaka.Player(video);
 
-      if (activeVideoId === currentVideo.id && initialProgress > 0) {
+      if (activeVideoId === currentVideo.id && initialProgress) {
         startTime = initialProgress;
       }
 
@@ -900,7 +904,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     >
       <video
         ref={videoRef}
-        autoPlay={autoPlay}
         onLoadedMetadata={videoLoadHandler}
         onClick={togglePlayHandler}
         onPlay={videoPlayHandler}
