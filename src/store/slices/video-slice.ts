@@ -82,6 +82,8 @@ interface VideoSliceState {
   activeVideoId: string;
   initialProgress: number;
   videoVolume: number;
+  videoResolution: number | 'auto';
+  videoPlaybackRate: number;
 }
 
 const videoVolumeStorage = localStorage.getItem('video-volume');
@@ -91,6 +93,8 @@ const initialState: VideoSliceState = {
   activeVideoId: '',
   initialProgress: 0,
   videoVolume: videoVolumeStorage ? +videoVolumeStorage : 1,
+  videoResolution: 'auto',
+  videoPlaybackRate: 1,
 };
 
 const videoSlice = createSlice({
@@ -105,12 +109,23 @@ const videoSlice = createSlice({
       state.activeVideoId = payload;
     },
 
+    setInitialProgress: (state, { payload }: PayloadAction<number>) => {
+      state.initialProgress = payload;
+    },
+
     setVideoVolume: (state, { payload }: PayloadAction<number>) => {
       state.videoVolume = payload;
     },
 
-    setInitialProgress: (state, { payload }: PayloadAction<number>) => {
-      state.initialProgress = payload;
+    setVideoResolution: (
+      state,
+      { payload }: PayloadAction<number | 'auto'>
+    ) => {
+      state.videoResolution = payload;
+    },
+
+    setVideoPlaybackRate: (state, { payload }: PayloadAction<number>) => {
+      state.videoPlaybackRate = payload;
     },
   },
 });

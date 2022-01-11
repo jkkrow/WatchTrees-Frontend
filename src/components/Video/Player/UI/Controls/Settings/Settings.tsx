@@ -1,4 +1,4 @@
-import { useState, memo, useMemo, useEffect } from 'react';
+import { useState, memo, useMemo, useCallback } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import OutsideClickHandler from 'react-outside-click-handler';
 
@@ -29,6 +29,74 @@ const Settings: React.FC<SettingsProps> = ({
     'resolution'
   );
 
+  const toggleDropdownHandler = useCallback(() => {
+    setIsOpened((prev) => !prev);
+  }, []);
+
+  const closeDropdownHandler = useCallback(() => {
+    setIsOpened(false);
+  }, []);
+
+  const selectMenuHandler = useCallback(
+    (activeMenu: 'resolution' | 'speed') => {
+      setIsIndex(false);
+      setActiveMenu(activeMenu);
+    },
+    []
+  );
+
+  const selectIndexHandler = useCallback(() => {
+    setIsIndex(true);
+  }, []);
+
+  const changeResolutionHandler = useCallback(
+    (resolution: shaka.extern.Track | 'auto') => {
+      onChangeResolution(resolution);
+      setIsIndex(true);
+    },
+    [onChangeResolution]
+  );
+
+  const changePlaybackRateHandler = useCallback(
+    (playbackRate: number) => {
+      onChangePlaybackRate(playbackRate);
+      setIsIndex(true);
+    },
+    [onChangePlaybackRate]
+  );
+
+  const indexMenu = useMemo(() => {
+    return (
+      <div className="vp-controls__settings__dropdown__menu">
+        <ul className="vp-controls__settings__dropdown__list">
+          {resolutions.length > 0 && (
+            <li
+              className="vp-controls__settings__dropdown__item"
+              onClick={() => selectMenuHandler('resolution')}
+            >
+              <span style={{ fontWeight: 600 }}>Resolution</span>
+              <span style={{ marginLeft: 'auto' }}>
+                {activeResolution === 'auto'
+                  ? `Auto (${
+                      resolutions.find((resolution) => resolution.active)
+                        ?.height
+                    }p)`
+                  : activeResolution + 'p'}
+              </span>
+            </li>
+          )}
+          <li
+            className="vp-controls__settings__dropdown__item"
+            onClick={() => selectMenuHandler('speed')}
+          >
+            <span style={{ fontWeight: 600 }}>Speed</span>
+            <span style={{ marginLeft: 'auto' }}>x {activePlaybackRate}</span>
+          </li>
+        </ul>
+      </div>
+    );
+  }, [resolutions, activeResolution, activePlaybackRate, selectMenuHandler]);
+
   const menuList = useMemo(() => {
     switch (activeMenu) {
       case 'resolution':
@@ -36,7 +104,7 @@ const Settings: React.FC<SettingsProps> = ({
           <div className="vp-controls__settings__dropdown__menu">
             <div
               className="vp-controls__settings__dropdown__label"
-              onClick={() => setIsIndex(true)}
+              onClick={selectIndexHandler}
             >
               <ArrowLeft />
               <span>Resolutions</span>
@@ -48,7 +116,7 @@ const Settings: React.FC<SettingsProps> = ({
                   className={`vp-controls__settings__dropdown__item${
                     activeResolution === resolution.height ? ' active' : ''
                   }`}
-                  onClick={() => onChangeResolution(resolution)}
+                  onClick={() => changeResolutionHandler(resolution)}
                 >
                   {resolution.height}
                 </li>
@@ -57,7 +125,7 @@ const Settings: React.FC<SettingsProps> = ({
                 className={`vp-controls__settings__dropdown__item${
                   activeResolution === 'auto' ? ' active' : ''
                 }`}
-                onClick={() => onChangeResolution('auto')}
+                onClick={() => changeResolutionHandler('auto')}
               >
                 <span>Auto</span>
                 {activeResolution === 'auto' && (
@@ -79,7 +147,7 @@ const Settings: React.FC<SettingsProps> = ({
           <div className="vp-controls__settings__dropdown__menu">
             <div
               className="vp-controls__settings__dropdown__label"
-              onClick={() => setIsIndex(true)}
+              onClick={selectIndexHandler}
             >
               <ArrowLeft />
               <span>Speed</span>
@@ -91,7 +159,7 @@ const Settings: React.FC<SettingsProps> = ({
                   className={`vp-controls__settings__dropdown__item${
                     activePlaybackRate === playbackRate ? ' active' : ''
                   }`}
-                  onClick={() => onChangePlaybackRate(playbackRate)}
+                  onClick={() => changePlaybackRateHandler(playbackRate)}
                 >
                   {playbackRate}
                 </li>
@@ -106,81 +174,48 @@ const Settings: React.FC<SettingsProps> = ({
     playbackRates,
     activeResolution,
     activePlaybackRate,
-    onChangeResolution,
-    onChangePlaybackRate,
+    changeResolutionHandler,
+    changePlaybackRateHandler,
+    selectIndexHandler,
   ]);
 
-  useEffect(() => {
-    !isOpened && setIsIndex(true);
-  }, [isOpened]);
-
-  const selectMenuHandler = (activeMenu: 'resolution' | 'speed') => {
-    setIsIndex(false);
-    setActiveMenu(activeMenu);
-  };
-
   return (
-    <OutsideClickHandler onOutsideClick={() => setIsOpened(false)}>
+    <OutsideClickHandler onOutsideClick={closeDropdownHandler}>
       <div className="vp-controls__settings">
-        <button
-          className="vp-controls__btn"
-          onClick={() => setIsOpened((prev) => !prev)}
-        >
+        <button className="vp-controls__btn" onClick={toggleDropdownHandler}>
           <SettingIcon />
         </button>
-        <div
-          className={`vp-controls__settings__dropdown${
-            isOpened ? ' active' : ''
-          }`}
-        >
-          <CSSTransition
-            in={isIndex}
-            classNames="menu-index"
-            timeout={300}
-            mountOnEnter
-            unmountOnExit
-          >
-            <div className="vp-controls__settings__dropdown__menu">
-              <ul className="vp-controls__settings__dropdown__list">
-                {resolutions.length > 0 && (
-                  <li
-                    className="vp-controls__settings__dropdown__item"
-                    onClick={() => selectMenuHandler('resolution')}
-                  >
-                    <span style={{ fontWeight: 600 }}>Resolutions</span>
-                    <span style={{ marginLeft: 'auto' }}>
-                      {activeResolution === 'auto'
-                        ? `Auto (${
-                            resolutions.find((resolution) => resolution.active)
-                              ?.height
-                          }p)`
-                        : activeResolution + 'p'}
-                    </span>
-                  </li>
-                )}
-                <li
-                  className="vp-controls__settings__dropdown__item"
-                  onClick={() => selectMenuHandler('speed')}
-                >
-                  <span style={{ fontWeight: 600 }}>Speed</span>
-                  <span style={{ marginLeft: 'auto' }}>
-                    x {activePlaybackRate}
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </CSSTransition>
 
-          <CSSTransition
-            in={!isIndex}
-            classNames="menu-main"
-            timeout={300}
-            mountOnEnter
-            unmountOnExit
-          >
-            {menuList}
-          </CSSTransition>
-        </div>
+        <CSSTransition
+          in={isOpened}
+          classNames="vp-dropdown"
+          timeout={200}
+          mountOnEnter
+          unmountOnExit
+          onExited={selectIndexHandler}
+        >
+          <div className="vp-controls__settings__dropdown">
+            <CSSTransition
+              in={isIndex}
+              classNames="menu-index"
+              timeout={300}
+              mountOnEnter
+              unmountOnExit
+            >
+              {indexMenu}
+            </CSSTransition>
+
+            <CSSTransition
+              in={!isIndex}
+              classNames="menu-main"
+              timeout={300}
+              mountOnEnter
+              unmountOnExit
+            >
+              {menuList}
+            </CSSTransition>
+          </div>
+        </CSSTransition>
       </div>
     </OutsideClickHandler>
   );

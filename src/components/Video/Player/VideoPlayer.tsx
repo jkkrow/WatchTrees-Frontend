@@ -18,7 +18,6 @@ import { VideoNode, videoActions } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import { addToHistory } from 'store/thunks/video-thunk';
 import { formatTime } from 'util/format';
-import { videoUrl } from 'util/video';
 import './VideoPlayer.scss';
 
 interface VideoPlayerProps {
@@ -38,9 +37,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   editMode,
   active,
 }) => {
-  const { activeVideoId, initialProgress, videoVolume } = useAppSelector(
-    (state) => state.video
-  );
+  const {
+    activeVideoId,
+    initialProgress,
+    videoVolume,
+    videoResolution,
+    videoPlaybackRate,
+  } = useAppSelector((state) => state.video);
   const { dispatch } = useAppDispatch();
 
   // vp-container
@@ -76,12 +79,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // resolutions
   const [resolutions, setResolutions] = useState<shaka.extern.TrackList>([]);
   const [activeResolution, setActiveResolution] = useState<number | 'auto'>(
-    'auto'
+    videoResolution || 'auto'
   );
 
   // playbackRate
-  const [playbackRates] = useState([0.5, 0.75, 1, 1.25, 1.5, 2]);
-  const [activePlaybackRate, setActivePlaybackRate] = useState(1);
+  const [playbackRates] = useState([0.5, 0.75, 1, 1.25, 1.5]);
+  const [activePlaybackRate, setActivePlaybackRate] = useState(
+    videoPlaybackRate || 1
+  );
 
   // vp-loader
   const [displayLoader, setDisplayLoader] = useState(true);
@@ -183,9 +188,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     // Update history
     setHistoryInterval(
       () => {
-        const endPoint = (video.duration * 95) / 100;
+        const endPoint =
+          video.duration * 0.95 > video.duration - 10
+            ? video.duration - 10
+            : video.duration * 0.95;
         const isLastVideo = currentVideo.children.length === 0;
-        const endTime = endPoint > 180 ? 180 : endPoint;
+        const endTime = video.duration - endPoint > 180 ? 180 : endPoint;
         const isEnded =
           isLastVideo && video.currentTime > endTime ? true : false;
 
@@ -474,25 +482,33 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const changeResolutionHandler = useCallback(
     (resolution: shaka.extern.Track | 'auto') => {
       const player = shakaPlayer.current!;
+      let resolutionHeight: number | 'auto' = 'auto';
 
       if (resolution === 'auto') {
         player.configure({ abr: { enabled: true } });
-        setActiveResolution('auto');
       } else {
         player.configure({ abr: { enabled: false } });
         player.selectVariantTrack(resolution);
-        setActiveResolution(resolution.height!);
+
+        resolutionHeight = resolution.height as number;
       }
+
+      setActiveResolution(resolutionHeight);
+      dispatch(videoActions.setVideoResolution(resolutionHeight));
     },
-    []
+    [dispatch]
   );
 
-  const changePlaybackRateHandler = useCallback((playbackRate: number) => {
-    const video = videoRef.current!;
+  const changePlaybackRateHandler = useCallback(
+    (playbackRate: number) => {
+      const video = videoRef.current!;
 
-    video.playbackRate = playbackRate;
-    setActivePlaybackRate(playbackRate);
-  }, []);
+      video.playbackRate = playbackRate;
+      setActivePlaybackRate(playbackRate);
+      dispatch(videoActions.setVideoPlaybackRate(playbackRate));
+    },
+    [dispatch]
+  );
 
   /**
    * KEYBOARD SHORTKUTS
@@ -627,29 +643,36 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const videoLoadHandler = useCallback(() => {
     const video = videoRef.current!;
+    const player = shakaPlayer.current;
 
     if (!video.canPlayType) {
       video.controls = true;
       setCanPlayType(false);
     }
 
-    if (activeVideoId === currentVideo.id && initialProgress > 0) {
-      video.currentTime = initialProgress;
-      video.play();
+    video.volume = videoVolume || 1;
+    video.playbackRate = videoPlaybackRate || 1;
+
+    if (player && videoResolution !== 'auto') {
+      const tracks = player.getVariantTracks();
+      const matchedResolution = tracks.find(
+        (track) => track.height === videoResolution
+      );
+
+      if (matchedResolution) {
+        player.configure({ abr: { enabled: false } });
+        player.selectVariantTrack(matchedResolution);
+      }
     }
 
-    video.volume = videoVolume || 1;
-
     setVideoDuration(video.duration);
-
     timeChangeHandler();
 
     document.addEventListener('fullscreenchange', fullscreenChangeHandler);
   }, [
-    activeVideoId,
-    initialProgress,
     videoVolume,
-    currentVideo.id,
+    videoPlaybackRate,
+    videoResolution,
     timeChangeHandler,
     fullscreenChangeHandler,
   ]);
@@ -752,26 +775,44 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   useEffect(() => {
     (async () => {
+      if (!firstRender) return;
+
+      console.log('run');
+
       const video = videoRef.current!;
       let src = videoInfo.url;
+      let startTime = 0;
 
       // Edit mode
       if (src.substring(0, 4) === 'blob') {
         return video.setAttribute('src', src);
       }
 
-      src = videoUrl(src, videoInfo.isConverted);
+      src = videoInfo.isConverted
+        ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
+        : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
 
       // Connect video to Shaka Player
       const player = new shaka.Player(video);
 
-      await player.load(src);
+      if (activeVideoId === currentVideo.id && initialProgress > 0) {
+        startTime = initialProgress;
+      }
+
+      await player.load(src, startTime);
 
       shakaPlayer.current = player;
 
       setResolutions(player.getVariantTracks());
     })();
-  }, [videoInfo.isConverted, videoInfo.url]);
+  }, [
+    currentVideo.id,
+    videoInfo.isConverted,
+    videoInfo.url,
+    activeVideoId,
+    initialProgress,
+    firstRender,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -783,10 +824,40 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (active) return;
 
     const video = videoRef.current!;
-
     video.volume = videoVolume;
-    setDisplayControls(false);
   }, [active, videoVolume]);
+
+  useEffect(() => {
+    const player = shakaPlayer.current;
+
+    if (active || !player) return;
+
+    if (videoResolution === 'auto') {
+      player.configure({ abr: { enabled: true } });
+      setActiveResolution(videoResolution);
+      return;
+    }
+
+    const tracks = player.getVariantTracks();
+    const matchedResolution = tracks.find(
+      (track) => track.height === videoResolution
+    );
+
+    if (matchedResolution) {
+      player.configure({ abr: { enabled: false } });
+      player.selectVariantTrack(matchedResolution);
+      setActiveResolution(videoResolution);
+    }
+  }, [active, videoResolution]);
+
+  useEffect(() => {
+    if (active) return;
+
+    const video = videoRef.current!;
+
+    video.playbackRate = videoPlaybackRate;
+    setActivePlaybackRate(videoPlaybackRate);
+  }, [active, videoPlaybackRate]);
 
   useEffect(() => {
     if (firstRender || !activeChange) return;
@@ -853,6 +924,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         className={`vp-controls${!canPlayType ? ' hidden' : ''}${
           !displayControls ? ' hide' : ''
         }`}
+        onMouseDown={showControlsHandler}
       >
         <div className="vp-controls__header">
           <Time time={currentTimeUI} />

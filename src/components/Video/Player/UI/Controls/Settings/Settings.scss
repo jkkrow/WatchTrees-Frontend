@@ -3,25 +3,11 @@
 .vp-controls__settings {
   &__dropdown {
     position: absolute;
-    display: none;
     bottom: 100%;
     right: 0;
     overflow: hidden;
-    animation: show-settings 200ms;
+    transition: opacity 200ms ease-out;
     z-index: 20;
-
-    @keyframes show-settings {
-      0% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
-
-    &.active {
-      display: flex;
-    }
 
     &__menu {
       position: relative;
@@ -32,7 +18,7 @@
     }
 
     &__list {
-      max-height: 20rem;
+      max-height: 25rem;
       overflow: auto;
     }
 
@@ -40,8 +26,8 @@
     &__item {
       display: flex;
       align-items: center;
-      gap: 1rem;
       padding: 1rem 2rem;
+      gap: 1rem;
       cursor: pointer;
       transition: background-color 200ms;
 
@@ -51,6 +37,7 @@
 
       svg {
         margin: 0;
+        pointer-events: none;
       }
     }
 
@@ -72,6 +59,18 @@
 
 /* CSS Transition */
 
+.vp-dropdown-enter {
+  opacity: 0;
+}
+
+.vp-dropdown-enter-active {
+  opacity: 1;
+}
+
+.vp-dropdown-exit-active {
+  opacity: 0;
+}
+
 .menu-index-enter {
   position: absolute;
   transform: translateX(-110%);
@@ -83,7 +82,6 @@
 
 .menu-index-exit {
   position: absolute;
-  transform: translateX(0%);
 }
 
 .menu-index-exit-active {
@@ -96,9 +94,6 @@
 
 .menu-main-enter-active {
   transform: translateX(0%);
-}
-
-.menu-main-exit {
 }
 
 .menu-main-exit-active {
