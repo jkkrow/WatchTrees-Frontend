@@ -1,8 +1,8 @@
+import { useMemo } from 'react';
 import { useHistory } from 'react-router';
 
 import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
 import { VideoTree } from 'store/slices/video-slice';
-import { thumbanilUrl } from 'util/video';
 import './VideoThumbnail.scss';
 
 interface VideoThumbnailProps {
@@ -12,14 +12,30 @@ interface VideoThumbnailProps {
 const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ video }) => {
   const history = useHistory();
 
+  const thumbnailUrl = useMemo(() => {
+    let src: string | undefined;
+
+    if (video.root.info?.isConverted) {
+      src = `${
+        process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED
+      }/${video.root.info.url.replace(/\.\w+$/, '.0000001.jpg')}`;
+    }
+
+    if (video.info.thumbnail.url) {
+      src = `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${video.info.thumbnail.url}`;
+    }
+
+    return src;
+  }, [video]);
+
   const watchVideoHandler = () => {
     history.push(`/video/${video._id}`);
   };
 
   return (
     <div className="video-thumbnail" onClick={watchVideoHandler}>
-      {thumbanilUrl(video) ? (
-        <img src={thumbanilUrl(video)} alt={video.info.title} />
+      {thumbnailUrl ? (
+        <img src={thumbnailUrl} alt={video.info.title} />
       ) : (
         <PreviewIcon />
       )}
