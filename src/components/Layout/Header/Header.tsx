@@ -41,7 +41,7 @@ const Header: React.FC = () => {
           />
         </div>
       ) : (
-        <NavLink exact to="/auth">
+        <NavLink exact to="/auth" style={{ minWidth: 'max-content' }}>
           SIGN IN
         </NavLink>
       )}

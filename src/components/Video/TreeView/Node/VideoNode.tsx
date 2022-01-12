@@ -13,16 +13,16 @@ interface VideoNodeProps {
   currentVideo: VideoNodeType;
   videoId: string;
   rootId: string;
-  autoPlay: boolean;
-  editMode: boolean;
+  autoPlay?: boolean;
+  editMode?: boolean;
 }
 
 const VideoNode: React.FC<VideoNodeProps> = ({
   currentVideo,
   videoId,
   rootId,
-  autoPlay,
-  editMode,
+  autoPlay = true,
+  editMode = false,
 }) => {
   const { activeVideoId } = useAppSelector((state) => state.video);
   const { dispatch } = useAppDispatch();

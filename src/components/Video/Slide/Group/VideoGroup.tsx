@@ -8,12 +8,14 @@ import VideoLoaderList from 'components/Video/Loader/List/VideoLoaderList';
 import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoListDetail } from 'store/slices/video-slice';
+
+import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/modules/pagination/pagination.min.css';
+import 'swiper/swiper.scss';
+import 'styles/swiper.scss';
 import './VideoGroup.scss';
 
-import 'swiper/swiper.scss';
-import 'swiper/modules/navigation/navigation.min.css';
-
-const INITIAL_WIDTH = 660;
+const INITIAL_WIDTH = 678;
 const ITEM_WIDTH = 320;
 
 interface VideoGroupProps {
@@ -34,7 +36,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   onFetch,
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.user);
-  const { dispatchThunk, data, setData, loaded } = useAppDispatch<{
+  const { dispatchThunk, setData, data, loading, loaded } = useAppDispatch<{
     videos: VideoListDetail[];
     count: number;
   }>({ videos: [], count: 0 });
@@ -67,10 +69,10 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
 
   return (
     <div className="video-group">
-      {label && data.videos.length > 0 && (
+      {label && (loading || data.videos.length > 0) && (
         <h3
           className={`video-group__label${to ? ' link' : ''}${
-            !loaded ? ' loading' : ''
+            loading ? ' loading' : ''
           }`}
           onClick={() => to && history.push(to)}
         >
@@ -81,8 +83,9 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
       {loaded && data.videos.length > 0 && (
         <Swiper
           modules={[Navigation]}
+          slidesPerView={2}
+          slidesPerGroup={2}
           breakpoints={{
-            [INITIAL_WIDTH]: { slidesPerView: 2, slidesPerGroup: 2 },
             [INITIAL_WIDTH + ITEM_WIDTH]: {
               slidesPerView: 3,
               slidesPerGroup: 3,

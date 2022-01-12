@@ -12,11 +12,11 @@ export const useAppDispatch = <T = any>(initialData?: T) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const isMounted = useRef(true);
+  const isUnmounted = useRef(false);
 
   useEffect(() => {
     return () => {
-      isMounted.current = false;
+      isUnmounted.current = true;
     };
   }, []);
 
@@ -30,7 +30,7 @@ export const useAppDispatch = <T = any>(initialData?: T) => {
 
         const data = await dispatch(thunk);
 
-        if (!isMounted.current) {
+        if (isUnmounted.current) {
           return;
         }
 

@@ -65,8 +65,8 @@ const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
             <div className="video-layout__favorites">
               <VideoFavorites
                 favorites={videoTree.data.favorites}
-                onClick={toggleFavoritesHandler}
                 active={videoTree.data.isFavorite}
+                onClick={toggleFavoritesHandler}
               />
             </div>
           </div>

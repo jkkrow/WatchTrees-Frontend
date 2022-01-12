@@ -1,19 +1,21 @@
 import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
+import VideoPage from 'pages/Video/VideoPage';
+import VideoListPage from 'pages/Video/VideoListPage';
+import HistoryPage from 'pages/Video/HistoryPage';
+import ChannelPage from 'pages/Video/ChannelPage';
+
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
+import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
 import ProtectedRoute from 'service/ProtectedRoute';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { fetchTokenOnload } from 'store/thunks/user-thunk';
-import './App.scss';
+import 'styles/index.scss';
 
-const VideoPage = lazy(() => import('pages/Video/VideoPage'));
-const VideoListPage = lazy(() => import('pages/Video/VideoListPage'));
 const MyVideoListPage = lazy(() => import('pages/Video/MyVideoListPage'));
-const HistoryPage = lazy(() => import('pages/Video/HistoryPage'));
-const ChannelPage = lazy(() => import('pages/Video/ChannelPage'));
 const UploadPage = lazy(() => import('pages/Upload/UploadPage'));
 const LoginPage = lazy(() => import('pages/User/LoginPage'));
 const AccountPage = lazy(() => import('pages/User/AccountPage'));
@@ -33,10 +35,10 @@ const App: React.FC = () => {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<div />}>
-        <GlobalMessageList />
-        <Header />
-        <main>
+      <GlobalMessageList />
+      <Header />
+      <main>
+        <Suspense fallback={<LoadingSpinner overlay />}>
           <Switch>
             <Route component={VideoListPage} exact path="/" />
             <Route component={VideoPage} exact path="/video/:id" />
@@ -102,9 +104,9 @@ const App: React.FC = () => {
             />
             <Route component={NotFoundPage} />
           </Switch>
-        </main>
-        <Footer />
-      </Suspense>
+        </Suspense>
+      </main>
+      <Footer />
     </BrowserRouter>
   );
 };

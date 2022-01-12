@@ -8,6 +8,11 @@ import ChannelLoaderList from '../Loader/List/ChannelLoaderList';
 import { AppThunk } from 'store';
 import { useAppDispatch } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
+
+import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/modules/pagination/pagination.min.css';
+import 'swiper/swiper.scss';
+import 'styles/swiper.scss';
 import './ChannelGroup.scss';
 
 const INITIAL_WIDTH = 680;
@@ -34,7 +39,7 @@ const ChannelGroup: React.FC<ChannelGroupProps> = ({
 
   return (
     <div className="channel-group">
-      {label && data.length && (
+      {label && (!loaded || data.length > 0) && (
         <h3 className={`channel-group__label${!loaded ? ' loading' : ''}`}>
           {label}
         </h3>

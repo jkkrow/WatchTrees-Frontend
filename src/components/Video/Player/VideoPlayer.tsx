@@ -24,18 +24,18 @@ interface VideoPlayerProps {
   currentVideo: VideoNode;
   videoId: string;
   rootId: string;
-  autoPlay: boolean;
-  editMode: boolean;
   active: boolean;
+  autoPlay?: boolean;
+  editMode?: boolean;
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   currentVideo,
   videoId,
   rootId,
-  autoPlay,
-  editMode,
   active,
+  autoPlay = true,
+  editMode = false,
 }) => {
   const {
     activeVideoId,

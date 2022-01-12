@@ -57,8 +57,31 @@
 
   &__data {
     display: flex;
-    justify-content: flex-end;
     width: 100%;
     gap: 1rem;
+  }
+
+  @media (max-width: 677px) {
+    font-size: 90%;
+
+    .avatar {
+      width: 3rem !important;
+      height: 3rem !important;
+      min-width: 3rem !important;
+      min-height: 3rem !important;
+    }
+
+    &__info {
+      padding: 0.75rem 0;
+    }
+
+    &__data svg {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    .video-timestamp {
+      display: none;
+    }
   }
 }

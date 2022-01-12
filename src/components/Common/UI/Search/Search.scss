@@ -3,12 +3,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 3rem;
+  width: 100%;
 
   input {
     position: absolute;
     right: 0;
-    width: 25rem;
+    width: clamp(15rem, 30vw, 25rem);
     padding: 1rem;
     border: none;
     border-bottom: 2px solid var(--text-primary);
@@ -24,24 +24,14 @@
     }
 
     &:focus ~ label {
-      transform: translateX(-25.5rem);
+      transform: translateX(clamp(-25.5rem, -30vw, -15.5rem));
     }
   }
 
   label {
     display: flex;
-    width: 100%;
+    margin-left: auto;
     transform: translateX(0);
     transition: transform 300ms ease-out;
-  }
-}
-
-@media (max-width: 500px) {
-  .search input {
-    width: 15rem;
-
-    &:focus ~ label {
-      transform: translateX(-15.5rem);
-    }
   }
 }
