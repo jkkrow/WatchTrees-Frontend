@@ -1,4 +1,4 @@
-import { useState, memo, useMemo, useCallback } from 'react';
+import { useState, memo, useMemo, useCallback, useRef, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import OutsideClickHandler from 'react-outside-click-handler';
 
@@ -28,6 +28,11 @@ const Settings: React.FC<SettingsProps> = ({
   const [activeMenu, setActiveMenu] = useState<'resolution' | 'speed'>(
     'resolution'
   );
+  const [dropdownHeight, setDropdownHeight] = useState<'initial' | number>(
+    'initial'
+  );
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdownHandler = useCallback(() => {
     setIsOpened((prev) => !prev);
@@ -64,6 +69,19 @@ const Settings: React.FC<SettingsProps> = ({
     },
     [onChangePlaybackRate]
   );
+
+  const calcHeight = useCallback((element) => {
+    setDropdownHeight(element.offsetHeight);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpened) return;
+
+    const dropdown = dropdownRef.current!;
+    const dropdownMenu = dropdown.firstChild as HTMLElement;
+
+    setDropdownHeight(dropdownMenu?.offsetHeight || 0);
+  }, [isOpened]);
 
   const indexMenu = useMemo(() => {
     return (
@@ -180,8 +198,8 @@ const Settings: React.FC<SettingsProps> = ({
   ]);
 
   return (
-    <OutsideClickHandler onOutsideClick={closeDropdownHandler}>
-      <div className="vp-controls__settings">
+    <div className="vp-controls__settings">
+      <OutsideClickHandler onOutsideClick={closeDropdownHandler}>
         <button className="vp-controls__btn" onClick={toggleDropdownHandler}>
           <SettingIcon />
         </button>
@@ -194,13 +212,18 @@ const Settings: React.FC<SettingsProps> = ({
           unmountOnExit
           onExited={selectIndexHandler}
         >
-          <div className="vp-controls__settings__dropdown">
+          <div
+            className="vp-controls__settings__dropdown"
+            ref={dropdownRef}
+            style={{ height: dropdownHeight }}
+          >
             <CSSTransition
               in={isIndex}
               classNames="menu-index"
               timeout={300}
               mountOnEnter
               unmountOnExit
+              onEnter={calcHeight}
             >
               {indexMenu}
             </CSSTransition>
@@ -211,13 +234,14 @@ const Settings: React.FC<SettingsProps> = ({
               timeout={300}
               mountOnEnter
               unmountOnExit
+              onEnter={calcHeight}
             >
               {menuList}
             </CSSTransition>
           </div>
         </CSSTransition>
-      </div>
-    </OutsideClickHandler>
+      </OutsideClickHandler>
+    </div>
   );
 };
 
