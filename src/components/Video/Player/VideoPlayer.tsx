@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import shaka from 'shaka-player';
 
 import Playback from './UI/Controls/Playback/Playback';
+import Skip from './UI/Controls/Skip/Skip';
+import Rewind from './UI/Controls/Rewind/Rewind';
 import Volume from './UI/Controls/Volume/Volume';
 import Progress from './UI/Controls/Progress/Progress';
 import Time from './UI/Controls/Time/Time';
@@ -688,16 +690,24 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    */
 
   const restartVideoTreeHandler = useCallback(() => {
+    if (!currentVideo.prevId) {
+      videoRef.current!.currentTime = 0;
+      return;
+    }
+
     dispatch(videoActions.setActiveVideo(rootId));
-  }, [dispatch, rootId]);
+  }, [dispatch, rootId, currentVideo.prevId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
-    if (!currentVideo.prevId) return;
+    if (!currentVideo.prevId) {
+      videoRef.current!.currentTime = 0;
+      return;
+    }
 
     dispatch(videoActions.setActiveVideo(currentVideo.prevId));
   }, [dispatch, currentVideo.prevId]);
 
-  const navigateToSelectorSelectionTimeHandler = useCallback(() => {
+  const navigateToNextVideoHandler = useCallback(() => {
     const video = videoRef.current!;
 
     const selectionTimeStart =
@@ -958,11 +968,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             />
           </div>
           <div className="vp-controls__body__center">
+            <Rewind
+              onRestart={restartVideoTreeHandler}
+              onPrev={navigateToPreviousVideoHandler}
+            />
             <Playback
               play={playbackState}
               onToggle={togglePlayHandler}
               onKey={preventDefault}
             />
+            <Skip onNext={navigateToNextVideoHandler} />
           </div>
           <div className="vp-controls__body__right">
             <Settings
@@ -989,7 +1004,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           marked={selectionTimeMarked}
           onRestart={restartVideoTreeHandler}
           onPrev={navigateToPreviousVideoHandler}
-          onNext={navigateToSelectorSelectionTimeHandler}
+          onNext={navigateToNextVideoHandler}
           onMark={markSelectionTimeHandler}
         />
       )}

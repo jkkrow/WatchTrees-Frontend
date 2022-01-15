@@ -9,8 +9,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 30%;
-  max-height: 15rem;
+  height: clamp(8rem, 30%, 15rem);
   gap: 2rem;
   opacity: 0;
   visibility: hidden;
@@ -30,6 +29,7 @@
   &__btn {
     width: 40%;
     height: clamp(4rem, 30%, 10rem);
+    border: 1px solid #333333;
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
@@ -40,7 +40,6 @@
   }
 
   &__btn:hover {
-    color: $vp-bg--secondary;
-    background-color: $vp-bg;
+    background-color: #333333;
   }
 }

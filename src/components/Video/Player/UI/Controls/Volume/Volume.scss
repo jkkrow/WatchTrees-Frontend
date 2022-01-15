@@ -6,7 +6,7 @@
   align-items: center;
 
   &:hover svg {
-    transform: translateX(clamp(-6rem, -50%, -3rem)) scale(1.3) !important;
+    transform: translateX(clamp(-7rem, -100%, -3rem)) scale(1.3) !important;
   }
 
   &:hover &__range {

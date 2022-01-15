@@ -52,23 +52,8 @@ const Settings: React.FC<SettingsProps> = ({
 
   const selectIndexHandler = useCallback(() => {
     setIsIndex(true);
+    setDropdownHeight('initial');
   }, []);
-
-  const changeResolutionHandler = useCallback(
-    (resolution: shaka.extern.Track | 'auto') => {
-      onChangeResolution(resolution);
-      setIsIndex(true);
-    },
-    [onChangeResolution]
-  );
-
-  const changePlaybackRateHandler = useCallback(
-    (playbackRate: number) => {
-      onChangePlaybackRate(playbackRate);
-      setIsIndex(true);
-    },
-    [onChangePlaybackRate]
-  );
 
   const calcHeight = useCallback((element) => {
     setDropdownHeight(element.offsetHeight);
@@ -80,7 +65,7 @@ const Settings: React.FC<SettingsProps> = ({
     const dropdown = dropdownRef.current!;
     const dropdownMenu = dropdown.firstChild as HTMLElement;
 
-    setDropdownHeight(dropdownMenu?.offsetHeight || 0);
+    setDropdownHeight(dropdownMenu?.offsetHeight || 'initial');
   }, [isOpened]);
 
   const indexMenu = useMemo(() => {
@@ -116,13 +101,25 @@ const Settings: React.FC<SettingsProps> = ({
   }, [resolutions, activeResolution, activePlaybackRate, selectMenuHandler]);
 
   const menuList = useMemo(() => {
+    const changeResolutionHandler = (
+      resolution: shaka.extern.Track | 'auto'
+    ) => {
+      onChangeResolution(resolution);
+      setIsIndex(true);
+    };
+
+    const changePlaybackRateHandler = (playbackRate: number) => {
+      onChangePlaybackRate(playbackRate);
+      setIsIndex(true);
+    };
+
     switch (activeMenu) {
       case 'resolution':
         return (
           <div className="vp-controls__settings__dropdown__menu">
             <div
               className="vp-controls__settings__dropdown__label"
-              onClick={selectIndexHandler}
+              onClick={() => setIsIndex(true)}
             >
               <ArrowLeft />
               <span>Resolutions</span>
@@ -165,7 +162,7 @@ const Settings: React.FC<SettingsProps> = ({
           <div className="vp-controls__settings__dropdown__menu">
             <div
               className="vp-controls__settings__dropdown__label"
-              onClick={selectIndexHandler}
+              onClick={() => setIsIndex(true)}
             >
               <ArrowLeft />
               <span>Speed</span>
@@ -192,9 +189,8 @@ const Settings: React.FC<SettingsProps> = ({
     playbackRates,
     activeResolution,
     activePlaybackRate,
-    changeResolutionHandler,
-    changePlaybackRateHandler,
-    selectIndexHandler,
+    onChangeResolution,
+    onChangePlaybackRate,
   ]);
 
   return (
