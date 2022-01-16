@@ -1,0 +1,27 @@
+@use '../../../VideoPlayer' as *;
+
+.vp-controls__mark .vp-controls__btn {
+  position: relative;
+  transition: transform 200ms;
+
+  &.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    // bottom: 0;
+    // right: 0;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50px;
+    background-color: $vp-accent--primary;
+  }
+
+  &:hover {
+    transform: scale(1.3);
+
+    svg {
+      transform: scale(1);
+    }
+  }
+}

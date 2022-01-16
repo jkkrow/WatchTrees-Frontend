@@ -9,8 +9,8 @@ import Progress from './UI/Controls/Progress/Progress';
 import Time from './UI/Controls/Time/Time';
 import Fullscreen from './UI/Controls/Fullscreen/Fullscreen';
 import Settings from './UI/Controls/Settings/Settings';
+import Marker from './UI/Controls/Marker/Marker';
 import Selector from './UI/Selector/Selector';
-import Navigation from './UI/Navigation/Navigation';
 import Loader from './UI/Loader/Loader';
 import KeyAction from './UI/KeyAction/KeyAction';
 import { useTimeout, useInterval } from 'hooks/timer-hook';
@@ -980,6 +980,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <Skip onNext={navigateToNextVideoHandler} />
           </div>
           <div className="vp-controls__body__right">
+            {editMode && (
+              <Marker
+                isMarked={selectionTimeMarked}
+                onMark={markSelectionTimeHandler}
+              />
+            )}
             <Settings
               resolutions={resolutions}
               playbackRates={playbackRates}
@@ -996,18 +1002,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           </div>
         </div>
       </div>
-
-      {editMode && (
-        <Navigation
-          currentId={currentVideo.id}
-          rootId={rootId}
-          marked={selectionTimeMarked}
-          onRestart={restartVideoTreeHandler}
-          onPrev={navigateToPreviousVideoHandler}
-          onNext={navigateToNextVideoHandler}
-          onMark={markSelectionTimeHandler}
-        />
-      )}
     </div>
   );
 };
