@@ -136,6 +136,7 @@ const Input: React.FC<InputProps> = ({
     ) : (
       <input
         id={id}
+        name={id}
         type={type}
         placeholder={placeholder || label}
         autoFocus={autoFocus}
