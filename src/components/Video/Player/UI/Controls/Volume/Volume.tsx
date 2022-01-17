@@ -11,36 +11,41 @@ interface VolumeProps {
   volume: number;
   onToggle: () => void;
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onKey: (event: React.KeyboardEvent) => void;
 }
 
-const Volume: React.FC<VolumeProps> = ({ volume, onToggle, onSeek, onKey }) => (
-  <div className="vp-controls__volume">
-    <Btn onClick={onToggle}>
-      {volume > 0.7 && <VolumeHighIcon />}
-      {volume <= 0.7 && volume > 0.3 && <VolumeMiddleIcon />}
-      {volume <= 0.3 && volume > 0 && <VolumeLowIcon />}
-      {volume === 0 && <VolumeMuteIcon />}
-    </Btn>
-    <div className="vp-controls__volume__range">
-      <div className="vp-controls__volume__range--background" />
-      <div
-        className="vp-controls__volume__range--current"
-        style={{ width: `${volume * 100}%` }}
-      >
-        <div className="vp-controls__volume__range--current__thumb" />
+const Volume: React.FC<VolumeProps> = ({ volume, onToggle, onSeek }) => {
+  const preventDefault = (e: React.KeyboardEvent) => {
+    e.preventDefault();
+  };
+
+  return (
+    <div className="vp-controls__volume">
+      <Btn onClick={onToggle}>
+        {volume > 0.7 && <VolumeHighIcon />}
+        {volume <= 0.7 && volume > 0.3 && <VolumeMiddleIcon />}
+        {volume <= 0.3 && volume > 0 && <VolumeLowIcon />}
+        {volume === 0 && <VolumeMuteIcon />}
+      </Btn>
+      <div className="vp-controls__volume__range">
+        <div className="vp-controls__volume__range--background" />
+        <div
+          className="vp-controls__volume__range--current"
+          style={{ width: `${volume * 100}%` }}
+        >
+          <div className="vp-controls__volume__range--current__thumb" />
+        </div>
+        <input
+          className="vp-controls__volume__range--seek"
+          type="range"
+          value={volume}
+          max="1"
+          step="0.05"
+          onChange={onSeek}
+          onKeyDown={preventDefault}
+        />
       </div>
-      <input
-        className="vp-controls__volume__range--seek"
-        type="range"
-        value={volume}
-        max="1"
-        step="0.05"
-        onChange={onSeek}
-        onKeyDown={onKey}
-      />
     </div>
-  </div>
-);
+  );
+};
 
 export default memo(Volume);

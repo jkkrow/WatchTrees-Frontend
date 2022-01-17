@@ -144,14 +144,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [videoInfo]);
 
   /**
-   * PREVENT DEFAULT
-   */
-
-  const preventDefault = useCallback((event) => {
-    event.preventDefault();
-  }, []);
-
-  /**
    * TOGGLE SHOWING CONTROLS
    */
 
@@ -200,10 +192,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
-    const video = videoRef.current!;
     setPlaybackState(true);
 
+    // Update Resolution
+    setResolutionInterval(() => {
+      const player = shakaPlayer.current;
+
+      if (!player) return;
+
+      setResolutions(player.getVariantTracks());
+    }, 5000);
+
     if (editMode) return;
+
+    const video = videoRef.current!;
 
     // Update history
     setHistoryInterval(
@@ -217,30 +219,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         const isEnded =
           isLastVideo && video.currentTime > endTime ? true : false;
 
-        const history = {
-          video: videoId,
-          progress: {
-            activeVideoId: currentVideo.id,
-            time: video.currentTime,
-            isEnded: isEnded,
-          },
-          updatedAt: new Date(),
-        };
-
-        dispatch(addToHistory(history));
+        dispatch(
+          addToHistory({
+            video: videoId,
+            progress: {
+              activeVideoId: currentVideo.id,
+              time: video.currentTime,
+              isEnded: isEnded,
+            },
+            updatedAt: new Date(),
+          })
+        );
       },
       5000,
       true
     );
-
-    // Update Resolution
-    setResolutionInterval(() => {
-      const player = shakaPlayer.current;
-
-      if (!player) return;
-
-      setResolutions(player.getVariantTracks());
-    }, 5000);
   }, [
     editMode,
     currentVideo.id,
@@ -266,33 +259,37 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       currentVideo.children.length === 0 ||
       !currentVideo.children.find((item) => item.info);
 
-    if (isLastVideo) {
-      const history = {
-        video: videoId,
-        progress: {
-          activeVideoId: currentVideo.id,
-          time: video.currentTime,
-          isEnded: true,
-        },
-        updatedAt: new Date(),
-      };
-
-      dispatch(addToHistory(history));
+    if (isLastVideo && !editMode) {
+      dispatch(
+        addToHistory({
+          video: videoId,
+          progress: {
+            activeVideoId: currentVideo.id,
+            time: video.currentTime,
+            isEnded: true,
+          },
+          updatedAt: new Date(),
+        })
+      );
 
       return;
     }
 
     if (selectedNextVideoId) {
       dispatch(videoActions.setActiveVideo(selectedNextVideoId));
-    } else {
-      const firstValidItem = currentVideo.children.find((item) => item.info);
 
-      firstValidItem &&
-        dispatch(videoActions.setActiveVideo(firstValidItem.id));
+      return;
+    }
+
+    const firstValidItem = currentVideo.children.find((item) => item.info);
+
+    if (firstValidItem) {
+      dispatch(videoActions.setActiveVideo(firstValidItem.id));
     }
   }, [
     dispatch,
     videoId,
+    editMode,
     currentVideo.id,
     currentVideo.children,
     selectedNextVideoId,
@@ -828,11 +825,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       await player.load(src, startTime);
 
+      dispatch(videoActions.setInitialProgress(0));
+
       shakaPlayer.current = player;
 
       setResolutions(player.getVariantTracks());
     })();
   }, [
+    dispatch,
     currentVideo.id,
     videoInfo.isConverted,
     videoInfo.url,
@@ -923,7 +923,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       style={{ cursor: displayCursor }}
       onMouseMove={showControlsHandler}
       onMouseLeave={hideControlsHandler}
-      // onContextMenu={preventDefault}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <video
         ref={videoRef}
@@ -944,6 +944,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         on={displaySelector}
         high={displayControls}
         next={currentVideo.children}
+        currentTime={seekProgress}
         selectionEndPoint={selectionEndPoint}
         onSelect={selectNextVideoHandler}
       />
@@ -968,7 +969,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             editMode={editMode}
             onHover={seekMouseMoveHandler}
             onSeek={seekInputHandler}
-            onKey={preventDefault}
           />
           <Time time={remainedTimeUI} />
         </div>
@@ -978,7 +978,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               volume={volumeState}
               onToggle={toggleMuteHandler}
               onSeek={volumeInputHandler}
-              onKey={preventDefault}
             />
           </div>
           <div className="vp-controls__body__center">

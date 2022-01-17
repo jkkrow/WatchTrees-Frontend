@@ -4,16 +4,24 @@
   > * {
     position: relative;
     transition: transform 200ms;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -0.3rem;
+      right: -0.3rem;
+      width: clamp(0.65rem, 25%, 1rem);
+      height: clamp(0.65rem, 25%, 1rem);
+      border-radius: 50px;
+      background-color: $vp-accent--primary;
+      transform: scale(0);
+      transition: transform 200ms ease-out;
+    }
   }
 
-  &.active > *::after {
-    content: '';
-    position: absolute;
-    top: -0.25rem;
-    right: -0.25rem;
-    width: clamp(0.5rem, 20%, 0.75rem);
-    height: clamp(0.5rem, 20%, 0.75rem);
-    border-radius: 50px;
-    background-color: $vp-accent--primary;
+  &.active {
+    > *::after {
+      transform: scale(1);
+    }
   }
 }

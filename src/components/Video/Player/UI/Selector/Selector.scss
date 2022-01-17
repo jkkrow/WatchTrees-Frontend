@@ -9,7 +9,7 @@
   right: 0;
   width: 100%;
   height: clamp(8rem, 30%, 15rem);
-  gap: 1rem;
+  gap: clamp(1rem, 2vw, 3rem);
   opacity: 0;
   visibility: hidden;
   transition: all 400ms ease-out;
@@ -53,8 +53,17 @@
   }
 
   &__timer {
-    font-size: clamp(1.5rem, 1vw, 2rem);
+    font-size: clamp(1.5rem, 3vw, 2rem);
     font-weight: 600;
     text-align: center;
+    text-shadow: 0.1rem 0 black, 0 0.1rem black, -0.1rem 0 black,
+      0 -0.1rem black, -0.1rem -0.1rem black, -0.1rem 0.1rem black,
+      0.1rem -0.1rem black, 0.1rem 0.1rem black;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+
+    &.active {
+      opacity: 1;
+    }
   }
 }

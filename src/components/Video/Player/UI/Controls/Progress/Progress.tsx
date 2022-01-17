@@ -14,7 +14,6 @@ interface ProgressProps {
   editMode: boolean;
   onHover: (event: React.MouseEvent) => void;
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onKey: (event: React.KeyboardEvent) => void;
 }
 
 const Progress = forwardRef<HTMLDivElement, ProgressProps>(
@@ -31,10 +30,13 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       editMode,
       onHover,
       onSeek,
-      onKey,
     },
     ref
   ) => {
+    const preventDefault = (e: React.KeyboardEvent) => {
+      e.preventDefault();
+    };
+
     return (
       <div className="vp-controls__progress" ref={ref}>
         <div className="vp-controls__progress__range">
@@ -69,7 +71,7 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
             value={seekProgress}
             onMouseMove={onHover}
             onChange={onSeek}
-            onKeyDown={onKey}
+            onKeyDown={preventDefault}
           />
         </div>
 
