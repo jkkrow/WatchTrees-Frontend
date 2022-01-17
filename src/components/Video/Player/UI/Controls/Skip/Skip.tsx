@@ -1,3 +1,6 @@
+import { memo } from 'react';
+
+import Btn from '../Btn/Btn';
 import { ReactComponent as TrackNextIcon } from 'assets/icons/track-next.svg';
 import './Skip.scss';
 
@@ -8,11 +11,11 @@ interface SkipProps {
 const Skip: React.FC<SkipProps> = ({ onNext }) => {
   return (
     <div className="vp-controls__skip">
-      <button className="vp-controls__btn" onClick={onNext}>
+      <Btn label="Next Video" onClick={onNext}>
         <TrackNextIcon />
-      </button>
+      </Btn>
     </div>
   );
 };
 
-export default Skip;
+export default memo(Skip);

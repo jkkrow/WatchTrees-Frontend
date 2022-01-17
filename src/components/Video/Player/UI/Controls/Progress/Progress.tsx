@@ -9,8 +9,8 @@ interface ProgressProps {
   seekProgress: number;
   seekTooltipPosition: string;
   seekTooltip: string;
-  selectionTimeStart: number | null;
-  selectionTimeEnd: number | null;
+  selectionStartPoint: number;
+  selectionEndPoint: number;
   editMode: boolean;
   onHover: (event: React.MouseEvent) => void;
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -26,8 +26,8 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       seekProgress,
       seekTooltipPosition,
       seekTooltip,
-      selectionTimeStart,
-      selectionTimeEnd,
+      selectionStartPoint,
+      selectionEndPoint,
       editMode,
       onHover,
       onSeek,
@@ -35,22 +35,6 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
     },
     ref
   ) => {
-    const selectionTimeStartPosition =
-      ((selectionTimeStart as number) >= videoDuration
-        ? videoDuration - 10
-        : selectionTimeStart) ?? videoDuration - 10;
-
-    const selectionTimeEndPosition =
-      ((selectionTimeEnd as number) > videoDuration
-        ? videoDuration
-        : selectionTimeEnd) ?? videoDuration;
-
-    const selectionTimeDuration =
-      ((selectionTimeEndPosition - selectionTimeStartPosition) /
-        videoDuration) *
-        100 +
-      '%';
-
     return (
       <div className="vp-controls__progress" ref={ref}>
         <div className="vp-controls__progress__range">
@@ -63,8 +47,11 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
             <div
               className="vp-controls__progress__range--selection-time"
               style={{
-                left: (selectionTimeStartPosition / videoDuration) * 100 + '%',
-                width: selectionTimeDuration,
+                left: (selectionStartPoint / videoDuration) * 100 + '%',
+                width:
+                  ((selectionEndPoint - selectionStartPoint) / videoDuration) *
+                    100 +
+                  '%',
               }}
             />
           )}

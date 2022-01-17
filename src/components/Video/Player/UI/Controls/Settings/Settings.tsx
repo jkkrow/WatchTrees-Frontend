@@ -2,6 +2,7 @@ import { useState, memo, useMemo, useCallback, useRef, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import OutsideClickHandler from 'react-outside-click-handler';
 
+import Btn from '../Btn/Btn';
 import { ReactComponent as SettingIcon } from 'assets/icons/gear.svg';
 import { ReactComponent as ArrowLeft } from 'assets/icons/arrow-left.svg';
 import './Settings.scss';
@@ -196,9 +197,9 @@ const Settings: React.FC<SettingsProps> = ({
   return (
     <div className="vp-controls__settings">
       <OutsideClickHandler onOutsideClick={closeDropdownHandler}>
-        <button className="vp-controls__btn" onClick={toggleDropdownHandler}>
+        <Btn label="Settings" onClick={toggleDropdownHandler}>
           <SettingIcon />
-        </button>
+        </Btn>
 
         <CSSTransition
           in={isOpened}

@@ -76,7 +76,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const [remainedTimeUI, setRemainedTimeUI] = useState('00:00');
 
   // fullscreen button
-  const [fullscreen, setFullscreen] = useState(false);
+  const [fullscreenState, setFullscreenState] = useState(false);
 
   // resolutions
   const [resolutions, setResolutions] = useState<shaka.extern.TrackList>([]);
@@ -124,6 +124,24 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const firstRender = useFirstRender();
 
   const videoInfo = useMemo(() => currentVideo.info!, [currentVideo.info]);
+  const { selectionStartPoint, selectionEndPoint } = useMemo(() => {
+    const { selectionTimeStart, selectionTimeEnd, duration } = videoInfo;
+
+    const selectionStartPoint =
+      selectionTimeStart !== null
+        ? selectionTimeStart >= duration
+          ? duration - 10
+          : selectionTimeStart
+        : duration;
+    const selectionEndPoint =
+      selectionTimeEnd !== null
+        ? selectionTimeEnd > duration
+          ? duration
+          : selectionTimeEnd
+        : duration;
+
+    return { selectionStartPoint, selectionEndPoint };
+  }, [videoInfo]);
 
   /**
    * PREVENT DEFAULT
@@ -375,13 +393,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
 
     // Selector
-    const selectionTimeStart = videoInfo!.selectionTimeStart || duration - 10;
-    const selectionTimeEnd =
-      videoInfo!.selectionTimeEnd || selectionTimeStart + 10;
 
     if (
-      currentTime >= selectionTimeStart &&
-      currentTime < selectionTimeEnd &&
+      currentTime >= selectionStartPoint &&
+      currentTime < selectionEndPoint &&
       currentVideo.children.length > 0 &&
       !selectedNextVideoId
     ) {
@@ -393,8 +408,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       selectorData.current = false;
     }
   }, [
-    videoInfo,
     currentVideo.children,
+    selectionStartPoint,
+    selectionEndPoint,
     selectedNextVideoId,
     hideControlsHandler,
   ]);
@@ -454,9 +470,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const fullscreenChangeHandler = useCallback(() => {
     if (document.fullscreenElement) {
-      setFullscreen(true);
+      setFullscreenState(true);
     } else {
-      setFullscreen(false);
+      setFullscreenState(false);
     }
   }, []);
 
@@ -710,17 +726,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const navigateToNextVideoHandler = useCallback(() => {
     const video = videoRef.current!;
 
-    const selectionTimeStart =
-      videoInfo!.selectionTimeStart || video.duration - 10;
-
-    if (video.currentTime < selectionTimeStart) {
-      video.currentTime = selectionTimeStart;
+    if (video.currentTime < selectionStartPoint) {
+      video.currentTime = selectionStartPoint;
     } else {
       video.currentTime = video.duration;
     }
 
     video.play();
-  }, [videoInfo]);
+  }, [selectionStartPoint]);
 
   const markSelectionTimeHandler = useCallback(() => {
     const video = videoRef.current!;
@@ -931,6 +944,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         on={displaySelector}
         high={displayControls}
         next={currentVideo.children}
+        selectionEndPoint={selectionEndPoint}
         onSelect={selectNextVideoHandler}
       />
       <div
@@ -949,8 +963,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             seekProgress={seekProgress}
             seekTooltip={seekTooltip}
             seekTooltipPosition={seekTooltipPosition}
-            selectionTimeStart={videoInfo!.selectionTimeStart}
-            selectionTimeEnd={videoInfo!.selectionTimeEnd}
+            selectionStartPoint={selectionStartPoint}
+            selectionEndPoint={selectionEndPoint}
             editMode={editMode}
             onHover={seekMouseMoveHandler}
             onSeek={seekInputHandler}
@@ -972,11 +986,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onRestart={restartVideoTreeHandler}
               onPrev={navigateToPreviousVideoHandler}
             />
-            <Playback
-              play={playbackState}
-              onToggle={togglePlayHandler}
-              onKey={preventDefault}
-            />
+            <Playback isPaused={playbackState} onToggle={togglePlayHandler} />
             <Skip onNext={navigateToNextVideoHandler} />
           </div>
           <div className="vp-controls__body__right">
@@ -995,9 +1005,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onChangePlaybackRate={changePlaybackRateHandler}
             />
             <Fullscreen
-              fullscreenState={fullscreen}
+              isFullscreen={fullscreenState}
               onToggle={toggleFullscreenHandler}
-              onKey={preventDefault}
             />
           </div>
         </div>

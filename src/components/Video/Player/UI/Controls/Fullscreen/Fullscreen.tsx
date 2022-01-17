@@ -1,25 +1,24 @@
 import { memo } from 'react';
 
+import Btn from '../Btn/Btn';
 import { ReactComponent as FullscreenIcon } from 'assets/icons/fullscreen.svg';
 import { ReactComponent as FullscreenExitIcon } from 'assets/icons/fullscreen-exit.svg';
 import './Fullscreen.scss';
 
 interface FullscreenProps {
-  fullscreenState: boolean;
+  isFullscreen: boolean;
   onToggle: () => void;
-  onKey: (event: React.KeyboardEvent) => void;
 }
 
-const Fullscreen: React.FC<FullscreenProps> = ({
-  fullscreenState,
-  onToggle,
-  onKey,
-}) => (
+const Fullscreen: React.FC<FullscreenProps> = ({ isFullscreen, onToggle }) => (
   <div className="vp-controls__fullscreen">
-    <button className="vp-controls__btn" onClick={onToggle} onKeyDown={onKey}>
-      {!fullscreenState && <FullscreenIcon />}
-      {fullscreenState && <FullscreenExitIcon />}
-    </button>
+    <Btn
+      label={isFullscreen ? 'Fullscreen Off' : 'Fullscreen'}
+      onClick={onToggle}
+    >
+      {!isFullscreen && <FullscreenIcon />}
+      {isFullscreen && <FullscreenExitIcon />}
+    </Btn>
   </div>
 );
 

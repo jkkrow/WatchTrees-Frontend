@@ -1,21 +1,21 @@
 import { memo } from 'react';
 
+import Btn from '../Btn/Btn';
 import { ReactComponent as PlayIcon } from 'assets/icons/play.svg';
 import { ReactComponent as PauseIcon } from 'assets/icons/pause.svg';
 import './Playback.scss';
 
 interface PlaybackProps {
-  play: boolean;
+  isPaused: boolean;
   onToggle: () => void;
-  onKey: (event: React.KeyboardEvent) => void;
 }
 
-const Playback: React.FC<PlaybackProps> = ({ play, onToggle, onKey }) => (
+const Playback: React.FC<PlaybackProps> = ({ isPaused, onToggle }) => (
   <div className="vp-controls__playback">
-    <button className="vp-controls__btn" onClick={onToggle} onKeyDown={onKey}>
-      {!play && <PlayIcon />}
-      {play && <PauseIcon />}
-    </button>
+    <Btn label={isPaused ? 'Pause' : 'Play'} onClick={onToggle}>
+      {!isPaused && <PlayIcon />}
+      {isPaused && <PauseIcon />}
+    </Btn>
   </div>
 );
 

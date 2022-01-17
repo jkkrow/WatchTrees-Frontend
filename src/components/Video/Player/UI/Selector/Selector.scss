@@ -3,14 +3,13 @@
 .vp-selector {
   position: absolute;
   display: flex;
-  flex-flow: wrap;
-  justify-content: center;
-  align-content: flex-end;
+  flex-direction: column;
   bottom: 0;
   left: 0;
   right: 0;
+  width: 100%;
   height: clamp(8rem, 30%, 15rem);
-  gap: 2rem;
+  gap: 1rem;
   opacity: 0;
   visibility: hidden;
   transition: all 400ms ease-out;
@@ -26,6 +25,16 @@
     transform: translateY(-100%);
   }
 
+  &__container {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+    align-content: flex-end;
+    width: 100%;
+    height: 100%;
+    gap: 2rem;
+  }
+
   &__btn {
     width: 40%;
     height: clamp(4rem, 30%, 10rem);
@@ -37,9 +46,15 @@
     color: $vp-text;
     background-color: rgba($color: $vp-bg, $alpha: 0.8);
     transition: all 200ms ease-out;
+
+    &:hover {
+      background-color: #333333;
+    }
   }
 
-  &__btn:hover {
-    background-color: #333333;
+  &__timer {
+    font-size: clamp(1.5rem, 1vw, 2rem);
+    font-weight: 600;
+    text-align: center;
   }
 }

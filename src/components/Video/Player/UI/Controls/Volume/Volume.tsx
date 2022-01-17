@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import Btn from '../Btn/Btn';
 import { ReactComponent as VolumeHighIcon } from 'assets/icons/volume-high.svg';
 import { ReactComponent as VolumeMiddleIcon } from 'assets/icons/volume-middle.svg';
 import { ReactComponent as VolumeLowIcon } from 'assets/icons/volume-low.svg';
@@ -15,12 +16,12 @@ interface VolumeProps {
 
 const Volume: React.FC<VolumeProps> = ({ volume, onToggle, onSeek, onKey }) => (
   <div className="vp-controls__volume">
-    <button className="vp-controls__btn" onClick={onToggle} onKeyDown={onKey}>
+    <Btn onClick={onToggle}>
       {volume > 0.7 && <VolumeHighIcon />}
       {volume <= 0.7 && volume > 0.3 && <VolumeMiddleIcon />}
       {volume <= 0.3 && volume > 0 && <VolumeLowIcon />}
       {volume === 0 && <VolumeMuteIcon />}
-    </button>
+    </Btn>
     <div className="vp-controls__volume__range">
       <div className="vp-controls__volume__range--background" />
       <div

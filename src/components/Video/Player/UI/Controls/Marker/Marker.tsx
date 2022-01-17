@@ -1,3 +1,6 @@
+import { memo } from 'react';
+
+import Btn from '../Btn/Btn';
 import { ReactComponent as MarkerIcon } from 'assets/icons/marker.svg';
 import './Marker.scss';
 
@@ -8,15 +11,15 @@ interface MarkerProps {
 
 const Marker: React.FC<MarkerProps> = ({ isMarked, onMark }) => {
   return (
-    <div className="vp-controls__mark">
-      <button
-        className={`vp-controls__btn${isMarked ? ' active' : ''}`}
+    <div className={`vp-controls__mark${isMarked ? ' active' : ''}`}>
+      <Btn
+        label={isMarked ? 'Mark Endpoint' : 'Mark Startpoint'}
         onClick={onMark}
       >
         <MarkerIcon />
-      </button>
+      </Btn>
     </div>
   );
 };
 
-export default Marker;
+export default memo(Marker);
