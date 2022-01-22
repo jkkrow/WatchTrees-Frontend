@@ -29,18 +29,17 @@ interface UploadDashboardProps {
 
 const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const { isUploadSaved } = useAppSelector((state) => state.upload);
+  const { dispatch, dispatchThunk, loading } = useAppDispatch(null);
 
   const [titleInput, setTitleInput] = useState(tree.info.title);
+  const [tagInput, setTagInput] = useState('');
+  const [tagArray, setTagArray] = useState(tree.info.tags);
   const [descriptionInput, setDescriptionInput] = useState(
     tree.info.description
   );
-  const [tagInput, setTagInput] = useState('');
-  const [tagArray, setTagArray] = useState(tree.info.tags);
 
-  const { dispatch, dispatchThunk, loading } = useAppDispatch(null);
-
-  const [titleTimeout] = useTimeout();
-  const [descriptionTimeout] = useTimeout();
+  const [setTitleTimeout] = useTimeout();
+  const [setDescriptionTimeout] = useTimeout();
 
   const disableSubmit = useMemo(() => {
     let message: string = '';
@@ -67,7 +66,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleInput(event.target.value);
 
-    titleTimeout(
+    setTitleTimeout(
       () =>
         dispatch(
           uploadActions.setTree({ info: { title: event.target.value } })
@@ -81,7 +80,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   ) => {
     setDescriptionInput(event.target.value);
 
-    descriptionTimeout(
+    setDescriptionTimeout(
       () =>
         dispatch(
           uploadActions.setTree({ info: { description: event.target.value } })

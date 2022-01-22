@@ -36,11 +36,11 @@
     border: 5px solid transparent;
     border-radius: 10px;
     box-shadow: inset 0 0 0 10px;
-    color: var(--text-tertiary);
+    color: #424242;
     background-clip: content-box;
 
     &:hover {
-      color: var(--bg-tertiary);
+      color: rgba($color: #424242, $alpha: 0.7);
     }
   }
 }
@@ -118,8 +118,16 @@ textarea {
     background-color: transparent;
   }
 
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
   &::-webkit-scrollbar-thumb {
-    color: var(--bg-inversed);
+    color: #e8e6e3;
+
+    &:hover {
+      color: rgba($color: #e8e6e3, $alpha: 0.7);
+    }
   }
 }
 

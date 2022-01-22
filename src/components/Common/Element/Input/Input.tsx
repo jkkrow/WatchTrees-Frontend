@@ -126,7 +126,7 @@ const Input: React.FC<InputProps> = ({
       <textarea
         id={id}
         rows={rows || 5}
-        placeholder={placeholder || label}
+        placeholder={placeholder}
         autoFocus={autoFocus}
         autoComplete={autoComplete}
         value={value || inputState.value}
@@ -138,7 +138,7 @@ const Input: React.FC<InputProps> = ({
         id={id}
         name={id}
         type={type}
-        placeholder={placeholder || label}
+        placeholder={placeholder}
         autoFocus={autoFocus}
         autoComplete={autoComplete}
         value={value || inputState.value}

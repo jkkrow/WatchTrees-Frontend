@@ -109,41 +109,17 @@
 
     &__input {
       display: flex;
+      align-items: center;
       width: 50%;
       gap: 1rem;
 
+      > div {
+        margin: 0;
+      }
+
       input {
-        width: 100%;
-        padding: 0.5rem;
-        outline: none;
-        border: none;
-        border-bottom: 2px solid var(--text-primary);
         text-align: center;
-        color: var(--text-primary);
-        background-color: transparent;
-      }
-    }
-
-    &__selection-time {
-      position: relative;
-
-      input:focus ~ p {
-        opacity: 1;
-        visibility: visible;
-      }
-
-      p {
-        position: absolute;
-        top: 100%;
         padding: 0.5rem;
-        margin-top: 1rem;
-        border-radius: 5px;
-        font-size: 1.2rem;
-        background-color: var(--accent-secondary);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 200ms ease-out;
-        z-index: 1;
       }
     }
 

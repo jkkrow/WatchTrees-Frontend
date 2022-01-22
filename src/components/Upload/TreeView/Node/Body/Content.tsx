@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
+import Input from 'components/Common/Element/Input/Input';
 import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as AngleLeftDoubleIcon } from 'assets/icons/angle-left-double.svg';
@@ -8,7 +9,6 @@ import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
 import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
 import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
-import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { uploadActions } from 'store/slices/upload-slice';
 import { VideoNode, videoActions } from 'store/slices/video-slice';
@@ -23,25 +23,57 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   const nodeInfo = useMemo(() => currentNode.info!, [currentNode.info]);
 
-  const [labelInput, setLabelInput] = useState(nodeInfo.label);
-
   const { activeNodeId } = useAppSelector((state) => state.upload);
   const { dispatch } = useAppDispatch();
 
-  const [labelTimeout] = useTimeout();
-
   const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLabelInput(event.target.value);
+    dispatch(
+      uploadActions.setNode({
+        info: { label: event.target.value },
+        nodeId: currentNode.id,
+      })
+    );
+  };
 
-    labelTimeout(
-      () =>
-        dispatch(
-          uploadActions.setNode({
-            info: { label: event.target.value },
-            nodeId: currentNode.id,
-          })
-        ),
-      300
+  const selectionTimeStartChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = +event.target.value;
+
+    if (value > nodeInfo.duration) {
+      value = nodeInfo.duration;
+    }
+
+    if (value > nodeInfo.selectionTimeEnd) {
+      value = nodeInfo.selectionTimeEnd;
+    }
+
+    dispatch(
+      uploadActions.setNode({
+        info: { selectionTimeStart: value },
+        nodeId: currentNode.id,
+      })
+    );
+  };
+
+  const selectionTimeEndChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = +event.target.value;
+
+    if (value < nodeInfo.selectionTimeStart) {
+      value = nodeInfo.selectionTimeStart;
+    }
+
+    if (value > nodeInfo.duration) {
+      value = nodeInfo.duration;
+    }
+
+    dispatch(
+      uploadActions.setNode({
+        info: { selectionTimeEnd: value },
+        nodeId: currentNode.id,
+      })
     );
   };
 
@@ -118,9 +150,10 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
         {currentNode.id !== rootId && (
           <label className="upload-node__info__label" data-label="Label">
             <div className="upload-node__info__input">
-              <input
+              <Input
+                id="label"
                 type="text"
-                value={labelInput}
+                value={nodeInfo.label}
                 onChange={labelChangeHandler}
               />
             </div>
@@ -131,12 +164,19 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
           data-label="Selection Time"
         >
           <div className="upload-node__info__input">
-            <input readOnly value={nodeInfo.selectionTimeStart || '-'} />
+            <Input
+              id="selectionTimeStart"
+              type="number"
+              value={nodeInfo.selectionTimeStart.toString()}
+              onChange={selectionTimeStartChangeHandler}
+            />
             <span>to</span>
-            <input readOnly value={nodeInfo.selectionTimeEnd || '-'} />
-            <p>
-              Mark selection time position with a button below Video Player.
-            </p>
+            <Input
+              id="selectionTimeEnd"
+              type="number"
+              value={nodeInfo.selectionTimeEnd.toString()}
+              onChange={selectionTimeEndChangeHandler}
+            />
           </div>
         </label>
         <div className="upload-node__info__children" data-label="Next Videos">

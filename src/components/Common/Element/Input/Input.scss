@@ -7,6 +7,7 @@
   textarea {
     display: block;
     width: 100%;
+    max-width: 100%;
     padding: 1rem 0;
     border: none;
     outline: none;
@@ -15,18 +16,15 @@
     background-color: transparent;
     transition: border-color 200ms ease-out;
 
-    &::placeholder {
-      color: transparent;
-    }
-
-    &:placeholder-shown ~ label {
-      font-size: initial;
-      transform: translateY(0);
-    }
-
-    &:focus ~ label {
+    & ~ label,
+    &[value='']:focus ~ label {
       font-size: 1.2rem;
       transform: translateY(-2rem);
+    }
+
+    &[value=''] ~ label {
+      font-size: initial;
+      transform: translateY(0);
     }
   }
 

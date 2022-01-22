@@ -62,9 +62,10 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
         name: file.name,
         size: file.size,
         duration: videoDuration,
-        label: 'Default',
-        selectionTimeStart: null,
-        selectionTimeEnd: null,
+        label: `Select ${file.name}`,
+        selectionTimeStart:
+          videoDuration > 10 ? videoDuration - 10 : videoDuration,
+        selectionTimeEnd: videoDuration,
         progress: 0,
         error: null,
         isConverted: false,
