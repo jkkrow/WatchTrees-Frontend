@@ -4,7 +4,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 
 import Btn from '../Btn/Btn';
 import { ReactComponent as SettingIcon } from 'assets/icons/gear.svg';
-import { ReactComponent as ArrowLeft } from 'assets/icons/arrow-left.svg';
+import { ReactComponent as ArrowLeftIcon } from 'assets/icons/arrow-left.svg';
 import './Settings.scss';
 
 interface SettingsProps {
@@ -122,7 +122,7 @@ const Settings: React.FC<SettingsProps> = ({
               className="vp-controls__settings__dropdown__label"
               onClick={() => setIsIndex(true)}
             >
-              <ArrowLeft />
+              <ArrowLeftIcon />
               <span>Resolutions</span>
             </div>
             <ul className="vp-controls__settings__dropdown__list">
@@ -165,7 +165,7 @@ const Settings: React.FC<SettingsProps> = ({
               className="vp-controls__settings__dropdown__label"
               onClick={() => setIsIndex(true)}
             >
-              <ArrowLeft />
+              <ArrowLeftIcon />
               <span>Speed</span>
             </div>
             <ul className="vp-controls__settings__dropdown__list">

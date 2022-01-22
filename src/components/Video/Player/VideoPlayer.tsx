@@ -128,17 +128,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const { selectionTimeStart, selectionTimeEnd, duration } = videoInfo;
 
     const selectionStartPoint =
-      selectionTimeStart !== null
-        ? selectionTimeStart >= duration
-          ? duration - 10
-          : selectionTimeStart
-        : duration;
+      selectionTimeStart >= duration ? duration - 10 : selectionTimeStart;
     const selectionEndPoint =
-      selectionTimeEnd !== null
-        ? selectionTimeEnd > duration
-          ? duration
-          : selectionTimeEnd
-        : duration;
+      selectionTimeEnd > duration ? duration : selectionTimeEnd;
 
     return { selectionStartPoint, selectionEndPoint };
   }, [videoInfo]);
@@ -526,6 +518,108 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   );
 
   /**
+   * NAVIGATION
+   */
+
+  const restartVideoTreeHandler = useCallback(() => {
+    if (!currentVideo.prevId) {
+      videoRef.current!.currentTime = 0;
+      return;
+    }
+
+    dispatch(videoActions.setActiveVideo(rootId));
+  }, [dispatch, rootId, currentVideo.prevId]);
+
+  const navigateToPreviousVideoHandler = useCallback(() => {
+    if (!currentVideo.prevId) {
+      videoRef.current!.currentTime = 0;
+      return;
+    }
+
+    dispatch(videoActions.setActiveVideo(currentVideo.prevId));
+  }, [dispatch, currentVideo.prevId]);
+
+  const navigateToNextVideoHandler = useCallback(() => {
+    const video = videoRef.current!;
+
+    if (video.currentTime < selectionStartPoint) {
+      video.currentTime = selectionStartPoint;
+    } else {
+      video.currentTime = video.duration;
+    }
+
+    video.play();
+  }, [selectionStartPoint]);
+
+  /**
+   * MARK SELECTION TIME
+   */
+
+  const markSelectionTimeHandler = useCallback(() => {
+    if (!editMode) return;
+
+    const video = videoRef.current!;
+    const { selectionTimeStart, selectionTimeEnd } = videoInfo!;
+
+    if (!selectionTimeMarked) {
+      // Mark start point
+      dispatch(
+        uploadActions.setNode({
+          info: {
+            selectionTimeStart: video.currentTime,
+          },
+          nodeId: currentVideo.id,
+        })
+      );
+
+      if (video.currentTime > (selectionTimeEnd || 0)) {
+        dispatch(
+          uploadActions.setNode({
+            info: {
+              selectionTimeEnd:
+                video.currentTime + 10 > videoDuration
+                  ? videoDuration
+                  : video.currentTime + 10,
+            },
+            nodeId: currentVideo.id,
+          })
+        );
+      }
+    } else {
+      // Mark end point
+      dispatch(
+        uploadActions.setNode({
+          info: {
+            selectionTimeEnd: video.currentTime,
+          },
+          nodeId: currentVideo.id,
+        })
+      );
+
+      if (video.currentTime < (selectionTimeStart || 0)) {
+        dispatch(
+          uploadActions.setNode({
+            info: {
+              selectionTimeStart:
+                video.currentTime - 10 < 0 ? 0 : video.currentTime - 10,
+            },
+            nodeId: currentVideo.id,
+          })
+        );
+      }
+    }
+
+    setSelectionTimeMarked((prev) => !prev);
+  }, [
+    dispatch,
+    editMode,
+    currentVideo.id,
+    videoInfo,
+    selectionTimeMarked,
+    videoDuration,
+  ]);
+
+  /**
    * KEYBOARD SHORTKUTS
    */
 
@@ -699,103 +793,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   ]);
 
   /**
-   * NAVIGATION
-   */
-
-  const restartVideoTreeHandler = useCallback(() => {
-    if (!currentVideo.prevId) {
-      videoRef.current!.currentTime = 0;
-      return;
-    }
-
-    dispatch(videoActions.setActiveVideo(rootId));
-  }, [dispatch, rootId, currentVideo.prevId]);
-
-  const navigateToPreviousVideoHandler = useCallback(() => {
-    if (!currentVideo.prevId) {
-      videoRef.current!.currentTime = 0;
-      return;
-    }
-
-    dispatch(videoActions.setActiveVideo(currentVideo.prevId));
-  }, [dispatch, currentVideo.prevId]);
-
-  const navigateToNextVideoHandler = useCallback(() => {
-    const video = videoRef.current!;
-
-    if (video.currentTime < selectionStartPoint) {
-      video.currentTime = selectionStartPoint;
-    } else {
-      video.currentTime = video.duration;
-    }
-
-    video.play();
-  }, [selectionStartPoint]);
-
-  const markSelectionTimeHandler = useCallback(() => {
-    const video = videoRef.current!;
-    const { selectionTimeStart, selectionTimeEnd } = videoInfo!;
-
-    if (!selectionTimeMarked) {
-      // Mark start point
-      dispatch(
-        uploadActions.setNode({
-          info: {
-            selectionTimeStart: +video.currentTime.toFixed(2),
-          },
-          nodeId: currentVideo.id,
-        })
-      );
-
-      if (video.currentTime > (selectionTimeEnd || 0)) {
-        dispatch(
-          uploadActions.setNode({
-            info: {
-              selectionTimeEnd: +(
-                video.currentTime + 10 > videoDuration
-                  ? videoDuration
-                  : video.currentTime + 10
-              ).toFixed(2),
-            },
-            nodeId: currentVideo.id,
-          })
-        );
-      }
-    } else {
-      // Mark end point
-      dispatch(
-        uploadActions.setNode({
-          info: {
-            selectionTimeEnd: +video.currentTime.toFixed(2),
-          },
-          nodeId: currentVideo.id,
-        })
-      );
-
-      if (video.currentTime < (selectionTimeStart || 0)) {
-        dispatch(
-          uploadActions.setNode({
-            info: {
-              selectionTimeStart: +(
-                video.currentTime - 10 < 0 ? 0 : video.currentTime - 10
-              ).toFixed(2),
-            },
-            nodeId: currentVideo.id,
-          })
-        );
-      }
-    }
-
-    setSelectionTimeMarked((prev) => !prev);
-  }, [
-    dispatch,
-    currentVideo.id,
-    videoInfo,
-    selectionTimeMarked,
-    videoDuration,
-  ]);
-
-  /**
    * INITIATE PLAYER
    */
 
@@ -923,7 +920,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       style={{ cursor: displayCursor }}
       onMouseMove={showControlsHandler}
       onMouseLeave={hideControlsHandler}
-      onContextMenu={(e) => e.preventDefault()}
+      // onContextMenu={(e) => e.preventDefault()}
     >
       <video
         ref={videoRef}
@@ -935,8 +932,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onVolumeChange={volumeChangeHandler}
         onTimeUpdate={timeChangeHandler}
         onDoubleClick={toggleFullscreenHandler}
+        onSeeking={showLoaderHandler}
+        onSeeked={hideLoaderHandler}
         onWaiting={showLoaderHandler}
-        onCanPlay={hideLoaderHandler}
+        onCanPlayThrough={hideLoaderHandler}
       />
       <Loader on={displayLoader} />
       <KeyAction on={displayKeyAction} volume={volumeState} />

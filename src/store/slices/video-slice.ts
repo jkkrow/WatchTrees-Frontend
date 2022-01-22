@@ -5,8 +5,8 @@ export interface NodeInfo {
   label: string;
   size: number;
   duration: number;
-  selectionTimeStart: number | null;
-  selectionTimeEnd: number | null;
+  selectionTimeStart: number;
+  selectionTimeEnd: number;
   error: string | null;
   progress: number;
   isConverted: boolean;

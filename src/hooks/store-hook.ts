@@ -5,10 +5,12 @@ import { ThunkDispatch } from 'redux-thunk';
 
 import { AppState, AppThunk, AppExtraArgument } from 'store';
 
+type NonUndefined<T> = T extends undefined ? never : T;
+
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 
 export const useAppDispatch = <T = any>(initialData?: T) => {
-  const [data, setData] = useState(initialData!);
+  const [data, setData] = useState(initialData as NonUndefined<T>);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
 

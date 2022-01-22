@@ -27,6 +27,11 @@ const VideoDuration: React.FC<VideoDurationProps> = ({
           : `${formatted.minDuration} - ${formatted.maxDuration}`}
       </span>
     </div>
+  ) : minDuration === maxDuration ? (
+    <div className="video-duration">
+      <TimeIcon />
+      <span>Duration: {formatted.minDuration}</span>
+    </div>
   ) : (
     <>
       <div className="video-duration">
