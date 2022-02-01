@@ -1,4 +1,4 @@
-import { VideoListDetail, History } from 'store/slices/video-slice';
+import { VideoTreeClient, History } from 'store/slices/video-slice';
 
 export const getLocalHistory = (params: {
   page: number;
@@ -81,7 +81,7 @@ export const removeFromLocalHistory = (videoId: string) => {
 };
 
 export const attachLocalHistory = (
-  videos: VideoListDetail | VideoListDetail[]
+  videos: VideoTreeClient | VideoTreeClient[]
 ) => {
   const historyStorage = localStorage.getItem('history');
   if (!historyStorage) return;
@@ -106,7 +106,7 @@ export const attachLocalHistory = (
   }
 };
 
-export const sortByHistory = (videos: VideoListDetail[]) => {
+export const sortByHistory = (videos: VideoTreeClient[]) => {
   videos.sort((a, b) => {
     if (!a.history || !b.history) return 0;
 

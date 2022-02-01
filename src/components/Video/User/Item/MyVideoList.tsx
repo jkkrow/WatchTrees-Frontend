@@ -11,13 +11,13 @@ import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoTree } from 'store/slices/video-slice';
-import { initiateUpload } from 'store/thunks/upload-thunk';
+import { VideoTreeClient } from 'store/slices/video-slice';
+import { continueUpload } from 'store/thunks/upload-thunk';
 import './MyVideoItem.scss';
 
 interface MyVideoItemProps {
-  item: VideoTree;
-  onDelete: (item: VideoTree) => void;
+  item: VideoTreeClient;
+  onDelete: (item: VideoTreeClient) => void;
 }
 
 const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
@@ -28,7 +28,7 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
 
   const editHandler = async (videoId: string) => {
     if (!uploadTree) {
-      await dispatchThunk(initiateUpload(videoId));
+      await dispatchThunk(continueUpload(videoId));
     }
 
     history.push(`/upload/${videoId}`);

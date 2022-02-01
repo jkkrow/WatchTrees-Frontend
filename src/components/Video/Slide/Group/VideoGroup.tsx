@@ -7,7 +7,7 @@ import VideoItem from 'components/Video/Item/VideoItem';
 import VideoLoaderList from 'components/Video/Loader/List/VideoLoaderList';
 import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
 import { AppThunk } from 'store';
-import { VideoListDetail } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 
 import 'swiper/modules/navigation/navigation.min.css';
 import 'swiper/modules/pagination/pagination.min.css';
@@ -28,7 +28,7 @@ interface VideoGroupProps {
 }
 
 const VideoGroup: React.FC<VideoGroupProps> = ({
-  params = { max: 10 },
+  params,
   id,
   label,
   to,
@@ -36,8 +36,8 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   onFetch,
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.user);
-  const { dispatchThunk, setData, data, loading, loaded } = useAppDispatch<{
-    videos: VideoListDetail[];
+  const { dispatchThunk, setData, data, loading } = useAppDispatch<{
+    videos: VideoTreeClient[];
     count: number;
   }>({ videos: [], count: 0 });
 
@@ -46,7 +46,9 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   useEffect(() => {
     if (refreshToken && !accessToken) return;
 
-    dispatchThunk(onFetch(params, forceUpdate || history.action !== 'POP'));
+    dispatchThunk(
+      onFetch({ max: 10, ...params }, forceUpdate || history.action !== 'POP')
+    );
   }, [
     dispatchThunk,
     refreshToken,
@@ -79,8 +81,8 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
           {label}
         </h3>
       )}
-      <VideoLoaderList loading={!loaded} />
-      {loaded && data.videos.length > 0 && (
+      <VideoLoaderList loading={loading} />
+      {!loading && data.videos.length > 0 && (
         <Swiper
           modules={[Navigation]}
           slidesPerView={2}

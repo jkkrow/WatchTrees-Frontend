@@ -566,7 +566,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       dispatch(
         uploadActions.setNode({
           info: {
-            selectionTimeStart: video.currentTime,
+            selectionTimeStart: +video.currentTime.toFixed(3),
           },
           nodeId: currentVideo.id,
         })
@@ -578,8 +578,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             info: {
               selectionTimeEnd:
                 video.currentTime + 10 > videoDuration
-                  ? videoDuration
-                  : video.currentTime + 10,
+                  ? +videoDuration.toFixed(3)
+                  : +(video.currentTime + 10).toFixed(3),
             },
             nodeId: currentVideo.id,
           })
@@ -590,7 +590,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       dispatch(
         uploadActions.setNode({
           info: {
-            selectionTimeEnd: video.currentTime,
+            selectionTimeEnd: +video.currentTime.toFixed(3),
           },
           nodeId: currentVideo.id,
         })
@@ -601,7 +601,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           uploadActions.setNode({
             info: {
               selectionTimeStart:
-                video.currentTime - 10 < 0 ? 0 : video.currentTime - 10,
+                video.currentTime - 10 < 0
+                  ? 0
+                  : +(video.currentTime - 10).toFixed(3),
             },
             nodeId: currentVideo.id,
           })

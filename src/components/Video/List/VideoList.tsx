@@ -8,7 +8,7 @@ import { usePaginate } from 'hooks/page-hook';
 import { useSearch } from 'hooks/search-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { AppThunk } from 'store';
-import { VideoListDetail } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 import './VideoList.scss';
 
 interface VideoListProps {
@@ -26,7 +26,7 @@ const VideoList: React.FC<VideoListProps> = ({
 }) => {
   const { refreshToken, accessToken } = useAppSelector((state) => state.user);
   const { dispatchThunk, data, setData, loading, loaded } = useAppDispatch<{
-    videos: VideoListDetail[];
+    videos: VideoTreeClient[];
     count: number;
   }>({
     videos: [],

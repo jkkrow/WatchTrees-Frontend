@@ -6,7 +6,7 @@ import { Navigation, Pagination, Autoplay } from 'swiper';
 import VideoThumbnail from '../../UI/Thumbnail/VideoThumbnail';
 import VideoLoaderItem from 'components/Video/Loader/Item/VideoLoaderItem';
 import { useAppDispatch } from 'hooks/store-hook';
-import { VideoItemDetail } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
 import './VideoCarousel.scss';
 
@@ -18,7 +18,7 @@ const CAROUSEL_VIDEOS_NUMBER = 5;
 
 const VideoCarousel: React.FC = () => {
   const { dispatchThunk, data, loaded } = useAppDispatch<{
-    videos: VideoItemDetail[];
+    videos: VideoTreeClient[];
     count: number;
   }>({
     videos: [],

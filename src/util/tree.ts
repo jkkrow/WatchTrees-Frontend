@@ -1,22 +1,4 @@
-import { v1 as uuidv1 } from 'uuid';
-
 import { NodeInfo, VideoNode, VideoTree } from 'store/slices/video-slice';
-
-export const createNode = (prevNode?: VideoNode): VideoNode => {
-  const node: VideoNode = {
-    id: uuidv1(),
-    layer: 0,
-    info: null,
-    children: [],
-  };
-
-  if (prevNode) {
-    node.prevId = prevNode.id;
-    node.layer = prevNode.layer + 1;
-  }
-
-  return node;
-};
 
 export const findById = (tree: VideoTree, id: string): VideoNode | null => {
   let currentNode: VideoNode = tree.root;

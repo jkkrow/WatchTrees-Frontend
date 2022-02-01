@@ -172,26 +172,15 @@ export const checkVerification = (token: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { refreshToken } = getState().user;
-
-      const isLoggedIn = !!refreshToken;
+      const { userData } = getState().user;
 
       dispatch(userActions.userRequest());
 
-      const { data } = await client.get(`/users/verification/${token}`, {
-        params: { isLoggedIn },
-      });
+      const { data } = await client.get(`/users/verification/${token}`);
 
       dispatch(userActions.userSuccess(data.message));
-
-      if (isLoggedIn && data.refreshToken) {
-        dispatch(userActions.setRefreshToken(data.refreshToken));
-        dispatch(userActions.setAccessToken(data.accessToken));
-        dispatch(userActions.setUserData(data.userData));
-
-        localStorage.setItem('refreshToken', JSON.stringify(data.refreshToken));
-        localStorage.setItem('userData', JSON.stringify(data.userData));
-      }
+      userData &&
+        dispatch(userActions.setUserData({ ...userData, isVerified: true }));
     } catch (err) {
       dispatch(userActions.userFail(`${(err as Error).message}`));
       throw err;
@@ -274,7 +263,10 @@ export const updateUserName = (name: string): AppThunk => {
         name,
       });
 
+      const newUserData = { ...userData, name };
+
       dispatch(userActions.userSuccess());
+      dispatch(userActions.setUserData(newUserData));
       dispatch(
         uiActions.setMessage({
           type: 'message',
@@ -282,10 +274,6 @@ export const updateUserName = (name: string): AppThunk => {
           timer: 5000,
         })
       );
-
-      const newUserData = { ...userData, name };
-
-      dispatch(userActions.setUserData(newUserData));
 
       localStorage.setItem('userData', JSON.stringify(newUserData));
     } catch (err) {
@@ -351,6 +339,8 @@ export const updateUserPicture = (file: File | null): AppThunk => {
         fileType: file ? file.type : null,
       });
 
+      const newUserData = { ...userData, picture: data.picture };
+
       if (file) {
         await axios.put(data.presignedUrl, file, {
           headers: { 'Content-Type': file.type },
@@ -358,6 +348,7 @@ export const updateUserPicture = (file: File | null): AppThunk => {
       }
 
       dispatch(userActions.userSuccess());
+      dispatch(userActions.setUserData(newUserData));
       dispatch(
         uiActions.setMessage({
           type: 'message',
@@ -365,10 +356,6 @@ export const updateUserPicture = (file: File | null): AppThunk => {
           timer: 5000,
         })
       );
-
-      const newUserData = { ...userData, picture: data.newPicture };
-
-      dispatch(userActions.setUserData(newUserData));
 
       localStorage.setItem('userData', JSON.stringify(newUserData));
     } catch (err) {

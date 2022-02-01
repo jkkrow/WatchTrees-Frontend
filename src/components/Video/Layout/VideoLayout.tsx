@@ -10,14 +10,14 @@ import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Loader from '../Player/UI/Loader/Loader';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { VideoItemDetail } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideo, toggleFavorites } from 'store/thunks/video-thunk';
 import './VideoLayout.scss';
 
 const VideoLayout: React.FC = () => {
   const { refreshToken } = useAppSelector((state) => state.user);
   const { dispatchThunk, dispatch, data, setData, loaded } =
-    useAppDispatch<VideoItemDetail | null>(null);
+    useAppDispatch<VideoTreeClient | null>(null);
 
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
@@ -27,10 +27,16 @@ const VideoLayout: React.FC = () => {
   }, [dispatchThunk, id]);
 
   const toggleFavoritesHandler = async () => {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
+
+    if (!refreshToken) {
+      return history.push('/auth');
+    }
 
     setData((prevState) => {
-      const prev = prevState as VideoItemDetail;
+      const prev = prevState as VideoTreeClient;
       return {
         ...prev,
         data: {
@@ -43,23 +49,7 @@ const VideoLayout: React.FC = () => {
       };
     });
 
-    if (!refreshToken) {
-      return history.push('/auth');
-    }
-
-    const result = await dispatch(toggleFavorites(data._id!));
-
-    setData((prevState) => {
-      const prev = prevState as VideoItemDetail;
-      return {
-        ...prev,
-        data: {
-          ...prev.data,
-          favorites: result.favorites,
-          isFavorite: result.isFavorite,
-        },
-      };
-    });
+    await dispatch(toggleFavorites(data._id!));
   };
 
   return (

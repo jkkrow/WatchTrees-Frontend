@@ -50,7 +50,6 @@ export interface VideoTree {
   _id: string;
   root: VideoNode;
   info: TreeInfo;
-  data: TreeData;
   createdAt: string;
 }
 
@@ -64,12 +63,9 @@ export interface History {
   updatedAt: Date;
 }
 
-export interface VideoListDetail extends VideoTree {
+export interface VideoTreeClient extends VideoTree {
   info: TreeInfoWithCreator;
   history: History | null;
-}
-
-export interface VideoItemDetail extends VideoListDetail {
   data: {
     views: number;
     favorites: number;

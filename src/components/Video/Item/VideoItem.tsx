@@ -10,12 +10,12 @@ import Avatar from 'components/Common/UI/Avatar/Avatar';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { useAppDispatch } from 'hooks/store-hook';
 import { AppThunk } from 'store';
-import { VideoListDetail } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 import './VideoItem.scss';
 
 interface VideoItemProps {
   id?: 'history' | 'favorites';
-  video: VideoListDetail;
+  video: VideoTreeClient;
   onDelete: (videoId: string) => void;
 }
 

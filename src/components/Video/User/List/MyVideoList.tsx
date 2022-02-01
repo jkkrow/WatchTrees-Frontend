@@ -1,10 +1,10 @@
 import MyVideoItem from '../Item/MyVideoList';
-import { VideoTree } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 import './MyVideoList.scss';
 
 interface MyVideoListProps {
-  items: VideoTree[];
-  onDelete: (item: VideoTree) => void;
+  items: VideoTreeClient[];
+  onDelete: (item: VideoTreeClient) => void;
 }
 
 const MyVideoList: React.FC<MyVideoListProps> = ({ items, onDelete }) => {

@@ -1,10 +1,10 @@
 import { ReactComponent as ViewIcon } from 'assets/icons/view.svg';
-import { VideoTree } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 import { formatNumber } from 'util/format';
 import './VideoViews.scss';
 
 interface VideoViewsProps {
-  video: VideoTree;
+  video: VideoTreeClient;
   brief?: boolean;
 }
 

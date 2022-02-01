@@ -7,7 +7,7 @@ import Pagination from 'components/Common/UI/Pagination/Pagination';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import Modal from 'components/Common/UI/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
-import { VideoTree } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
@@ -20,10 +20,10 @@ const MyVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
   const { accessToken } = useAppSelector((state) => state.user);
 
   const [displayModal, setDisplayModal] = useState(false);
-  const [targetItem, setTargetItem] = useState<VideoTree | null>(null);
+  const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
   const { dispatchThunk, data, loading, loaded } = useAppDispatch<{
-    videos: VideoTree[];
+    videos: VideoTreeClient[];
     count: number;
   }>({
     videos: [],
@@ -36,7 +36,7 @@ const MyVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
     video: { value: '', isValid: false },
   });
 
-  const openWarningHandler = (item: VideoTree) => {
+  const openWarningHandler = (item: VideoTreeClient) => {
     setDisplayModal(true);
     setTargetItem(item);
   };
