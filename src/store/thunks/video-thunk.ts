@@ -21,7 +21,7 @@ export const fetchVideo = (id: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const response = await client.get(`/videos/client/${id}`, {
+      const response = await client.get(`/videos/${id}/client`, {
         params: { currentUserId },
       });
 
@@ -130,7 +130,7 @@ export const fetchHistory = (params: any, forceUpdate = true): AppThunk => {
 
       const { localHistory, count } = result;
 
-      const { data } = await client.get('/videos', {
+      const { data } = await client.get('/videos/client', {
         params: { ids: localHistory },
         forceUpdate,
         cache: true,
@@ -209,7 +209,7 @@ export const removeFromHistory = (video: VideoTreeClient): AppThunk => {
     const client = dispatch(api());
 
     try {
-      await client.delete('/histories', { params: { videoId } });
+      await client.delete(`/histories/${videoId}`);
     } catch (err) {
       uiActions.setMessage({
         content: `${(err as Error).message}: Failed to remove from history`,
@@ -296,7 +296,7 @@ export const toggleFavorites = (videoId: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.patch('/videos/favorites', { videoId });
+      const { data } = await client.patch(`/videos/${videoId}/favorites`);
 
       uiActions.setMessage({
         content: data.message,

@@ -17,7 +17,7 @@ export const register = (credentials: {
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.post('/users/register', credentials);
+      const { data } = await client.post('/users/signup', credentials);
 
       dispatch(
         uiActions.setMessage({
@@ -58,7 +58,7 @@ export const login = (
     try {
       dispatch(userActions.userRequest());
 
-      const { data } = await client.post('/users/login', credentials);
+      const { data } = await client.post('/users/signin', credentials);
 
       dispatch(userActions.userSuccess());
       dispatch(userActions.setRefreshToken(data.refreshToken));
@@ -377,7 +377,7 @@ export const fetchChannelInfo = (userId: string): AppThunk => {
     const currentUserId = userData ? userData._id : '';
 
     try {
-      const response = await client.get(`/users/channel/${userId}`, {
+      const response = await client.get(`/users/${userId}/channel`, {
         params: { currentUserId },
       });
 
@@ -412,11 +412,13 @@ export const fetchSubscribes = (params: any, forceUpdate = true): AppThunk => {
 
       return subscribes;
     } catch (err) {
-      uiActions.setMessage({
-        content: `${(err as Error).message}: Failed to load subscribes`,
-        type: 'error',
-        timer: 5000,
-      });
+      dispatch(
+        uiActions.setMessage({
+          content: `${(err as Error).message}: Failed to load subscribes`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
       throw err;
     }
   };
@@ -427,15 +429,17 @@ export const toggleSubscribe = (userId: string): AppThunk => {
     const client = dispatch(api());
 
     try {
-      const { data } = await client.patch(`/users/subscribes/${userId}`);
+      const { data } = await client.patch(`/users/${userId}/subscribers`);
 
       return data;
     } catch (err) {
-      uiActions.setMessage({
-        content: `${(err as Error).message}: Failed to subscribe`,
-        type: 'error',
-        timer: 5000,
-      });
+      dispatch(
+        uiActions.setMessage({
+          content: `${(err as Error).message}: Failed to subscribe`,
+          type: 'error',
+          timer: 5000,
+        })
+      );
       throw err;
     }
   };

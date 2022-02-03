@@ -289,7 +289,7 @@ export const uploadThumbnail = (file: File): AppThunk => {
       );
 
       const response = await client.put('/videos/upload/thumbnail', {
-        thumbnail: uploadTree.info.thumbnail,
+        key: uploadTree.info.thumbnail.url,
         fileType: file.type,
       });
 
@@ -327,7 +327,7 @@ export const deleteThumbnail = (): AppThunk => {
   return async (dispatch, getState, api) => {
     const { uploadTree, previewTree } = getState().upload;
 
-    if (!uploadTree || !previewTree) return;
+    if (!uploadTree || !previewTree || !uploadTree.info.thumbnail.url) return;
 
     const client = dispatch(api());
 
@@ -341,9 +341,9 @@ export const deleteThumbnail = (): AppThunk => {
         })
       );
 
-      await client.delete('/videos/upload/thumbnail', {
-        params: { key: uploadTree.info.thumbnail.url },
-      });
+      await client.delete(
+        `/videos/upload/thumbnail/${uploadTree.info.thumbnail.url}`
+      );
 
       dispatch(
         uploadActions.setTree({

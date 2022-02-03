@@ -5,7 +5,6 @@ export interface ChannelData {
   name: string;
   picture: string;
   subscribers: number;
-  subsscribes: number;
   isSubscribed: boolean;
 }
 
