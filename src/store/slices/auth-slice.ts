@@ -1,10 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { UserData } from './user-slice';
+
 const refreshTokenStorage = localStorage.getItem('refreshToken');
 
 interface AuthSliceState {
   refreshToken: string | null;
   accessToken: string | null;
+}
+
+interface SigninPayload extends AuthSliceState {
+  userData: UserData;
 }
 
 const initialState: AuthSliceState = {
@@ -18,7 +24,7 @@ const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    signin: (state, { payload }: PayloadAction<AuthSliceState>) => {
+    signin: (state, { payload }: PayloadAction<SigninPayload>) => {
       state.accessToken = payload.accessToken;
       state.refreshToken = payload.refreshToken;
     },
@@ -41,6 +47,8 @@ const authSlice = createSlice({
     ) => {
       state.accessToken = payload;
     },
+
+    setVerified: () => {},
   },
 });
 

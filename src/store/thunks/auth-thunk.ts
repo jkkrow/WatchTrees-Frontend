@@ -3,7 +3,6 @@ import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AppThunk } from 'store';
 import { authActions } from 'store/slices/auth-slice';
 import { uiActions } from 'store/slices/ui-slice';
-import { userActions } from 'store/slices/user-slice';
 
 export const signup = (credentials: {
   name: string;
@@ -17,7 +16,6 @@ export const signup = (credentials: {
     const { data } = await client.post('/users/signup', credentials);
 
     dispatch(authActions.signin(data));
-    dispatch(userActions.setUserData(data.userData));
     dispatch(
       uiActions.setMessage({
         content: data.message,
@@ -37,7 +35,6 @@ export const signin = (
     const { data } = await client.post('/users/signin', credentials);
 
     dispatch(authActions.signin(data));
-    dispatch(userActions.setUserData(data.userData));
   };
 };
 
@@ -93,8 +90,7 @@ export const checkVerification = (token: string): AppThunk => {
 
     const { data } = await client.get(`/users/verification/${token}`);
 
-    userData &&
-      dispatch(userActions.setUserData({ ...userData, isVerified: true }));
+    userData && dispatch(authActions.setVerified());
 
     return data.message;
   };

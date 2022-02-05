@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { authActions } from './auth-slice';
+
 export interface ChannelData {
   _id: string;
   name: string;
@@ -38,6 +40,24 @@ const userSlice = createSlice({
     ) => {
       state.userData = payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      authActions.signin,
+      (state, { payload }: PayloadAction<{ userData: UserData }>) => {
+        state.userData = payload.userData;
+      }
+    );
+
+    builder.addCase(authActions.signout, (state) => {
+      state.userData = null;
+    });
+
+    builder.addCase(authActions.setVerified, (state) => {
+      if (!state.userData) return;
+
+      state.userData.isVerified = true;
+    });
   },
 });
 
