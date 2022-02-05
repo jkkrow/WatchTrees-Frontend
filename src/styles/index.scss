@@ -84,6 +84,7 @@ svg {
   width: 2.5rem;
   height: 2.5rem;
   margin: auto;
+  fill: var(--bg-primary);
 
   @include clickable();
 }
