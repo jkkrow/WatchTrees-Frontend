@@ -25,7 +25,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
   editMode = false,
 }) => {
   const { activeVideoId } = useAppSelector((state) => state.video);
-  const { dispatch } = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const history = useHistory();
 

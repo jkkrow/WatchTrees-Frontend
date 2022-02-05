@@ -197,11 +197,7 @@ const uploadSlice = createSlice({
       state.activeNodeId = payload;
     },
 
-    saveUpload: (state, { payload }: PayloadAction<string | undefined>) => {
-      if (payload && state.uploadTree) {
-        state.uploadTree._id = payload;
-      }
-
+    saveUpload: (state) => {
       state.isUploadSaved = true;
     },
 

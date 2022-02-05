@@ -26,7 +26,7 @@ const VideoTree: React.FC<VideoTreeProps> = ({
   const { activeVideoId, initialProgress } = useAppSelector(
     (state) => state.video
   );
-  const { dispatch } = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     let initialNodeId = tree.root.id;

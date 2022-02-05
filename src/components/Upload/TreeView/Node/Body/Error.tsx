@@ -9,7 +9,7 @@ interface ErrorProps {
 }
 
 const Error: React.FC<ErrorProps> = ({ currentNode, error }) => {
-  const { dispatch } = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const cancelHandler = () => {
     dispatch(uploadActions.setNode({ info: null, nodeId: currentNode.id }));

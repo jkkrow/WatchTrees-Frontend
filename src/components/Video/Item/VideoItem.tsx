@@ -8,7 +8,7 @@ import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import VideoDropdown from '../UI/Dropdown/VideoDropdown';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import './VideoItem.scss';
@@ -20,7 +20,7 @@ interface VideoItemProps {
 }
 
 const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
-  const { dispatchThunk, loading } = useAppDispatch();
+  const { dispatchThunk, loading } = useAppThunk();
 
   const history = useHistory();
   const location = useLocation();

@@ -1,27 +1,29 @@
 import Button from 'components/Common/Element/Button/Button';
 import Modal from 'components/Common/UI/Modal/Modal';
-import UserLayout from 'components/User/Layout/UserLayout';
 import AccountDashboard from 'components/User/Account/Dashboard/AccountDashboard';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { userActions } from 'store/slices/user-slice';
-import { sendVerification } from 'store/thunks/user-thunk';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { sendVerification } from 'store/thunks/auth-thunk';
 
 const AccountPage: React.FC = () => {
-  const { userData, loading, error, message } = useAppSelector(
-    (state) => state.user
-  );
-  const { dispatch } = useAppDispatch();
+  const { userData } = useAppSelector((state) => state.user);
+  const {
+    dispatchThunk,
+    setData,
+    loading,
+    error,
+    data: message,
+  } = useAppThunk<string | null>(null, { errorMessage: false });
 
   const verifyEmailHandler = () => {
-    dispatch(sendVerification(userData!.email));
+    dispatchThunk(sendVerification(userData!.email));
   };
 
   const closeModalHandler = () => {
-    dispatch(userActions.clearResponse());
+    setData(null);
   };
 
   return (
-    <UserLayout>
+    <div className="user-page">
       <Modal
         on={!!error || !!message}
         type="message"
@@ -39,7 +41,7 @@ const AccountPage: React.FC = () => {
       {/* {userData!.isVerified && !userData!.isPremium && (
         <Button>Upgrade to Premium</Button>
       )} */}
-    </UserLayout>
+    </div>
   );
 };
 

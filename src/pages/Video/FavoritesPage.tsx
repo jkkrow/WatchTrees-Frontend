@@ -5,7 +5,7 @@ import { fetchSubscribes } from 'store/thunks/user-thunk';
 import { fetchFavorites } from 'store/thunks/video-thunk';
 
 const FavoritesPage: React.FC = () => {
-  const { accessToken } = useAppSelector((state) => state.user);
+  const accessToken = useAppSelector((state) => state.auth.accessToken);
 
   return (
     <div className="layout">

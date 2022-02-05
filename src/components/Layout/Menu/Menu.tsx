@@ -4,8 +4,8 @@ import { CSSTransition } from 'react-transition-group';
 
 import Backdrop from 'components/Common/UI/Backdrop/Backdrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { finishUpload } from 'store/thunks/upload-thunk';
-import { logout } from 'store/thunks/user-thunk';
+import { authActions } from 'store/slices/auth-slice';
+import { uploadActions } from 'store/slices/upload-slice';
 import './Menu.scss';
 
 interface MenuProps {
@@ -16,7 +16,7 @@ interface MenuProps {
 const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
   const { uploadTree } = useAppSelector((state) => state.upload);
   const { userData } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const history = useHistory();
 
@@ -29,8 +29,8 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
       if (!result) return;
     }
 
-    dispatch(finishUpload());
-    dispatch(logout());
+    dispatch(uploadActions.finishUpload());
+    dispatch(authActions.signout());
 
     history.push('/auth');
   };

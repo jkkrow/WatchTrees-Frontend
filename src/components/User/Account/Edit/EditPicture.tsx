@@ -5,7 +5,7 @@ import Avatar from 'components/Common/UI/Avatar/Avatar';
 import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
 import { ReactComponent as ChangeIcon } from 'assets/icons/reload.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
-import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { updateUserPicture } from 'store/thunks/user-thunk';
 import './EditPicture.scss';
 
@@ -14,8 +14,8 @@ interface EditPictureProps {
 }
 
 const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
-  const { userData, loading } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const userData = useAppSelector((state) => state.user.userData);
+  const { dispatchThunk, loading } = useAppThunk();
 
   const [userPicture, setUserPicture] = useState(userData!.picture);
   const [pictureFile, setPictureFile] = useState<File | null>(null);
@@ -35,7 +35,7 @@ const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
   const submitPictureHandler = async () => {
     if (userData!.picture === userPicture) return;
 
-    await dispatch(updateUserPicture(pictureFile));
+    await dispatchThunk(updateUserPicture(pictureFile));
 
     onSuccess();
   };

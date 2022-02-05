@@ -2,7 +2,7 @@ import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import { useForm } from 'hooks/form-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { updateUserPassword } from 'store/thunks/user-thunk';
 import {
   VALIDATOR_EQUAL,
@@ -16,8 +16,7 @@ interface EditPasswordProps {
 }
 
 const EditPassword: React.FC<EditPasswordProps> = ({ onSuccess }) => {
-  const { loading } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const { dispatchThunk, loading } = useAppThunk();
 
   const { formState, setFormInput } = useForm({
     currentPassword: '',
@@ -28,7 +27,7 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onSuccess }) => {
   const submitHandler = async () => {
     if (!formState.isValid) return;
 
-    await dispatch(
+    await dispatchThunk(
       updateUserPassword({
         currentPassword: formState.inputs.currentPassword.value,
         newPassword: formState.inputs.newPassword.value,

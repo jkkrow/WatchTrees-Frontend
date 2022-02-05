@@ -2,20 +2,24 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
-import UserLayout from 'components/User/Layout/UserLayout';
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { useForm } from 'hooks/form-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { checkRecovery, resetPassword } from 'store/thunks/user-thunk';
+import { useAppThunk } from 'hooks/store-hook';
+import { checkRecovery, resetPassword } from 'store/thunks/auth-thunk';
 import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
+import 'styles/auth.scss';
 
 const ResetPasswordPage: React.FC = () => {
-  const { loading, error, message } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const {
+    dispatchThunk,
+    loading,
+    error,
+    data: message,
+  } = useAppThunk<string | null>(null, { errorMessage: false });
 
   const [isAccessAllowed, setIsAccessAllowed] = useState(false);
 
@@ -29,7 +33,7 @@ const ResetPasswordPage: React.FC = () => {
   const submitHandler = () => {
     if (!formState.isValid) return;
 
-    dispatch(
+    dispatchThunk(
       resetPassword(
         formState.inputs.password.value,
         formState.inputs.confirmPassword.value,
@@ -40,14 +44,14 @@ const ResetPasswordPage: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      await dispatch(checkRecovery(token));
+      await dispatchThunk(checkRecovery(token));
 
       setIsAccessAllowed(true);
     })();
-  }, [dispatch, token]);
+  }, [dispatchThunk, token]);
 
   return (
-    <UserLayout>
+    <div className="auth-page">
       {!isAccessAllowed && (
         <>
           <LoadingSpinner on={loading} />
@@ -89,7 +93,7 @@ const ResetPasswordPage: React.FC = () => {
           )}
         </>
       )}
-    </UserLayout>
+    </div>
   );
 };
 

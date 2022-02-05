@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Navigation } from 'swiper';
 
 import ChannelInfo from '../Info/ChannelInfo';
 import ChannelLoaderList from '../Loader/List/ChannelLoaderList';
 import { AppThunk } from 'store';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 
 import 'swiper/modules/navigation/navigation.min.css';
@@ -29,13 +28,11 @@ const ChannelGroup: React.FC<ChannelGroupProps> = ({
   forceUpdate,
   onFetch,
 }) => {
-  const { dispatchThunk, data, loaded } = useAppDispatch<ChannelData[]>([]);
-
-  const history = useHistory();
+  const { dispatchThunk, data, loaded } = useAppThunk<ChannelData[]>([]);
 
   useEffect(() => {
-    dispatchThunk(onFetch({}, forceUpdate || history.action !== 'POP'));
-  }, [dispatchThunk, onFetch, history, forceUpdate]);
+    dispatchThunk(onFetch());
+  }, [dispatchThunk, onFetch]);
 
   return (
     <div className="channel-group">

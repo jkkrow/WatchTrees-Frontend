@@ -2,7 +2,7 @@ import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import { useForm } from 'hooks/form-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { updateUserName } from 'store/thunks/user-thunk';
 import { VALIDATOR_MINLENGTH } from 'util/validators';
 import './EditName.scss';
@@ -12,8 +12,8 @@ interface EditNameProps {
 }
 
 const EditName: React.FC<EditNameProps> = ({ onSuccess }) => {
-  const { userData, loading } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const userData = useAppSelector((state) => state.user.userData);
+  const { dispatchThunk, loading } = useAppThunk();
 
   const { formState, setFormInput } = useForm({ name: '' });
 
@@ -24,7 +24,7 @@ const EditName: React.FC<EditNameProps> = ({ onSuccess }) => {
 
     if (newName === userData!.name) return;
 
-    await dispatch(updateUserName(formState.inputs.name.value));
+    await dispatchThunk(updateUserName(formState.inputs.name.value));
 
     onSuccess();
   };

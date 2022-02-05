@@ -10,7 +10,7 @@ import VideoTags from 'components/Video/UI/Tags/VideoTags';
 import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { continueUpload } from 'store/thunks/upload-thunk';
 import './MyVideoItem.scss';
@@ -21,8 +21,8 @@ interface MyVideoItemProps {
 }
 
 const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
-  const { uploadTree } = useAppSelector((state) => state.upload);
-  const { dispatchThunk, loading } = useAppDispatch();
+  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const { dispatchThunk, loading } = useAppThunk();
 
   const history = useHistory();
 

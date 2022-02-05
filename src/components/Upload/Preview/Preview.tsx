@@ -25,11 +25,8 @@ const Preview: React.FC<PreviewProps> = ({ tree }) => {
       </div>
 
       <div className="preview__background" />
-
       <div className="preview__video">
-        <div>
-          <VideoTree tree={tree} autoPlay={false} editMode={true} />
-        </div>
+        <VideoTree tree={tree} autoPlay={false} editMode={true} />
       </div>
     </div>
   );

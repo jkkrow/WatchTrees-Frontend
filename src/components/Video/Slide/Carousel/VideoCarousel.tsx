@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Navigation, Pagination, Autoplay } from 'swiper';
 
 import VideoThumbnail from '../../UI/Thumbnail/VideoThumbnail';
 import VideoLoaderItem from 'components/Video/Loader/Item/VideoLoaderItem';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
 import './VideoCarousel.scss';
@@ -17,7 +16,7 @@ import 'swiper/modules/navigation/navigation.min.css';
 const CAROUSEL_VIDEOS_NUMBER = 5;
 
 const VideoCarousel: React.FC = () => {
-  const { dispatchThunk, data, loaded } = useAppDispatch<{
+  const { dispatchThunk, data, loading } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({
@@ -25,18 +24,14 @@ const VideoCarousel: React.FC = () => {
     count: 0,
   });
 
-  const history = useHistory();
-
   useEffect(() => {
-    dispatchThunk(
-      fetchVideos({ max: CAROUSEL_VIDEOS_NUMBER }, history.action !== 'POP')
-    );
-  }, [dispatchThunk, history]);
+    dispatchThunk(fetchVideos({ max: CAROUSEL_VIDEOS_NUMBER }));
+  }, [dispatchThunk]);
 
   return (
     <div className="video-carousel">
-      <VideoLoaderItem on={!loaded} />
-      {loaded && data.videos.length > 0 && (
+      <VideoLoaderItem on={loading} />
+      {!loading && data.videos.length > 0 && (
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}
           pagination={{ clickable: true }}

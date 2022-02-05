@@ -1,12 +1,12 @@
 import { useCallback, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { useParams } from 'react-router';
 
 import VideoItem from '../Item/VideoItem';
 import VideoLoaderList from '../Loader/List/VideoLoaderList';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useSearch } from 'hooks/search-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import './VideoList.scss';
@@ -14,6 +14,7 @@ import './VideoList.scss';
 interface VideoListProps {
   id?: 'history' | 'favorites';
   label?: string;
+  max?: number;
   forceUpdate?: boolean;
   onFetch: ReturnType<AppThunk>;
 }
@@ -21,48 +22,40 @@ interface VideoListProps {
 const VideoList: React.FC<VideoListProps> = ({
   id,
   label,
+  max = 12,
   forceUpdate,
   onFetch,
 }) => {
-  const { refreshToken, accessToken } = useAppSelector((state) => state.user);
-  const { dispatchThunk, data, setData, loading, loaded } = useAppDispatch<{
+  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
+  const { dispatchThunk, data, setData, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
-  }>({
-    videos: [],
-    count: 0,
-  });
+  }>({ videos: [], count: 0 });
 
-  const { currentPage, itemsPerPage } = usePaginate(12);
+  const { currentPage, itemsPerPage } = usePaginate(max);
   const { keyword } = useSearch();
 
   const { id: channelId } = useParams<{ id: string }>();
-  const history = useHistory();
 
   useEffect(() => {
     if (refreshToken && !accessToken) return;
 
     dispatchThunk(
-      onFetch(
-        {
-          page: currentPage,
-          max: itemsPerPage,
-          search: keyword,
-          channelId,
-        },
-        forceUpdate || history.action !== 'POP'
-      )
+      onFetch({
+        page: currentPage,
+        max: itemsPerPage,
+        search: keyword,
+        channelId,
+      })
     );
   }, [
     refreshToken,
     accessToken,
     dispatchThunk,
-    history,
     currentPage,
     itemsPerPage,
     keyword,
     onFetch,
-    forceUpdate,
     channelId,
   ]);
 

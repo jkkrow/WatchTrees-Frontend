@@ -2,15 +2,13 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import ChannelInfo from '../Info/ChannelInfo';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import { fetchChannelInfo } from 'store/thunks/user-thunk';
 import './ChannelHeader.scss';
 
 const ChannelHeader: React.FC = () => {
-  const { dispatchThunk, data, loaded } = useAppDispatch<ChannelData | null>(
-    null
-  );
+  const { dispatchThunk, data, loaded } = useAppThunk<ChannelData | null>(null);
 
   const { id } = useParams<{ id: string }>();
 

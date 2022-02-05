@@ -5,7 +5,7 @@ import { Navigation } from 'swiper';
 
 import VideoItem from 'components/Video/Item/VideoItem';
 import VideoLoaderList from 'components/Video/Loader/List/VideoLoaderList';
-import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 
@@ -19,7 +19,8 @@ const INITIAL_WIDTH = 678;
 const ITEM_WIDTH = 320;
 
 interface VideoGroupProps {
-  params?: { max?: number; skipFullyWatched?: boolean };
+  max?: number;
+  skipFullyWatched?: boolean;
   id?: 'history' | 'favorites';
   label?: string;
   to?: string;
@@ -28,15 +29,16 @@ interface VideoGroupProps {
 }
 
 const VideoGroup: React.FC<VideoGroupProps> = ({
-  params,
   id,
   label,
   to,
+  max = 10,
+  skipFullyWatched = false,
   forceUpdate,
   onFetch,
 }) => {
-  const { refreshToken, accessToken } = useAppSelector((state) => state.user);
-  const { dispatchThunk, setData, data, loading } = useAppDispatch<{
+  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
+  const { dispatchThunk, setData, data, loading } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({ videos: [], count: 0 });
@@ -46,17 +48,14 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   useEffect(() => {
     if (refreshToken && !accessToken) return;
 
-    dispatchThunk(
-      onFetch({ max: 10, ...params }, forceUpdate || history.action !== 'POP')
-    );
+    dispatchThunk(onFetch({ max, skipFullyWatched }));
   }, [
-    dispatchThunk,
     refreshToken,
     accessToken,
-    history,
+    dispatchThunk,
     onFetch,
-    params,
-    forceUpdate,
+    max,
+    skipFullyWatched,
   ]);
 
   const filterList = useCallback(

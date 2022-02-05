@@ -12,25 +12,61 @@ import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
 import ProtectedRoute from 'service/ProtectedRoute';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { fetchTokenOnload } from 'store/thunks/user-thunk';
+import { authActions } from 'store/slices/auth-slice';
+import { fetchTokenOnload } from 'store/thunks/auth-thunk';
 import 'styles/index.scss';
 
 const MyVideoListPage = lazy(() => import('pages/Video/MyVideoListPage'));
 const UploadPage = lazy(() => import('pages/Upload/UploadPage'));
-const LoginPage = lazy(() => import('pages/User/LoginPage'));
+const LoginPage = lazy(() => import('pages/Auth/LoginPage'));
 const AccountPage = lazy(() => import('pages/User/AccountPage'));
-const VerificationPage = lazy(() => import('pages/User/VerificationPage'));
-const SendRecoveryPage = lazy(() => import('pages/User/SendRecoveryPage'));
-const ResetPasswordPage = lazy(() => import('pages/User/ResetPasswordPage'));
+const VerificationPage = lazy(() => import('pages/Auth/VerificationPage'));
+const SendRecoveryPage = lazy(() => import('pages/Auth/SendRecoveryPage'));
+const ResetPasswordPage = lazy(() => import('pages/Auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('pages/Error/NotFoundPage'));
 const FavoritesPage = lazy(() => import('pages/Video/FavoritesPage'));
 
 const App: React.FC = () => {
-  const { refreshToken } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const refreshToken = useAppSelector((state) => state.auth.refreshToken);
+  const userData = useAppSelector((state) => state.user.userData);
+  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(fetchTokenOnload());
+  }, [dispatch]);
+
+  useEffect(() => {
+    refreshToken
+      ? localStorage.setItem('refreshToken', JSON.stringify(refreshToken))
+      : localStorage.removeItem('refreshToken');
+  }, [refreshToken]);
+
+  useEffect(() => {
+    userData
+      ? localStorage.setItem('userData', JSON.stringify(userData))
+      : localStorage.removeItem('userData');
+  }, [userData]);
+
+  useEffect(() => {
+    const beforeunloadHandler = (event: BeforeUnloadEvent): void => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+
+    uploadTree
+      ? window.addEventListener('beforeunload', beforeunloadHandler)
+      : window.removeEventListener('beforeunload', beforeunloadHandler);
+  }, [uploadTree]);
+
+  useEffect(() => {
+    window.addEventListener('storage', (event) => {
+      if (event.key !== 'refreshToken') return;
+
+      if (event.oldValue && !event.newValue) {
+        dispatch(authActions.signout());
+      }
+    });
   }, [dispatch]);
 
   return (

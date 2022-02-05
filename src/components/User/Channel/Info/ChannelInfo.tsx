@@ -6,7 +6,7 @@ import Button from 'components/Common/Element/Button/Button';
 import ChannelLoaderItem from 'components/User/Channel/Loader/Item/ChannelLoaderItem';
 import { ReactComponent as SubscribeIcon } from 'assets/icons/subscribe.svg';
 import { ReactComponent as CheckIcon } from 'assets/icons/circle-check.svg';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import { toggleSubscribe } from 'store/thunks/user-thunk';
 import { formatNumber } from 'util/format';
@@ -26,10 +26,9 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
   button,
 }) => {
   const { userData } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const { dispatchThunk, loading: thunkLoading } = useAppThunk();
 
   const [detail, setDetail] = useState<ChannelData | null>(data);
-  const [subscribeLoading, setSubscribeLoading] = useState(false);
 
   const history = useHistory();
 
@@ -50,17 +49,13 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
       return history.push('/auth');
     }
 
-    setSubscribeLoading(true);
-
-    const { isSubscribed, subscribers } = await dispatch(
-      toggleSubscribe(detail._id)
-    );
-
-    setSubscribeLoading(false);
+    await dispatchThunk(toggleSubscribe(detail._id));
     setDetail((prev) => ({
-      ...(prev as ChannelData),
-      subscribers,
-      isSubscribed,
+      ...prev!,
+      subscribers: prev!.isSubscribed
+        ? prev!.subscribers - 1
+        : prev!.subscribers + 1,
+      isSubscribed: !prev!.isSubscribed,
     }));
   };
 
@@ -89,7 +84,7 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
             </div>
           </div>
           <div className="channel-info__subscribe">
-            <Button onClick={subscribeHandler} loading={subscribeLoading}>
+            <Button onClick={subscribeHandler} loading={thunkLoading}>
               {detail.isSubscribed ? (
                 <>
                   <CheckIcon stroke="black" />

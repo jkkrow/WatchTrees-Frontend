@@ -1,0 +1,12 @@
+.upload-page {
+  display: flex;
+  flex-direction: column;
+  max-width: 150rem;
+  padding: 2rem;
+  margin: auto;
+  gap: 1rem;
+
+  @media (min-width: 800px) {
+    flex-direction: row;
+  }
+}

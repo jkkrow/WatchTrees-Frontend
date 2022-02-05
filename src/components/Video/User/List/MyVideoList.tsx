@@ -1,4 +1,4 @@
-import MyVideoItem from '../Item/MyVideoList';
+import MyVideoItem from '../Item/MyVideoItem';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import './MyVideoList.scss';
 

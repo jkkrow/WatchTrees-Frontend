@@ -2,16 +2,14 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 
-import UserLayout from 'components/User/Layout/UserLayout';
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as GoogleIcon } from 'assets/icons/google.svg';
 import { useForm } from 'hooks/form-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { userActions } from 'store/slices/user-slice';
-import { register, login } from 'store/thunks/user-thunk';
+import { useAppThunk } from 'hooks/store-hook';
+import { signup, signin } from 'store/thunks/auth-thunk';
 import {
   VALIDATOR_EMAIL,
   VALIDATOR_PASSWORD,
@@ -19,12 +17,17 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_EQUAL,
 } from 'util/validators';
+import 'styles/auth.scss';
 
 const LoginPage: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
 
-  const { loading, error, message } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const {
+    dispatchThunk,
+    loading,
+    error,
+    data: message,
+  } = useAppThunk<string | null>(null, { errorMessage: false });
 
   const { formState, setFormInput, setFormData } = useForm({
     email: { value: '', isValid: false },
@@ -32,22 +35,22 @@ const LoginPage: React.FC = () => {
   });
 
   const googleLoginHandler = (response: any) => {
-    dispatch(login({ tokenId: response.tokenId }));
+    dispatchThunk(signin({ tokenId: response.tokenId }));
   };
 
   const submitHandler = () => {
     if (!formState.isValid) return;
 
     if (isLogin) {
-      dispatch(
-        login({
+      dispatchThunk(
+        signin({
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
         })
       );
     } else {
-      dispatch(
-        register({
+      dispatchThunk(
+        signup({
           name: formState.inputs.name.value,
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
@@ -58,8 +61,6 @@ const LoginPage: React.FC = () => {
   };
 
   const toggleMode = (): void => {
-    dispatch(userActions.clearResponse());
-
     setIsLogin((prevMode) => {
       if (prevMode) {
         setFormData(
@@ -85,7 +86,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <UserLayout>
+    <div className="auth-page">
       <Response type={error ? 'error' : 'message'} content={error || message} />
       {isLogin && (
         <Form onSubmit={submitHandler}>
@@ -191,7 +192,7 @@ const LoginPage: React.FC = () => {
           </span>
         </p>
       )}
-    </UserLayout>
+    </div>
   );
 };
 

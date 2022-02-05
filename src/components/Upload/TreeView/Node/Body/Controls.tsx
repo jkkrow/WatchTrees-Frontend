@@ -15,9 +15,9 @@ interface ControlsProps {
 }
 
 const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
-  const { activeNodeId } = useAppSelector((state) => state.upload);
-  const { activeVideoId } = useAppSelector((state) => state.video);
-  const { dispatch } = useAppDispatch();
+  const activeNodeId = useAppSelector((state) => state.upload.activeNodeId);
+  const activeVideoId = useAppSelector((state) => state.video.activeVideoId);
+  const dispatch = useAppDispatch();
 
   const [warning, setWarning] = useState(false);
 

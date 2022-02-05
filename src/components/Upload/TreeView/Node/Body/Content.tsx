@@ -23,8 +23,8 @@ interface ContentProps {
 const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   const nodeInfo = useMemo(() => currentNode.info!, [currentNode.info]);
 
-  const { activeNodeId } = useAppSelector((state) => state.upload);
-  const { dispatch } = useAppDispatch();
+  const activeNodeId = useAppSelector((state) => state.upload.activeNodeId);
+  const dispatch = useAppDispatch();
 
   const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(

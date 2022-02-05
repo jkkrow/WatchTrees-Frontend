@@ -4,32 +4,32 @@ import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import FileInput from 'components/Common/Element/FileInput/FIleInput';
 import Radio from 'components/Common/Element/Radio/Radio';
+import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
 import { useTimeout } from 'hooks/timer-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { VideoTree } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import {
-  uploadThumbnail,
-  deleteThumbnail,
-  finishUpload,
+  saveUpload,
+  updateThumbnail,
+  submitUpload,
 } from 'store/thunks/upload-thunk';
-import { saveVideo } from 'store/thunks/video-thunk';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';
-import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
 
 interface UploadDashboardProps {
   tree: VideoTree;
 }
 
 const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
-  const { isUploadSaved } = useAppSelector((state) => state.upload);
-  const { dispatch, dispatchThunk, loading } = useAppDispatch(null);
+  const isUploadSaved = useAppSelector((state) => state.upload.isUploadSaved);
+  const dispatch = useAppDispatch();
+  const { dispatchThunk, loading } = useAppThunk();
 
   const [titleInput, setTitleInput] = useState(tree.info.title);
   const [tagInput, setTagInput] = useState('');
@@ -126,19 +126,19 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const thumbnailChangeHandler = (files: File[]) => {
-    dispatchThunk(uploadThumbnail(files[0]));
+    dispatchThunk(updateThumbnail(files[0]));
   };
 
-  const thumbnailDeleteHandler = (fileName: string) => {
-    dispatchThunk(deleteThumbnail());
+  const thumbnailDeleteHandler = () => {
+    dispatchThunk(updateThumbnail());
   };
 
   const saveUploadHandler = () => {
-    dispatchThunk(saveVideo('Upload progress saved'));
+    dispatchThunk(saveUpload('Upload progress saved'));
   };
 
   const submitUploadHandler = () => {
-    dispatchThunk(finishUpload(true));
+    dispatchThunk(submitUpload());
   };
 
   return (

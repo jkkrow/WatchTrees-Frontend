@@ -9,15 +9,15 @@ import VideoDuration from 'components/Video/UI/Duration/VideoDuration';
 import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Loader from '../Player/UI/Loader/Loader';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideo, toggleFavorites } from 'store/thunks/video-thunk';
 import './VideoLayout.scss';
 
 const VideoLayout: React.FC = () => {
-  const { refreshToken } = useAppSelector((state) => state.user);
-  const { dispatchThunk, dispatch, data, setData, loaded } =
-    useAppDispatch<VideoTreeClient | null>(null);
+  const userData = useAppSelector((state) => state.user.userData);
+  const { dispatchThunk, data, setData, loaded } =
+    useAppThunk<VideoTreeClient | null>(null);
 
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
@@ -31,7 +31,7 @@ const VideoLayout: React.FC = () => {
       return;
     }
 
-    if (!refreshToken) {
+    if (!userData) {
       return history.push('/auth');
     }
 
@@ -49,7 +49,7 @@ const VideoLayout: React.FC = () => {
       };
     });
 
-    await dispatch(toggleFavorites(data._id!));
+    await dispatchThunk(toggleFavorites(data._id!));
   };
 
   return (

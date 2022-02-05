@@ -1,27 +1,31 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
-import UserLayout from 'components/User/Layout/UserLayout';
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { checkVerification } from 'store/thunks/user-thunk';
+import { useAppThunk } from 'hooks/store-hook';
+import { checkVerification } from 'store/thunks/auth-thunk';
+import 'styles/auth.scss';
 
 const VerificationPage: React.FC = () => {
-  const { loading, error, message } = useAppSelector((state) => state.user);
-  const { dispatch } = useAppDispatch();
+  const {
+    dispatchThunk,
+    loading,
+    error,
+    data: message,
+  } = useAppThunk<string | null>(null, { errorMessage: false });
 
   const { token } = useParams<{ token: string }>();
 
   useEffect(() => {
-    dispatch(checkVerification(token));
-  }, [dispatch, token]);
+    dispatchThunk(checkVerification(token));
+  }, [dispatchThunk, token]);
 
   return (
-    <UserLayout>
+    <div className="auth-page">
       <LoadingSpinner on={loading} />
       <Response type={error ? 'error' : 'message'} content={error || message} />
-    </UserLayout>
+    </div>
   );
 };
 

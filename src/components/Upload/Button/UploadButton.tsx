@@ -3,31 +3,16 @@ import { useHistory } from 'react-router';
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { uiActions } from 'store/slices/ui-slice';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { initiateUpload } from 'store/thunks/upload-thunk';
 import './UploadButton.scss';
 
 const UploadButton: React.FC = () => {
-  const { uploadTree } = useAppSelector((state) => state.upload);
-  const { userData } = useAppSelector((state) => state.user);
-
-  const { dispatch, dispatchThunk, loading } = useAppDispatch(null);
-
+  const { dispatchThunk, loading } = useAppThunk();
+  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
   const history = useHistory();
 
   const addNewVideoHandler = async () => {
-    if (userData && !userData.isVerified) {
-      dispatch(
-        uiActions.setMessage({
-          content: 'You need to verify account before upload video',
-          type: 'error',
-        })
-      );
-
-      return;
-    }
-
     if (!uploadTree) {
       await dispatchThunk(initiateUpload());
     }

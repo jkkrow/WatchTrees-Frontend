@@ -1,6 +1,7 @@
 import { configureStore, Action } from '@reduxjs/toolkit';
 import { ThunkAction } from 'redux-thunk';
 
+import authReducer from './slices/auth-slice';
 import uploadReducer from './slices/upload-slice';
 import userReducer from './slices/user-slice';
 import videoReducer from './slices/video-slice';
@@ -9,6 +10,7 @@ import { api } from './middlewares/api';
 
 const store = configureStore({
   reducer: {
+    auth: authReducer,
     upload: uploadReducer,
     user: userReducer,
     video: videoReducer,

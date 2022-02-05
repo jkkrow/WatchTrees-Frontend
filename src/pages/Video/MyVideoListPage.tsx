@@ -10,19 +10,19 @@ import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
-import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { deleteVideo } from 'store/thunks/video-thunk';
 import { fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import { RouteComponentProps } from 'react-router';
 
-const MyVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
-  const { accessToken } = useAppSelector((state) => state.user);
+const MyVideoListPage: React.FC<RouteComponentProps> = () => {
+  const { accessToken } = useAppSelector((state) => state.auth);
 
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
-  const { dispatchThunk, data, loading, loaded } = useAppDispatch<{
+  const { dispatchThunk, data, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({
@@ -54,20 +54,15 @@ const MyVideoListPage: React.FC<RouteComponentProps> = ({ history }) => {
     fetchVideos();
   };
 
-  const fetchVideos = useCallback(
-    (forceUpdate = true) => {
-      dispatchThunk(
-        fetchCreated({ page: currentPage, max: itemsPerPage }, forceUpdate)
-      );
-    },
-    [dispatchThunk, currentPage, itemsPerPage]
-  );
+  const fetchVideos = useCallback(() => {
+    dispatchThunk(fetchCreated({ page: currentPage, max: itemsPerPage }));
+  }, [dispatchThunk, currentPage, itemsPerPage]);
 
   useEffect(() => {
     if (!accessToken) return;
 
-    fetchVideos(history.action !== 'POP');
-  }, [accessToken, fetchVideos, history]);
+    fetchVideos();
+  }, [accessToken, fetchVideos]);
 
   return (
     <div className="layout" style={{ maxWidth: '120rem' }}>

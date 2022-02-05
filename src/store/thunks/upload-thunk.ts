@@ -3,58 +3,32 @@ import axios, { AxiosResponse } from 'axios';
 import { AppThunk } from 'store';
 import { uploadActions } from 'store/slices/upload-slice';
 import { uiActions } from 'store/slices/ui-slice';
-import { saveVideo } from './video-thunk';
-import { beforeunloadHandler } from 'util/event-handlers';
 import { findById, traverseNodes } from 'util/tree';
 
 export const initiateUpload = (): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
-    try {
-      const { data } = await client.post('/videos');
+    const { data } = await client.post('/videos');
 
-      dispatch(uploadActions.initiateUpload(data.video));
-      window.addEventListener('beforeunload', beforeunloadHandler);
-    } catch (err) {
-      dispatch(
-        uiActions.setMessage({
-          content: `${(err as Error).message}: Initiating upload failed.`,
-          type: 'error',
-          timer: 5000,
-        })
-      );
-    }
+    dispatch(uploadActions.initiateUpload(data.video));
   };
 };
 
 export const continueUpload = (id: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
-    try {
-      const { data } = await client.get(`/videos/${id}`);
+    const { data } = await client.get(`/videos/${id}`);
 
-      dispatch(uploadActions.initiateUpload(data.video));
-      window.addEventListener('beforeunload', beforeunloadHandler);
-    } catch (err) {
-      dispatch(
-        uiActions.setMessage({
-          content: `${(err as Error).message}: Initiating upload failed.`,
-          type: 'error',
-          timer: 5000,
-        })
-      );
-      throw err;
-    }
+    dispatch(uploadActions.initiateUpload(data.video));
   };
 };
 
 export const uploadVideo = (file: File, nodeId: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const { uploadTree, previewTree } = getState().upload;
+    const client = dispatch(api());
 
     if (!uploadTree || !previewTree) return;
-
-    const client = dispatch(api());
 
     try {
       const videoDuration = await new Promise<number>((resolve) => {
@@ -254,7 +228,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
         );
       }
 
-      dispatch(saveVideo('Upload progress saved'));
+      dispatch(saveUpload('Upload progress saved'));
     } catch (err) {
       dispatch(
         uploadActions.setNode({
@@ -262,129 +236,70 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
           nodeId,
         })
       );
-      throw err;
     }
   };
 };
 
-export const uploadThumbnail = (file: File): AppThunk => {
+export const updateThumbnail = (file?: File): AppThunk => {
   return async (dispatch, getState, api) => {
-    const { uploadTree } = getState().upload;
+    const uploadTree = getState().upload.uploadTree;
+    const client = dispatch(api());
 
     if (!uploadTree) return;
 
-    const client = dispatch(api());
+    const response = await client.patch('/videos/upload/thumbnail', {
+      key: uploadTree.info.thumbnail.url,
+      isNewFile: !!file,
+      fileType: file ? file.type : null,
+    });
 
-    try {
-      const thumbnailInfo = {
-        name: file.name,
-        url: URL.createObjectURL(file),
-      };
+    const { presignedUrl, key } = response.data;
 
-      dispatch(
-        uploadActions.setTree({
-          type: 'previewTree',
-          info: { thumbnail: thumbnailInfo },
-        })
-      );
-
-      const response = await client.put('/videos/upload/thumbnail', {
-        key: uploadTree.info.thumbnail.url,
-        fileType: file.type,
-      });
-
-      const { presignedUrl, key } = response.data;
-
+    if (file) {
       await axios.put(presignedUrl, file, {
         headers: { 'Content-Type': file.type },
       });
-
-      dispatch(
-        uploadActions.setTree({
-          type: 'uploadTree',
-          info: { thumbnail: { name: file.name, url: key } },
-        })
-      );
-
-      dispatch(saveVideo('Thumbnail uploaded'));
-    } catch (err) {
-      dispatch(
-        uploadActions.setTree({ info: { thumbnail: { name: '', url: '' } } })
-      );
-      dispatch(
-        uiActions.setMessage({
-          content: `${(err as Error).message}: Uploading thumbnail failed.`,
-          type: 'error',
-          timer: 5000,
-        })
-      );
-      throw err;
     }
+
+    dispatch(
+      uploadActions.setTree({
+        info: {
+          thumbnail: { name: file ? file.name : '', url: file ? key : '' },
+        },
+      })
+    );
+
+    dispatch(saveUpload('Video thumbnail has updated'));
   };
 };
 
-export const deleteThumbnail = (): AppThunk => {
+export const saveUpload = (message: string): AppThunk => {
   return async (dispatch, getState, api) => {
-    const { uploadTree, previewTree } = getState().upload;
-
-    if (!uploadTree || !previewTree || !uploadTree.info.thumbnail.url) return;
-
+    const uploadTree = getState().upload.uploadTree;
     const client = dispatch(api());
 
-    const previewThumbnailInfo = previewTree.info.thumbnail;
+    if (!uploadTree) return;
 
-    try {
-      dispatch(
-        uploadActions.setTree({
-          type: 'previewTree',
-          info: { thumbnail: { name: '', url: '' } },
-        })
-      );
+    await client.patch(`/videos/${uploadTree._id}`, { uploadTree });
 
-      await client.delete(
-        `/videos/upload/thumbnail/${uploadTree.info.thumbnail.url}`
-      );
+    dispatch(uploadActions.saveUpload());
 
-      dispatch(
-        uploadActions.setTree({
-          type: 'uploadTree',
-          info: { thumbnail: { name: '', url: '' } },
-        })
-      );
-
-      dispatch(saveVideo('Thumbnail deleted'));
-    } catch (err) {
-      dispatch(
-        uploadActions.setTree({
-          type: 'previewTree',
-          info: { thumbnail: previewThumbnailInfo },
-        })
-      );
-      dispatch(
-        uiActions.setMessage({
-          content: `${(err as Error).message}: Deleting thumbnail failed.`,
-          type: 'error',
-          timer: 5000,
-        })
-      );
-      throw err;
-    }
+    dispatch(
+      uiActions.setMessage({
+        type: 'message',
+        content: message,
+        timer: 3000,
+      })
+    );
   };
 };
 
-export const finishUpload = (save: boolean = false): AppThunk => {
+export const submitUpload = (): AppThunk => {
   return async (dispatch) => {
-    try {
-      if (save) {
-        dispatch(uploadActions.setTree({ info: { isEditing: false } }));
+    dispatch(uploadActions.setTree({ info: { isEditing: false } }));
 
-        await dispatch(saveVideo('Video uploaded successfully'));
-      }
+    await dispatch(saveUpload('Video uploaded successfully'));
 
-      dispatch(uploadActions.finishUpload());
-      window.removeEventListener('beforeunload', beforeunloadHandler);
-    } catch (err) {
-      throw err;
-    }
+    dispatch(uploadActions.finishUpload());
   };
 };
