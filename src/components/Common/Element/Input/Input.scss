@@ -15,17 +15,20 @@
     color: var(--text-primary);
     background-color: transparent;
     transition: border-color 200ms ease-out;
+  }
 
-    & ~ label,
-    &[value='']:focus ~ label {
-      font-size: 1.2rem;
-      transform: translateY(-2rem);
-    }
+  input ~ label,
+  textarea ~ label,
+  input[value='']:focus ~ label,
+  textarea:empty:focus ~ label {
+    font-size: 1.2rem;
+    transform: translateY(-2rem);
+  }
 
-    &[value=''] ~ label {
-      font-size: initial;
-      transform: translateY(0);
-    }
+  input[value=''] ~ label,
+  textarea:empty ~ label {
+    font-size: initial;
+    transform: translateY(0);
   }
 
   label {
