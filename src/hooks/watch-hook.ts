@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { useAppSelector, useAppDispatch } from './store-hook';
 import { authActions } from 'store/slices/auth-slice';
@@ -27,14 +27,14 @@ export const useAuthWatcher = () => {
 export const useUploadWatcher = () => {
   const uploadTree = useAppSelector((state) => state.upload.uploadTree);
 
-  useEffect(() => {
-    const beforeunloadHandler = (event: BeforeUnloadEvent): void => {
-      event.preventDefault();
-      event.returnValue = '';
-    };
+  const beforeunloadHandler = useCallback((event: BeforeUnloadEvent): void => {
+    event.preventDefault();
+    event.returnValue = '';
+  }, []);
 
+  useEffect(() => {
     uploadTree
       ? window.addEventListener('beforeunload', beforeunloadHandler)
       : window.removeEventListener('beforeunload', beforeunloadHandler);
-  }, [uploadTree]);
+  }, [uploadTree, beforeunloadHandler]);
 };
