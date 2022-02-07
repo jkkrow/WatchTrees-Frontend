@@ -3,6 +3,7 @@ import Modal from 'components/Layout/Modal/Modal';
 import AccountDashboard from 'components/User/Account/Dashboard/AccountDashboard';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { sendVerification } from 'store/thunks/auth-thunk';
+import 'styles/user.scss';
 
 const AccountPage: React.FC = () => {
   const { userData } = useAppSelector((state) => state.user);

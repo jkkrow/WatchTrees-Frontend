@@ -95,14 +95,6 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
               slidesPerView: 4,
               slidesPerGroup: 4,
             },
-            [INITIAL_WIDTH + ITEM_WIDTH * 3]: {
-              slidesPerView: 5,
-              slidesPerGroup: 5,
-            },
-            [INITIAL_WIDTH + ITEM_WIDTH * 4]: {
-              slidesPerView: 6,
-              slidesPerGroup: 6,
-            },
           }}
           spaceBetween={20}
           navigation

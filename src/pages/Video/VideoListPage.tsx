@@ -3,12 +3,13 @@ import VideoGroup from 'components/Video/Slide/Group/VideoGroup';
 import VideoList from 'components/Video/List/VideoList';
 import { useSearch } from 'hooks/search-hook';
 import { fetchVideos, fetchHistory } from 'store/thunks/video-thunk';
+import 'styles/video.scss';
 
 const VideoListPage: React.FC = () => {
   const { keyword } = useSearch();
 
   return (
-    <div className="layout">
+    <div className="videos-page">
       {!keyword && (
         <>
           <VideoCarousel />

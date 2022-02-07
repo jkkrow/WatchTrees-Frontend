@@ -15,6 +15,7 @@ import { deleteVideo } from 'store/thunks/video-thunk';
 import { fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import { RouteComponentProps } from 'react-router';
+import 'styles/user.scss';
 
 const MyVideoListPage: React.FC<RouteComponentProps> = () => {
   const { accessToken } = useAppSelector((state) => state.auth);
@@ -65,7 +66,7 @@ const MyVideoListPage: React.FC<RouteComponentProps> = () => {
   }, [accessToken, fetchVideos]);
 
   return (
-    <div className="layout" style={{ maxWidth: '120rem' }}>
+    <div className="user-page">
       <Modal
         on={displayModal}
         type="form"

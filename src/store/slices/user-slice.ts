@@ -6,6 +6,7 @@ export interface ChannelData {
   _id: string;
   name: string;
   picture: string;
+  videos: number;
   subscribers: number;
   isSubscribed: boolean;
 }

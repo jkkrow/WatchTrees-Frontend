@@ -77,7 +77,10 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
           </div>
           <div className="video-item__data">
             <VideoViews video={video} brief />
-            <VideoFavorites favorites={video.data.favorites} />
+            <VideoFavorites
+              videoId={video._id}
+              favorites={video.data.favorites}
+            />
             <VideoTimestamp createdAt={video.createdAt} />
           </div>
         </div>

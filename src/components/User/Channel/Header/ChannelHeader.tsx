@@ -8,7 +8,9 @@ import { fetchChannelInfo } from 'store/thunks/user-thunk';
 import './ChannelHeader.scss';
 
 const ChannelHeader: React.FC = () => {
-  const { dispatchThunk, data, loaded } = useAppThunk<ChannelData | null>(null);
+  const { dispatchThunk, data, loading } = useAppThunk<ChannelData | null>(
+    null
+  );
 
   const { id } = useParams<{ id: string }>();
 
@@ -17,8 +19,8 @@ const ChannelHeader: React.FC = () => {
   }, [dispatchThunk, id]);
 
   return (
-    <div className="channel-header">
-      <ChannelInfo data={data} loading={!loaded} />
+    <div className={`channel-header${loading ? ' loading' : ''}`}>
+      <ChannelInfo data={data} loading={loading} />
     </div>
   );
 };

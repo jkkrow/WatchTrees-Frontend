@@ -3,7 +3,9 @@ import { useHistory } from 'react-router';
 
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
-import ChannelLoaderItem from 'components/User/Channel/Loader/Item/ChannelLoaderItem';
+import ChannelLoader from '../Loader/ChannelLoader';
+import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
+import { ReactComponent as SubscribeUsersIcon } from 'assets/icons/subscribe-users.svg';
 import { ReactComponent as SubscribeAddIcon } from 'assets/icons/subscribe-add.svg';
 import { ReactComponent as SubscribeAddedIcon } from 'assets/icons/subscribe-added.svg';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
@@ -15,16 +17,10 @@ import './ChannelInfo.scss';
 interface ChannelInfoProps {
   data: ChannelData | null;
   loading: boolean;
-  column?: boolean;
   button?: boolean;
 }
 
-const ChannelInfo: React.FC<ChannelInfoProps> = ({
-  data,
-  loading,
-  column,
-  button,
-}) => {
+const ChannelInfo: React.FC<ChannelInfoProps> = ({ data, loading, button }) => {
   const { userData } = useAppSelector((state) => state.user);
   const { dispatchThunk, loading: thunkLoading } = useAppThunk();
 
@@ -60,8 +56,8 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
   };
 
   return (
-    <div className={`channel-info${column ? ' column' : ''}`}>
-      <ChannelLoaderItem on={loading} column={column} />
+    <div className="channel-info">
+      <ChannelLoader on={loading} />
       {detail && !loading && (
         <div className="channel-info__container">
           <Avatar
@@ -73,18 +69,26 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
           />
           <div className="channel-info__detail">
             <h3
-              className={`channel-info__title${button ? ' link' : ''}`}
+              className={`channel-info__name${button ? ' link' : ''}`}
               onClick={navigateHandler}
             >
               {detail.name}
             </h3>
-            <div className="channel-info__subscribers">
-              <span>Subscribers: </span>
-              <span>{formatNumber(detail.subscribers)}</span>
+            <div className="channel-info__data">
+              <div className="channel-info__videos">
+                <VideoIcon />
+                <span>Videos: </span>
+                <span>{formatNumber(detail.videos)}</span>
+              </div>
+              <div className="channel-info__subscribers">
+                <SubscribeUsersIcon />
+                <span>Subscribers: </span>
+                <span>{formatNumber(detail.subscribers)}</span>
+              </div>
             </div>
           </div>
           <div className="channel-info__subscribe">
-            <Button onClick={subscribeHandler} loading={thunkLoading}>
+            <Button onClick={subscribeHandler} loading={thunkLoading} inversed>
               {detail.isSubscribed ? (
                 <>
                   <SubscribeAddedIcon />

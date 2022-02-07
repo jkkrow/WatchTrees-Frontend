@@ -1,0 +1,46 @@
+.channel-loader {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 3rem;
+  background-image: linear-gradient(
+    110deg,
+    var(--bg-tertiary) 8%,
+    #464646 18%,
+    var(--bg-tertiary) 33%
+  );
+  background-size: 200% 500%;
+  animation: loading-card 1.5s linear infinite;
+
+  &__avatar {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    background-color: var(--bg-secondary);
+  }
+
+  &__detail {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+    gap: 1.5rem;
+
+    > div {
+      width: 100%;
+      height: 1.5rem;
+      border-radius: 50px;
+      background-color: var(--bg-secondary);
+
+      &:nth-child(2) {
+        width: 70%;
+      }
+
+      &:nth-child(3) {
+        width: 60%;
+      }
+    }
+  }
+}
