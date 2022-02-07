@@ -9,10 +9,14 @@ import ChannelPage from 'pages/Video/ChannelPage';
 import Header from 'components/Layout/Header/Header';
 import Footer from 'components/Layout/Footer/Footer';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
-import GlobalMessageList from 'components/Common/UI/GlobalMessage/List/GlobalMessageList';
+import GlobalMessageList from 'components/Layout/GlobalMessage/List/GlobalMessageList';
 import ProtectedRoute from 'service/ProtectedRoute';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
-import { authActions } from 'store/slices/auth-slice';
+import {
+  useStorageWatcher,
+  useAuthWatcher,
+  useUploadWatcher,
+} from 'hooks/watch-hook';
 import { fetchTokenOnload } from 'store/thunks/auth-thunk';
 import 'styles/index.scss';
 
@@ -29,44 +33,15 @@ const FavoritesPage = lazy(() => import('pages/Video/FavoritesPage'));
 const App: React.FC = () => {
   const refreshToken = useAppSelector((state) => state.auth.refreshToken);
   const userData = useAppSelector((state) => state.user.userData);
-  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
   const dispatch = useAppDispatch();
+
+  useStorageWatcher('refreshToken', refreshToken);
+  useStorageWatcher('userData', userData);
+  useAuthWatcher();
+  useUploadWatcher();
 
   useEffect(() => {
     dispatch(fetchTokenOnload());
-  }, [dispatch]);
-
-  useEffect(() => {
-    refreshToken
-      ? localStorage.setItem('refreshToken', JSON.stringify(refreshToken))
-      : localStorage.removeItem('refreshToken');
-  }, [refreshToken]);
-
-  useEffect(() => {
-    userData
-      ? localStorage.setItem('userData', JSON.stringify(userData))
-      : localStorage.removeItem('userData');
-  }, [userData]);
-
-  useEffect(() => {
-    const beforeunloadHandler = (event: BeforeUnloadEvent): void => {
-      event.preventDefault();
-      event.returnValue = '';
-    };
-
-    uploadTree
-      ? window.addEventListener('beforeunload', beforeunloadHandler)
-      : window.removeEventListener('beforeunload', beforeunloadHandler);
-  }, [uploadTree]);
-
-  useEffect(() => {
-    window.addEventListener('storage', (event) => {
-      if (event.key !== 'refreshToken') return;
-
-      if (event.oldValue && !event.newValue) {
-        dispatch(authActions.signout());
-      }
-    });
   }, [dispatch]);
 
   return (

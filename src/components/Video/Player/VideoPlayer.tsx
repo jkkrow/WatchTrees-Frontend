@@ -247,36 +247,30 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const videoEndedHandler = useCallback(() => {
     const video = videoRef.current!;
-    const isLastVideo =
-      currentVideo.children.length === 0 ||
-      !currentVideo.children.find((item) => item.info);
+    const firstValidChild = currentVideo.children.find((item) => item.info);
+    const isLastVideo = currentVideo.children.length === 0 || !firstValidChild;
+    const history = {
+      video: videoId,
+      progress: {
+        activeVideoId: currentVideo.id,
+        time: video.currentTime,
+        isEnded: true,
+      },
+      updatedAt: new Date(),
+    };
 
     if (isLastVideo && !editMode) {
-      dispatch(
-        addToHistory({
-          video: videoId,
-          progress: {
-            activeVideoId: currentVideo.id,
-            time: video.currentTime,
-            isEnded: true,
-          },
-          updatedAt: new Date(),
-        })
-      );
-
+      dispatch(addToHistory(history));
       return;
     }
 
     if (selectedNextVideoId) {
       dispatch(videoActions.setActiveVideo(selectedNextVideoId));
-
       return;
     }
 
-    const firstValidItem = currentVideo.children.find((item) => item.info);
-
-    if (firstValidItem) {
-      dispatch(videoActions.setActiveVideo(firstValidItem.id));
+    if (firstValidChild) {
+      dispatch(videoActions.setActiveVideo(firstValidChild.id));
     }
   }, [
     dispatch,
@@ -541,15 +535,33 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const navigateToNextVideoHandler = useCallback(() => {
     const video = videoRef.current!;
+    const firstValidChild = currentVideo.children.find((item) => item.info);
+    const isLastVideo = currentVideo.children.length === 0 || !firstValidChild;
 
     if (video.currentTime < selectionStartPoint) {
       video.currentTime = selectionStartPoint;
-    } else {
-      video.currentTime = video.duration;
+      return;
     }
 
-    video.play();
-  }, [selectionStartPoint]);
+    if (isLastVideo) {
+      video.currentTime = video.duration;
+      return;
+    }
+
+    if (selectedNextVideoId) {
+      dispatch(videoActions.setActiveVideo(selectedNextVideoId));
+      return;
+    }
+
+    if (firstValidChild) {
+      dispatch(videoActions.setActiveVideo(firstValidChild.id));
+    }
+  }, [
+    dispatch,
+    currentVideo.children,
+    selectionStartPoint,
+    selectedNextVideoId,
+  ]);
 
   /**
    * MARK SELECTION TIME

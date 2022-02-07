@@ -1,5 +1,5 @@
 import Button from 'components/Common/Element/Button/Button';
-import Modal from 'components/Common/UI/Modal/Modal';
+import Modal from 'components/Layout/Modal/Modal';
 import AccountDashboard from 'components/User/Account/Dashboard/AccountDashboard';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { sendVerification } from 'store/thunks/auth-thunk';

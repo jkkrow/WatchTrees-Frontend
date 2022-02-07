@@ -5,7 +5,7 @@ import UploadButton from 'components/Upload/Button/UploadButton';
 import Reload from 'components/Common/UI/Reload/Reload';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
-import Modal from 'components/Common/UI/Modal/Modal';
+import Modal from 'components/Layout/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';

@@ -1,0 +1,45 @@
+.menu-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 2rem;
+  min-height: 2rem;
+  padding: 1rem 0;
+  gap: 0.5rem;
+
+  > div {
+    width: 100%;
+    height: 0.2rem;
+    background-color: var(--bg-inversed);
+    transition: transform 300ms ease-out;
+  }
+
+  &__top {
+    transform-origin: left;
+  }
+
+  &__center {
+    transform-origin: center;
+  }
+
+  &__bottom {
+    transform-origin: left;
+  }
+
+  &.active {
+    .menu-button__top {
+      transform: rotate(45deg);
+      transition-delay: 300ms;
+    }
+
+    .menu-button__center {
+      transform: scaleX(0);
+    }
+
+    .menu-button__bottom {
+      transform: rotate(-45deg);
+      transition-delay: 300ms;
+    }
+  }
+}

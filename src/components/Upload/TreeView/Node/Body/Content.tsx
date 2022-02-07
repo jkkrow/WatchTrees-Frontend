@@ -200,9 +200,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
                         key={node.id}
                         style={
                           validateNodes(node, 'error', null, false)
-                            ? {
-                                stroke: '#ff0000',
-                              }
+                            ? { fill: '#ff0000' }
                             : undefined
                         }
                         onClick={() => activeNodeHandler(node.id)}

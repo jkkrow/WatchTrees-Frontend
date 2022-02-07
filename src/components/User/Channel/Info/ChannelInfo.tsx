@@ -4,8 +4,8 @@ import { useHistory } from 'react-router';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
 import ChannelLoaderItem from 'components/User/Channel/Loader/Item/ChannelLoaderItem';
-import { ReactComponent as SubscribeIcon } from 'assets/icons/subscribe.svg';
-import { ReactComponent as CheckIcon } from 'assets/icons/circle-check.svg';
+import { ReactComponent as SubscribeAddIcon } from 'assets/icons/subscribe-add.svg';
+import { ReactComponent as SubscribeAddedIcon } from 'assets/icons/subscribe-added.svg';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import { toggleSubscribe } from 'store/thunks/user-thunk';
@@ -87,12 +87,12 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({
             <Button onClick={subscribeHandler} loading={thunkLoading}>
               {detail.isSubscribed ? (
                 <>
-                  <CheckIcon stroke="black" />
+                  <SubscribeAddedIcon />
                   <span>Subscribed</span>
                 </>
               ) : (
                 <>
-                  <SubscribeIcon fill="black" />
+                  <SubscribeAddIcon />
                   <span>Subscribe</span>
                 </>
               )}

@@ -3,59 +3,60 @@
   display: flex;
   top: 0;
   bottom: 0;
-  left: 0;
   right: 0;
-  background-color: var(--bg-primary);
+  width: 30rem;
+  height: 100vh;
+  background-color: rgba(var(--bg-primary), 0.3);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   z-index: 110;
-
-  @media (min-width: 1000px) {
-    bottom: initial;
-    left: initial;
-    width: 50rem;
-    height: 100vh;
-    border-left: 2px solid var(--text-secondary);
-  }
 
   &__list {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: auto;
+    width: 100%;
+    padding: 0 3rem;
+    margin-top: 10rem;
     gap: 2rem;
-    font-size: 2rem;
+    font-size: 1.7rem;
 
-    > li {
-      opacity: 0;
-      transform: translateX(100%);
-      animation: menu-list 300ms ease-out forwards;
-      animation-delay: 300ms;
-
-      @media (min-width: 1000px) {
-        animation: none;
-        opacity: initial;
-        transform: initial;
-      }
+    > div {
+      display: flex;
     }
 
-    > li:nth-child(1) {
-      animation-delay: 200ms;
+    a,
+    .link {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
-    > li:nth-child(2) {
-      animation-delay: 300ms;
+    svg {
+      margin: 0;
     }
 
-    > li:nth-child(3) {
-      animation-delay: 400ms;
+    &--active {
+      opacity: 0.7;
+    }
+  }
+
+  &__user {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    border: 1px solid var(--text-secondary);
+    border-radius: 5px;
+
+    &__header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
-    > li:nth-child(4) {
-      animation-delay: 500ms;
-    }
-
-    > li:nth-child(5) {
-      animation-delay: 600ms;
+    &__name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 
@@ -78,16 +79,8 @@
       transform: translateX(100%);
     }
   }
-}
 
-@keyframes menu-list {
-  0% {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateX(0%);
+  @media (max-width: 450px) {
+    width: 100%;
   }
 }

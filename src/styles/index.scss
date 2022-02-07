@@ -84,7 +84,7 @@ svg {
   width: 2.5rem;
   height: 2.5rem;
   margin: auto;
-  fill: var(--bg-primary);
+  fill: var(--bg-inversed);
 
   @include clickable();
 }
@@ -164,7 +164,7 @@ video {
 }
 
 .disabled {
-  fill: var(--text-disabled);
+  fill: var(--bg-disabled);
   cursor: not-allowed;
 
   &:hover {

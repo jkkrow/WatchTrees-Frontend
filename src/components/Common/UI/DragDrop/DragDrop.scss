@@ -14,13 +14,11 @@
     opacity: 0.7;
   }
 
-  &.invalid {
+  &.invalid,
+  &.invalid svg {
     color: #ff0000;
     border-color: #ff0000;
-
-    svg {
-      stroke: #ff0000;
-    }
+    fill: #ff0000;
   }
 
   &.dragging {

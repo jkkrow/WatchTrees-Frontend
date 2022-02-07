@@ -1,4 +1,5 @@
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
+import { ReactComponent as FavoriteActiveIcon } from 'assets/icons/favorite-active.svg';
 import { formatNumber } from 'util/format';
 import './VideoFavorites.scss';
 
@@ -14,12 +15,12 @@ const VideoFavorites: React.FC<VideoFavoritesProps> = ({
   onClick,
 }) => {
   return (
-    <div
-      className={`video-favorites${onClick ? ' button' : ''}${
-        active ? ' active' : ''
-      }`}
-    >
-      <FavoriteIcon onClick={onClick} />
+    <div className={`video-favorites${onClick ? ' button' : ''}`}>
+      {active ? (
+        <FavoriteActiveIcon onClick={onClick} />
+      ) : (
+        <FavoriteIcon onClick={onClick} />
+      )}
       <span>{formatNumber(favorites)}</span>
     </div>
   );
