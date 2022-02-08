@@ -165,7 +165,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
               onChange={tagChangeHandler}
             />
             <EnterIcon
-              className={!tagInput.trim().length ? 'disabled' : ''}
+              className={`btn${!tagInput.trim().length ? ' disabled' : ''}`}
               onClick={tagSubmitHandler}
             />
           </form>

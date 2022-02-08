@@ -18,7 +18,7 @@ const Avatar: React.FC<AvatarProps> = ({
 }) => {
   return (
     <div
-      className={`avatar${!button ? ' default' : ''}`}
+      className={`avatar${button ? ' btn' : ''}`}
       style={{ width, height, minWidth: width, minHeight: height }}
       onClick={onClick}
     >

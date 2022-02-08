@@ -4,6 +4,8 @@
 
   button {
     display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 50px;
     background-color: var(--bg-primary);
     transition: background-color 200ms ease-out;
@@ -11,10 +13,6 @@
     &:hover {
       background-color: var(--bg-tertiary);
       opacity: 1;
-    }
-
-    svg {
-      pointer-events: none;
     }
   }
 

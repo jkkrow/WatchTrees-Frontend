@@ -61,6 +61,7 @@
 
   &__buttons {
     display: flex;
+    justify-content: space-evenly;
     margin-top: auto;
     gap: 1rem;
   }

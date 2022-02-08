@@ -8,7 +8,7 @@ interface MenuButtonProps {
 const MenuButton: React.FC<MenuButtonProps> = ({ active, onClick }) => {
   return (
     <div
-      className={`menu-button${active ? ' active' : ''} link`}
+      className={`menu-button${active ? ' active' : ''} btn`}
       onClick={onClick}
     >
       <div className="menu-button__top" />

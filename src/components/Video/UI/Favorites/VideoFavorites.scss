@@ -2,14 +2,9 @@
   position: relative;
   display: flex;
   gap: 0.5rem;
-  pointer-events: none;
 
   span {
     display: flex;
     align-items: center;
-  }
-
-  &.button {
-    pointer-events: initial;
   }
 }

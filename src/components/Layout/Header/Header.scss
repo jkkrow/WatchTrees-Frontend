@@ -1,5 +1,5 @@
 .header {
-  position: fixed;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,7 +7,7 @@
   left: 0;
   width: 100%;
   height: 8rem;
-  padding: 0 2.5rem;
+  padding: 0 2rem;
   gap: 2.5rem;
   font-weight: 600;
   text-align: center;

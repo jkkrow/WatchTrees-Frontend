@@ -69,7 +69,7 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({ data, loading, button }) => {
           />
           <div className="channel-info__detail">
             <h3
-              className={`channel-info__name${button ? ' link' : ''}`}
+              className={`channel-info__name${button ? ' btn' : ''}`}
               onClick={navigateHandler}
             >
               {detail.name}

@@ -40,7 +40,7 @@ const Search = () => {
         onFocus={inputFocusHandler}
       />
       <label htmlFor="search-input">
-        <SearchIcon />
+        <SearchIcon className="btn" />
       </label>
     </form>
   );

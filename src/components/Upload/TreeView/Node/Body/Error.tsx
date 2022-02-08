@@ -21,7 +21,7 @@ const Error: React.FC<ErrorProps> = ({ currentNode, error }) => {
         {error}
       </div>
       <div className="upload-node__error__action">
-        <RemoveIcon onClick={cancelHandler} />
+        <RemoveIcon className="btn" onClick={cancelHandler} />
       </div>
     </div>
   ) : null;

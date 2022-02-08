@@ -45,7 +45,6 @@
       position: absolute;
       transform: scale(0);
       transition: all 400ms;
-      pointer-events: none;
 
       &.active {
         transform: scale(1);

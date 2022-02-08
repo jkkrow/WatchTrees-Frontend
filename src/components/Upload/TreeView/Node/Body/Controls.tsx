@@ -58,6 +58,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
       )}
       {currentNode.id !== rootId && currentNode.id !== activeNodeId && (
         <RemoveIcon
+          className="btn"
           style={{
             top: '2rem',
             left: '-4rem',
@@ -79,8 +80,12 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
               zIndex: 1,
             }}
           >
-            <AngleLeftDoubleIcon onClick={() => activeNodeHandler(rootId)} />
+            <AngleLeftDoubleIcon
+              className="btn"
+              onClick={() => activeNodeHandler(rootId)}
+            />
             <AngleLeftIcon
+              className="btn"
               onClick={() => activeNodeHandler(currentNode.prevId!)}
             />
           </div>

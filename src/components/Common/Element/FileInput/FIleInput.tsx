@@ -136,12 +136,15 @@ const FileInput: React.FC<FileInputProps> = ({
             fileInfo.name && (
               <li key={fileInfo.url} className="file-input__item">
                 <span
-                  className={type === 'image' ? ' link' : ''}
+                  className={type === 'image' ? ' btn' : ''}
                   onClick={() => setFilePreview(fileInfo)}
                 >
                   {fileInfo.name}
                 </span>
-                <RemoveIcon onClick={() => removeFileHandler(fileInfo.name)} />
+                <RemoveIcon
+                  className="btn"
+                  onClick={() => removeFileHandler(fileInfo.name)}
+                />
               </li>
             )
         )}

@@ -39,7 +39,7 @@ const VideoLoaderList: React.FC<VideoLoaderListProps> = ({
           </div>
         ))
       ) : (
-        <div ref={itemRef} />
+        <div ref={itemRef} style={{ opacity: 0 }} />
       )}
     </div>
   ) : null;

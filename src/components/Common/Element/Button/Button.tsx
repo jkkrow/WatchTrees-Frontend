@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
 }) => {
   return (
     <button
-      className={`btn${invalid ? ' invalid' : ''}${
+      className={`button${invalid ? ' invalid' : ''}${
         inversed ? ' inversed' : ''
       }`}
       type={type}

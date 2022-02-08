@@ -68,8 +68,11 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
           <div>
             <VideoTimestamp createdAt={item.createdAt} timeSince={false} />
             <div className="my-video-item__buttons">
-              <EditIcon onClick={() => editHandler(item._id!)} />
-              <DeleteIcon onClick={() => onDelete(item)} />
+              <EditIcon
+                className="btn"
+                onClick={() => editHandler(item._id!)}
+              />
+              <DeleteIcon className="btn" onClick={() => onDelete(item)} />
             </div>
           </div>
         </div>

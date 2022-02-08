@@ -43,7 +43,7 @@ const VideoFavorites: React.FC<VideoFavoritesProps> = ({
   };
 
   return (
-    <div className={`video-favorites${button ? ' button' : ''}`}>
+    <div className={`video-favorites${button ? ' btn' : ''}`}>
       <LoadingSpinner on={loading} overlay />
       {data.active && <FavoriteActiveIcon onClick={toggleFavoritesHandler} />}
       {!data.active && <FavoriteIcon onClick={toggleFavoritesHandler} />}

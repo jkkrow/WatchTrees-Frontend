@@ -1,12 +1,7 @@
 .video-status {
   display: flex;
   gap: 0.5rem;
-  pointer-events: none;
   font-weight: 600;
-
-  svg {
-    margin: 0;
-  }
 
   span {
     display: flex;

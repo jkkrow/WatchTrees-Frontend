@@ -21,10 +21,10 @@ interface ContentProps {
 }
 
 const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
-  const nodeInfo = useMemo(() => currentNode.info!, [currentNode.info]);
-
   const activeNodeId = useAppSelector((state) => state.upload.activeNodeId);
   const dispatch = useAppDispatch();
+
+  const nodeInfo = useMemo(() => currentNode.info!, [currentNode.info]);
 
   const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
@@ -99,8 +99,12 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
         ) : (
           currentNode.id === activeNodeId && (
             <div className="upload-node__navigation">
-              <AngleLeftDoubleIcon onClick={() => activeNodeHandler(rootId)} />
+              <AngleLeftDoubleIcon
+                className="btn"
+                onClick={() => activeNodeHandler(rootId)}
+              />
               <AngleLeftIcon
+                className="btn"
                 onClick={() => activeNodeHandler(currentNode.prevId!)}
               />
             </div>
@@ -119,11 +123,15 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
         </div>
         <div className="upload-node__action">
           <Tooltip text="Show preview" direction="left">
-            <PreviewIcon onClick={() => activeVideoHandler(currentNode.id)} />
+            <PreviewIcon
+              className="btn"
+              onClick={() => activeVideoHandler(currentNode.id)}
+            />
           </Tooltip>
           {currentNode.children.length < 4 && (
             <Tooltip text="Append next video" direction="left">
               <PlusIcon
+                className="btn"
                 onClick={addChildHandler}
                 style={{ width: '1.7rem', height: '1.7rem' }}
               />
@@ -187,6 +195,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
                     return (
                       <CircleDashIcon
                         key={node.id}
+                        className="btn"
                         onClick={() => activeNodeHandler(node.id)}
                       />
                     );
@@ -198,6 +207,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
                     return (
                       <CircleLoadingIcon
                         key={node.id}
+                        className="btn"
                         style={
                           validateNodes(node, 'error', null, false)
                             ? { fill: '#ff0000' }
@@ -210,6 +220,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
                   return (
                     <CircleCheckIcon
                       key={node.id}
+                      className="btn"
                       onClick={() => activeNodeHandler(node.id)}
                     />
                   );

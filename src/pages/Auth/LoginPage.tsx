@@ -193,14 +193,14 @@ const LoginPage: React.FC = () => {
       {isLogin ? (
         <p>
           Don't have an account?{' '}
-          <span className="link" onClick={toggleMode}>
+          <span className="btn" onClick={toggleMode}>
             Sign up
           </span>
         </p>
       ) : (
         <p>
           Already have an account?{' '}
-          <span className="link" onClick={toggleMode}>
+          <span className="btn" onClick={toggleMode}>
             Sign in
           </span>
         </p>

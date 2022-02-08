@@ -141,9 +141,4 @@
       font-size: clamp(1.3rem, 2vw, 1.7rem);
     }
   }
-
-  svg {
-    pointer-events: none;
-    aspect-ratio: 1/1;
-  }
 }

@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -43,8 +43,6 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
     count: number;
   }>({ videos: [], count: 0 });
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     if (refreshToken && !accessToken) return;
 
@@ -70,16 +68,15 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
 
   return (
     <div className="video-group">
-      {label && (loading || data.videos.length > 0) && (
-        <h3
-          className={`video-group__label${to ? ' link' : ''}${
-            loading ? ' loading' : ''
-          }`}
-          onClick={() => to && navigate(to)}
-        >
-          {label}
-        </h3>
-      )}
+      {label &&
+        (loading || data.videos.length > 0) &&
+        (loading ? (
+          <h3 className="video-group__label loading">{label}</h3>
+        ) : (
+          <h3 className="video-group__label">
+            {to ? <Link to={to}>{label}</Link> : { label }}
+          </h3>
+        ))}
       <VideoLoaderList loading={loading} />
       {!loading && data.videos.length > 0 && (
         <Swiper

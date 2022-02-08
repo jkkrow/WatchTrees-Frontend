@@ -42,11 +42,6 @@
       &:hover {
         background-color: rgba($color: #333333, $alpha: 0.8);
       }
-
-      svg {
-        margin: 0;
-        pointer-events: none;
-      }
     }
 
     &__label {

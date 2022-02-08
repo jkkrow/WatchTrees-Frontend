@@ -5,17 +5,14 @@
 
   &__body {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 1.5rem 2rem;
     gap: 1rem;
+  }
 
-    svg {
-      width: 2rem;
-      height: 2rem;
-      min-width: 2rem;
-      min-height: 2rem;
-    }
+  &__content {
+    flex-basis: 85%;
   }
 
   &__timer {
