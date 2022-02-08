@@ -10,15 +10,13 @@ import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { deleteVideo } from 'store/thunks/video-thunk';
 import { fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import 'styles/user.scss';
 
 const MyVideoListPage: React.FC = () => {
-  const { accessToken } = useAppSelector((state) => state.auth);
-
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
@@ -59,10 +57,8 @@ const MyVideoListPage: React.FC = () => {
   }, [dispatchThunk, currentPage, itemsPerPage]);
 
   useEffect(() => {
-    if (!accessToken) return;
-
     fetchVideos();
-  }, [accessToken, fetchVideos]);
+  }, [fetchVideos]);
 
   return (
     <div className="user-page">

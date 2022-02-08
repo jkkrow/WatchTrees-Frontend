@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import VideoItem from 'components/Video/Item/VideoItem';
 import VideoLoaderList from 'components/Video/Loader/List/VideoLoaderList';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 
@@ -37,24 +37,14 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   forceUpdate,
   onFetch,
 }) => {
-  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
   const { dispatchThunk, setData, data, loading } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({ videos: [], count: 0 });
 
   useEffect(() => {
-    if (refreshToken && !accessToken) return;
-
     dispatchThunk(onFetch({ max, skipFullyWatched }));
-  }, [
-    refreshToken,
-    accessToken,
-    dispatchThunk,
-    onFetch,
-    max,
-    skipFullyWatched,
-  ]);
+  }, [dispatchThunk, onFetch, max, skipFullyWatched]);
 
   const filterList = useCallback(
     (videoId: string) => {

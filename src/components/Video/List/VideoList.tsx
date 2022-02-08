@@ -6,7 +6,7 @@ import VideoLoaderList from '../Loader/List/VideoLoaderList';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useSearch } from 'hooks/search-hook';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import './VideoList.scss';
@@ -26,7 +26,6 @@ const VideoList: React.FC<VideoListProps> = ({
   forceUpdate,
   onFetch,
 }) => {
-  const { refreshToken, accessToken } = useAppSelector((state) => state.auth);
   const { dispatchThunk, data, setData, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
@@ -38,8 +37,6 @@ const VideoList: React.FC<VideoListProps> = ({
   const { id: channelId } = useParams<{ id: string }>();
 
   useEffect(() => {
-    if (refreshToken && !accessToken) return;
-
     dispatchThunk(
       onFetch({
         page: currentPage,
@@ -48,16 +45,7 @@ const VideoList: React.FC<VideoListProps> = ({
         channelId,
       })
     );
-  }, [
-    refreshToken,
-    accessToken,
-    dispatchThunk,
-    currentPage,
-    itemsPerPage,
-    keyword,
-    onFetch,
-    channelId,
-  ]);
+  }, [dispatchThunk, currentPage, itemsPerPage, keyword, channelId, onFetch]);
 
   const filterList = useCallback(
     (videoId: string) => {
