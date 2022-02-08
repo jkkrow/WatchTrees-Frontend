@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
+import { useNavigate } from 'react-router-dom';
 import { Navigation } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import VideoItem from 'components/Video/Item/VideoItem';
 import VideoLoaderList from 'components/Video/Loader/List/VideoLoaderList';
@@ -9,9 +9,9 @@ import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 
-import 'swiper/modules/navigation/navigation.min.css';
-import 'swiper/modules/pagination/pagination.min.css';
-import 'swiper/swiper.scss';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/scss';
 import 'styles/swiper.scss';
 import './VideoGroup.scss';
 
@@ -43,7 +43,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
     count: number;
   }>({ videos: [], count: 0 });
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (refreshToken && !accessToken) return;
@@ -75,7 +75,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
           className={`video-group__label${to ? ' link' : ''}${
             loading ? ' loading' : ''
           }`}
-          onClick={() => to && history.push(to)}
+          onClick={() => to && navigate(to)}
         >
           {label}
         </h3>

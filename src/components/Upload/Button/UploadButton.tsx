@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
@@ -10,14 +10,14 @@ import './UploadButton.scss';
 const UploadButton: React.FC = () => {
   const { dispatchThunk, loading } = useAppThunk();
   const uploadTree = useAppSelector((state) => state.upload.uploadTree);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const addNewVideoHandler = async () => {
     if (!uploadTree) {
       await dispatchThunk(initiateUpload());
     }
 
-    history.push('/upload');
+    navigate('/upload');
   };
 
   return (

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { ReactComponent as SearchIcon } from 'assets/icons/search.svg';
 import './Search.scss';
@@ -8,7 +8,7 @@ const Search = () => {
   const [keyword, setKeyword] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const inputFocusHandler = (event: React.FocusEvent<HTMLInputElement>) => {
     event.target.select();
@@ -23,7 +23,7 @@ const Search = () => {
 
     if (!keyword) return;
 
-    history.push(`/?search=${keyword}`);
+    navigate(`/?search=${keyword}`);
     inputRef.current!.blur();
   };
 

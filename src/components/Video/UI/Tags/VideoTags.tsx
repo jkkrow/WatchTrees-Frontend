@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import './VideoTags.scss';
 
@@ -7,22 +7,12 @@ interface TagsProps {
 }
 
 const VideoTags: React.FC<TagsProps> = ({ tags }) => {
-  const history = useHistory();
-
-  const searchHandler = (tag: string) => {
-    history.push(`/?search=${tag}`);
-  };
-
   return tags.length > 0 ? (
     <div className="video-tags">
       {tags.map((tag) => (
-        <div
-          key={tag}
-          className="video-tag link"
-          onClick={() => searchHandler(tag)}
-        >
+        <Link to={`/?search=${tag}`} key={tag} className="video-tag">
           #{tag}
-        </div>
+        </Link>
       ))}
     </div>
   ) : null;

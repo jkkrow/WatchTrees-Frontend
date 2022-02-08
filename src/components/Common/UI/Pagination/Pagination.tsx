@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useLocation, Link } from 'react-router-dom';
 
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
@@ -22,58 +22,67 @@ const Pagination: React.FC<PaginationProps> = ({
   keyword,
 }) => {
   const location = useLocation();
-  const history = useHistory();
+
   const totalPage = useMemo(
     () => Math.ceil(count / itemsPerPage),
     [count, itemsPerPage]
   );
 
   const pageHandler = (pageNumber: number) => {
-    if (pageNumber < 1 || pageNumber > totalPage || pageNumber === currentPage)
-      return;
+    if (pageNumber < 1 || pageNumber > totalPage) {
+      pageNumber = currentPage;
+    }
 
     const destinationUrl = `${location.pathname}${
       keyword ? `?search=${keyword}&page=${pageNumber}` : `?page=${pageNumber}`
     }`;
 
-    history.push(destinationUrl);
+    return destinationUrl;
   };
 
   return totalPage > 1 ? (
     <div className="pagination">
-      <Button inversed onClick={() => pageHandler(1)}>
-        <AngleLeftDoubleIcon />
-      </Button>
-      <Button inversed onClick={() => pageHandler(currentPage - 1)}>
-        <AngleLeftIcon />
-      </Button>
-      {currentPage >= 3 && (
-        <Button inversed onClick={() => pageHandler(currentPage - 2)}>
-          {currentPage - 2}
+      <Link to={pageHandler(1)}>
+        <Button inversed>
+          <AngleLeftDoubleIcon />
         </Button>
+      </Link>
+      <Link to={pageHandler(currentPage - 1)}>
+        <Button inversed>
+          <AngleLeftIcon />
+        </Button>
+      </Link>
+      {currentPage >= 3 && (
+        <Link to={pageHandler(currentPage - 2)}>
+          <Button inversed>{currentPage - 2}</Button>
+        </Link>
       )}
       {currentPage >= 2 && (
-        <Button inversed onClick={() => pageHandler(currentPage - 1)}>
-          {currentPage - 1}
-        </Button>
+        <Link to={pageHandler(currentPage - 1)}>
+          <Button inversed>{currentPage - 1}</Button>
+        </Link>
       )}
       <Button>{currentPage}</Button>
       {totalPage - currentPage >= 1 && (
-        <Button inversed onClick={() => pageHandler(currentPage + 1)}>
-          {currentPage + 1}
-        </Button>
+        <Link to={pageHandler(currentPage + 1)}>
+          <Button inversed>{currentPage + 1}</Button>
+        </Link>
       )}
       {totalPage - currentPage >= 2 && (
-        <Button inversed onClick={() => pageHandler(currentPage + 2)}>
-          {currentPage + 2}
-        </Button>
+        <Link to={pageHandler(currentPage + 2)}>
+          <Button inversed>{currentPage + 2}</Button>
+        </Link>
       )}
-      <Button inversed onClick={() => pageHandler(currentPage + 1)}>
-        <AngleRightIcon />
-      </Button>
-      <Button inversed onClick={() => pageHandler(totalPage)}>
-        <AngleRightDoubleIcon />
-      </Button>
+      <Link to={pageHandler(currentPage + 1)}>
+        <Button inversed>
+          <AngleRightIcon />
+        </Button>
+      </Link>
+      <Link to={pageHandler(totalPage)}>
+        <Button inversed>
+          <AngleRightDoubleIcon />
+        </Button>
+      </Link>
     </div>
   ) : null;
 };

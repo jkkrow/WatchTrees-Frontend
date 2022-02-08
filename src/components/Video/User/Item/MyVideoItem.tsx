@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import VideoThumbnail from 'components/Video/UI/Thumbnail/VideoThumbnail';
@@ -24,14 +24,14 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
   const uploadTree = useAppSelector((state) => state.upload.uploadTree);
   const { dispatchThunk, loading } = useAppThunk();
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const editHandler = async (videoId: string) => {
     if (!uploadTree) {
       await dispatchThunk(continueUpload(videoId));
     }
 
-    history.push(`/upload/${videoId}`);
+    navigate(`/upload/${videoId}`);
   };
 
   return (

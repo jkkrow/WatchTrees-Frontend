@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
 import { VideoTree } from 'store/slices/video-slice';
@@ -10,7 +10,7 @@ interface VideoThumbnailProps {
 }
 
 const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ video }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const thumbnailUrl = useMemo(() => {
     let src: string | undefined;
@@ -29,7 +29,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({ video }) => {
   }, [video]);
 
   const watchVideoHandler = () => {
-    history.push(`/video/${video._id}`);
+    navigate(`/video/${video._id}`);
   };
 
   return (

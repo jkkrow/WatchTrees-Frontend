@@ -28,7 +28,7 @@ const ResetPasswordPage: React.FC = () => {
     confirmPassword: { value: '', isValid: false },
   });
 
-  const { token } = useParams<{ token: string }>();
+  const { token } = useParams();
 
   const submitHandler = () => {
     if (!formState.isValid) return;
@@ -37,14 +37,14 @@ const ResetPasswordPage: React.FC = () => {
       resetPassword(
         formState.inputs.password.value,
         formState.inputs.confirmPassword.value,
-        token
+        token!
       )
     );
   };
 
   useEffect(() => {
     (async () => {
-      await dispatchThunk(checkRecovery(token));
+      await dispatchThunk(checkRecovery(token!));
 
       setIsAccessAllowed(true);
     })();

@@ -12,10 +12,10 @@ const ChannelHeader: React.FC = () => {
     null
   );
 
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
 
   useEffect(() => {
-    dispatchThunk(fetchChannelInfo(id));
+    dispatchThunk(fetchChannelInfo(id!));
   }, [dispatchThunk, id]);
 
   return (

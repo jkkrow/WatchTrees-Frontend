@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
@@ -26,14 +26,14 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({ data, loading, button }) => {
 
   const [detail, setDetail] = useState<ChannelData | null>(data);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setDetail(data);
   }, [data]);
 
   const navigateHandler = () => {
-    detail && button && history.push(`/channel/${detail._id}`);
+    detail && button && navigate(`/channel/${detail._id}`);
   };
 
   const subscribeHandler = async () => {
@@ -42,7 +42,7 @@ const ChannelInfo: React.FC<ChannelInfoProps> = ({ data, loading, button }) => {
     }
 
     if (!userData) {
-      return history.push('/auth');
+      return navigate('/auth');
     }
 
     await dispatchThunk(toggleSubscribe(detail._id));

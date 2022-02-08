@@ -1,4 +1,4 @@
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import VideoPlayer from '../../Player/VideoPlayer';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
@@ -26,14 +26,13 @@ const VideoNode: React.FC<VideoNodeProps> = ({
 }) => {
   const { activeVideoId } = useAppSelector((state) => state.video);
   const dispatch = useAppDispatch();
-
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const returnHandler = () => {
     if (currentVideo.layer !== 0) {
       dispatch(videoActions.setActiveVideo(currentVideo.prevId!));
     } else {
-      history.goBack();
+      navigate(-1);
     }
   };
 

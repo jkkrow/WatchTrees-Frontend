@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { Link, useParams } from 'react-router-dom';
 
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
 import VideoFavorites from 'components/Video/UI/Favorites/VideoFavorites';
@@ -19,11 +19,10 @@ const VideoPage: React.FC = () => {
     null
   );
 
-  const { id } = useParams<{ id: string }>();
-  const history = useHistory();
+  const { id } = useParams();
 
   useEffect(() => {
-    dispatchThunk(fetchVideo(id));
+    dispatchThunk(fetchVideo(id!));
   }, [dispatchThunk, id]);
 
   return (
@@ -50,13 +49,13 @@ const VideoPage: React.FC = () => {
               <VideoTimestamp createdAt={data.createdAt} />
             </div>
           </div>
-          <div
+          <Link
+            to={`/channel/${data.info.creator}`}
             className="video-page__creator"
-            onClick={() => history.push(`/channel/${data.info.creator}`)}
           >
-            <Avatar src={data.info.creatorInfo.picture} button />
-            <h3 className="link">{data.info.creatorInfo.name}</h3>
-          </div>
+            <Avatar src={data.info.creatorInfo.picture} />
+            <h3>{data.info.creatorInfo.name}</h3>
+          </Link>
           <VideoTags tags={data.info.tags} />
           <div className="video-page__detail">
             <VideoViews video={data} />

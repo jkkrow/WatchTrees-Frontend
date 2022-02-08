@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
 
 import Response from 'components/Common/UI/Response/Response';
@@ -20,8 +20,6 @@ import {
 import 'styles/auth.scss';
 
 const LoginPage: React.FC = () => {
-  const [isLogin, setIsLogin] = useState(true);
-
   const {
     dispatchThunk,
     loading,
@@ -34,22 +32,35 @@ const LoginPage: React.FC = () => {
     password: { value: '', isValid: false },
   });
 
-  const googleLoginHandler = (response: any) => {
-    dispatchThunk(signin({ tokenId: response.tokenId }));
+  const [isLogin, setIsLogin] = useState(true);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const navigateHandler = () => {
+    navigate((location.state as 'string' | undefined) || '/', {
+      replace: true,
+    });
   };
 
-  const submitHandler = () => {
+  const googleLoginHandler = async (response: any) => {
+    await dispatchThunk(signin({ tokenId: response.tokenId }));
+
+    navigateHandler();
+  };
+
+  const submitHandler = async () => {
     if (!formState.isValid) return;
 
     if (isLogin) {
-      dispatchThunk(
+      await dispatchThunk(
         signin({
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
         })
       );
     } else {
-      dispatchThunk(
+      await dispatchThunk(
         signup({
           name: formState.inputs.name.value,
           email: formState.inputs.email.value,
@@ -58,6 +69,8 @@ const LoginPage: React.FC = () => {
         })
       );
     }
+
+    navigateHandler();
   };
 
   const toggleMode = (): void => {

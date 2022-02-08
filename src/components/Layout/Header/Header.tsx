@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import Logo from 'components/Common/UI/Logo/Logo';
 import Search from 'components/Common/UI/Search/Search';
@@ -22,9 +22,9 @@ const Header: React.FC = () => {
 
   return (
     <header className="header">
-      <NavLink exact to="/" className="header__logo">
+      <Link to="/" className="header__logo">
         <Logo />
-      </NavLink>
+      </Link>
       <Search />
       <MenuButton active={displayMenu} onClick={displayMenuHandler} />
       <Menu on={displayMenu} onClose={() => setDisplayMenu(false)} />

@@ -14,10 +14,9 @@ import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { deleteVideo } from 'store/thunks/video-thunk';
 import { fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
-import { RouteComponentProps } from 'react-router';
 import 'styles/user.scss';
 
-const MyVideoListPage: React.FC<RouteComponentProps> = () => {
+const MyVideoListPage: React.FC = () => {
   const { accessToken } = useAppSelector((state) => state.auth);
 
   const [displayModal, setDisplayModal] = useState(false);

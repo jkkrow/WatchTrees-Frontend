@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { RouteComponentProps } from 'react-router';
+import { useNavigate } from 'react-router';
 
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
@@ -7,12 +7,14 @@ import Preview from 'components/Upload/Preview/Preview';
 import { useAppSelector } from 'hooks/store-hook';
 import 'styles/upload.scss';
 
-const UploadPage: React.FC<RouteComponentProps> = ({ history }) => {
-  const { previewTree } = useAppSelector((state) => state.upload);
+const UploadPage: React.FC = () => {
+  const previewTree = useAppSelector((state) => state.upload.previewTree);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    !previewTree && history.push('/user/videos');
-  }, [previewTree, history]);
+    !previewTree && navigate('/user/videos');
+  }, [previewTree, navigate]);
 
   const isPreview = previewTree?.root.info?.url;
 

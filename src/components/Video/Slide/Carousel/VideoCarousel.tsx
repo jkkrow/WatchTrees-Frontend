@@ -1,17 +1,18 @@
 import { useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react/swiper-react';
 import { Navigation, Pagination, Autoplay } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 import VideoThumbnail from '../../UI/Thumbnail/VideoThumbnail';
 import VideoLoaderItem from 'components/Video/Loader/Item/VideoLoaderItem';
 import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
-import './VideoCarousel.scss';
 
-import 'swiper/swiper.scss';
-import 'swiper/modules/pagination/pagination.min.css';
-import 'swiper/modules/navigation/navigation.min.css';
+import 'swiper/css/pagination';
+import 'swiper/css/navigation';
+import 'swiper/scss';
+import 'styles/swiper.scss';
+import './VideoCarousel.scss';
 
 const CAROUSEL_VIDEOS_NUMBER = 5;
 

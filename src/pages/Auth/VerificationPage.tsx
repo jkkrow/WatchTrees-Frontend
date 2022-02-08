@@ -15,10 +15,10 @@ const VerificationPage: React.FC = () => {
     data: message,
   } = useAppThunk<string | null>(null, { errorMessage: false });
 
-  const { token } = useParams<{ token: string }>();
+  const { token } = useParams();
 
   useEffect(() => {
-    dispatchThunk(checkVerification(token));
+    dispatchThunk(checkVerification(token!));
   }, [dispatchThunk, token]);
 
   return (

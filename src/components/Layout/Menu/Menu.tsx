@@ -1,5 +1,5 @@
 import { createPortal } from 'react-dom';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 
 import Backdrop from 'components/Layout/Backdrop/Backdrop';
@@ -24,21 +24,20 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
   const uploadTree = useAppSelector((state) => state.upload.uploadTree);
   const userData = useAppSelector((state) => state.user.userData);
   const dispatch = useAppDispatch();
-  const history = useHistory();
 
-  const logoutHandler = () => {
+  const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (uploadTree) {
       const result = window.confirm(
         'There is unfinished uploading process. The process will be lost if you logout. Are you sure to proceed?'
       );
 
-      if (!result) return;
+      if (!result) {
+        return event.preventDefault();
+      }
     }
 
     dispatch(uploadActions.finishUpload());
     dispatch(authActions.signout());
-
-    history.push('/auth');
   };
 
   return createPortal(
@@ -62,7 +61,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
                 </div>
                 <li>
                   <NavLink
-                    activeClassName="menu__list--active"
+                    className={({ isActive }) => (isActive ? ' active' : '')}
                     to="/user/account"
                   >
                     <UserIcon />
@@ -71,7 +70,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
                 </li>
                 <li>
                   <NavLink
-                    activeClassName="menu__list--active"
+                    className={({ isActive }) => (isActive ? ' active' : '')}
                     to="/user/videos"
                   >
                     <VideoIcon />
@@ -80,7 +79,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
                 </li>
                 <li>
                   <NavLink
-                    activeClassName="menu__list--active"
+                    className={({ isActive }) => (isActive ? ' active' : '')}
                     to="/user/favorites"
                   >
                     <FavoriteIcon />
@@ -90,19 +89,25 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
               </>
             )}
             <li>
-              <NavLink activeClassName="menu__list--active" to="/history">
+              <NavLink
+                className={({ isActive }) => (isActive ? ' active' : '')}
+                to="/history"
+              >
                 <TimeIcon />
                 History
               </NavLink>
             </li>
             <li>
               {userData ? (
-                <div className="link" onClick={logoutHandler}>
+                <NavLink to="/auth" onClick={logoutHandler}>
                   <SignoutIcon />
                   Signout
-                </div>
+                </NavLink>
               ) : (
-                <NavLink activeClassName="menu__list--active" to="/auth">
+                <NavLink
+                  className={({ isActive }) => (isActive ? ' active' : '')}
+                  to="/auth"
+                >
                   <SigninIcon />
                   Signin
                 </NavLink>

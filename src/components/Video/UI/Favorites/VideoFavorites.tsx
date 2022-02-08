@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
@@ -27,11 +27,12 @@ const VideoFavorites: React.FC<VideoFavoritesProps> = ({
 
   const [data, setData] = useState({ number: favorites, active: isFavorite });
 
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleFavoritesHandler = async () => {
     if (!button) return;
-    if (!userData) return history.push('/auth');
+    if (!userData) return navigate('/auth', { state: location.pathname });
 
     await dispatchThunk(toggleFavorites(videoId));
 
