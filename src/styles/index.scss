@@ -20,12 +20,12 @@
 }
 
 ::-webkit-scrollbar {
-  width: 18px;
+  width: 15px;
   background-color: transparent;
 
   &-thumb {
-    border: 5px solid transparent;
-    border-radius: 10px;
+    border-left: 7.5px solid transparent;
+    border-right: 1px solid transparent;
     box-shadow: inset 0 0 0 10px;
     color: #424242;
     background-clip: content-box;
@@ -47,7 +47,10 @@
 }
 
 html {
+  position: relative;
   font-size: 62.5%;
+  margin-left: calc(100vw - 100%);
+  overflow-y: scroll;
 }
 
 body {
@@ -141,7 +144,7 @@ video {
   flex-direction: column;
   justify-content: center;
   max-width: 180rem;
-  padding: 2rem;
+  padding: rem;
   margin: auto;
   gap: 2rem;
 }
