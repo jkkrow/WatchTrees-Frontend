@@ -17,7 +17,7 @@ import {
   useAuthWatcher,
   useUploadWatcher,
 } from 'hooks/watch-hook';
-import { fetchTokenOnload } from 'store/thunks/auth-thunk';
+import { setAuthOnload } from 'store/thunks/auth-thunk';
 import 'styles/index.scss';
 
 const MyVideoListPage = lazy(() => import('pages/Video/MyVideoListPage'));
@@ -41,7 +41,7 @@ const App: React.FC = () => {
   useUploadWatcher();
 
   useEffect(() => {
-    dispatch(fetchTokenOnload());
+    dispatch(setAuthOnload());
   }, [dispatch]);
 
   return (

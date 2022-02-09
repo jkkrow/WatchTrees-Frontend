@@ -29,7 +29,7 @@ const VideoList: React.FC<VideoListProps> = ({
   const { dispatchThunk, data, setData, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
-  }>({ videos: [], count: 0 });
+  }>({ videos: [], count: 0 }, { forceUpdate });
 
   const { currentPage, itemsPerPage } = usePaginate(max);
   const { keyword } = useSearch();

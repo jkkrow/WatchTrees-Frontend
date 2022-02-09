@@ -40,7 +40,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   const { dispatchThunk, setData, data, loading } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
-  }>({ videos: [], count: 0 });
+  }>({ videos: [], count: 0 }, { forceUpdate });
 
   useEffect(() => {
     dispatchThunk(onFetch({ max, skipFullyWatched }));

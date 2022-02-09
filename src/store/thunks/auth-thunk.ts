@@ -38,7 +38,7 @@ export const signin = (
   };
 };
 
-export const fetchTokenOnload = (): AppThunk => {
+export const setAuthOnload = (): AppThunk => {
   return async (dispatch, getState, api) => {
     const { refreshToken } = getState().auth;
 

@@ -5,7 +5,7 @@ import jwt_decode, { JwtPayload } from 'jwt-decode';
 import { AppDispatch, AppState } from 'store';
 import { authActions } from 'store/slices/auth-slice';
 
-export const axiosInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_SERVER_URL,
   headers: { 'Cache-Control': 'no-cache' },
   adapter: cacheAdapterEnhancer(axios.defaults.adapter as AxiosAdapter, {
@@ -13,7 +13,7 @@ export const axiosInstance = axios.create({
   }),
 });
 
-export const api = () => {
+export const api = (forceUpdate = true) => {
   return (dispatch: AppDispatch, getState: () => AppState) => {
     axiosInstance.interceptors.request.use(async (req) => {
       const { refreshToken, accessToken } = getState().auth;
@@ -55,6 +55,9 @@ export const api = () => {
         return Promise.reject(axiosError || err);
       }
     );
+
+    axiosInstance.defaults.forceUpdate = forceUpdate;
+    axiosInstance.defaults.cache = true;
 
     return axiosInstance;
   };

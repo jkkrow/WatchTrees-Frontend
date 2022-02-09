@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import MyVideoList from 'components/Video/User/List/MyVideoList';
 import UploadButton from 'components/Upload/Button/UploadButton';
@@ -20,19 +20,24 @@ const MyVideoListPage: React.FC = () => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
-  const { dispatchThunk, data, loading, loaded } = useAppThunk<{
+  const { currentPage, itemsPerPage } = usePaginate(10);
+
+  const { formState, setFormInput } = useForm({
+    video: { value: '', isValid: false },
+  });
+
+  const { dispatchThunk, reload, data, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({
     videos: [],
     count: 0,
   });
+  const { dispatchThunk: deleteThunk, loading: deleteLoading } = useAppThunk();
 
-  const { currentPage, itemsPerPage } = usePaginate(10);
-
-  const { formState, setFormInput } = useForm({
-    video: { value: '', isValid: false },
-  });
+  useEffect(() => {
+    dispatchThunk(fetchCreated({ page: currentPage, max: itemsPerPage }));
+  }, [dispatchThunk, currentPage, itemsPerPage]);
 
   const openWarningHandler = (item: VideoTreeClient) => {
     setDisplayModal(true);
@@ -47,18 +52,10 @@ const MyVideoListPage: React.FC = () => {
   const deleteHandler = async () => {
     if (!targetItem || !targetItem._id) return;
 
-    await dispatchThunk(deleteVideo(targetItem));
+    await deleteThunk(deleteVideo(targetItem));
 
-    fetchVideos();
+    reload();
   };
-
-  const fetchVideos = useCallback(() => {
-    dispatchThunk(fetchCreated({ page: currentPage, max: itemsPerPage }));
-  }, [dispatchThunk, currentPage, itemsPerPage]);
-
-  useEffect(() => {
-    fetchVideos();
-  }, [fetchVideos]);
 
   return (
     <div className="user-page">
@@ -67,7 +64,7 @@ const MyVideoListPage: React.FC = () => {
         type="form"
         header="Delete Video"
         footer="DELETE"
-        loading={loading}
+        loading={deleteLoading}
         invalid
         disabled={!formState.isValid}
         onConfirm={deleteHandler}
@@ -94,7 +91,7 @@ const MyVideoListPage: React.FC = () => {
           gap: '1rem',
         }}
       >
-        <Reload onReload={fetchVideos} />
+        <Reload onReload={() => reload()} />
         <UploadButton />
       </div>
       <LoadingSpinner on={loading} />

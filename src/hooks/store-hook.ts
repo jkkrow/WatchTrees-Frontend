@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useNavigationType } from 'react-router-dom';
 import { Action } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -15,7 +16,9 @@ export const useAppDispatch = () =>
 
 export const useAppThunk = <T = any>(
   initialData?: T,
-  options: { errorMessage?: boolean | string } = { errorMessage: true }
+  options: { errorMessage?: boolean | string; forceUpdate?: boolean } = {
+    errorMessage: true,
+  }
 ) => {
   const [data, setData] = useState(initialData as NonUndefined<T>);
   const [loading, setLoading] = useState(false);
@@ -23,6 +26,10 @@ export const useAppThunk = <T = any>(
   const [error, setError] = useState<string | null>(null);
 
   const isUnmounted = useRef(false);
+  const optionsRef = useRef(options);
+  const reload = useRef<ReturnType<AppThunk>>();
+  const type = useNavigationType();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     return () => {
@@ -30,14 +37,22 @@ export const useAppThunk = <T = any>(
     };
   }, []);
 
-  const dispatch = useAppDispatch();
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
 
   const dispatchThunk = useCallback(
-    async (thunk: AppThunk) => {
+    async (thunk: AppThunk, retry = false) => {
+      const { errorMessage, forceUpdate } = optionsRef.current;
       try {
         setLoading(true);
 
-        const data = await dispatch(thunk);
+        reload.current = async () => await dispatchThunk(thunk, true);
+
+        const data = await dispatch((dispatch, getState, api) => {
+          const client = dispatch(api(retry || forceUpdate || type !== 'POP'));
+          return thunk(dispatch, getState, () => () => client);
+        });
 
         if (isUnmounted.current) {
           return;
@@ -51,11 +66,9 @@ export const useAppThunk = <T = any>(
         setLoaded(true);
         setError((err as Error).message);
 
-        if (options.errorMessage) {
+        if (errorMessage) {
           const msg =
-            typeof options.errorMessage === 'string'
-              ? `: ${options.errorMessage}`
-              : '';
+            typeof errorMessage === 'string' ? `: ${errorMessage}` : '';
 
           dispatch(
             uiActions.setMessage({
@@ -68,8 +81,16 @@ export const useAppThunk = <T = any>(
         throw err;
       }
     },
-    [dispatch, options.errorMessage]
+    [dispatch, type]
   );
 
-  return { dispatchThunk, setData, data, loading, loaded, error };
+  return {
+    dispatchThunk,
+    setData,
+    reload: reload.current,
+    data,
+    loading,
+    loaded,
+    error,
+  };
 };
