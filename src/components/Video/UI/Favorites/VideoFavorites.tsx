@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
 import { ReactComponent as FavoriteActiveIcon } from 'assets/icons/favorite-active.svg';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';

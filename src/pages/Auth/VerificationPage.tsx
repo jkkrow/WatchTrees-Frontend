@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import Response from 'components/Common/UI/Response/Response';
-import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useAppThunk } from 'hooks/store-hook';
 import { checkVerification } from 'store/thunks/auth-thunk';
 import 'styles/auth.scss';

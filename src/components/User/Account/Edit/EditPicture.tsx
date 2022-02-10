@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 
 import Button from 'components/Common/Element/Button/Button';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
-import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
+import DragDrop from 'components/Upload/DragDrop/DragDrop';
 import { ReactComponent as ChangeIcon } from 'assets/icons/reload.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
@@ -53,10 +53,12 @@ const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
         </DragDrop>
         <div className="edit-picture__controls">
           <ChangeIcon
+            className="btn"
             style={{ width: '2rem', height: '2rem' }}
             onClick={() => dragDropRef.current?.click()}
           />
           <RemoveIcon
+            className="btn"
             style={{ width: '3rem', height: '3rem' }}
             onClick={removePictureHandler}
           />

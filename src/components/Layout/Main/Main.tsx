@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useAppSelector } from 'hooks/store-hook';
 import './Main.scss';
 

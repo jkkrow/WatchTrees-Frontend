@@ -4,7 +4,7 @@ import MyVideoList from 'components/Video/User/List/MyVideoList';
 import UploadButton from 'components/Upload/Button/UploadButton';
 import Reload from 'components/Common/UI/Reload/Reload';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
-import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Modal from 'components/Layout/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';

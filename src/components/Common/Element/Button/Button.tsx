@@ -1,4 +1,4 @@
-import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import './Button.scss';
 
 interface ButtonProps {

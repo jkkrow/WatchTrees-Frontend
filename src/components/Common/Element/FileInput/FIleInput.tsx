@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
+import DragDrop from 'components/Upload/DragDrop/DragDrop';
 import Modal from 'components/Layout/Modal/Modal';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import './FileInput.scss';

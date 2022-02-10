@@ -20,7 +20,7 @@ const AccountDashboard: React.FC = () => {
           <div className="account-profile__picture">
             <Avatar width="5rem" height="5rem" src={userData!.picture} />
             <EditIcon
-              className="account-profile__edit"
+              className="account-profile__edit btn"
               onClick={() => setEditMode('picture')}
             />
           </div>
@@ -28,7 +28,7 @@ const AccountDashboard: React.FC = () => {
             <div data-label="Name">
               {userData!.name}
               <EditIcon
-                className="account-profile__edit"
+                className="account-profile__edit btn"
                 onClick={() => setEditMode('name')}
               />
             </div>
@@ -37,7 +37,7 @@ const AccountDashboard: React.FC = () => {
               <div data-label="Password">
                 ********
                 <EditIcon
-                  className="account-profile__edit"
+                  className="account-profile__edit btn"
                   onClick={() => setEditMode('password')}
                 />
               </div>

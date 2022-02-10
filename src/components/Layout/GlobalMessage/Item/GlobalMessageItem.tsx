@@ -53,7 +53,7 @@ const GlobalMessageItem: React.FC<GlobalMessageItemProps> = ({ message }) => {
       >
         <div className="global-message-item__body">
           <div className="global-message-item__content">{message.content}</div>
-          <RemoveIcon onClick={closeMessageHandler} />
+          <RemoveIcon className="btn" onClick={closeMessageHandler} />
         </div>
         {message.timer && (
           <div

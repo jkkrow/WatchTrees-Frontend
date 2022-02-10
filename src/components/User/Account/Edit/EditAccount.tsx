@@ -12,7 +12,7 @@ interface EditAccountProps {
 const EditAccount: React.FC<EditAccountProps> = ({ type, onEdit }) => {
   return (
     <div className="edit-account">
-      <AngleLeftIcon className="edit-account__cancel" onClick={onEdit} />
+      <AngleLeftIcon className="edit-account__cancel btn" onClick={onEdit} />
       {type === 'name' && <EditName onSuccess={onEdit} />}
       {type === 'password' && <EditPassword onSuccess={onEdit} />}
       {type === 'picture' && <EditPicture onSuccess={onEdit} />}

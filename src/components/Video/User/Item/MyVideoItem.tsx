@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 
-import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import VideoThumbnail from 'components/Video/UI/Thumbnail/VideoThumbnail';
 import VideoViews from 'components/Video/UI/Views/VideoViews';
 import VideoFavorites from 'components/Video/UI/Favorites/VideoFavorites';

@@ -1,7 +1,7 @@
 import Content from './Body/Content';
 import Controls from './Body/Controls';
 import Error from './Body/Error';
-import DragDrop from 'components/Common/UI/DragDrop/DragDrop';
+import DragDrop from 'components/Upload/DragDrop/DragDrop';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { VideoNode } from 'store/slices/video-slice';
 import { uploadVideo } from 'store/thunks/upload-thunk';
