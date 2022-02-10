@@ -1,11 +1,11 @@
 import './ChannelLoader.scss';
 
 interface ChannelLoaderProps {
-  on: boolean;
+  on?: boolean;
   column?: boolean;
 }
 
-const ChannelLoader: React.FC<ChannelLoaderProps> = ({ on, column }) => {
+const ChannelLoader: React.FC<ChannelLoaderProps> = ({ on = true, column }) => {
   return on ? (
     <div className={`channel-loader${column ? ' column' : ''}`}>
       <div className="channel-loader__avatar" />

@@ -1,8 +1,7 @@
-.video-list {
-  &__container,
-  &__loader {
+.channel-list {
+  &__container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
     justify-content: center;
     align-items: center;
     gap: 2rem;
@@ -29,12 +28,5 @@
     font-size: 2rem;
     font-weight: 600;
     text-align: center;
-  }
-
-  @media (max-width: 677px) {
-    &__container,
-    &__loader {
-      grid-template-columns: repeat(2, 1fr);
-    }
   }
 }

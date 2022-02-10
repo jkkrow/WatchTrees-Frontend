@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import ChannelInfo from '../Info/ChannelInfo';
+import ChannelItem from '../Item/ChannelItem';
 import { useAppThunk } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
-import { fetchChannelInfo } from 'store/thunks/user-thunk';
+import { fetchChannel } from 'store/thunks/user-thunk';
 import './ChannelHeader.scss';
 
 const ChannelHeader: React.FC = () => {
@@ -14,12 +14,12 @@ const ChannelHeader: React.FC = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    dispatchThunk(fetchChannelInfo(id!));
+    dispatchThunk(fetchChannel(id!));
   }, [dispatchThunk, id]);
 
   return (
     <div className={`channel-header${!loaded ? ' loading' : ''}`}>
-      <ChannelInfo data={data} loading={loading} />
+      <ChannelItem data={data} loading={loading} />
     </div>
   );
 };

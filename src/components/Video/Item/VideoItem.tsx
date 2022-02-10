@@ -7,7 +7,7 @@ import VideoDuration from '../UI/Duration/VideoDuration';
 import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import VideoDropdown from '../UI/Dropdown/VideoDropdown';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
-import LoadingSpinner from 'components/Common/UI/Loader/LoadingSpinner';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';

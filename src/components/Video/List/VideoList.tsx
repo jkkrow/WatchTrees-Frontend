@@ -2,7 +2,8 @@ import { useCallback, useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import VideoItem from '../Item/VideoItem';
-import VideoLoaderList from '../Loader/List/VideoLoaderList';
+import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
+import VideoLoader from '../Loader/VideoLoader';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useSearch } from 'hooks/search-hook';
@@ -58,14 +59,19 @@ const VideoList: React.FC<VideoListProps> = ({
   );
 
   return (
-    <div className="video-list__container">
+    <div className="video-list">
       {label && (loading || data.videos.length > 0) && (
         <h3 className={`video-list__label${loading ? ' loading' : ''}`}>
           {label}
         </h3>
       )}
-      <VideoLoaderList loading={loading} rows={3} />
-      <div className="video-list">
+      <LoaderList
+        className="video-list__loader"
+        loading={loading}
+        loader={<VideoLoader detail />}
+        rows={3}
+      />
+      <div className="video-list__container">
         {!loading &&
           data.videos.length > 0 &&
           data.videos.map((item) => (
@@ -78,7 +84,7 @@ const VideoList: React.FC<VideoListProps> = ({
           ))}
       </div>
       {!loading && loaded && !data.videos.length && (
-        <div className="video-list__empty">No video found</div>
+        <div className="video-list__empty">No {label || 'video found'}</div>
       )}
       {!loading && (
         <Pagination

@@ -3,7 +3,7 @@ import { Navigation, Pagination, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import VideoThumbnail from '../../UI/Thumbnail/VideoThumbnail';
-import VideoLoaderItem from 'components/Video/Loader/Item/VideoLoaderItem';
+import VideoLoader from 'components/Video/Loader/VideoLoader';
 import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
@@ -31,7 +31,7 @@ const VideoCarousel: React.FC = () => {
 
   return (
     <div className="video-carousel">
-      <VideoLoaderItem on={loading} />
+      <VideoLoader on={loading} />
       {!loading && data.videos.length > 0 && (
         <Swiper
           modules={[Navigation, Pagination, Autoplay]}

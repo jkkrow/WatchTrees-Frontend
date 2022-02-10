@@ -4,7 +4,8 @@ import { Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import VideoItem from 'components/Video/Item/VideoItem';
-import VideoLoaderList from 'components/Video/Loader/List/VideoLoaderList';
+import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
+import VideoLoader from 'components/Video/Loader/VideoLoader';
 import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
@@ -67,7 +68,11 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
             {to ? <Link to={to}>{label}</Link> : { label }}
           </h3>
         ))}
-      <VideoLoaderList loading={loading} />
+      <LoaderList
+        className="video-group__loader"
+        loading={loading}
+        loader={<VideoLoader detail />}
+      />
       {!loading && data.videos.length > 0 && (
         <Swiper
           modules={[Navigation]}
