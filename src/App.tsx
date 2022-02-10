@@ -24,6 +24,8 @@ const MyVideoListPage = lazy(() => import('pages/Video/MyVideoListPage'));
 const UploadPage = lazy(() => import('pages/Upload/UploadPage'));
 const LoginPage = lazy(() => import('pages/Auth/LoginPage'));
 const AccountPage = lazy(() => import('pages/User/AccountPage'));
+const SubscribesPage = lazy(() => import('pages/User/SubscribesPage'));
+const SubscribersPage = lazy(() => import('pages/User/SubscribersPage'));
 const VerificationPage = lazy(() => import('pages/Auth/VerificationPage'));
 const SendRecoveryPage = lazy(() => import('pages/Auth/SendRecoveryPage'));
 const ResetPasswordPage = lazy(() => import('pages/Auth/ResetPasswordPage'));
@@ -67,6 +69,8 @@ const App: React.FC = () => {
           <Route element={<RequireAuth />}>
             <Route path="user/account" element={<AccountPage />} />
             <Route path="user/videos" element={<MyVideoListPage />} />
+            <Route path="user/subscribes" element={<SubscribesPage />} />
+            <Route path="user/subscribers" element={<SubscribersPage />} />
             <Route path="user/favorites" element={<FavoritesPage />} />
             <Route path="upload" element={<UploadPage />} />
             <Route path="upload/:id" element={<UploadPage />} />

@@ -73,7 +73,7 @@ export const updateUserPicture = (file: File | null): AppThunk => {
   };
 };
 
-export const fetchChannelInfo = (userId: string): AppThunk => {
+export const fetchChannel = (userId: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData;
     const currentUserId = userData ? userData._id : '';
@@ -83,21 +83,45 @@ export const fetchChannelInfo = (userId: string): AppThunk => {
       params: { currentUserId },
     });
 
-    const { channelInfo } = response.data;
+    const { channel } = response.data;
 
-    return channelInfo;
+    return channel;
   };
 };
 
-export const fetchSubscribes = (params: any): AppThunk => {
+export const fetchChannels = (params?: any): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const response = await client.get('/users/channel', { params });
+
+    const { channels, count } = response.data;
+
+    return { channels, count };
+  };
+};
+
+export const fetchSubscribes = (params?: any): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     const response = await client.get('/users/subscribes', { params });
 
-    const { subscribes } = response.data;
+    const { channels, count } = response.data;
 
-    return subscribes;
+    return { channels, count };
+  };
+};
+
+export const fetchSubscribers = (params?: any): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const response = await client.get('/users/subscribers', { params });
+
+    const { channels, count } = response.data;
+
+    return { channels, count };
   };
 };
 

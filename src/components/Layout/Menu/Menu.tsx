@@ -6,6 +6,7 @@ import Backdrop from 'components/Layout/Backdrop/Backdrop';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import { ReactComponent as UserIcon } from 'assets/icons/user.svg';
 import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
+import { ReactComponent as SubscribeUsersIcon } from 'assets/icons/subscribe-users.svg';
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
 import { ReactComponent as TimeIcon } from 'assets/icons/time.svg';
 import { ReactComponent as SigninIcon } from 'assets/icons/signin.svg';
@@ -75,6 +76,24 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
                   >
                     <VideoIcon />
                     My Videos
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className={({ isActive }) => (isActive ? ' active' : '')}
+                    to="/user/subscribers"
+                  >
+                    <SubscribeUsersIcon />
+                    Subscribers
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    className={({ isActive }) => (isActive ? ' active' : '')}
+                    to="/user/subscribes"
+                  >
+                    <SubscribeUsersIcon />
+                    Subscribes
                   </NavLink>
                 </li>
                 <li>
