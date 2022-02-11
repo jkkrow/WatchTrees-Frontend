@@ -9,7 +9,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba($color: $vp-bg, $alpha: 0.5);
+  background-color: rgba($vp-bg, 0.5);
   z-index: 30;
 
   div {

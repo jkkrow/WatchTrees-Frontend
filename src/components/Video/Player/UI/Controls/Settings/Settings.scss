@@ -16,7 +16,7 @@
     width: clamp(25rem, 30%, 40rem);
     overflow: hidden;
     transition: opacity 200ms ease-out, height 300ms ease-out;
-    background-color: rgba($color: $vp-bg, $alpha: 0.8);
+    background-color: rgba($vp-bg, 0.8);
 
     &__menu {
       position: absolute;
@@ -40,7 +40,7 @@
       transition: background-color 200ms;
 
       &:hover {
-        background-color: rgba($color: #333333, $alpha: 0.8);
+        background-color: rgba($vp-bg--tertiary, 0.8);
       }
     }
 

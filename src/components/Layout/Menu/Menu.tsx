@@ -4,6 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 
 import Backdrop from 'components/Layout/Backdrop/Backdrop';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
+import Theme from '../Theme/Theme';
 import { ReactComponent as UserIcon } from 'assets/icons/user.svg';
 import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
 import { ReactComponent as SubscribeUsersIcon } from 'assets/icons/subscribe-users.svg';
@@ -131,6 +132,9 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
                   Signin
                 </NavLink>
               )}
+            </li>
+            <li>
+              <Theme />
             </li>
           </ul>
         </div>

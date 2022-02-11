@@ -1,0 +1,37 @@
+.toggle {
+  display: flex;
+  font-weight: 600;
+  gap: 1rem;
+
+  label {
+    display: flex;
+  }
+
+  &__container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 6rem;
+    height: 3rem;
+    cursor: pointer;
+    border-radius: 100px;
+    background-color: var(--bg-secondary);
+  }
+
+  &__button {
+    position: absolute;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 100px;
+    background-color: var(--bg-inversed);
+    transform: translateX(-50%);
+    transition: transform 300ms ease-out;
+  }
+
+  input:checked ~ div {
+    div {
+      transform: translateX(50%);
+    }
+  }
+}

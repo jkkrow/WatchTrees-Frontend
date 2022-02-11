@@ -13,7 +13,7 @@
   width: 4rem;
   height: 6rem;
   background-color: transparent;
-  color: var(--text-primary);
+  color: hsl(0, 0%, 90%);
   opacity: 0;
   transition: background-color 200ms ease-out, opacity 200ms ease-out;
 
@@ -23,7 +23,7 @@
   }
 
   &:hover {
-    background-color: rgba($color: #000000, $alpha: 0.5);
+    background-color: rgba(hsl(0, 0%, 0%), 0.5);
   }
 
   &.swiper-button-disabled {
@@ -50,7 +50,7 @@
 .swiper-pagination-bullet {
   width: 1.2rem;
   height: 1.2rem;
-  background-color: var(--bg-inversed);
+  background-color: var(--bg-secondary);
   opacity: 1;
   transition: opacity 200ms ease-out;
 
@@ -60,5 +60,5 @@
 }
 
 .swiper-pagination-bullet-active {
-  background-color: var(--bg-secondary);
+  background-color: hsl(0, 0%, 90%);
 }

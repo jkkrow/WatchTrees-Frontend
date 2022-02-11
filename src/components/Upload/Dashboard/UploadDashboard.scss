@@ -52,7 +52,7 @@
           bottom: 0;
           left: 0;
           right: 0;
-          background-color: rgba(0, 0, 0, 0.7);
+          background-color: hsla(0, 0%, 0%, 0.7);
           opacity: 0;
           transition: opacity 200ms ease-out;
         }
@@ -69,8 +69,9 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        color: hsl(0, 0%, 90%);
         opacity: 0;
+        transform: translate(-50%, -50%);
         transition: opacity 200ms ease-out;
       }
     }

@@ -5,6 +5,9 @@
 
     &.loading {
       width: 45%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       border-radius: 5px;
       color: transparent;
       background-color: var(--bg-secondary);

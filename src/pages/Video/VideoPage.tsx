@@ -9,6 +9,7 @@ import VideoDuration from 'components/Video/UI/Duration/VideoDuration';
 import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Loader from 'components/Video/Player/UI/Loader/Loader';
+import { useTheme } from 'hooks/theme-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideo } from 'store/thunks/video-thunk';
@@ -20,6 +21,8 @@ const VideoPage: React.FC = () => {
   );
 
   const { id } = useParams();
+
+  useTheme('dark');
 
   useEffect(() => {
     dispatchThunk(fetchVideo(id!));
@@ -56,7 +59,9 @@ const VideoPage: React.FC = () => {
             <Avatar src={data.info.creatorInfo.picture} />
             <h3>{data.info.creatorInfo.name}</h3>
           </Link>
-          <VideoTags tags={data.info.tags} />
+          <div className="video-page__tags">
+            <VideoTags tags={data.info.tags} />
+          </div>
           <div className="video-page__detail">
             <VideoViews video={data} />
             <VideoDuration

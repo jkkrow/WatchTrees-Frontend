@@ -9,13 +9,19 @@
     width: 100%;
     background-image: linear-gradient(
       110deg,
-      var(--bg-secondary) 8%,
-      #464646 18%,
-      var(--bg-secondary) 33%
+      var(--bg-secondary) 15%,
+      var(--bg-secondary-high-opacity) 25%,
+      var(--bg-secondary) 35%
     );
     background-size: 200% 100%;
     animation: loading-card 1.5s linear infinite;
     aspect-ratio: 16/9;
+
+    @keyframes loading-card {
+      to {
+        background-position-x: -200%;
+      }
+    }
   }
 
   &__info {
@@ -56,11 +62,5 @@
     height: 1rem;
     border-radius: 5px;
     background-color: var(--bg-secondary);
-  }
-}
-
-@keyframes loading-card {
-  to {
-    background-position-x: -200%;
   }
 }

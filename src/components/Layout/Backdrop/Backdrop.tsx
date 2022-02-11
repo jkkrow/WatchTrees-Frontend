@@ -25,8 +25,8 @@ const Backdrop: React.FC<BackdropProps> = ({
       unmountOnExit
     >
       <div
-        className={`backdrop ${className}`}
-        style={{ backgroundColor: `rgba(0, 0, 0, ${opacity})` }}
+        className={`backdrop${className ? ` ${className}` : ''}`}
+        style={{ backgroundColor: `hsla(0, 0%, 0%, ${opacity})` }}
         onClick={onClick}
       />
     </CSSTransition>,

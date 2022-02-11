@@ -38,17 +38,17 @@
   &__btn {
     width: 40%;
     height: clamp(4rem, 30%, 10rem);
-    border: 1px solid #333333;
+    border: 1px solid $vp-bg--tertiary;
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
     font-size: clamp(1.2rem, 1vw, 1.7rem);
     color: $vp-text;
-    background-color: rgba($color: $vp-bg, $alpha: 0.8);
+    background-color: rgba($vp-bg, 0.8);
     transition: all 200ms ease-out;
 
     &:hover {
-      background-color: #333333;
+      background-color: $vp-bg--tertiary;
     }
   }
 

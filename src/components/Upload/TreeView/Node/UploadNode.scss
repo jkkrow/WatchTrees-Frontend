@@ -15,6 +15,14 @@
     font-weight: 500;
     border-radius: 10px;
 
+    &.layer-even {
+      background-color: var(--bg-tertiary);
+    }
+
+    &.layer-odd {
+      background-color: var(--bg-secondary);
+    }
+
     > svg {
       position: absolute;
     }
@@ -144,7 +152,7 @@
     gap: 2rem;
     border-radius: 10px;
     font-size: 1.7rem;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: hsla(0, 0%, 0%, 0.7);
     z-index: 1;
 
     &__message {
@@ -160,5 +168,9 @@
       width: 4rem;
       height: 4rem;
     }
+  }
+
+  &__error__message {
+    color: var(--text-invalid);
   }
 }

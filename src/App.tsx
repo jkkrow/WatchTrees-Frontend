@@ -17,6 +17,7 @@ import {
   useAuthWatcher,
   useUploadWatcher,
 } from 'hooks/watch-hook';
+import { useTheme } from 'hooks/theme-hook';
 import { setAuthOnload } from 'store/thunks/auth-thunk';
 import 'styles/index.scss';
 
@@ -41,6 +42,7 @@ const App: React.FC = () => {
   useStorageWatcher('userData', userData);
   useAuthWatcher();
   useUploadWatcher();
+  useTheme();
 
   useEffect(() => {
     dispatch(setAuthOnload());

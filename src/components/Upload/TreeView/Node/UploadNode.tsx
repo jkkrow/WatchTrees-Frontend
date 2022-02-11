@@ -29,11 +29,9 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, rootId }) => {
       {(currentNode.id === activeNodeId ||
         currentNode.prevId === activeNodeId) && (
         <div
-          className="upload-node__body"
-          style={{
-            backgroundColor:
-              currentNode.layer % 2 === 0 ? '#242424' : '#424242',
-          }}
+          className={`upload-node__body${
+            currentNode.layer % 2 === 0 ? ' layer-even' : ' layer-odd'
+          }`}
         >
           <Controls currentNode={currentNode} rootId={rootId} />
           {currentNode.info ? (

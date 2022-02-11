@@ -15,10 +15,7 @@
     bottom: 75%;
     left: -1px;
     right: -1px;
-    background-image: linear-gradient(
-      rgba($color: $vp-bg, $alpha: 0.7),
-      transparent
-    );
+    background-image: linear-gradient(rgba($vp-bg, 0.7), transparent);
     transition: opacity 300ms ease-out;
     z-index: 15;
 
@@ -117,7 +114,7 @@
       background-image: linear-gradient(
         to left,
         transparent,
-        rgba($color: $vp-bg, $alpha: 0.7)
+        rgba($vp-bg, 0.7)
       );
     }
 
@@ -127,7 +124,7 @@
       background-image: linear-gradient(
         to right,
         transparent,
-        rgba($color: $vp-bg, $alpha: 0.7)
+        rgba($vp-bg, 0.7)
       );
     }
 

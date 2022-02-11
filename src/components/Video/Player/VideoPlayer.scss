@@ -1,9 +1,10 @@
-$vp-bg: #121212;
-$vp-bg--secondary: #858585;
-$vp-text: #ffffff;
-$vp-accent--primary: #cc131d;
-$vp-accent--secondary: #6d0400;
-$vp-range--selection-time: #ff8800;
+$vp-bg: hsl(0, 0%, 7%);
+$vp-bg--secondary: hsl(0, 0%, 52%);
+$vp-bg--tertiary: hsl(0, 0%, 20%);
+$vp-text: hsl(0, 0%, 100%);
+$vp-accent--primary: hsl(357, 83%, 44%);
+$vp-accent--secondary: hsl(2, 100%, 21%);
+$vp-range--selection-time: hsl(32, 100%, 50%);
 
 @mixin vp-range($color) {
   position: relative;
@@ -93,6 +94,7 @@ $vp-range--selection-time: #ff8800;
   justify-content: center;
   width: 100%;
   height: 100%;
+  color: $vp-text;
   background-color: $vp-bg;
   outline: none;
 
@@ -114,6 +116,7 @@ $vp-range--selection-time: #ff8800;
   bottom: -1px;
   height: clamp(8rem, 30%, 15rem);
   padding-bottom: 1rem;
+  color: $vp-text;
   background-image: linear-gradient(transparent, $vp-bg);
   transition: all 300ms ease-out;
   z-index: 15;

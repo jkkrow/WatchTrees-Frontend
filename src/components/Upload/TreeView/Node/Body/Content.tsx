@@ -207,12 +207,11 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
                     return (
                       <CircleLoadingIcon
                         key={node.id}
-                        className="btn"
-                        style={
+                        className={`btn${
                           validateNodes(node, 'error', null, false)
-                            ? { fill: '#ff0000' }
-                            : undefined
-                        }
+                            ? ' invalid'
+                            : ''
+                        }`}
                         onClick={() => activeNodeHandler(node.id)}
                       />
                     );

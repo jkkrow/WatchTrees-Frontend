@@ -16,9 +16,8 @@
 
   &.invalid,
   &.invalid svg {
-    color: #ff0000;
-    border-color: #ff0000;
-    fill: #ff0000;
+    color: var(--text-invalid);
+    border-color: var(--text-invalid);
   }
 
   &.dragging {
