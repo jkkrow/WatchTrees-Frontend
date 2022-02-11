@@ -7,6 +7,7 @@ import VideoDuration from '../UI/Duration/VideoDuration';
 import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import VideoDropdown from '../UI/Dropdown/VideoDropdown';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
+import Card from 'components/Common/UI/Card/Card';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
@@ -31,7 +32,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
   };
 
   return (
-    <div className="video-item">
+    <Card className="video-item">
       <LoadingSpinner on={loading} overlay />
       <div className="video-item__thumbnail">
         <VideoThumbnail video={video} />
@@ -81,7 +82,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 

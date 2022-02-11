@@ -1,3 +1,9 @@
+.theme-light .video-group {
+  .card {
+    box-shadow: none;
+  }
+}
+
 .video-group {
   &__label {
     width: fit-content;
@@ -18,6 +24,7 @@
     }
   }
 
+  &__slider,
   &__loader {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));

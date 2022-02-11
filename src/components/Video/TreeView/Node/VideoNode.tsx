@@ -63,7 +63,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
             key={currentVideo.id}
           >
             <p>Not Found</p>
-            <AngleLeftIcon onClick={returnHandler} />
+            <AngleLeftIcon className="btn" onClick={returnHandler} />
           </div>
         ))}
 

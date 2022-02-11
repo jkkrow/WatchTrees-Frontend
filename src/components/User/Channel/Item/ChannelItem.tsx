@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 
+import Card from 'components/Common/UI/Card/Card';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
 import ChannelLoader from '../Loader/ChannelLoader';
@@ -57,7 +58,7 @@ const ChannelItem: React.FC<ChannelItemProps> = ({ data, loading, button }) => {
   };
 
   return (
-    <div className="channel-item">
+    <Card className="channel-item">
       <ChannelLoader on={!!loading} />
       {detail && !loading && (
         <div className="channel-item__container">
@@ -105,7 +106,7 @@ const ChannelItem: React.FC<ChannelItemProps> = ({ data, loading, button }) => {
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 };
 

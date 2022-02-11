@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 
 import VideoThumbnail from '../../UI/Thumbnail/VideoThumbnail';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
+import Card from 'components/Common/UI/Card/Card';
 import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
@@ -33,24 +34,26 @@ const VideoCarousel: React.FC = () => {
     <div className="video-carousel">
       <VideoLoader on={loading} />
       {!loading && data.videos.length > 0 && (
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          pagination={{ clickable: true }}
-          autoplay={{
-            delay: 3000,
-            pauseOnMouseEnter: true,
-            disableOnInteraction: false,
-          }}
-          speed={700}
-          navigation
-          loop
-        >
-          {data.videos.map((video) => (
-            <SwiperSlide key={video._id}>
-              <VideoThumbnail video={video} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        <Card>
+          <Swiper
+            modules={[Navigation, Pagination, Autoplay]}
+            pagination={{ clickable: true }}
+            autoplay={{
+              delay: 3000,
+              pauseOnMouseEnter: true,
+              disableOnInteraction: false,
+            }}
+            speed={700}
+            navigation
+            loop
+          >
+            {data.videos.map((video) => (
+              <SwiperSlide key={video._id}>
+                <VideoThumbnail video={video} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </Card>
       )}
     </div>
   );

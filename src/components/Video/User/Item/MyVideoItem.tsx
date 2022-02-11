@@ -8,6 +8,7 @@ import VideoDuration from 'components/Video/UI/Duration/VideoDuration';
 import VideoStatus from 'components/Video/UI/Status/VideoStatus';
 import VideoTags from 'components/Video/UI/Tags/VideoTags';
 import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
+import Card from 'components/Common/UI/Card/Card';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
@@ -35,7 +36,7 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
   };
 
   return (
-    <li className="my-video-item">
+    <Card className="my-video-item">
       <LoadingSpinner on={loading} overlay />
       <div className="my-video-item__thumbnail">
         <VideoThumbnail video={item} />
@@ -80,7 +81,7 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
       {item.info.isEditing && (
         <div className="my-video-item__editing">EDITING</div>
       )}
-    </li>
+    </Card>
   );
 };
 

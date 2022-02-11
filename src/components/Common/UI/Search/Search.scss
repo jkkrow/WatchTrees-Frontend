@@ -1,37 +1,41 @@
+.theme-light .search {
+  input,
+  svg {
+    background-color: var(--bg-primary);
+    border-radius: 100px;
+  }
+}
+
 .search {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
 
   input {
-    position: absolute;
-    right: 0;
-    width: clamp(15rem, 30vw, 25rem);
-    padding: 1rem;
+    width: 4.5rem;
+    height: 4.5rem;
+    padding-left: 4.5rem;
     border: none;
-    border-bottom: 2px solid var(--text-primary);
     outline: none;
     color: var(--text-primary);
     background-color: transparent;
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 300ms ease-out;
+    transition: width 300ms ease-out;
 
     &:focus {
-      transform: scaleX(1);
-    }
-
-    &:focus ~ label {
-      transform: translateX(clamp(-25.5rem, -30vw, -15.5rem));
+      width: clamp(20rem, 35vw, 30rem);
     }
   }
 
   label {
+    position: absolute;
     display: flex;
-    margin-left: auto;
-    transform: translateX(0);
-    transition: transform 300ms ease-out;
+    left: 0;
+  }
+
+  svg {
+    width: 4.5rem;
+    height: 4.5rem;
+    padding: 1rem;
   }
 }

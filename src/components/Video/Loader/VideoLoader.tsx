@@ -1,3 +1,4 @@
+import Card from 'components/Common/UI/Card/Card';
 import './VideoLoader.scss';
 
 interface VideoLoaderProps {
@@ -7,7 +8,7 @@ interface VideoLoaderProps {
 
 const VideoLoader: React.FC<VideoLoaderProps> = ({ on = true, detail }) =>
   on ? (
-    <div className="video-loader">
+    <Card className="video-loader">
       <div className="video-loader__thumbnail" />
       {detail ? (
         <div className="video-loader__info">
@@ -18,7 +19,7 @@ const VideoLoader: React.FC<VideoLoaderProps> = ({ on = true, detail }) =>
           </div>
         </div>
       ) : null}
-    </div>
+    </Card>
   ) : null;
 
 export default VideoLoader;

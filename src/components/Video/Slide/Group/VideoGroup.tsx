@@ -16,8 +16,8 @@ import 'swiper/scss';
 import 'styles/swiper.scss';
 import './VideoGroup.scss';
 
-const INITIAL_WIDTH = 678;
-const ITEM_WIDTH = 320;
+const INITIAL_WIDTH = 674;
+const ITEM_WIDTH = 300;
 
 interface VideoGroupProps {
   max?: number;
@@ -75,6 +75,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
       />
       {!loading && data.videos.length > 0 && (
         <Swiper
+          className="video-group__slider"
           modules={[Navigation]}
           slidesPerView={2}
           slidesPerGroup={2}

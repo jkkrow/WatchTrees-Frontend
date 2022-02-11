@@ -49,7 +49,7 @@ const VideoDropdown: React.FC<VideoDropdownProps> = ({
         <CSSTransition
           in={isOpened}
           classNames="video-dropdown"
-          timeout={200}
+          timeout={300}
           mountOnEnter
           unmountOnExit
         >

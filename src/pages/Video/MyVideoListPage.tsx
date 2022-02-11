@@ -1,43 +1,29 @@
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import MyVideoList from 'components/Video/User/List/MyVideoList';
 import UploadButton from 'components/Upload/Button/UploadButton';
 import Reload from 'components/Common/UI/Reload/Reload';
-import Pagination from 'components/Common/UI/Pagination/Pagination';
-import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Modal from 'components/Layout/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
-import { usePaginate } from 'hooks/page-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { deleteVideo } from 'store/thunks/video-thunk';
-import { fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 import 'styles/user.scss';
+import { AppThunk } from 'store';
 
 const MyVideoListPage: React.FC = () => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
-  const { currentPage, itemsPerPage } = usePaginate(10);
-
   const { formState, setFormInput } = useForm({
     video: { value: '', isValid: false },
   });
 
-  const { dispatchThunk, reload, data, loading, loaded } = useAppThunk<{
-    videos: VideoTreeClient[];
-    count: number;
-  }>({
-    videos: [],
-    count: 0,
-  });
   const { dispatchThunk: deleteThunk, loading: deleteLoading } = useAppThunk();
 
-  useEffect(() => {
-    dispatchThunk(fetchCreated({ page: currentPage, max: itemsPerPage }));
-  }, [dispatchThunk, currentPage, itemsPerPage]);
+  const reloadRef = useRef<ReturnType<AppThunk> | null>(null);
 
   const openWarningHandler = (item: VideoTreeClient) => {
     setDisplayModal(true);
@@ -49,12 +35,20 @@ const MyVideoListPage: React.FC = () => {
     setTargetItem(null);
   };
 
+  const reloadHandler = () => {
+    reloadRef.current && reloadRef.current();
+  };
+
   const deleteHandler = async () => {
     if (!targetItem || !targetItem._id) return;
 
     await deleteThunk(deleteVideo(targetItem));
 
-    reload();
+    reloadHandler();
+  };
+
+  const fetchedHandler = (fn: ReturnType<AppThunk>) => {
+    reloadRef.current = fn;
   };
 
   return (
@@ -91,18 +85,10 @@ const MyVideoListPage: React.FC = () => {
           gap: '1rem',
         }}
       >
-        <Reload onReload={() => reload()} />
+        <Reload onReload={reloadHandler} />
         <UploadButton />
       </div>
-      <LoadingSpinner on={loading} />
-      {loaded && (
-        <MyVideoList items={data.videos} onDelete={openWarningHandler} />
-      )}
-      <Pagination
-        count={data.count}
-        currentPage={currentPage}
-        itemsPerPage={itemsPerPage}
-      />
+      <MyVideoList onDelete={openWarningHandler} onFetched={fetchedHandler} />
     </div>
   );
 };
