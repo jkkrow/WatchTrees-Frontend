@@ -54,14 +54,14 @@ const VideoDropdown: React.FC<VideoDropdownProps> = ({
           unmountOnExit
         >
           <ul className="video-dropdown__list">
+            <li className="video-dropdown__item" onClick={closeDropdownHandler}>
+              <AngleRightIcon />
+            </li>
             <li className="video-dropdown__item" onClick={dispatchHandler}>
               {id === 'history'
                 ? 'Remove from history'
                 : 'Remove from favorites'}
             </li>
-            <button onClick={closeDropdownHandler}>
-              <AngleRightIcon />
-            </button>
           </ul>
         </CSSTransition>
       </div>

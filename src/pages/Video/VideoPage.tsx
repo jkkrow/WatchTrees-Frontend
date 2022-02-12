@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
+import VideoCreator from 'components/Video/UI/Creator/VideoCreator';
 import VideoFavorites from 'components/Video/UI/Favorites/VideoFavorites';
 import VideoTags from 'components/Video/UI/Tags/VideoTags';
 import VideoViews from 'components/Video/UI/Views/VideoViews';
 import VideoDuration from 'components/Video/UI/Duration/VideoDuration';
 import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
-import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Loader from 'components/Video/Player/UI/Loader/Loader';
 import { useTheme } from 'hooks/theme-hook';
 import { useAppThunk } from 'hooks/store-hook';
@@ -52,13 +52,9 @@ const VideoPage: React.FC = () => {
               <VideoTimestamp createdAt={data.createdAt} />
             </div>
           </div>
-          <Link
-            to={`/channel/${data.info.creator}`}
-            className="video-page__creator"
-          >
-            <Avatar src={data.info.creatorInfo.picture} />
-            <h3>{data.info.creatorInfo.name}</h3>
-          </Link>
+          <div className="video-page__creator">
+            <VideoCreator info={data.info} />
+          </div>
           <div className="video-page__tags">
             <VideoTags tags={data.info.tags} />
           </div>

@@ -1,19 +1,23 @@
 .video-list {
+  max-width: 160rem;
+
   &__container,
   &__loader {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    padding: 1rem 0;
+    gap: 3rem 2rem;
   }
 
   &__label {
     width: fit-content;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     &.loading {
-      width: 45%;
+      width: 40%;
+      height: 3rem;
       border-radius: 5px;
       color: transparent;
       background-color: var(--bg-secondary);
@@ -31,7 +35,7 @@
     text-align: center;
   }
 
-  @media (max-width: 677px) {
+  @media (max-width: 1113px) {
     &__container,
     &__loader {
       grid-template-columns: repeat(2, 1fr);

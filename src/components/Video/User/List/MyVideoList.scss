@@ -5,7 +5,7 @@
     grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
     justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 3rem 2rem;
   }
 
   &__empty {
@@ -17,5 +17,12 @@
     font-size: 2rem;
     font-weight: 600;
     text-align: center;
+  }
+
+  @media (max-width: 1113px) {
+    &__container,
+    &__loader {
+      grid-template-columns: repeat((2, 1fr));
+    }
   }
 }

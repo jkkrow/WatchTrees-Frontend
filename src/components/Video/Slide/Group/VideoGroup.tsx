@@ -16,9 +16,6 @@ import 'swiper/scss';
 import 'styles/swiper.scss';
 import './VideoGroup.scss';
 
-const INITIAL_WIDTH = 674;
-const ITEM_WIDTH = 300;
-
 interface VideoGroupProps {
   max?: number;
   skipFullyWatched?: boolean;
@@ -80,11 +77,11 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
           slidesPerView={2}
           slidesPerGroup={2}
           breakpoints={{
-            [INITIAL_WIDTH + ITEM_WIDTH]: {
+            1114: {
               slidesPerView: 3,
               slidesPerGroup: 3,
             },
-            [INITIAL_WIDTH + ITEM_WIDTH * 2]: {
+            1374: {
               slidesPerView: 4,
               slidesPerGroup: 4,
             },

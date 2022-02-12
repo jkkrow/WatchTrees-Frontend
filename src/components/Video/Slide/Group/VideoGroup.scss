@@ -1,16 +1,11 @@
-.theme-light .video-group {
-  .card {
-    box-shadow: none;
-  }
-}
-
 .video-group {
   &__label {
     width: fit-content;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 
     &.loading {
-      width: 45%;
+      width: 40%;
+      height: 3rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -24,15 +19,26 @@
     }
   }
 
-  &__slider,
+  &__slider {
+    padding: 1rem 0;
+  }
+
   &__loader {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
     justify-content: center;
     align-items: center;
+    padding: 1rem 0;
     gap: 2rem;
+  }
 
-    @media (max-width: 677px) {
+  .video-item__title {
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+  }
+
+  @media (max-width: 1113px) {
+    &__loader {
       grid-template-columns: repeat(2, 1fr);
     }
   }
