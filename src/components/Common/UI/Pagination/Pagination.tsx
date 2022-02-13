@@ -41,8 +41,8 @@ const Pagination: React.FC<PaginationProps> = ({
     navigate(destinationUrl);
   };
 
-  return totalPage > 1 ? (
-    <div className="pagination">
+  return (
+    <div className={`pagination${totalPage <= 1 ? ' disabled' : ''}`}>
       <div onClick={() => pageHandler(1)}>
         <Button inversed>
           <AngleLeftDoubleIcon />
@@ -85,7 +85,7 @@ const Pagination: React.FC<PaginationProps> = ({
         </Button>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default Pagination;

@@ -1,12 +1,17 @@
 .pagination {
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: 4rem;
   gap: 1rem;
 
   button {
     width: initial;
     min-width: 3rem;
     padding: 0.5rem;
+  }
+
+  &.disabled {
+    visibility: hidden;
+    pointer-events: none;
   }
 }

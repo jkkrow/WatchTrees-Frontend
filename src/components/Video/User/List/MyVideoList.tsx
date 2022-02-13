@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import MyVideoItem from '../Item/MyVideoItem';
 import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useAppThunk } from 'hooks/store-hook';
@@ -25,7 +26,7 @@ const MyVideoList: React.FC<MyVideoListProps> = ({ onDelete, onFetched }) => {
     count: 0,
   });
 
-  const { currentPage, itemsPerPage } = usePaginate(10);
+  const { currentPage, itemsPerPage } = usePaginate(12);
 
   useEffect(() => {
     dispatchThunk(fetchCreated({ page: currentPage, max: itemsPerPage }));
@@ -39,12 +40,13 @@ const MyVideoList: React.FC<MyVideoListProps> = ({ onDelete, onFetched }) => {
     <div className="my-video-list">
       <LoaderList
         className="my-video-list__loader"
-        loading={loading}
+        loading={!loaded}
         loader={<VideoLoader detail />}
         rows={3}
       />
       <div className="my-video-list__container">
-        {!loading &&
+        <LoadingSpinner on={loaded && loading} overlay />
+        {loaded &&
           data.videos.length > 0 &&
           data.videos.map((item) => (
             <MyVideoItem key={item._id} item={item} onDelete={onDelete} />
@@ -53,7 +55,7 @@ const MyVideoList: React.FC<MyVideoListProps> = ({ onDelete, onFetched }) => {
       {!loading && loaded && !data.videos.length && (
         <div className="my-video-list__empty">No video found</div>
       )}
-      {!loading && (
+      {loaded && (
         <Pagination
           count={data.count}
           currentPage={currentPage}

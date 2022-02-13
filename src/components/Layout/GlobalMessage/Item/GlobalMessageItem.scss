@@ -2,6 +2,9 @@
   margin-left: auto;
   transform-origin: right;
   transition: all 300ms;
+  font-weight: 500;
+  color: var(--text-inversed);
+  background-color: var(--bg-tertiary);
 
   &__body {
     display: flex;
@@ -9,10 +12,6 @@
     align-items: center;
     padding: 1.5rem 2rem;
     gap: 1rem;
-  }
-
-  &__content {
-    flex-basis: 85%;
   }
 
   &__timer {
@@ -23,11 +22,16 @@
   }
 
   &.message {
-    background-color: var(--bg-success);
+    color: var(--text-success);
   }
 
   &.error {
-    background-color: var(--bg-invalid);
+    color: var(--text-invalid);
+  }
+
+  svg {
+    min-width: 2.5rem;
+    min-height: 2.5rem;
   }
 
   // CSS Transition

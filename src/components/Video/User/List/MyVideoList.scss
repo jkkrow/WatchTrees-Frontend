@@ -1,6 +1,7 @@
 .my-video-list {
   &__container,
   &__loader {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr));
     justify-content: center;

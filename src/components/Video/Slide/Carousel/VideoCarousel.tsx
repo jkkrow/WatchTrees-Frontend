@@ -18,7 +18,7 @@ import './VideoCarousel.scss';
 const CAROUSEL_VIDEOS_NUMBER = 5;
 
 const VideoCarousel: React.FC = () => {
-  const { dispatchThunk, data, loading } = useAppThunk<{
+  const { dispatchThunk, data, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({
@@ -32,8 +32,8 @@ const VideoCarousel: React.FC = () => {
 
   return (
     <div className="video-carousel">
-      <VideoLoader on={loading} />
-      {!loading && data.videos.length > 0 && (
+      <VideoLoader on={!loaded} />
+      {loaded && data.videos.length > 0 && (
         <Card>
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}

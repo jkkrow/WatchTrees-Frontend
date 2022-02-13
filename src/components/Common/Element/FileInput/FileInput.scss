@@ -25,10 +25,14 @@
     gap: 1rem;
 
     span {
-      flex-basis: 80%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    svg {
+      min-width: 2.5rem;
+      min-height: 2.5rem;
     }
   }
 }

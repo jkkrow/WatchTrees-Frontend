@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import ChannelItem from '../Item/ChannelItem';
 import ChannelLoader from '../Loader/ChannelLoader';
 import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
+import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
 import { useSearch } from 'hooks/search-hook';
@@ -19,7 +20,7 @@ interface ChannelListProps {
 
 const ChannelList: React.FC<ChannelListProps> = ({
   label,
-  max = 12,
+  max = 2,
   onFetch,
 }) => {
   const { dispatchThunk, data, loading, loaded } = useAppThunk<{
@@ -38,19 +39,20 @@ const ChannelList: React.FC<ChannelListProps> = ({
 
   return (
     <div className="channel-list">
-      {label && (loading || data.channels.length > 0) && (
-        <h3 className={`channel-list__label${loading ? ' loading' : ''}`}>
+      {label && (!loaded || data.channels.length > 0) && (
+        <h3 className={`channel-list__label${!loaded ? ' loading' : ''}`}>
           {label}
         </h3>
       )}
       <LoaderList
         className="channel-list__loader"
-        loading={loading}
+        loading={!loaded}
         loader={<ChannelLoader />}
         rows={3}
       />
       <div className="channel-list__container">
-        {!loading &&
+        <LoadingSpinner on={loaded && loading} overlay />
+        {loaded &&
           data.channels.length > 0 &&
           data.channels.map((item) => (
             <ChannelItem key={item._id} data={item} button />
@@ -59,7 +61,7 @@ const ChannelList: React.FC<ChannelListProps> = ({
       {!loading && loaded && !data.channels.length && (
         <div className="channel-list__empty">No {label || 'channel found'}</div>
       )}
-      {!loading && (
+      {loaded && (
         <Pagination
           count={data.count}
           currentPage={currentPage}

@@ -52,7 +52,7 @@ const MyVideoListPage: React.FC = () => {
   };
 
   return (
-    <div className="user-page">
+    <div className="videos-page">
       <Modal
         on={displayModal}
         type="form"

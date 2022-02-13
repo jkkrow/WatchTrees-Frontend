@@ -35,7 +35,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   forceUpdate,
   onFetch,
 }) => {
-  const { dispatchThunk, setData, data, loading } = useAppThunk<{
+  const { dispatchThunk, setData, data, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({ videos: [], count: 0 }, { forceUpdate });
@@ -57,8 +57,8 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   return (
     <div className="video-group">
       {label &&
-        (loading || data.videos.length > 0) &&
-        (loading ? (
+        (!loaded || data.videos.length > 0) &&
+        (!loaded ? (
           <h3 className="video-group__label loading">{label}</h3>
         ) : (
           <h3 className="video-group__label">
@@ -67,10 +67,10 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
         ))}
       <LoaderList
         className="video-group__loader"
-        loading={loading}
+        loading={!loaded}
         loader={<VideoLoader detail />}
       />
-      {!loading && data.videos.length > 0 && (
+      {!!loaded && data.videos.length > 0 && (
         <Swiper
           className="video-group__slider"
           modules={[Navigation]}

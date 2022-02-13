@@ -51,8 +51,8 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <Header />
+      <GlobalMessageList />
       <Main>
-        <GlobalMessageList />
         <Routes>
           <Route path="/" element={<VideoListPage />} />
           <Route path="video/:id" element={<VideoPage />} />
