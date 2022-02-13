@@ -20,7 +20,7 @@ interface ChannelListProps {
 
 const ChannelList: React.FC<ChannelListProps> = ({
   label,
-  max = 2,
+  max = 12,
   onFetch,
 }) => {
   const { dispatchThunk, data, loading, loaded } = useAppThunk<{
