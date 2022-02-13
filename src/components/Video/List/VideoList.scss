@@ -7,13 +7,12 @@
     grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
     justify-content: center;
     align-items: center;
-    padding: 1rem 0;
     gap: 3rem 2rem;
   }
 
   &__label {
     width: fit-content;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 
     &.loading {
       width: 40%;
