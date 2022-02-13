@@ -10,12 +10,12 @@
   top: 0;
   bottom: 0;
   right: 0;
-  width: 30rem;
+  width: 35rem;
   height: 100vh;
   background-color: var(--bg-primary);
   z-index: 110;
 
-  &__list {
+  &__container {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -23,27 +23,19 @@
     margin-top: 10rem;
     gap: 2rem;
     font-size: 1.7rem;
+  }
 
-    a {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .active {
-      opacity: 0.7;
-    }
-
-    li:last-child {
-      margin-top: auto;
-      margin-bottom: 2rem;
-    }
+  a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 
   &__user {
     display: flex;
     flex-direction: column;
     padding: 2rem;
+    gap: 2rem;
     border: 1px solid var(--text-secondary);
     border-radius: 5px;
 
@@ -57,6 +49,28 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    &__info {
+      display: flex;
+      gap: 2rem;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 0 2rem;
+    gap: 1.5rem;
+
+    .active {
+      opacity: 0.7;
+    }
+
+    li:last-child {
+      margin-top: auto;
+      margin-bottom: 2rem;
     }
   }
 
