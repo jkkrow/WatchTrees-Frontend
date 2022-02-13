@@ -184,7 +184,7 @@ a,
 }
 
 .disabled {
-  text: var(--text-disabled);
+  color: var(--text-disabled);
   cursor: not-allowed;
 
   &:hover {
@@ -193,5 +193,5 @@ a,
 }
 
 .invalid {
-  text: var(--text-invalid);
+  color: var(--text-invalid);
 }
