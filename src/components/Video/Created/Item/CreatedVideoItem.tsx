@@ -14,14 +14,17 @@ import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { continueUpload } from 'store/thunks/upload-thunk';
-import './MyVideoItem.scss';
+import './CreatedVideoItem.scss';
 
-interface MyVideoItemProps {
+interface CreatedVideoItemProps {
   item: VideoTreeClient;
   onDelete: (item: VideoTreeClient) => void;
 }
 
-const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
+const CreatedVideoItem: React.FC<CreatedVideoItemProps> = ({
+  item,
+  onDelete,
+}) => {
   const uploadTree = useAppSelector((state) => state.upload.uploadTree);
   const { dispatchThunk, loading } = useAppThunk();
 
@@ -36,29 +39,29 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
   };
 
   return (
-    <Card className="my-video-item">
+    <Card className="created-video-item">
       <LoadingSpinner on={loading} overlay />
-      <div className="my-video-item__thumbnail">
+      <div className="created-video-item__thumbnail">
         <VideoThumbnail video={item} />
       </div>
-      <div className="my-video-item__info">
-        <h3 className="my-video-item__title">{item.info.title || '_'}</h3>
-        <div className="my-video-item__tags">
+      <div className="created-video-item__info">
+        <h3 className="created-video-item__title">{item.info.title || '_'}</h3>
+        <div className="created-video-item__tags">
           <VideoTags tags={item.info.tags} />
         </div>
-        <div className="my-video-item__detail">
+        <div className="created-video-item__detail">
           <div>
-            <div className="my-video-item__status">
+            <div className="created-video-item__status">
               <VideoStatus status={item.info.status} brief />
             </div>
-            <div className="my-video-item__duration">
+            <div className="created-video-item__duration">
               <VideoDuration
                 minDuration={item.info.minDuration}
                 maxDuration={item.info.maxDuration}
                 brief
               />
             </div>
-            <div className="my-video-item__data">
+            <div className="created-video-item__data">
               <VideoViews video={item} brief />
               <VideoFavorites
                 videoId={item._id}
@@ -68,7 +71,7 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
           </div>
           <div>
             <VideoTimestamp createdAt={item.createdAt} timeSince={false} />
-            <div className="my-video-item__buttons">
+            <div className="created-video-item__buttons">
               <EditIcon
                 className="btn"
                 onClick={() => editHandler(item._id!)}
@@ -79,10 +82,10 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({ item, onDelete }) => {
         </div>
       </div>
       {item.info.isEditing && (
-        <div className="my-video-item__editing">EDITING</div>
+        <div className="created-video-item__editing">EDITING</div>
       )}
     </Card>
   );
 };
 
-export default MyVideoItem;
+export default CreatedVideoItem;

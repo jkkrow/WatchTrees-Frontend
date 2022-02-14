@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import MyVideoList from 'components/Video/User/List/MyVideoList';
+import CreatedVideoList from 'components/Video/Created/List/CreatedVideoList';
 import UploadButton from 'components/Upload/Button/UploadButton';
 import Reload from 'components/Common/UI/Reload/Reload';
 import Modal from 'components/Layout/Modal/Modal';
@@ -13,7 +13,7 @@ import { VALIDATOR_EQUAL } from 'util/validators';
 import 'styles/user.scss';
 import { AppThunk } from 'store';
 
-const MyVideoListPage: React.FC = () => {
+const CreatedVideoListPage: React.FC = () => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
@@ -88,9 +88,12 @@ const MyVideoListPage: React.FC = () => {
         <Reload onReload={reloadHandler} />
         <UploadButton />
       </div>
-      <MyVideoList onDelete={openWarningHandler} onFetched={fetchedHandler} />
+      <CreatedVideoList
+        onDelete={openWarningHandler}
+        onFetched={fetchedHandler}
+      />
     </div>
   );
 };
 
-export default MyVideoListPage;
+export default CreatedVideoListPage;

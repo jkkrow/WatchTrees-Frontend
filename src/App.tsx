@@ -2,7 +2,7 @@ import { useEffect, lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import VideoPage from 'pages/Video/VideoPage';
-import VideoListPage from 'pages/Video/VideoListPage';
+import VideosPage from 'pages/Video/VideosPage';
 import HistoryPage from 'pages/Video/HistoryPage';
 import ChannelPage from 'pages/Video/ChannelPage';
 
@@ -21,7 +21,7 @@ import {
 import { setAuthOnload } from 'store/thunks/auth-thunk';
 import 'styles/index.scss';
 
-const MyVideoListPage = lazy(() => import('pages/Video/MyVideoListPage'));
+const CreatedVideosPage = lazy(() => import('pages/Video/CreatedVideosPage'));
 const UploadPage = lazy(() => import('pages/Upload/UploadPage'));
 const LoginPage = lazy(() => import('pages/Auth/LoginPage'));
 const AccountPage = lazy(() => import('pages/User/AccountPage'));
@@ -59,7 +59,7 @@ const App: React.FC = () => {
       <GlobalMessageList />
       <Main>
         <Routes>
-          <Route path="/" element={<VideoListPage />} />
+          <Route path="/" element={<VideosPage />} />
           <Route path="video/:id" element={<VideoPageComponent />} />
           <Route path="channel/:id" element={<ChannelPage />} />
           <Route path="history" element={<HistoryPage />} />
@@ -75,7 +75,7 @@ const App: React.FC = () => {
           />
           <Route element={<AuthProvider />}>
             <Route path="user/account" element={<AccountPage />} />
-            <Route path="user/videos" element={<MyVideoListPage />} />
+            <Route path="user/videos" element={<CreatedVideosPage />} />
             <Route path="user/subscribes" element={<SubscribesPage />} />
             <Route path="user/subscribers" element={<SubscribersPage />} />
             <Route path="user/favorites" element={<FavoritesPage />} />

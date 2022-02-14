@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import MyVideoItem from '../Item/MyVideoItem';
+import MyVideoItem from '../Item/CreatedVideoItem';
 import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
@@ -10,14 +10,17 @@ import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchCreated } from 'store/thunks/video-thunk';
-import './MyVideoList.scss';
+import './CreatedVideoList.scss';
 
-interface MyVideoListProps {
+interface CreatedVideoListProps {
   onDelete: (item: VideoTreeClient) => void;
   onFetched: (fn: ReturnType<AppThunk>) => void;
 }
 
-const MyVideoList: React.FC<MyVideoListProps> = ({ onDelete, onFetched }) => {
+const CreatedVideoList: React.FC<CreatedVideoListProps> = ({
+  onDelete,
+  onFetched,
+}) => {
   const { dispatchThunk, reload, data, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
@@ -37,14 +40,14 @@ const MyVideoList: React.FC<MyVideoListProps> = ({ onDelete, onFetched }) => {
   }, [onFetched, reload]);
 
   return (
-    <div className="my-video-list">
+    <div className="created-video-list">
       <LoaderList
-        className="my-video-list__loader"
+        className="created-video-list__loader"
         loading={!loaded}
         loader={<VideoLoader detail />}
         rows={3}
       />
-      <div className="my-video-list__container">
+      <div className="created-video-list__container">
         <LoadingSpinner on={loaded && loading} overlay />
         {loaded &&
           data.videos.length > 0 &&
@@ -53,7 +56,7 @@ const MyVideoList: React.FC<MyVideoListProps> = ({ onDelete, onFetched }) => {
           ))}
       </div>
       {!loading && loaded && !data.videos.length && (
-        <div className="my-video-list__empty">No video found</div>
+        <div className="created-video-list__empty">No video found</div>
       )}
       {loaded && (
         <Pagination
@@ -66,4 +69,4 @@ const MyVideoList: React.FC<MyVideoListProps> = ({ onDelete, onFetched }) => {
   );
 };
 
-export default MyVideoList;
+export default CreatedVideoList;
