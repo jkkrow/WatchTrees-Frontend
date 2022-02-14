@@ -1,11 +1,10 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 
 import { useLocalStorage } from './storage-hook';
+import { Theme } from 'providers/ThemeProvider';
 
-type Theme = 'light' | 'dark';
-
-export const useTheme = (theme?: Theme): [Theme, (value: Theme) => void] => {
-  const [mode, setMode] = useLocalStorage('theme', 'light') as [
+export const useTheme = () => {
+  const [mode, setMode] = useLocalStorage('theme', 'dark') as [
     Theme,
     (value: Theme) => void
   ];
@@ -22,13 +21,5 @@ export const useTheme = (theme?: Theme): [Theme, (value: Theme) => void] => {
     [setMode, toggleClass]
   );
 
-  useEffect(() => {
-    toggleClass(theme || mode);
-
-    return () => {
-      toggleClass(mode);
-    };
-  }, [mode, toggleClass, theme]);
-
-  return [mode, setTheme];
+  return { theme: mode, setTheme, toggleClass };
 };

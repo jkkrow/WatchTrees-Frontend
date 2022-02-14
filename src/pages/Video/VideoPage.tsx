@@ -9,7 +9,6 @@ import VideoViews from 'components/Video/UI/Views/VideoViews';
 import VideoDuration from 'components/Video/UI/Duration/VideoDuration';
 import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import Loader from 'components/Video/Player/UI/Loader/Loader';
-import { useTheme } from 'hooks/theme-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideo } from 'store/thunks/video-thunk';
@@ -21,8 +20,6 @@ const VideoPage: React.FC = () => {
   );
 
   const { id } = useParams();
-
-  useTheme('dark');
 
   useEffect(() => {
     dispatchThunk(fetchVideo(id!));

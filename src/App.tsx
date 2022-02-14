@@ -10,14 +10,14 @@ import Header from 'components/Layout/Header/Header';
 import Main from 'components/Layout/Main/Main';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Layout/GlobalMessage/List/GlobalMessageList';
-import RequireAuth from 'service/RequireAuth';
+import ThemeProvider from 'providers/ThemeProvider';
+import AuthProvider from 'providers/AuthProvider';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import {
   useStorageWatcher,
   useAuthWatcher,
   useUploadWatcher,
 } from 'hooks/watch-hook';
-import { useTheme } from 'hooks/theme-hook';
 import { setAuthOnload } from 'store/thunks/auth-thunk';
 import 'styles/index.scss';
 
@@ -42,11 +42,16 @@ const App: React.FC = () => {
   useStorageWatcher('userData', userData);
   useAuthWatcher();
   useUploadWatcher();
-  useTheme();
 
   useEffect(() => {
     dispatch(setAuthOnload());
   }, [dispatch]);
+
+  const VideoPageComponent = () => (
+    <ThemeProvider mode="dark">
+      <VideoPage />
+    </ThemeProvider>
+  );
 
   return (
     <BrowserRouter>
@@ -55,7 +60,7 @@ const App: React.FC = () => {
       <Main>
         <Routes>
           <Route path="/" element={<VideoListPage />} />
-          <Route path="video/:id" element={<VideoPage />} />
+          <Route path="video/:id" element={<VideoPageComponent />} />
           <Route path="channel/:id" element={<ChannelPage />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="auth" element={<LoginPage />} />
@@ -68,7 +73,7 @@ const App: React.FC = () => {
             path="auth/reset-password/:token"
             element={<ResetPasswordPage />}
           />
-          <Route element={<RequireAuth />}>
+          <Route element={<AuthProvider />}>
             <Route path="user/account" element={<AccountPage />} />
             <Route path="user/videos" element={<MyVideoListPage />} />
             <Route path="user/subscribes" element={<SubscribesPage />} />
