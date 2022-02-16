@@ -215,7 +215,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           addToHistory({
             video: videoId,
             progress: {
-              activeVideoId: currentVideo.id,
+              activeVideoId: currentVideo._id,
               time: video.currentTime,
               isEnded: isEnded,
             },
@@ -228,7 +228,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
   }, [
     editMode,
-    currentVideo.id,
+    currentVideo._id,
     currentVideo.children,
     videoId,
     dispatch,
@@ -252,7 +252,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const history = {
       video: videoId,
       progress: {
-        activeVideoId: currentVideo.id,
+        activeVideoId: currentVideo._id,
         time: video.currentTime,
         isEnded: true,
       },
@@ -270,13 +270,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     if (firstValidChild) {
-      dispatch(videoActions.setActiveVideo(firstValidChild.id));
+      dispatch(videoActions.setActiveVideo(firstValidChild._id));
     }
   }, [
     dispatch,
     videoId,
     editMode,
-    currentVideo.id,
+    currentVideo._id,
     currentVideo.children,
     selectedNextVideoId,
   ]);
@@ -470,7 +470,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       if (!selectedVideo) return;
 
-      setSelectedNextVideoId(selectedVideo.id);
+      setSelectedNextVideoId(selectedVideo._id);
       setDisplaySelector(false);
     },
     [currentVideo.children]
@@ -516,22 +516,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    */
 
   const restartVideoTreeHandler = useCallback(() => {
-    if (!currentVideo.prevId) {
+    if (!currentVideo._prevId) {
       videoRef.current!.currentTime = 0;
       return;
     }
 
     dispatch(videoActions.setActiveVideo(rootId));
-  }, [dispatch, rootId, currentVideo.prevId]);
+  }, [dispatch, rootId, currentVideo._prevId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
-    if (!currentVideo.prevId) {
+    if (!currentVideo._prevId) {
       videoRef.current!.currentTime = 0;
       return;
     }
 
-    dispatch(videoActions.setActiveVideo(currentVideo.prevId));
-  }, [dispatch, currentVideo.prevId]);
+    dispatch(videoActions.setActiveVideo(currentVideo._prevId));
+  }, [dispatch, currentVideo._prevId]);
 
   const navigateToNextVideoHandler = useCallback(() => {
     const video = videoRef.current!;
@@ -554,7 +554,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     if (firstValidChild) {
-      dispatch(videoActions.setActiveVideo(firstValidChild.id));
+      dispatch(videoActions.setActiveVideo(firstValidChild._id));
     }
   }, [
     dispatch,
@@ -580,7 +580,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           info: {
             selectionTimeStart: +video.currentTime.toFixed(3),
           },
-          nodeId: currentVideo.id,
+          nodeId: currentVideo._id,
         })
       );
 
@@ -593,7 +593,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   ? +videoDuration.toFixed(3)
                   : +(video.currentTime + 10).toFixed(3),
             },
-            nodeId: currentVideo.id,
+            nodeId: currentVideo._id,
           })
         );
       }
@@ -604,7 +604,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           info: {
             selectionTimeEnd: +video.currentTime.toFixed(3),
           },
-          nodeId: currentVideo.id,
+          nodeId: currentVideo._id,
         })
       );
 
@@ -617,7 +617,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                   ? 0
                   : +(video.currentTime - 10).toFixed(3),
             },
-            nodeId: currentVideo.id,
+            nodeId: currentVideo._id,
           })
         );
       }
@@ -627,7 +627,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [
     dispatch,
     editMode,
-    currentVideo.id,
+    currentVideo._id,
     videoInfo,
     selectionTimeMarked,
     videoDuration,
@@ -830,7 +830,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       // Connect video to Shaka Player
       const player = new shaka.Player(video);
 
-      if (activeVideoId === currentVideo.id && initialProgress) {
+      if (activeVideoId === currentVideo._id && initialProgress) {
         startTime = initialProgress;
       }
 
@@ -844,7 +844,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     })();
   }, [
     dispatch,
-    currentVideo.id,
+    currentVideo._id,
     videoInfo.isConverted,
     videoInfo.url,
     activeVideoId,

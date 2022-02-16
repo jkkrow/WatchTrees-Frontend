@@ -14,8 +14,8 @@ export interface NodeInfo {
 }
 
 export interface VideoNode {
-  id: string;
-  prevId?: string;
+  _id: string;
+  _prevId?: string;
   layer: number;
   info: NodeInfo | null;
   children: VideoNode[];

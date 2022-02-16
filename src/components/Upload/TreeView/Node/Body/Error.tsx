@@ -12,7 +12,7 @@ const Error: React.FC<ErrorProps> = ({ currentNode, error }) => {
   const dispatch = useAppDispatch();
 
   const cancelHandler = () => {
-    dispatch(uploadActions.setNode({ info: null, nodeId: currentNode.id }));
+    dispatch(uploadActions.setNode({ info: null, nodeId: currentNode._id }));
   };
 
   return error ? (

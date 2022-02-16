@@ -78,7 +78,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
         if (node.info.name === file.name && node.info.size === file.size) {
           // match current node's prgress state and url
-          const previewUrl = findById(previewTree, node.id)!.info!.url;
+          const previewUrl = findById(previewTree, node._id)!.info!.url;
 
           dispatch(
             uploadActions.setNode({
@@ -105,7 +105,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
       const response = await client.post('/videos/upload/multipart', {
         videoId: uploadTree._id,
-        isRoot: nodeId === uploadTree.root.id,
+        isRoot: nodeId === uploadTree.root._id,
         fileName: file.name,
         fileType: file.type,
       });
@@ -131,7 +131,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
           if (!node.info) continue;
 
           if (node.info.name === file.name && node.info.size === file.size) {
-            duplicatedNodeIds.push(node.id);
+            duplicatedNodeIds.push(node._id);
           }
         }
 

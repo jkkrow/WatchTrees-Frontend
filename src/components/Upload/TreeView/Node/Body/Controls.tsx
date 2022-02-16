@@ -35,14 +35,14 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
     if (isNotEmpty && !warning) {
       setWarning(true);
     } else {
-      dispatch(uploadActions.removeNode({ nodeId: currentNode.id }));
+      dispatch(uploadActions.removeNode({ nodeId: currentNode._id }));
 
-      if (currentNode.id === activeNodeId) {
-        activeNodeHandler(currentNode.prevId!);
+      if (currentNode._id === activeNodeId) {
+        activeNodeHandler(currentNode._prevId!);
       }
 
-      if (currentNode.id === activeVideoId) {
-        activeVideoHandler(currentNode.prevId!);
+      if (currentNode._id === activeVideoId) {
+        activeVideoHandler(currentNode._prevId!);
       }
     }
   };
@@ -56,7 +56,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
       {warning && (
         <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />
       )}
-      {currentNode.id !== rootId && currentNode.id !== activeNodeId && (
+      {currentNode._id !== rootId && currentNode._id !== activeNodeId && (
         <RemoveIcon
           className="btn"
           style={{
@@ -69,8 +69,8 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
         />
       )}
       {!currentNode.info &&
-        currentNode.id !== rootId &&
-        currentNode.id === activeNodeId && (
+        currentNode._id !== rootId &&
+        currentNode._id === activeNodeId && (
           <div
             className="upload-node__navigation"
             style={{
@@ -86,7 +86,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
             />
             <AngleLeftIcon
               className="btn"
-              onClick={() => activeNodeHandler(currentNode.prevId!)}
+              onClick={() => activeNodeHandler(currentNode._prevId!)}
             />
           </div>
         )}

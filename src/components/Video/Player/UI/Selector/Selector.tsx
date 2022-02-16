@@ -27,7 +27,7 @@ const Selector: React.FC<SelectorProps> = ({
           (video: VideoNode, index: number) =>
             video.info && (
               <button
-                key={video.id}
+                key={video._id}
                 className="vp-selector__btn"
                 onClick={() => onSelect(index)}
               >

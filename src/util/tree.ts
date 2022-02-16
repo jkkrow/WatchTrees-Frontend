@@ -9,7 +9,7 @@ export const findById = (tree: VideoTree, id: string): VideoNode | null => {
   while (queue.length) {
     currentNode = queue.shift()!;
 
-    if (currentNode.id === id) return currentNode;
+    if (currentNode._id === id) return currentNode;
 
     if (currentNode.children.length)
       currentNode.children.forEach((child) => queue.push(child));
@@ -30,7 +30,7 @@ export const findByChildId = (
   while (queue.length) {
     currentNode = queue.shift()!;
 
-    if (currentNode.children.find((item) => item?.id === id))
+    if (currentNode.children.find((item) => item?._id === id))
       return currentNode;
 
     if (currentNode.children.length)

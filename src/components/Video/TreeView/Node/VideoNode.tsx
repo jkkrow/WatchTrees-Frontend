@@ -30,7 +30,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
 
   const returnHandler = () => {
     if (currentVideo.layer !== 0) {
-      dispatch(videoActions.setActiveVideo(currentVideo.prevId!));
+      dispatch(videoActions.setActiveVideo(currentVideo._prevId!));
     } else {
       navigate(-1);
     }
@@ -38,12 +38,12 @@ const VideoNode: React.FC<VideoNodeProps> = ({
 
   return (
     <>
-      {(currentVideo.id === activeVideoId ||
-        currentVideo.prevId === activeVideoId) &&
+      {(currentVideo._id === activeVideoId ||
+        currentVideo._prevId === activeVideoId) &&
         (currentVideo.info ? (
           <div
             className={`video-node${
-              activeVideoId === currentVideo.id ? ' active' : ''
+              activeVideoId === currentVideo._id ? ' active' : ''
             }`}
           >
             <VideoPlayer
@@ -52,15 +52,15 @@ const VideoNode: React.FC<VideoNodeProps> = ({
               rootId={rootId}
               autoPlay={autoPlay}
               editMode={editMode}
-              active={activeVideoId === currentVideo.id}
+              active={activeVideoId === currentVideo._id}
             />
           </div>
         ) : (
           <div
             className={`video-node__not-found${
-              activeVideoId === currentVideo.id ? ' active' : ''
+              activeVideoId === currentVideo._id ? ' active' : ''
             }`}
-            key={currentVideo.id}
+            key={currentVideo._id}
           >
             <p>Not Found</p>
             <AngleLeftIcon className="btn" onClick={returnHandler} />
@@ -69,7 +69,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
 
       {currentVideo.children.map((video: VideoNodeType) => (
         <VideoNode
-          key={video.id}
+          key={video._id}
           currentVideo={video}
           videoId={videoId}
           rootId={rootId}

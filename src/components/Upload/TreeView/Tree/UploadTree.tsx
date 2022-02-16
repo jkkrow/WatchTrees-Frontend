@@ -9,7 +9,7 @@ interface UploadTreeProps {
 const UploadTree: React.FC<UploadTreeProps> = ({ tree }) => {
   return (
     <div className="upload-tree">
-      <UploadNode currentNode={tree.root} rootId={tree.root.id} />
+      <UploadNode currentNode={tree.root} rootId={tree.root._id} />
     </div>
   );
 };

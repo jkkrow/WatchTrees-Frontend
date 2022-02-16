@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v1 as uuidv1 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Message {
   id?: string;
@@ -21,7 +21,7 @@ const uiSlice = createSlice({
   initialState,
   reducers: {
     setMessage: (state, { payload }: PayloadAction<Message>) => {
-      const newMessage = { ...payload, id: uuidv1() };
+      const newMessage = { ...payload, id: uuidv4() };
       state.messages.push(newMessage);
     },
 

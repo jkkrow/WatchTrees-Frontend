@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { v1 as uuidv1 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 import { VideoTree, NodeInfo } from 'store/slices/video-slice';
 import {
@@ -34,7 +34,7 @@ const uploadSlice = createSlice({
     initiateUpload: (state, { payload }: PayloadAction<UploadTree>) => {
       state.uploadTree = payload;
       state.previewTree = payload;
-      state.activeNodeId = payload.root.id;
+      state.activeNodeId = payload.root._id;
       state.isUploadSaved = true;
     },
 
@@ -51,7 +51,7 @@ const uploadSlice = createSlice({
         trees = [state[payload.type] as UploadTree];
       }
 
-      const newNodeId = uuidv1();
+      const newNodeId = uuidv4();
 
       for (let tree of trees) {
         const node = findById(tree, payload.nodeId);
@@ -59,8 +59,8 @@ const uploadSlice = createSlice({
         if (!node) return;
 
         const newNode = {
-          id: newNodeId,
-          prevId: node.id,
+          _id: newNodeId,
+          _prevId: node._id,
           layer: node.layer + 1,
           info: null,
           children: [],
@@ -143,7 +143,7 @@ const uploadSlice = createSlice({
         if (!node) return;
 
         node.children = node.children.filter(
-          (item) => item.id !== payload.nodeId
+          (item) => item._id !== payload.nodeId
         );
 
         const fullSize = getFullSize(tree);

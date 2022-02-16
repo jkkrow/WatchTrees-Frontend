@@ -17,17 +17,17 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, rootId }) => {
   const dispatch = useAppDispatch();
 
   const fileChangeHandler = (files: File[]): void => {
-    dispatch(uploadVideo(files[0], currentNode.id));
+    dispatch(uploadVideo(files[0], currentNode._id));
   };
 
   return (
     <div
       className={`upload-node${
-        currentNode.id === activeNodeId ? ' active' : ''
+        currentNode._id === activeNodeId ? ' active' : ''
       }`}
     >
-      {(currentNode.id === activeNodeId ||
-        currentNode.prevId === activeNodeId) && (
+      {(currentNode._id === activeNodeId ||
+        currentNode._prevId === activeNodeId) && (
         <div
           className={`upload-node__body${
             currentNode.layer % 2 === 0 ? ' layer-even' : ' layer-odd'
@@ -47,7 +47,7 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, rootId }) => {
 
       <div className="upload-node__children">
         {currentNode.children.map((item) => (
-          <UploadNode key={item.id} currentNode={item} rootId={rootId} />
+          <UploadNode key={item._id} currentNode={item} rootId={rootId} />
         ))}
       </div>
     </div>

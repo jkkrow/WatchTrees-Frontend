@@ -30,7 +30,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
     dispatch(
       uploadActions.setNode({
         info: { label: event.target.value },
-        nodeId: currentNode.id,
+        nodeId: currentNode._id,
       })
     );
   };
@@ -51,7 +51,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
     dispatch(
       uploadActions.setNode({
         info: { selectionTimeStart: value },
-        nodeId: currentNode.id,
+        nodeId: currentNode._id,
       })
     );
   };
@@ -72,13 +72,13 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
     dispatch(
       uploadActions.setNode({
         info: { selectionTimeEnd: value },
-        nodeId: currentNode.id,
+        nodeId: currentNode._id,
       })
     );
   };
 
   const addChildHandler = () => {
-    dispatch(uploadActions.appendNode({ nodeId: currentNode.id }));
+    dispatch(uploadActions.appendNode({ nodeId: currentNode._id }));
   };
 
   const activeNodeHandler = (id: string) => {
@@ -92,12 +92,12 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   return (
     <div className="upload-node__content">
       <div className="upload-node__header">
-        {currentNode.id === rootId ? (
+        {currentNode._id === rootId ? (
           <Tooltip text="This is first video">
             <strong>ROOT</strong>
           </Tooltip>
         ) : (
-          currentNode.id === activeNodeId && (
+          currentNode._id === activeNodeId && (
             <div className="upload-node__navigation">
               <AngleLeftDoubleIcon
                 className="btn"
@@ -105,7 +105,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
               />
               <AngleLeftIcon
                 className="btn"
-                onClick={() => activeNodeHandler(currentNode.prevId!)}
+                onClick={() => activeNodeHandler(currentNode._prevId!)}
               />
             </div>
           )
@@ -113,11 +113,11 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
         <div
           className="upload-node__title"
           style={
-            currentNode.id === activeNodeId
+            currentNode._id === activeNodeId
               ? { pointerEvents: 'none' }
               : undefined
           }
-          onClick={() => activeNodeHandler(currentNode.id)}
+          onClick={() => activeNodeHandler(currentNode._id)}
         >
           {nodeInfo.name}
         </div>
@@ -125,7 +125,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
           <Tooltip text="Show preview" direction="left">
             <PreviewIcon
               className="btn"
-              onClick={() => activeVideoHandler(currentNode.id)}
+              onClick={() => activeVideoHandler(currentNode._id)}
             />
           </Tooltip>
           {currentNode.children.length < 4 && (
@@ -155,7 +155,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
         <div className="upload-node__info__duration" data-label="Duration">
           {formatTime(nodeInfo.duration)}
         </div>
-        {currentNode.id !== rootId && (
+        {currentNode._id !== rootId && (
           <label className="upload-node__info__label" data-label="Label">
             <div className="upload-node__info__input">
               <Input
@@ -194,9 +194,9 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
                   if (!node.info)
                     return (
                       <CircleDashIcon
-                        key={node.id}
+                        key={node._id}
                         className="btn"
-                        onClick={() => activeNodeHandler(node.id)}
+                        onClick={() => activeNodeHandler(node._id)}
                       />
                     );
 
@@ -206,21 +206,21 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
                   )
                     return (
                       <CircleLoadingIcon
-                        key={node.id}
+                        key={node._id}
                         className={`btn${
                           validateNodes(node, 'error', null, false)
                             ? ' invalid'
                             : ''
                         }`}
-                        onClick={() => activeNodeHandler(node.id)}
+                        onClick={() => activeNodeHandler(node._id)}
                       />
                     );
 
                   return (
                     <CircleCheckIcon
-                      key={node.id}
+                      key={node._id}
                       className="btn"
-                      onClick={() => activeNodeHandler(node.id)}
+                      onClick={() => activeNodeHandler(node._id)}
                     />
                   );
                 })

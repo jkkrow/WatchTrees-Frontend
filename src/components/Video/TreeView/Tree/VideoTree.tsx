@@ -29,7 +29,7 @@ const VideoTree: React.FC<VideoTreeProps> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    let initialNodeId = tree.root.id;
+    let initialNodeId = tree.root._id;
     let initialTime = 0;
 
     if (history && !history.progress.isEnded) {
@@ -42,7 +42,7 @@ const VideoTree: React.FC<VideoTreeProps> = ({
     return () => {
       dispatch(videoActions.setInitialProgress(null));
     };
-  }, [dispatch, tree.root.id, history]);
+  }, [dispatch, tree.root._id, history]);
 
   return (
     <div className="video-tree">
@@ -50,7 +50,7 @@ const VideoTree: React.FC<VideoTreeProps> = ({
         <VideoNode
           currentVideo={tree.root}
           videoId={tree._id}
-          rootId={tree.root.id}
+          rootId={tree.root._id}
           autoPlay={autoPlay}
           editMode={editMode}
         />

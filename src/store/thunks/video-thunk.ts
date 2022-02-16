@@ -143,7 +143,7 @@ export const deleteVideo = (video: VideoTree): AppThunk => {
     await client.delete(`/videos/${video._id}`);
 
     if (uploadTree) {
-      uploadTree.root.id === video.root.id &&
+      uploadTree.root._id === video.root._id &&
         dispatch(uploadActions.finishUpload());
     }
   };
