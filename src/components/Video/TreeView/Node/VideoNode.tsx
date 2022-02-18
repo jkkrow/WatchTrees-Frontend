@@ -26,7 +26,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
 
   const returnHandler = () => {
     if (currentVideo.layer !== 0) {
-      dispatch(videoActions.setActiveNode(currentVideo._prevId!));
+      dispatch(videoActions.setActiveNode(currentVideo.parentId!));
     } else {
       navigate(-1);
     }
@@ -35,7 +35,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
   return (
     <>
       {(currentVideo._id === activeNodeId ||
-        currentVideo._prevId === activeNodeId) &&
+        currentVideo.parentId === activeNodeId) &&
         (currentVideo.info ? (
           <div
             className={`video-node${

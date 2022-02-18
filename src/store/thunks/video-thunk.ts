@@ -13,16 +13,16 @@ import {
 export const fetchVideo = (id: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData;
-    const currentUserId = userData ? userData._id : '';
+    const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
     const response = await client.get(`/videos/${id}/client`, {
-      params: { currentUserId },
+      params: { userId },
     });
 
     const { video } = response.data;
 
-    if (!currentUserId) {
+    if (!userId) {
       attachLocalHistory(video);
     }
 
@@ -33,16 +33,16 @@ export const fetchVideo = (id: string): AppThunk => {
 export const fetchVideos = (params: any): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData;
-    const currentUserId = userData ? userData._id : '';
+    const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
     const response = await client.get('/videos/client', {
-      params: { ...params, currentUserId },
+      params: { ...params, userId },
     });
 
     const { videos, count } = response.data;
 
-    if (!currentUserId) {
+    if (!userId) {
       attachLocalHistory(videos);
     }
 

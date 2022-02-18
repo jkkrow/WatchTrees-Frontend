@@ -522,22 +522,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    */
 
   const restartVideoTreeHandler = useCallback(() => {
-    if (!currentVideo._prevId) {
+    if (!currentVideo.parentId) {
       videoRef.current!.currentTime = 0;
       return;
     }
 
     dispatch(videoActions.setActiveNode(rootId));
-  }, [dispatch, rootId, currentVideo._prevId]);
+  }, [dispatch, rootId, currentVideo.parentId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
-    if (!currentVideo._prevId) {
+    if (!currentVideo.parentId) {
       videoRef.current!.currentTime = 0;
       return;
     }
 
-    dispatch(videoActions.setActiveNode(currentVideo._prevId));
-  }, [dispatch, currentVideo._prevId]);
+    dispatch(videoActions.setActiveNode(currentVideo.parentId));
+  }, [dispatch, currentVideo.parentId]);
 
   const navigateToNextVideoHandler = useCallback(() => {
     const video = videoRef.current!;

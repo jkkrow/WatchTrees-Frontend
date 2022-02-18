@@ -76,11 +76,11 @@ export const updateUserPicture = (file: File | null): AppThunk => {
 export const fetchChannel = (userId: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData;
-    const currentUserId = userData ? userData._id : '';
+    const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
     const response = await client.get(`/users/${userId}/channel`, {
-      params: { currentUserId },
+      params: { userId },
     });
 
     const { channel } = response.data;

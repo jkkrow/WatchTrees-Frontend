@@ -38,11 +38,11 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
       dispatch(uploadActions.removeNode({ nodeId: currentNode._id }));
 
       if (currentNode._id === activeNodeId) {
-        activeNodeHandler(currentNode._prevId!);
+        activeNodeHandler(currentNode.parentId!);
       }
 
       if (currentNode._id === activeVideoId) {
-        activeVideoHandler(currentNode._prevId!);
+        activeVideoHandler(currentNode.parentId!);
       }
     }
   };
@@ -86,7 +86,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
             />
             <AngleLeftIcon
               className="btn"
-              onClick={() => activeNodeHandler(currentNode._prevId!)}
+              onClick={() => activeNodeHandler(currentNode.parentId!)}
             />
           </div>
         )}

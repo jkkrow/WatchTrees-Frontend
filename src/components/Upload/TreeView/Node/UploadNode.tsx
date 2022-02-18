@@ -27,7 +27,7 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, rootId }) => {
       }`}
     >
       {(currentNode._id === activeNodeId ||
-        currentNode._prevId === activeNodeId) && (
+        currentNode.parentId === activeNodeId) && (
         <div
           className={`upload-node__body${
             currentNode.layer % 2 === 0 ? ' layer-even' : ' layer-odd'

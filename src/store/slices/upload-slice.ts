@@ -60,7 +60,7 @@ const uploadSlice = createSlice({
 
         const newNode = {
           _id: newNodeId,
-          _prevId: node._id,
+          parentId: node._id,
           layer: node.layer + 1,
           info: null,
           children: [],

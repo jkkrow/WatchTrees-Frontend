@@ -105,7 +105,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
               />
               <AngleLeftIcon
                 className="btn"
-                onClick={() => activeNodeHandler(currentNode._prevId!)}
+                onClick={() => activeNodeHandler(currentNode.parentId!)}
               />
             </div>
           )
