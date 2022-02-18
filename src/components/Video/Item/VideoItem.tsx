@@ -47,9 +47,9 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
           <div
             className="video-item__history"
             style={{
-              width: video.history.progress.isEnded
+              width: video.history.isEnded
                 ? '100%'
-                : (video.history.progress.time / video.info.maxDuration) * 100 +
+                : (video.history.totalProgress / video.info.maxDuration) * 100 +
                   '%',
             }}
           />

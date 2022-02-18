@@ -16,7 +16,7 @@ interface ControlsProps {
 
 const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
   const activeNodeId = useAppSelector((state) => state.upload.activeNodeId);
-  const activeVideoId = useAppSelector((state) => state.video.activeVideoId);
+  const activeVideoId = useAppSelector((state) => state.video.activeNodeId);
   const dispatch = useAppDispatch();
 
   const [warning, setWarning] = useState(false);
@@ -26,7 +26,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
   };
 
   const activeVideoHandler = (id: string) => {
-    dispatch(videoActions.setActiveVideo(id));
+    dispatch(videoActions.setActiveNode(id));
   };
 
   const removeNodeHandler = () => {

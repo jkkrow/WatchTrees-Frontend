@@ -132,3 +132,33 @@ export const getMinMaxDuration = (
     min: Math.min(...possibleDurations),
   };
 };
+
+export const mapTree = (node: VideoNode) => {
+  const map: any = {};
+
+  const iterate = (node: VideoNode) => {
+    map[node._id] = node;
+
+    if (node.children.length) {
+      node.children.forEach(iterate);
+    }
+  };
+
+  iterate(node);
+
+  return map;
+};
+
+export const findParents = (tree: VideoTree, nodeId: string) => {
+  const map = mapTree(tree.root);
+
+  const parents = [];
+  let parentId = map[nodeId]?._prevId;
+
+  while (parentId) {
+    parents.push(map[parentId]);
+    parentId = map[parentId]?._prevId;
+  }
+
+  return parents;
+};

@@ -122,7 +122,7 @@ export const removeFromHistory = (video: VideoTreeClient): AppThunk => {
   return async (dispatch, getState, api) => {
     if (!video.history) return;
 
-    const videoId = video.history.video;
+    const videoId = video.history.tree;
     const userData = getState().user.userData;
 
     if (!userData) {

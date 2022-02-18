@@ -32,7 +32,7 @@ export const getLocalHistory = (params: {
   });
 
   if (skipFullyWatched) {
-    localHistory = localHistory.filter((history) => !history.progress.isEnded);
+    localHistory = localHistory.filter((history) => !history.isEnded);
   }
 
   const startIndex = (page - 1) * max;
@@ -40,7 +40,7 @@ export const getLocalHistory = (params: {
 
   const slicedHistory = localHistory.slice(startIndex, endIndex);
 
-  return { localHistory: slicedHistory.map((history) => history.video), count };
+  return { localHistory: slicedHistory.map((history) => history.tree), count };
 };
 
 export const addToLocalHistory = (history: History) => {
@@ -52,11 +52,14 @@ export const addToLocalHistory = (history: History) => {
     const localHistory: History[] = JSON.parse(historyStorage);
 
     const existingHistory = localHistory.find(
-      (item) => item.video === history.video
+      (item) => item.tree === history.tree
     );
 
     if (existingHistory) {
+      existingHistory.activeNodeId = history.activeNodeId;
       existingHistory.progress = history.progress;
+      existingHistory.totalProgress = history.totalProgress;
+      existingHistory.isEnded = history.isEnded;
       existingHistory.updatedAt = history.updatedAt;
     } else {
       localHistory.push(history);
@@ -66,7 +69,7 @@ export const addToLocalHistory = (history: History) => {
   }
 };
 
-export const removeFromLocalHistory = (videoId: string) => {
+export const removeFromLocalHistory = (treeId: string) => {
   const historyStorage = localStorage.getItem('history');
 
   if (!historyStorage) return;
@@ -74,7 +77,7 @@ export const removeFromLocalHistory = (videoId: string) => {
   const localHistory: History[] = JSON.parse(historyStorage);
 
   const filteredHistory = localHistory.filter(
-    (history) => history.video !== videoId
+    (history) => history.tree !== treeId
   );
 
   localStorage.setItem('history', JSON.stringify(filteredHistory));
@@ -92,14 +95,14 @@ export const attachLocalHistory = (
   if (videos instanceof Array) {
     localHistory.forEach((historyItem) => {
       videos.forEach((video) => {
-        if (video._id === historyItem.video) {
+        if (video._id === historyItem.tree) {
           video.history = historyItem;
         }
       });
     });
   } else {
     localHistory.forEach((historyItem) => {
-      if (videos._id === historyItem.video) {
+      if (videos._id === historyItem.tree) {
         videos.history = historyItem;
       }
     });

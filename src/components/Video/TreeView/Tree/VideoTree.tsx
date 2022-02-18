@@ -23,34 +23,42 @@ const VideoTree: React.FC<VideoTreeProps> = ({
   autoPlay = true,
   editMode = false,
 }) => {
-  const { activeVideoId, initialProgress } = useAppSelector(
+  const { videoTree, activeNodeId, initialProgress } = useAppSelector(
     (state) => state.video
   );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    dispatch(videoActions.setVideoTree(tree));
+
+    return () => {
+      dispatch(videoActions.setVideoTree(null));
+    };
+  }, [dispatch, tree]);
+
+  useEffect(() => {
     let initialNodeId = tree.root._id;
     let initialTime = 0;
 
-    if (history && !history.progress.isEnded) {
-      initialNodeId = history.progress.activeVideoId;
-      initialTime = history.progress.time;
+    if (history && !history.isEnded) {
+      initialNodeId = history.activeNodeId;
+      initialTime = history.progress;
     }
-    dispatch(videoActions.setActiveVideo(initialNodeId));
+
+    dispatch(videoActions.setActiveNode(initialNodeId));
     dispatch(videoActions.setInitialProgress(initialTime));
 
     return () => {
+      dispatch(videoActions.setActiveNode(''));
       dispatch(videoActions.setInitialProgress(null));
     };
   }, [dispatch, tree.root._id, history]);
 
   return (
     <div className="video-tree">
-      {activeVideoId && initialProgress !== null && (
+      {videoTree && activeNodeId && initialProgress !== null && (
         <VideoNode
           currentVideo={tree.root}
-          videoId={tree._id}
-          rootId={tree.root._id}
           autoPlay={autoPlay}
           editMode={editMode}
         />

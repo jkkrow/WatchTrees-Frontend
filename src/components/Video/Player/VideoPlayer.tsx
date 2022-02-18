@@ -20,12 +20,11 @@ import { VideoNode, videoActions } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import { addToHistory } from 'store/thunks/video-thunk';
 import { formatTime } from 'util/format';
+import { findParents } from 'util/tree';
 import './VideoPlayer.scss';
 
 interface VideoPlayerProps {
   currentVideo: VideoNode;
-  videoId: string;
-  rootId: string;
   active: boolean;
   autoPlay?: boolean;
   editMode?: boolean;
@@ -33,14 +32,13 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({
   currentVideo,
-  videoId,
-  rootId,
   active,
   autoPlay = true,
   editMode = false,
 }) => {
   const {
-    activeVideoId,
+    videoTree,
+    activeNodeId,
     initialProgress,
     videoVolume,
     videoResolution,
@@ -123,7 +121,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const activeChange = useCompare(active);
   const firstRender = useFirstRender();
 
+  const treeId = useMemo(() => videoTree!._id, [videoTree]);
+  const rootId = useMemo(() => videoTree!.root._id, [videoTree]);
   const videoInfo = useMemo(() => currentVideo.info!, [currentVideo.info]);
+  const totalProgress = useMemo(() => {
+    return findParents(videoTree!, currentVideo._id).reduce(
+      (acc, cur) => acc + cur.info.duration,
+      0
+    );
+  }, [videoTree, currentVideo._id]);
   const { selectionStartPoint, selectionEndPoint } = useMemo(() => {
     const { selectionTimeStart, selectionTimeEnd, duration } = videoInfo;
 
@@ -213,12 +219,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
         dispatch(
           addToHistory({
-            video: videoId,
-            progress: {
-              activeVideoId: currentVideo._id,
-              time: video.currentTime,
-              isEnded: isEnded,
-            },
+            tree: treeId,
+            activeNodeId: currentVideo._id,
+            progress: video.currentTime,
+            totalProgress: video.currentTime + totalProgress,
+            isEnded: isEnded,
             updatedAt: new Date(),
           })
         );
@@ -230,7 +235,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     editMode,
     currentVideo._id,
     currentVideo.children,
-    videoId,
+    treeId,
+    totalProgress,
     dispatch,
     setHistoryInterval,
     setResolutionInterval,
@@ -250,12 +256,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const firstValidChild = currentVideo.children.find((item) => item.info);
     const isLastVideo = currentVideo.children.length === 0 || !firstValidChild;
     const history = {
-      video: videoId,
-      progress: {
-        activeVideoId: currentVideo._id,
-        time: video.currentTime,
-        isEnded: true,
-      },
+      tree: treeId,
+      activeNodeId: currentVideo._id,
+      progress: video.currentTime,
+      totalProgress: video.currentTime + totalProgress,
+      isEnded: true,
       updatedAt: new Date(),
     };
 
@@ -265,19 +270,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     if (selectedNextVideoId) {
-      dispatch(videoActions.setActiveVideo(selectedNextVideoId));
+      dispatch(videoActions.setActiveNode(selectedNextVideoId));
       return;
     }
 
     if (firstValidChild) {
-      dispatch(videoActions.setActiveVideo(firstValidChild._id));
+      dispatch(videoActions.setActiveNode(firstValidChild._id));
     }
   }, [
     dispatch,
-    videoId,
     editMode,
     currentVideo._id,
     currentVideo.children,
+    treeId,
+    totalProgress,
     selectedNextVideoId,
   ]);
 
@@ -521,7 +527,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       return;
     }
 
-    dispatch(videoActions.setActiveVideo(rootId));
+    dispatch(videoActions.setActiveNode(rootId));
   }, [dispatch, rootId, currentVideo._prevId]);
 
   const navigateToPreviousVideoHandler = useCallback(() => {
@@ -530,7 +536,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       return;
     }
 
-    dispatch(videoActions.setActiveVideo(currentVideo._prevId));
+    dispatch(videoActions.setActiveNode(currentVideo._prevId));
   }, [dispatch, currentVideo._prevId]);
 
   const navigateToNextVideoHandler = useCallback(() => {
@@ -549,12 +555,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
 
     if (selectedNextVideoId) {
-      dispatch(videoActions.setActiveVideo(selectedNextVideoId));
+      dispatch(videoActions.setActiveNode(selectedNextVideoId));
       return;
     }
 
     if (firstValidChild) {
-      dispatch(videoActions.setActiveVideo(firstValidChild._id));
+      dispatch(videoActions.setActiveNode(firstValidChild._id));
     }
   }, [
     dispatch,
@@ -823,31 +829,35 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         return video.setAttribute('src', src);
       }
 
-      src = videoInfo.isConverted
-        ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
-        : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
+      try {
+        src = videoInfo.isConverted
+          ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
+          : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
 
-      // Connect video to Shaka Player
-      const player = new shaka.Player(video);
+        // Connect video to Shaka Player
+        const player = new shaka.Player(video);
 
-      if (activeVideoId === currentVideo._id && initialProgress) {
-        startTime = initialProgress;
+        if (activeNodeId === currentVideo._id && initialProgress) {
+          startTime = initialProgress;
+        }
+
+        await player.load(src, startTime);
+
+        dispatch(videoActions.setInitialProgress(0));
+
+        shakaPlayer.current = player;
+
+        setResolutions(player.getVariantTracks());
+      } catch (err) {
+        alert(err);
       }
-
-      await player.load(src, startTime);
-
-      dispatch(videoActions.setInitialProgress(0));
-
-      shakaPlayer.current = player;
-
-      setResolutions(player.getVariantTracks());
     })();
   }, [
     dispatch,
     currentVideo._id,
     videoInfo.isConverted,
     videoInfo.url,
-    activeVideoId,
+    activeNodeId,
     initialProgress,
     firstRender,
   ]);

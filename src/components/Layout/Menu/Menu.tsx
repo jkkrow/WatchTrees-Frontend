@@ -115,12 +115,14 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
                   History
                 </NavLink>
               </li>
-              <li>
-                <NavLink to="/auth" onClick={logoutHandler}>
-                  <SignoutIcon />
-                  Signout
-                </NavLink>
-              </li>
+              {userData && (
+                <li>
+                  <NavLink to="/auth" onClick={logoutHandler}>
+                    <SignoutIcon />
+                    Signout
+                  </NavLink>
+                </li>
+              )}
               <li>
                 {!userData && (
                   <NavLink

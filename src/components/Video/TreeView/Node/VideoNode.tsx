@@ -11,26 +11,22 @@ import './VideoNode.scss';
 
 interface VideoNodeProps {
   currentVideo: VideoNodeType;
-  videoId: string;
-  rootId: string;
   autoPlay?: boolean;
   editMode?: boolean;
 }
 
 const VideoNode: React.FC<VideoNodeProps> = ({
   currentVideo,
-  videoId,
-  rootId,
   autoPlay = true,
   editMode = false,
 }) => {
-  const { activeVideoId } = useAppSelector((state) => state.video);
+  const { activeNodeId } = useAppSelector((state) => state.video);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const returnHandler = () => {
     if (currentVideo.layer !== 0) {
-      dispatch(videoActions.setActiveVideo(currentVideo._prevId!));
+      dispatch(videoActions.setActiveNode(currentVideo._prevId!));
     } else {
       navigate(-1);
     }
@@ -38,27 +34,25 @@ const VideoNode: React.FC<VideoNodeProps> = ({
 
   return (
     <>
-      {(currentVideo._id === activeVideoId ||
-        currentVideo._prevId === activeVideoId) &&
+      {(currentVideo._id === activeNodeId ||
+        currentVideo._prevId === activeNodeId) &&
         (currentVideo.info ? (
           <div
             className={`video-node${
-              activeVideoId === currentVideo._id ? ' active' : ''
+              activeNodeId === currentVideo._id ? ' active' : ''
             }`}
           >
             <VideoPlayer
               currentVideo={currentVideo}
-              videoId={videoId}
-              rootId={rootId}
               autoPlay={autoPlay}
               editMode={editMode}
-              active={activeVideoId === currentVideo._id}
+              active={activeNodeId === currentVideo._id}
             />
           </div>
         ) : (
           <div
             className={`video-node__not-found${
-              activeVideoId === currentVideo._id ? ' active' : ''
+              activeNodeId === currentVideo._id ? ' active' : ''
             }`}
             key={currentVideo._id}
           >
@@ -71,8 +65,6 @@ const VideoNode: React.FC<VideoNodeProps> = ({
         <VideoNode
           key={video._id}
           currentVideo={video}
-          videoId={videoId}
-          rootId={rootId}
           autoPlay={autoPlay}
           editMode={editMode}
         />
