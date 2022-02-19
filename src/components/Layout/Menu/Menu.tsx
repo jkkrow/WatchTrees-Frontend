@@ -62,14 +62,20 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
                   </Link>
                 </div>
                 <div className="menu__user__info">
-                  <Link to="/user/videos">
+                  <NavLink
+                    className={({ isActive }) => (isActive ? ' active' : '')}
+                    to="/user/videos"
+                  >
                     <VideoIcon />
                     Videos
-                  </Link>
-                  <Link to="/user/subscribers">
+                  </NavLink>
+                  <NavLink
+                    className={({ isActive }) => (isActive ? ' active' : '')}
+                    to="/user/subscribers"
+                  >
                     <SubscribeUsersIcon />
                     Subsribers
-                  </Link>
+                  </NavLink>
                 </div>
               </div>
             )}

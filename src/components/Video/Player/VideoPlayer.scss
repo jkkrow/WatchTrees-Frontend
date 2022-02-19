@@ -103,6 +103,10 @@ $vp-range--selection-time: hsl(32, 100%, 50%);
     height: 100%;
     z-index: 1;
   }
+
+  .hidden {
+    display: none;
+  }
 }
 
 .vp-controls {

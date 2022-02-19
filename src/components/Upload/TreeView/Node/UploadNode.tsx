@@ -2,7 +2,7 @@ import Content from './Body/Content';
 import Controls from './Body/Controls';
 import Error from './Body/Error';
 import DragDrop from 'components/Upload/DragDrop/DragDrop';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/store-hook';
 import { VideoNode } from 'store/slices/video-slice';
 import { uploadVideo } from 'store/thunks/upload-thunk';
 import './UploadNode.scss';
@@ -14,10 +14,10 @@ interface UploadNodeProps {
 
 const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, rootId }) => {
   const activeNodeId = useAppSelector((state) => state.upload.activeNodeId);
-  const dispatch = useAppDispatch();
+  const { dispatchThunk } = useAppThunk();
 
   const fileChangeHandler = (files: File[]): void => {
-    dispatch(uploadVideo(files[0], currentNode._id));
+    dispatchThunk(uploadVideo(files[0], currentNode._id));
   };
 
   return (

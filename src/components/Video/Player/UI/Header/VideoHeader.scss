@@ -1,0 +1,24 @@
+@use '../../VideoPlayer.scss' as *;
+
+.vp-header {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  top: 0;
+  left: -1px;
+  right: -1px;
+  height: clamp(5rem, 25%, 10rem);
+  padding: 0 2rem;
+  background-image: linear-gradient($vp-bg, transparent);
+  transition: opacity 300ms ease-out;
+  z-index: 15;
+
+  &.hide {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  svg {
+    width: clamp(2.5rem, 3.5vw, 5rem);
+  }
+}

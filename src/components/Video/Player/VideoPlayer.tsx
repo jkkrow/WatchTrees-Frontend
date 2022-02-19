@@ -10,6 +10,7 @@ import Time from './UI/Controls/Time/Time';
 import Fullscreen from './UI/Controls/Fullscreen/Fullscreen';
 import Settings from './UI/Controls/Settings/Settings';
 import Marker from './UI/Controls/Marker/Marker';
+import VideoHeader from './UI/Header/VideoHeader';
 import Selector from './UI/Selector/Selector';
 import Loader from './UI/Loader/Loader';
 import KeyAction from './UI/KeyAction/KeyAction';
@@ -22,6 +23,7 @@ import { addToHistory } from 'store/thunks/video-thunk';
 import { formatTime } from 'util/format';
 import { findParents } from 'util/tree';
 import './VideoPlayer.scss';
+import { uiActions } from 'store/slices/ui-slice';
 
 interface VideoPlayerProps {
   currentVideo: VideoNode;
@@ -216,17 +218,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         const endTime = video.duration - endPoint > 180 ? 180 : endPoint;
         const isEnded =
           isLastVideo && video.currentTime > endTime ? true : false;
+        const history = {
+          tree: treeId,
+          activeNodeId: currentVideo._id,
+          progress: video.currentTime,
+          totalProgress: video.currentTime + totalProgress,
+          isEnded: isEnded,
+          updatedAt: new Date(),
+        };
 
-        dispatch(
-          addToHistory({
-            tree: treeId,
-            activeNodeId: currentVideo._id,
-            progress: video.currentTime,
-            totalProgress: video.currentTime + totalProgress,
-            isEnded: isEnded,
-            updatedAt: new Date(),
-          })
-        );
+        dispatch(addToHistory(history));
       },
       5000,
       true
@@ -813,6 +814,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   ]);
 
   /**
+   * ERROR HANDLER
+   */
+
+  const errorHandler = useCallback(
+    (error: any) => {
+      dispatch(
+        uiActions.setMessage({
+          type: 'error',
+          content: error,
+        })
+      );
+    },
+    [dispatch]
+  );
+
+  /**
    * INITIATE PLAYER
    */
 
@@ -829,31 +846,36 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         return video.setAttribute('src', src);
       }
 
-      try {
-        src = videoInfo.isConverted
-          ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
-          : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
+      src = videoInfo.isConverted
+        ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
+        : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
 
-        // Connect video to Shaka Player
-        const player = new shaka.Player(video);
+      // Connect video to Shaka Player
+      const player = new shaka.Player(video);
 
-        if (activeNodeId === currentVideo._id && initialProgress) {
-          startTime = initialProgress;
-        }
+      player.addEventListener('error', (event: any) => {
+        errorHandler(event.detail);
+      });
 
-        await player.load(src, startTime);
-
-        dispatch(videoActions.setInitialProgress(0));
-
-        shakaPlayer.current = player;
-
-        setResolutions(player.getVariantTracks());
-      } catch (err) {
-        alert(err);
+      if (activeNodeId === currentVideo._id && initialProgress) {
+        startTime = initialProgress;
       }
+
+      try {
+        await player.load(src, startTime);
+      } catch (err) {
+        errorHandler(err);
+      }
+
+      dispatch(videoActions.setInitialProgress(0));
+
+      shakaPlayer.current = player;
+
+      setResolutions(player.getVariantTracks());
     })();
   }, [
     dispatch,
+    errorHandler,
     currentVideo._id,
     videoInfo.isConverted,
     videoInfo.url,
@@ -944,8 +966,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       style={{ cursor: displayCursor }}
       onMouseMove={showControlsHandler}
       onMouseLeave={hideControlsHandler}
-      // onContextMenu={(e) => e.preventDefault()}
+      onContextMenu={(e) =>
+        process.env.NODE_ENV !== 'development' && e.preventDefault()
+      }
     >
+      {!editMode && (
+        <VideoHeader
+          className={!displayControls ? 'hide' : ''}
+          onMouseDown={showControlsHandler}
+        />
+      )}
       <video
         ref={videoRef}
         onLoadedMetadata={videoLoadHandler}
