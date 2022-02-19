@@ -73,13 +73,13 @@ export const updateUserPicture = (file: File | null): AppThunk => {
   };
 };
 
-export const fetchChannel = (userId: string): AppThunk => {
+export const fetchChannel = (channelId: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData;
     const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
-    const response = await client.get(`/users/${userId}/channel`, {
+    const response = await client.get(`/users/${channelId}/channel`, {
       params: { userId },
     });
 
@@ -125,11 +125,11 @@ export const fetchSubscribers = (params?: any): AppThunk => {
   };
 };
 
-export const toggleSubscribe = (userId: string): AppThunk => {
+export const toggleSubscribe = (channelId: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    const { data } = await client.patch(`/users/${userId}/subscribers`);
+    const { data } = await client.patch(`/users/${channelId}/subscribers`);
 
     return data;
   };
