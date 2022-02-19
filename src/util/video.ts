@@ -84,7 +84,8 @@ export const removeFromLocalHistory = (treeId: string) => {
 };
 
 export const attachLocalHistory = (
-  videos: VideoTreeClient | VideoTreeClient[]
+  videos: VideoTreeClient | VideoTreeClient[],
+  sort?: boolean
 ) => {
   const historyStorage = localStorage.getItem('history');
   if (!historyStorage) return;
@@ -93,24 +94,27 @@ export const attachLocalHistory = (
   if (!localHistory.length) return;
 
   if (videos instanceof Array) {
-    localHistory.forEach((historyItem) => {
-      videos.forEach((video) => {
-        if (video._id === historyItem.tree) {
-          video.history = historyItem;
-        }
-      });
+    const videosWithHistory = videos.map((video) => {
+      const matchingHistory =
+        localHistory.find((historyItem) => video._id === historyItem.tree) ||
+        null;
+
+      return { ...video, history: matchingHistory } as VideoTreeClient;
     });
+
+    return sort ? sortByHistory(videosWithHistory) : videosWithHistory;
   } else {
-    localHistory.forEach((historyItem) => {
-      if (videos._id === historyItem.tree) {
-        videos.history = historyItem;
-      }
-    });
+    const video = videos;
+    const matchingHistory = localHistory.find(
+      (historyItem) => video._id === historyItem.tree
+    );
+
+    return { ...video, history: matchingHistory };
   }
 };
 
 export const sortByHistory = (videos: VideoTreeClient[]) => {
-  videos.sort((a, b) => {
+  return videos.sort((a, b) => {
     if (!a.history || !b.history) return 0;
 
     const dateA = new Date(a.history.updatedAt);

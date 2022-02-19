@@ -3,11 +3,10 @@ import { AppThunk } from 'store';
 import { VideoTree, VideoTreeClient, History } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import {
-  addToLocalHistory,
-  attachLocalHistory,
   getLocalHistory,
+  addToLocalHistory,
   removeFromLocalHistory,
-  sortByHistory,
+  attachLocalHistory,
 } from 'util/video';
 
 export const fetchVideo = (id: string): AppThunk => {
@@ -22,11 +21,7 @@ export const fetchVideo = (id: string): AppThunk => {
 
     const { video } = response.data;
 
-    if (!userId) {
-      attachLocalHistory(video);
-    }
-
-    return video;
+    return userId ? video : attachLocalHistory(video);
   };
 };
 
@@ -42,11 +37,7 @@ export const fetchVideos = (params: any): AppThunk => {
 
     const { videos, count } = response.data;
 
-    if (!userId) {
-      attachLocalHistory(videos);
-    }
-
-    return { videos, count };
+    return { videos: userId ? videos : attachLocalHistory(videos), count };
   };
 };
 
@@ -84,11 +75,7 @@ export const fetchHistory = (params: any): AppThunk => {
       params: { ids: localHistory },
     });
 
-    attachLocalHistory(data.videos);
-    sortByHistory(data.videos);
-    data.count = count;
-
-    return data;
+    return { videos: attachLocalHistory(data.videos, true), count };
   };
 };
 
