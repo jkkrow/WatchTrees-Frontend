@@ -62,7 +62,7 @@ const CreatedVideoItem: React.FC<CreatedVideoItemProps> = ({
               />
             </div>
             <div className="created-video-item__data">
-              <VideoViews video={item} brief />
+              <VideoViews views={item.data.views} brief />
               <VideoFavorites
                 videoId={item._id}
                 favorites={item.data.favorites}

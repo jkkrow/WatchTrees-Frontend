@@ -56,7 +56,7 @@ const VideoPage: React.FC = () => {
             <VideoTags tags={data.info.tags} />
           </div>
           <div className="video-page__detail">
-            <VideoViews video={data} />
+            <VideoViews views={data.data.views} />
             <VideoDuration
               minDuration={data.info.minDuration}
               maxDuration={data.info.maxDuration}
