@@ -88,10 +88,10 @@ export const attachLocalHistory = (
   sort?: boolean
 ) => {
   const historyStorage = localStorage.getItem('history');
-  if (!historyStorage) return;
+  if (!historyStorage) return videos;
 
   const localHistory: History[] = JSON.parse(historyStorage);
-  if (!localHistory.length) return;
+  if (!localHistory.length) return videos;
 
   if (videos instanceof Array) {
     const videosWithHistory = videos.map((video) => {
