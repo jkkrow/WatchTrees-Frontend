@@ -989,7 +989,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onSeeking={showLoaderHandler}
         onSeeked={hideLoaderHandler}
         onWaiting={showLoaderHandler}
-        onCanPlayThrough={hideLoaderHandler}
+        onCanPlay={hideLoaderHandler}
       />
       <Loader on={displayLoader} />
       <KeyAction on={displayKeyAction} volume={volumeState} />

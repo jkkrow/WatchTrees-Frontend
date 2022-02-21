@@ -6,6 +6,7 @@
   height: 100%;
   margin-bottom: auto;
   overflow: hidden;
+  transition: transform 300ms ease-out, box-shadow 300ms ease-out;
 
   &__thumbnail {
     position: relative;
@@ -27,6 +28,8 @@
     top: 100%;
     height: 3px;
     background-color: var(--accent-primary);
+    transition: opacity 300ms ease-out;
+    z-index: 1;
   }
 
   &__info {
@@ -37,6 +40,7 @@
     height: 100%;
     padding: 2rem 1rem;
     gap: 1rem;
+    background-color: var(--bg-primary);
   }
 
   &__header {
@@ -73,28 +77,4 @@
     width: 100%;
     gap: 1rem;
   }
-
-  // @media (max-width: 700px) {
-  //   font-size: 90%;
-
-  //   .avatar {
-  //     width: 3rem !important;
-  //     height: 3rem !important;
-  //     min-width: 3rem !important;
-  //     min-height: 3rem !important;
-  //   }
-
-  //   &__info {
-  //     padding: 0.75rem;
-  //   }
-
-  //   &__data svg {
-  //     width: 2rem;
-  //     height: 2rem;
-  //   }
-
-  //   .video-timestamp {
-  //     display: none;
-  //   }
-  // }
 }

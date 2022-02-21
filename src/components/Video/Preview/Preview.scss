@@ -1,0 +1,29 @@
+@use '../Player/VideoPlayer.scss' as *;
+
+.video-preview {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: $vp-bg;
+  transition: opacity 300ms ease-out;
+
+  video {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  &-enter {
+    opacity: 0;
+  }
+  &-enter-active {
+    opacity: 1;
+  }
+  &-exit {
+    opacity: 1;
+  }
+  &-exit-active {
+    opacity: 0;
+  }
+}

@@ -1,4 +1,6 @@
 .video-group {
+  z-index: 1;
+
   &__label {
     width: fit-content;
     margin-bottom: 2rem;
@@ -31,11 +33,6 @@
     overflow: visible;
   }
 
-  // .video-item__title {
-  //   line-clamp: 1;
-  //   -webkit-line-clamp: 1;
-  // }
-
   &:hover {
     .swiper-button-prev,
     .swiper-button-next {
@@ -52,6 +49,7 @@
     bottom: 100%;
     color: var(--text-primary);
     background-color: transparent;
+    z-index: 1;
 
     &:hover {
       background-color: transparent;

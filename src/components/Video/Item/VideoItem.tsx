@@ -1,18 +1,21 @@
+import { useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
+import Preview from '../Preview/Preview';
 import VideoThumbnail from '../UI/Thumbnail/VideoThumbnail';
 import VideoViews from '../UI/Views/VideoViews';
 import VideoFavorites from '../UI/Favorites/VideoFavorites';
 import VideoDuration from '../UI/Duration/VideoDuration';
 import VideoTimestamp from '../UI/Timestamp/VideoTimestamp';
 import VideoDropdown from '../UI/Dropdown/VideoDropdown';
+import VideoCreator from '../UI/Creator/VideoCreator';
 import Card from 'components/Common/UI/Card/Card';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
+import { useTimeout } from 'hooks/timer-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import './VideoItem.scss';
-import VideoCreator from '../UI/Creator/VideoCreator';
 
 interface VideoItemProps {
   id?: 'history' | 'favorites';
@@ -23,6 +26,14 @@ interface VideoItemProps {
 const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
   const { dispatchThunk, loading } = useAppThunk();
 
+  const [isPreview, setIsPreview] = useState(false);
+  const [transform, setTransform] = useState('none');
+  const [transformOrigin, setTransfomOrigin] = useState('initial');
+  const [zIndex, setZIndex] = useState(0);
+
+  const [setPreviewTimeout, clearPreviewTimeout] = useTimeout();
+
+  const itemRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   const dispatchHandler = async (thunk: AppThunk) => {
@@ -31,10 +42,75 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
     onDelete(video._id);
   };
 
+  const startPreviewHandler = () => {
+    if (isPreview || !itemRef.current) return;
+
+    const { top, bottom, left, width, height } =
+      itemRef.current.getBoundingClientRect();
+
+    const container = document.querySelector('.videos-page')!;
+    const { left: containerLeft, width: containerWidth } =
+      container.getBoundingClientRect();
+
+    const itemLeft = left - containerLeft;
+    const itemRight = itemLeft + width;
+
+    const viewHeight = window.innerHeight;
+
+    const scaleValue = 1.3;
+    const scaledWidth = width * scaleValue;
+    const scaledHeight = height * scaleValue;
+
+    let originX = '50%';
+    let originY = '50%';
+
+    if (scaledWidth + (containerWidth - itemRight) > containerWidth) {
+      originX = '0%';
+    }
+    if (itemLeft + scaledWidth > containerWidth) {
+      originX = '100%';
+    }
+    if (scaledHeight + (viewHeight - bottom) > viewHeight) {
+      originY = '0%';
+    }
+    if (top + scaledHeight > viewHeight) {
+      originY = '100%';
+    }
+
+    setPreviewTimeout(() => {
+      setIsPreview(true);
+      setTransform(`scale(${scaleValue})`);
+      setTransfomOrigin(`${originX} ${originY}`);
+      setZIndex(1);
+    }, 700);
+  };
+
+  const stopPreviewHandler = () => {
+    setIsPreview(false);
+    setTransform('none');
+  };
+
+  const cancelPreviewHandler = () => {
+    clearPreviewTimeout();
+  };
+
+  const previewUnmountedHandler = () => {
+    setZIndex(0);
+  };
+
   return (
-    <Card className="video-item">
+    <Card
+      className="video-item"
+      style={{ transform, transformOrigin, zIndex }}
+      ref={itemRef}
+      onMouseLeave={stopPreviewHandler}
+    >
       <LoadingSpinner on={loading} overlay />
-      <div className="video-item__thumbnail">
+      <div
+        className="video-item__thumbnail"
+        onMouseEnter={startPreviewHandler}
+        onMouseLeave={cancelPreviewHandler}
+      >
         <VideoThumbnail video={video} />
         <div className="video-item__duration">
           <VideoDuration
@@ -43,6 +119,11 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
             brief
           />
         </div>
+        <Preview
+          on={isPreview}
+          video={video}
+          onUnmounted={previewUnmountedHandler}
+        />
         {video.history && (
           <div
             className="video-item__history"
@@ -51,6 +132,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
                 ? '100%'
                 : (video.history.totalProgress / video.info.maxDuration) * 100 +
                   '%',
+              opacity: isPreview ? 0 : 1,
             }}
           />
         )}
