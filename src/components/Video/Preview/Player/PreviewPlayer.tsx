@@ -72,7 +72,9 @@ const PreviewPlayer: React.FC<PreviewPlayerProps> = ({ videoId, src }) => {
 
   return (
     <div className="preview-player">
-      <Loader on={isLoading} />
+      <div className="preview-player__loader" onClick={navigateToVideoHandler}>
+        <Loader on={isLoading} />
+      </div>
       <video
         ref={videoRef}
         autoPlay={true}

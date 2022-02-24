@@ -38,11 +38,11 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
   const { dispatchThunk, setData, data, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
-  }>({ videos: [], count: 0 }, { forceUpdate });
+  }>({ videos: [], count: 0 });
 
   useEffect(() => {
-    dispatchThunk(onFetch({ max, skipFullyWatched }));
-  }, [dispatchThunk, onFetch, max, skipFullyWatched]);
+    dispatchThunk(onFetch({ max, skipFullyWatched }), { forceUpdate });
+  }, [dispatchThunk, onFetch, max, skipFullyWatched, forceUpdate]);
 
   const filterList = useCallback(
     (videoId: string) => {

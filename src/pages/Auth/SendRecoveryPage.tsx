@@ -14,7 +14,7 @@ const SendRecoveryPage: React.FC = () => {
     loading,
     error,
     data: message,
-  } = useAppThunk<string | null>(null, { errorMessage: false });
+  } = useAppThunk<string | null>(null);
 
   const { formState, setFormInput } = useForm({
     email: { value: '', isValid: false },
@@ -23,7 +23,9 @@ const SendRecoveryPage: React.FC = () => {
   const submitHandler = (): void => {
     if (!formState.isValid) return;
 
-    dispatchThunk(sendRecovery(formState.inputs.email.value));
+    dispatchThunk(sendRecovery(formState.inputs.email.value), {
+      errorMessage: false,
+    });
   };
 
   return (

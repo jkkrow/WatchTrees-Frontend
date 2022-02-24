@@ -13,10 +13,10 @@ const AccountPage: React.FC = () => {
     loading,
     error,
     data: message,
-  } = useAppThunk<string | null>(null, { errorMessage: false });
+  } = useAppThunk<string | null>(null);
 
   const verifyEmailHandler = () => {
-    dispatchThunk(sendVerification(userData!.email));
+    dispatchThunk(sendVerification(userData!.email), { errorMessage: false });
   };
 
   const closeModalHandler = () => {

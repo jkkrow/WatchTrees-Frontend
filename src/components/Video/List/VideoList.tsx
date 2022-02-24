@@ -31,7 +31,7 @@ const VideoList: React.FC<VideoListProps> = ({
   const { dispatchThunk, data, setData, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
-  }>({ videos: [], count: 0 }, { forceUpdate });
+  }>({ videos: [], count: 0 });
 
   const { currentPage, itemsPerPage } = usePaginate(max);
   const { keyword } = useSearch();
@@ -45,9 +45,18 @@ const VideoList: React.FC<VideoListProps> = ({
         max: itemsPerPage,
         search: keyword,
         channelId,
-      })
+      }),
+      { forceUpdate }
     );
-  }, [dispatchThunk, currentPage, itemsPerPage, keyword, channelId, onFetch]);
+  }, [
+    dispatchThunk,
+    currentPage,
+    itemsPerPage,
+    keyword,
+    channelId,
+    forceUpdate,
+    onFetch,
+  ]);
 
   const filterList = useCallback(
     (videoId: string) => {

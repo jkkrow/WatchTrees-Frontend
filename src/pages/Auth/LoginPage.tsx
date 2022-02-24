@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
     loading,
     error,
     data: message,
-  } = useAppThunk<string | null>(null, { errorMessage: false });
+  } = useAppThunk<string | null>(null);
 
   const { formState, setFormInput, setFormData } = useForm({
     email: { value: '', isValid: false },
@@ -44,7 +44,9 @@ const LoginPage: React.FC = () => {
   };
 
   const googleLoginHandler = async (response: any) => {
-    await dispatchThunk(signin({ tokenId: response.tokenId }));
+    await dispatchThunk(signin({ tokenId: response.tokenId }), {
+      errorMessage: false,
+    });
 
     navigateHandler();
   };
@@ -57,7 +59,8 @@ const LoginPage: React.FC = () => {
         signin({
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
-        })
+        }),
+        { errorMessage: false }
       );
     } else {
       await dispatchThunk(

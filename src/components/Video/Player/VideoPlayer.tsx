@@ -49,11 +49,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const dispatch = useAppDispatch();
 
   // vp-container
-  const [displayCursor, setDisplayCursor] = useState('default');
+  const [displayCursor, setDisplayCursor] = useState(
+    active ? 'default' : 'none'
+  );
 
   // vp-controls
   const [canPlayType, setCanPlayType] = useState(true);
-  const [displayControls, setDisplayControls] = useState(true);
+  const [displayControls, setDisplayControls] = useState(active);
 
   // playback
   const [playbackState, setPlaybackState] = useState(false);
@@ -265,8 +267,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       updatedAt: new Date(),
     };
 
-    if (isLastVideo && !editMode) {
-      dispatch(addToHistory(history));
+    if (isLastVideo) {
+      showControlsHandler();
+      !editMode && dispatch(addToHistory(history));
       return;
     }
 
@@ -277,9 +280,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (firstValidChild) {
       dispatch(videoActions.setActiveNode(firstValidChild._id));
+      return;
     }
   }, [
     dispatch,
+    showControlsHandler,
     editMode,
     currentVideo._id,
     currentVideo.children,

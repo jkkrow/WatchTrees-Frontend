@@ -19,7 +19,7 @@ const ResetPasswordPage: React.FC = () => {
     loading,
     error,
     data: message,
-  } = useAppThunk<string | null>(null, { errorMessage: false });
+  } = useAppThunk<string | null>(null);
 
   const [isAccessAllowed, setIsAccessAllowed] = useState(false);
 
@@ -38,13 +38,14 @@ const ResetPasswordPage: React.FC = () => {
         formState.inputs.password.value,
         formState.inputs.confirmPassword.value,
         token!
-      )
+      ),
+      { errorMessage: false }
     );
   };
 
   useEffect(() => {
     (async () => {
-      await dispatchThunk(checkRecovery(token!));
+      await dispatchThunk(checkRecovery(token!), { errorMessage: false });
 
       setIsAccessAllowed(true);
     })();

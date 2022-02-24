@@ -14,19 +14,13 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 export const useAppDispatch = () =>
   useDispatch<ThunkDispatch<AppState, AppExtraArgument, Action>>();
 
-export const useAppThunk = <T = any>(
-  initialData?: T,
-  options: { errorMessage?: boolean | string; forceUpdate?: boolean } = {
-    errorMessage: true,
-  }
-) => {
+export const useAppThunk = <T = any>(initialData?: T) => {
   const [data, setData] = useState(initialData as NonUndefined<T>);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const isUnmounted = useRef(false);
-  const optionsRef = useRef(options);
   const reload = useRef<ReturnType<AppThunk>>();
   const type = useNavigationType();
   const dispatch = useAppDispatch();
@@ -37,20 +31,22 @@ export const useAppThunk = <T = any>(
     };
   }, []);
 
-  useEffect(() => {
-    optionsRef.current = options;
-  }, [options]);
-
   const dispatchThunk = useCallback(
-    async (thunk: AppThunk, retry = false) => {
-      const { errorMessage, forceUpdate } = optionsRef.current;
+    async (
+      thunk: AppThunk,
+      options: { errorMessage?: boolean | string; forceUpdate?: boolean } = {
+        errorMessage: true,
+      }
+    ) => {
+      const { errorMessage, forceUpdate } = options;
       try {
         setLoading(true);
 
-        reload.current = async () => await dispatchThunk(thunk, true);
+        reload.current = async () =>
+          await dispatchThunk(thunk, { forceUpdate: true });
 
         const data = await dispatch((dispatch, getState, api) => {
-          const client = dispatch(api(retry || forceUpdate || type !== 'POP'));
+          const client = dispatch(api(forceUpdate || type !== 'POP'));
           return thunk(dispatch, getState, () => () => client);
         });
 

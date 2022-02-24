@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
-import Preview from 'components/Upload/Preview/Preview';
+import UploadPreview from 'components/Upload/Preview/UploadPreview';
 import { useAppSelector } from 'hooks/store-hook';
 import 'styles/upload.scss';
 
@@ -22,7 +22,7 @@ const UploadPage: React.FC = () => {
     <div className="upload-page">
       {previewTree && <UploadDashboard tree={previewTree} />}
       {previewTree && <UploadTree tree={previewTree} />}
-      {isPreview && <Preview tree={previewTree} />}
+      {isPreview && <UploadPreview tree={previewTree} />}
     </div>
   );
 };
