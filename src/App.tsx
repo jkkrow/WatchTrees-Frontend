@@ -1,5 +1,5 @@
 import { useEffect, lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import VideoPage from 'pages/Video/VideoPage';
 import VideosPage from 'pages/Video/VideosPage';
@@ -10,7 +10,6 @@ import Header from 'components/Layout/Header/Header';
 import Main from 'components/Layout/Main/Main';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Layout/GlobalMessage/List/GlobalMessageList';
-import ThemeProvider from 'providers/ThemeProvider';
 import AuthProvider from 'providers/AuthProvider';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import {
@@ -47,20 +46,14 @@ const App: React.FC = () => {
     dispatch(setAuthOnload());
   }, [dispatch]);
 
-  const VideoPageComponent = () => (
-    <ThemeProvider mode="dark">
-      <VideoPage />
-    </ThemeProvider>
-  );
-
   return (
-    <BrowserRouter>
+    <>
       <Header />
       <GlobalMessageList />
       <Main>
         <Routes>
           <Route path="/" element={<VideosPage />} />
-          <Route path="video/:id" element={<VideoPageComponent />} />
+          <Route path="video/:id" element={<VideoPage />} />
           <Route path="channel/:id" element={<ChannelPage />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="auth" element={<LoginPage />} />
@@ -86,7 +79,7 @@ const App: React.FC = () => {
         </Routes>
       </Main>
       <Footer />
-    </BrowserRouter>
+    </>
   );
 };
 

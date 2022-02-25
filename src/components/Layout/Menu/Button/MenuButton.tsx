@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import './MenuButton.scss';
 
 interface MenuButtonProps {
@@ -6,14 +7,25 @@ interface MenuButtonProps {
 }
 
 const MenuButton: React.FC<MenuButtonProps> = ({ active, onClick }) => {
+  const [isUsed, setIsUsed] = useState(false);
+
+  useEffect(() => {
+    if (isUsed || !active) return;
+
+    setIsUsed(true);
+  }, [active, isUsed]);
+
   return (
-    <div
-      className={`menu-button${active ? ' active' : ''} btn`}
-      onClick={onClick}
-    >
-      <div className="menu-button__top" />
-      <div className="menu-button__center" />
-      <div className="menu-button__bottom" />
+    <div className="menu-button btn" onClick={onClick}>
+      <div
+        className={`menu-button__container${active ? ' on' : ''}${
+          isUsed && !active ? ' off' : ''
+        }`}
+      >
+        <div />
+        <div />
+        <div />
+      </div>
     </div>
   );
 };

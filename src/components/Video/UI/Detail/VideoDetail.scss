@@ -1,0 +1,56 @@
+.video-detail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 10rem 5rem;
+  gap: 0.5rem;
+  font-weight: 600;
+  overflow: auto;
+  background-color: var(--bg-primary);
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+
+    svg {
+      width: 3rem;
+      height: 3rem;
+      min-width: 3rem;
+      min-height: 3rem;
+    }
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+  }
+
+  &__favorites {
+    position: relative;
+    margin-left: auto;
+  }
+
+  &__creator {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    margin: 1rem 0;
+    gap: 1rem;
+  }
+
+  &__tags {
+    color: var(--text-primary);
+    margin: 1rem 0;
+  }
+
+  &__createdAt {
+    text-align: end;
+  }
+
+  &__description {
+    margin-top: 1.5rem;
+    white-space: pre-line;
+  }
+}
