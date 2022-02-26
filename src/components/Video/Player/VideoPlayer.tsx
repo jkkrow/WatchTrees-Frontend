@@ -110,6 +110,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const videoProgressRef = useRef<HTMLDivElement>(null);
 
   const shakaPlayer = useRef<shaka.Player>();
+  const playPromise = useRef<Promise<void>>();
   const volumeData = useRef(videoVolume || 1);
   const progressSeekData = useRef(0);
   const selectorData = useRef(false);
@@ -185,9 +186,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const video = videoRef.current!;
 
     if (video.paused || video.ended) {
-      video.play();
+      playPromise.current = video.play();
     } else {
-      video.pause();
+      playPromise.current !== undefined &&
+        playPromise.current.then(() => video.pause());
     }
 
     showControlsHandler();
@@ -804,7 +806,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     timeChangeHandler();
 
     if (active && autoPlay) {
-      video.play();
+      playPromise.current = video.play();
     }
 
     document.addEventListener('fullscreenchange', fullscreenChangeHandler);
@@ -940,11 +942,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const video = videoRef.current!;
 
     if (active) {
-      video.play();
+      playPromise.current = video.play();
       setDisplayCursor('none');
     } else {
       video.currentTime = 0;
-      video.pause();
+
+      playPromise.current !== undefined &&
+        playPromise.current.then(() => video.pause());
     }
   }, [firstRender, active, activeChange]);
 
