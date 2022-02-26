@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { Helmet } from 'react-helmet';
 
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
@@ -19,11 +20,19 @@ const UploadPage: React.FC = () => {
   const isPreview = previewTree?.root.info?.url;
 
   return (
-    <div className="upload-page">
-      {previewTree && <UploadDashboard tree={previewTree} />}
-      {previewTree && <UploadTree tree={previewTree} />}
-      {isPreview && <UploadPreview tree={previewTree} />}
-    </div>
+    <Fragment>
+      <Helmet>
+        <title>
+          Upload{previewTree?.info.title ? ` - ${previewTree.info.title}` : ''}{' '}
+          - WatchTrees
+        </title>
+      </Helmet>
+      <div className="upload-page">
+        {previewTree && <UploadDashboard tree={previewTree} />}
+        {previewTree && <UploadTree tree={previewTree} />}
+        {isPreview && <UploadPreview tree={previewTree} />}
+      </div>
+    </Fragment>
   );
 };
 

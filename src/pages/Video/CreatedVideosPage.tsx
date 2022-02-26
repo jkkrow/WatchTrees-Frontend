@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 import CreatedVideoList from 'components/Video/Created/List/CreatedVideoList';
 import UploadButton from 'components/Upload/Button/UploadButton';
@@ -52,47 +53,52 @@ const CreatedVideoListPage: React.FC = () => {
   };
 
   return (
-    <div className="videos-page">
-      <Modal
-        on={displayModal}
-        type="form"
-        header="Delete Video"
-        footer="DELETE"
-        loading={deleteLoading}
-        invalid
-        disabled={!formState.isValid}
-        onConfirm={deleteHandler}
-        onClose={closeWarningHandler}
-      >
-        <div>
-          To proceed type the video name{' '}
-          <strong>{targetItem?.info.title}</strong>.
+    <Fragment>
+      <Helmet>
+        <title>Created Videos - WatchTrees</title>
+      </Helmet>
+      <div className="videos-page">
+        <Modal
+          on={displayModal}
+          type="form"
+          header="Delete Video"
+          footer="DELETE"
+          loading={deleteLoading}
+          invalid
+          disabled={!formState.isValid}
+          onConfirm={deleteHandler}
+          onClose={closeWarningHandler}
+        >
+          <div>
+            To proceed type the video name{' '}
+            <strong>{targetItem?.info.title}</strong>.
+          </div>
+          <Input
+            id="video"
+            formInput
+            validators={
+              targetItem ? [VALIDATOR_EQUAL(targetItem.info.title)] : undefined
+            }
+            onForm={setFormInput}
+          />
+        </Modal>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-end',
+            width: '100%',
+            gap: '1rem',
+          }}
+        >
+          <Reload onReload={reloadHandler} />
+          <UploadButton />
         </div>
-        <Input
-          id="video"
-          formInput
-          validators={
-            targetItem ? [VALIDATOR_EQUAL(targetItem.info.title)] : undefined
-          }
-          onForm={setFormInput}
+        <CreatedVideoList
+          onDelete={openWarningHandler}
+          onFetched={fetchedHandler}
         />
-      </Modal>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          width: '100%',
-          gap: '1rem',
-        }}
-      >
-        <Reload onReload={reloadHandler} />
-        <UploadButton />
       </div>
-      <CreatedVideoList
-        onDelete={openWarningHandler}
-        onFetched={fetchedHandler}
-      />
-    </div>
+    </Fragment>
   );
 };
 

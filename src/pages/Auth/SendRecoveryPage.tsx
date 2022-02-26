@@ -1,3 +1,6 @@
+import { Fragment } from 'react';
+import { Helmet } from 'react-helmet';
+
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
@@ -29,23 +32,31 @@ const SendRecoveryPage: React.FC = () => {
   };
 
   return (
-    <div className="auth-page">
-      <Response type={error ? 'error' : 'message'} content={error || message} />
-      {!message && (
-        <Form onSubmit={submitHandler}>
-          <Input
-            id="email"
-            formInput
-            autoFocus
-            autoComplete="email"
-            label="Email *"
-            validators={[VALIDATOR_EMAIL()]}
-            onForm={setFormInput}
-          />
-          <Button loading={loading}>SEND RECOVERY EMAIL</Button>
-        </Form>
-      )}
-    </div>
+    <Fragment>
+      <Helmet>
+        <title>Recover Password - WatchTrees</title>
+      </Helmet>
+      <div className="auth-page">
+        <Response
+          type={error ? 'error' : 'message'}
+          content={error || message}
+        />
+        {!message && (
+          <Form onSubmit={submitHandler}>
+            <Input
+              id="email"
+              formInput
+              autoFocus
+              autoComplete="email"
+              label="Email *"
+              validators={[VALIDATOR_EMAIL()]}
+              onForm={setFormInput}
+            />
+            <Button loading={loading}>SEND RECOVERY EMAIL</Button>
+          </Form>
+        )}
+      </div>
+    </Fragment>
   );
 };
 

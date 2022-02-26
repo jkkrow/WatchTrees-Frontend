@@ -1,3 +1,6 @@
+import { Fragment } from 'react';
+import { Helmet } from 'react-helmet';
+
 import Button from 'components/Common/Element/Button/Button';
 import Modal from 'components/Layout/Modal/Modal';
 import AccountDashboard from 'components/User/Account/Dashboard/AccountDashboard';
@@ -24,25 +27,30 @@ const AccountPage: React.FC = () => {
   };
 
   return (
-    <div className="user-page">
-      <Modal
-        on={!!error || !!message}
-        type="message"
-        header={error ? 'Error' : 'Email has sent'}
-        onClose={closeModalHandler}
-      >
-        <div>{error || message}</div>
-      </Modal>
-      <AccountDashboard />
-      {!userData!.isVerified && (
-        <Button loading={loading} onClick={verifyEmailHandler}>
-          Verify Email
-        </Button>
-      )}
-      {/* {userData!.isVerified && !userData!.isPremium && (
+    <Fragment>
+      <Helmet>
+        <title>Account - WatchTrees</title>
+      </Helmet>
+      <div className="user-page">
+        <Modal
+          on={!!error || !!message}
+          type="message"
+          header={error ? 'Error' : 'Email has sent'}
+          onClose={closeModalHandler}
+        >
+          <div>{error || message}</div>
+        </Modal>
+        <AccountDashboard />
+        {!userData!.isVerified && (
+          <Button loading={loading} onClick={verifyEmailHandler}>
+            Verify Email
+          </Button>
+        )}
+        {/* {userData!.isVerified && !userData!.isPremium && (
         <Button>Upgrade to Premium</Button>
       )} */}
-    </div>
+      </div>
+    </Fragment>
   );
 };
 

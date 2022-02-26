@@ -1,8 +1,8 @@
-import { useEffect, lazy } from 'react';
+import { useEffect, lazy, Fragment } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+import HomePage from 'pages/Video/HomePage';
 import VideoPage from 'pages/Video/VideoPage';
-import VideosPage from 'pages/Video/VideosPage';
 import HistoryPage from 'pages/Video/HistoryPage';
 import ChannelPage from 'pages/Video/ChannelPage';
 
@@ -47,12 +47,12 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <>
+    <Fragment>
       <Header />
       <GlobalMessageList />
       <Main>
         <Routes>
-          <Route path="/" element={<VideosPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="video/:id" element={<VideoPage />} />
           <Route path="channel/:id" element={<ChannelPage />} />
           <Route path="history" element={<HistoryPage />} />
@@ -79,7 +79,7 @@ const App: React.FC = () => {
         </Routes>
       </Main>
       <Footer />
-    </>
+    </Fragment>
   );
 };
 

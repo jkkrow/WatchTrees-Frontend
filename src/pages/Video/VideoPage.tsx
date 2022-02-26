@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
 import VideoDetail from 'components/Video/UI/Detail/VideoDetail';
@@ -29,13 +30,21 @@ const VideoPage: React.FC = () => {
   }, [dispatchThunk, id]);
 
   return (
-    <div className="video-page">
-      <div>
-        <Loader on={!loaded} />
-        {data && <VideoTree tree={data} history={data.history} />}
+    <Fragment>
+      {data && (
+        <Helmet>
+          <title>{data.info.title} - WatchTrees</title>
+          <meta name="description" content={data.info.description} />
+        </Helmet>
+      )}
+      <div className="video-page">
+        <div>
+          <Loader on={!loaded} />
+          {data && <VideoTree tree={data} history={data.history} />}
+        </div>
+        {data && <VideoDetail video={data} />}
       </div>
-      {data && <VideoDetail video={data} />}
-    </div>
+    </Fragment>
   );
 };
 

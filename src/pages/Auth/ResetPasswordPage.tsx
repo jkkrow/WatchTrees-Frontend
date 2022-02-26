@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
@@ -52,49 +53,56 @@ const ResetPasswordPage: React.FC = () => {
   }, [dispatchThunk, token]);
 
   return (
-    <div className="auth-page">
-      {!isAccessAllowed && (
-        <>
-          <LoadingSpinner on={loading} />
-          <Response type="error" content={error} />
-        </>
-      )}
-      {isAccessAllowed && (
-        <>
-          <Response
-            type={error ? 'error' : 'message'}
-            content={error || message}
-          />
-          {!message ? (
-            <Form onSubmit={submitHandler}>
-              <Input
-                id="password"
-                type="password"
-                formInput
-                autoFocus
-                autoComplete="new-password"
-                label="Password *"
-                message="At least 8 characters with lowercase, uppercase, number, and special character"
-                validators={[VALIDATOR_PASSWORD()]}
-                onForm={setFormInput}
-              />
-              <Input
-                id="confirmPassword"
-                type="password"
-                formInput
-                autoComplete="new-password"
-                label="Confirm Password *"
-                validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
-                onForm={setFormInput}
-              />
-              <Button loading={loading}>CHANGE PASSWORD</Button>
-            </Form>
-          ) : (
-            <Link to="/auth">Sign in</Link>
-          )}
-        </>
-      )}
-    </div>
+    <Fragment>
+      <Helmet>
+        <title>Reset Password - WatchTrees</title>
+      </Helmet>
+      <div className="auth-page">
+        {!isAccessAllowed && (
+          <>
+            <LoadingSpinner on={loading} />
+            <Response type="error" content={error} />
+          </>
+        )}
+        {isAccessAllowed && (
+          <>
+            <Response
+              type={error ? 'error' : 'message'}
+              content={error || message}
+            />
+            {!message ? (
+              <Form onSubmit={submitHandler}>
+                <Input
+                  id="password"
+                  type="password"
+                  formInput
+                  autoFocus
+                  autoComplete="new-password"
+                  label="Password *"
+                  message="At least 8 characters with lowercase, uppercase, number, and special character"
+                  validators={[VALIDATOR_PASSWORD()]}
+                  onForm={setFormInput}
+                />
+                <Input
+                  id="confirmPassword"
+                  type="password"
+                  formInput
+                  autoComplete="new-password"
+                  label="Confirm Password *"
+                  validators={[
+                    VALIDATOR_EQUAL(formState.inputs.password.value),
+                  ]}
+                  onForm={setFormInput}
+                />
+                <Button loading={loading}>CHANGE PASSWORD</Button>
+              </Form>
+            ) : (
+              <Link to="/auth">Sign in</Link>
+            )}
+          </>
+        )}
+      </div>
+    </Fragment>
   );
 };
 

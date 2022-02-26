@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GoogleLogin } from 'react-google-login';
+import { Helmet } from 'react-helmet';
 
 import Response from 'components/Common/UI/Response/Response';
 import Form from 'components/Common/Element/Form/Form';
@@ -102,113 +103,121 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="auth-page">
-      <Response type={error ? 'error' : 'message'} content={error || message} />
-      {isLogin && (
-        <Form onSubmit={submitHandler}>
-          <Input
-            id="email"
-            formInput
-            autoComplete="email"
-            label="Email *"
-            validators={[VALIDATOR_EMAIL()]}
-            onForm={setFormInput}
-          />
-          <Input
-            id="password"
-            type="password"
-            formInput
-            autoComplete="current-password"
-            label="Password *"
-            validators={[VALIDATOR_REQUIRE()]}
-            onForm={setFormInput}
-          />
-          <>
-            <Link
-              to="/auth/recovery"
-              style={{ margin: '0 1rem 0 auto', fontSize: '1.2rem' }}
-              tabIndex={-1}
-            >
-              Forgot Password
-            </Link>
-          </>
-          <Button loading={loading}>SIGN IN</Button>
-        </Form>
-      )}
-      {!isLogin && (
-        <Form onSubmit={submitHandler}>
-          <Input
-            id="name"
-            formInput
-            autoComplete="name"
-            label="Name *"
-            message="At least 4 characters"
-            validators={[VALIDATOR_MINLENGTH(4)]}
-            onForm={setFormInput}
-          />
-          <Input
-            id="email"
-            formInput
-            autoComplete="email"
-            label="Email *"
-            validators={[VALIDATOR_EMAIL()]}
-            onForm={setFormInput}
-          />
-          <Input
-            id="password"
-            type="password"
-            formInput
-            autoComplete="new-password"
-            label="Password *"
-            message="At least 8 characters with lowercase, uppercase, number, and special character"
-            validators={[VALIDATOR_PASSWORD()]}
-            onForm={setFormInput}
-          />
-          <Input
-            id="confirmPassword"
-            type="password"
-            formInput
-            autoComplete="new-password"
-            label="Confirm Password *"
-            validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
-            onForm={setFormInput}
-          />
-          <Button loading={loading}>SIGN UP</Button>
-        </Form>
-      )}
-      <GoogleLogin
-        className="google-login-button"
-        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
-        prompt="select_account"
-        cookiePolicy={'single_host_origin'}
-        onSuccess={googleLoginHandler}
-        render={(renderProps) => (
-          <Button
-            onClick={renderProps.onClick}
-            disabled={renderProps.disabled || loading}
-            loading={renderProps.disabled}
-          >
-            <GoogleIcon />
-            GOOGLE SIGN IN
-          </Button>
+    <Fragment>
+      <Helmet>
+        <title>{isLogin ? 'Signin' : 'Signup'} - WatchTrees</title>
+      </Helmet>
+      <div className="auth-page">
+        <Response
+          type={error ? 'error' : 'message'}
+          content={error || message}
+        />
+        {isLogin && (
+          <Form onSubmit={submitHandler}>
+            <Input
+              id="email"
+              formInput
+              autoComplete="email"
+              label="Email *"
+              validators={[VALIDATOR_EMAIL()]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="password"
+              type="password"
+              formInput
+              autoComplete="current-password"
+              label="Password *"
+              validators={[VALIDATOR_REQUIRE()]}
+              onForm={setFormInput}
+            />
+            <>
+              <Link
+                to="/auth/recovery"
+                style={{ margin: '0 1rem 0 auto', fontSize: '1.2rem' }}
+                tabIndex={-1}
+              >
+                Forgot Password
+              </Link>
+            </>
+            <Button loading={loading}>SIGN IN</Button>
+          </Form>
         )}
-      />
-      {isLogin ? (
-        <p>
-          Don't have an account?{' '}
-          <span className="btn" onClick={toggleMode}>
-            Sign up
-          </span>
-        </p>
-      ) : (
-        <p>
-          Already have an account?{' '}
-          <span className="btn" onClick={toggleMode}>
-            Sign in
-          </span>
-        </p>
-      )}
-    </div>
+        {!isLogin && (
+          <Form onSubmit={submitHandler}>
+            <Input
+              id="name"
+              formInput
+              autoComplete="name"
+              label="Name *"
+              message="At least 4 characters"
+              validators={[VALIDATOR_MINLENGTH(4)]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="email"
+              formInput
+              autoComplete="email"
+              label="Email *"
+              validators={[VALIDATOR_EMAIL()]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="password"
+              type="password"
+              formInput
+              autoComplete="new-password"
+              label="Password *"
+              message="At least 8 characters with lowercase, uppercase, number, and special character"
+              validators={[VALIDATOR_PASSWORD()]}
+              onForm={setFormInput}
+            />
+            <Input
+              id="confirmPassword"
+              type="password"
+              formInput
+              autoComplete="new-password"
+              label="Confirm Password *"
+              validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
+              onForm={setFormInput}
+            />
+            <Button loading={loading}>SIGN UP</Button>
+          </Form>
+        )}
+        <GoogleLogin
+          className="google-login-button"
+          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
+          prompt="select_account"
+          cookiePolicy={'single_host_origin'}
+          onSuccess={googleLoginHandler}
+          render={(renderProps) => (
+            <Button
+              onClick={renderProps.onClick}
+              disabled={renderProps.disabled || loading}
+              loading={renderProps.disabled}
+            >
+              <GoogleIcon />
+              GOOGLE SIGN IN
+            </Button>
+          )}
+        />
+        {isLogin ? (
+          <p>
+            Don't have an account?{' '}
+            <span className="btn" onClick={toggleMode}>
+              Sign up
+            </span>
+          </p>
+        ) : (
+          <p>
+            Already have an account?{' '}
+            <span className="btn" onClick={toggleMode}>
+              Sign in
+            </span>
+          </p>
+        )}
+      </div>
+    </Fragment>
   );
 };
 

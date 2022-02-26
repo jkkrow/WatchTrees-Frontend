@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useParams } from 'react-router';
+import { Helmet } from 'react-helmet';
 
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
@@ -22,10 +23,18 @@ const VerificationPage: React.FC = () => {
   }, [dispatchThunk, token]);
 
   return (
-    <div className="auth-page">
-      <LoadingSpinner on={loading} />
-      <Response type={error ? 'error' : 'message'} content={error || message} />
-    </div>
+    <Fragment>
+      <Helmet>
+        <title>Verification - WatchTrees</title>
+      </Helmet>
+      <div className="auth-page">
+        <LoadingSpinner on={loading} />
+        <Response
+          type={error ? 'error' : 'message'}
+          content={error || message}
+        />
+      </div>
+    </Fragment>
   );
 };
 
