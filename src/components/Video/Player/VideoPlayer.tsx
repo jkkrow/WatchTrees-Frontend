@@ -153,7 +153,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const hideControlsHandler = useCallback(() => {
     const video = videoRef.current!;
 
-    if (video.paused) return;
+    if (video.paused) {
+      return;
+    }
 
     setDisplayControls(false);
   }, []);
@@ -167,14 +169,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       setDisplayControls(true);
     }
 
-    if (video.paused) return;
+    if (video.paused) {
+      return;
+    }
 
     setControlsTimeout(() => {
       hideControlsHandler();
-
-      if (!video.paused) {
-        setDisplayCursor('none');
-      }
+      !video.paused && setDisplayCursor('none');
     }, 2000);
   }, [hideControlsHandler, setControlsTimeout]);
 
@@ -187,12 +188,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (video.paused || video.ended) {
       playPromise.current = video.play();
-    } else {
-      playPromise.current !== undefined &&
-        playPromise.current.then(() => video.pause());
+      return;
     }
 
-    showControlsHandler();
+    if (playPromise.current === undefined) {
+      return;
+    }
+
+    playPromise.current.then(() => {
+      video.pause();
+      showControlsHandler();
+    });
   }, [showControlsHandler]);
 
   const videoPlayHandler = useCallback(() => {
@@ -202,12 +208,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     setResolutionInterval(() => {
       const player = shakaPlayer.current;
 
-      if (!player) return;
-
-      setResolutions(player.getVariantTracks());
+      player && setResolutions(player.getVariantTracks());
     }, 5000);
 
-    if (editMode) return;
+    if (editMode) {
+      return;
+    }
 
     const video = videoRef.current!;
 
@@ -222,6 +228,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         const endTime = video.duration - endPoint > 180 ? 180 : endPoint;
         const isEnded =
           isLastVideo && video.currentTime > endTime ? true : false;
+
         const history = {
           tree: treeId,
           activeNodeId: currentVideo._id,
@@ -249,17 +256,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const videoPauseHandler = useCallback(() => {
     setPlaybackState(false);
-
-    if (editMode) return;
-
-    clearHistoryInterval();
     clearResolutionInterval();
+    !editMode && clearHistoryInterval();
   }, [editMode, clearHistoryInterval, clearResolutionInterval]);
 
   const videoEndedHandler = useCallback(() => {
     const video = videoRef.current!;
     const firstValidChild = currentVideo.children.find((item) => item.info);
     const isLastVideo = currentVideo.children.length === 0 || !firstValidChild;
+
     const history = {
       tree: treeId,
       activeNodeId: currentVideo._id,
@@ -390,7 +395,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     );
 
     // Selector
-
     if (
       currentTime >= selectionStartPoint &&
       currentTime < selectionEndPoint &&
@@ -420,14 +424,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     const video = videoRef.current!;
     const progress = videoProgressRef.current!;
 
+    const rect = progress.getBoundingClientRect();
     const skipTo =
       (event.nativeEvent.offsetX / progress.offsetWidth) * video.duration;
+    let newTime: string;
 
-    progressSeekData.current = skipTo;
-
-    const rect = progress.getBoundingClientRect();
-
-    let newTime;
     if (skipTo > video.duration) {
       newTime = formatTime(video.duration);
     } else if (skipTo < 0) {
@@ -437,6 +438,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       setSeekTooltipPosition(`${event.pageX - rect.left}px`);
     }
 
+    progressSeekData.current = skipTo;
     setSeekTooltip(newTime);
   }, []);
 
@@ -944,7 +946,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (active) {
       playPromise.current = video.play();
       setDisplayCursor('none');
-    } else {
+    }
+
+    if (!active) {
       video.currentTime = 0;
 
       playPromise.current !== undefined &&
