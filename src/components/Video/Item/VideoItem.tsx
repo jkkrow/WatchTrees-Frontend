@@ -57,12 +57,12 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
 
     const viewHeight = window.innerHeight;
 
-    const scaleValue = 1.3;
-    const scaledWidth = width * scaleValue;
-    const scaledHeight = height * scaleValue;
-
     let originX = '50%';
     let originY = '50%';
+    let scaleValue = 1.3;
+
+    const scaledWidth = width * scaleValue;
+    const scaledHeight = height * scaleValue;
 
     if (scaledWidth + (containerWidth - itemRight) > containerWidth) {
       originX = '0%';
@@ -75,6 +75,9 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
     }
     if (top + scaledHeight > viewHeight) {
       originY = '100%';
+    }
+    if (scaledWidth > containerWidth) {
+      scaleValue = 1;
     }
 
     setPreviewTimeout(() => {
