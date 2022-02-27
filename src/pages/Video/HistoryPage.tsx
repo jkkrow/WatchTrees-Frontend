@@ -1,9 +1,9 @@
 import { Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 
-import VideoList from 'components/Video/List/VideoList';
+import VideoContainer from 'components/Video/Container/VideoContainer';
+import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { fetchHistory } from 'store/thunks/video-thunk';
-import 'styles/video.scss';
 
 const HistoryPage: React.FC = () => {
   return (
@@ -11,14 +11,14 @@ const HistoryPage: React.FC = () => {
       <Helmet>
         <title>History - WatchTrees</title>
       </Helmet>
-      <div className="videos-page">
-        <VideoList
+      <VideoContainer>
+        <VideoGrid
           id="history"
           label="Watch History"
           forceUpdate
           onFetch={fetchHistory}
         />
-      </div>
+      </VideoContainer>
     </Fragment>
   );
 };

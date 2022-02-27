@@ -19,6 +19,7 @@ export const useAppThunk = <T = any>(initialData?: T) => {
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState('');
 
   const isUnmounted = useRef(false);
   const reload = useRef<ReturnType<AppThunk>>();
@@ -34,19 +35,28 @@ export const useAppThunk = <T = any>(initialData?: T) => {
   const dispatchThunk = useCallback(
     async (
       thunk: AppThunk,
-      options: { errorMessage?: boolean | string; forceUpdate?: boolean } = {
-        errorMessage: true,
+      options?: {
+        response?: { message?: boolean; timer?: number };
+        forceUpdate?: boolean;
       }
     ) => {
-      const { errorMessage, forceUpdate } = options;
+      const forceUpdate = options?.forceUpdate;
+      const response = {
+        message: options?.response?.message ?? true,
+        timer: options?.response?.timer ?? undefined,
+      };
+
       try {
         setLoading(true);
 
         reload.current = async () =>
-          await dispatchThunk(thunk, { forceUpdate: true });
+          await dispatchThunk(thunk, {
+            ...options,
+            forceUpdate: true,
+          });
 
         const data = await dispatch((dispatch, getState, api) => {
-          const client = dispatch(api(forceUpdate || type !== 'POP'));
+          const client = dispatch(api(forceUpdate ?? type !== 'POP'));
           return thunk(dispatch, getState, () => () => client);
         });
 
@@ -57,22 +67,32 @@ export const useAppThunk = <T = any>(initialData?: T) => {
         data && setData(data);
         setLoading(false);
         setLoaded(true);
+
+        if (data && data.message) {
+          setMessage(data.message);
+
+          response?.message &&
+            dispatch(
+              uiActions.setMessage({
+                type: 'message',
+                content: data.message,
+                timer: response.timer || 5000,
+              })
+            );
+        }
       } catch (err) {
         setLoading(false);
         setLoaded(true);
         setError((err as Error).message);
 
-        if (errorMessage) {
-          const msg =
-            typeof errorMessage === 'string' ? `: ${errorMessage}` : '';
-
+        response?.message &&
           dispatch(
             uiActions.setMessage({
               type: 'error',
-              content: (err as Error).message + msg,
+              content: (err as Error).message,
+              timer: response.timer,
             })
           );
-        }
 
         throw err;
       }
@@ -88,5 +108,6 @@ export const useAppThunk = <T = any>(initialData?: T) => {
     loading,
     loaded,
     error,
+    message,
   };
 };

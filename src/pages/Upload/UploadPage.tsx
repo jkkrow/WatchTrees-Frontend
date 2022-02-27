@@ -2,11 +2,11 @@ import { Fragment, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet';
 
+import UploadLayout from 'components/Upload/Layout/UploadLayout';
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
 import UploadPreview from 'components/Upload/Preview/UploadPreview';
 import { useAppSelector } from 'hooks/store-hook';
-import 'styles/upload.scss';
 
 const UploadPage: React.FC = () => {
   const previewTree = useAppSelector((state) => state.upload.previewTree);
@@ -27,11 +27,11 @@ const UploadPage: React.FC = () => {
           - WatchTrees
         </title>
       </Helmet>
-      <div className="upload-page">
+      <UploadLayout>
         {previewTree && <UploadDashboard tree={previewTree} />}
         {previewTree && <UploadTree tree={previewTree} />}
         {isPreview && <UploadPreview tree={previewTree} />}
-      </div>
+      </UploadLayout>
     </Fragment>
   );
 };

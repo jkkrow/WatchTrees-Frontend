@@ -1,13 +1,11 @@
 import { Fragment, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login';
 import { Helmet } from 'react-helmet';
-
-import Response from 'components/Common/UI/Response/Response';
+import AuthLayout from 'components/Auth/Layout/AuthLayout';
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
-import { ReactComponent as GoogleIcon } from 'assets/icons/google.svg';
+import GoogleLogin from 'components/Auth/GoogleLogin/GoogleLogin';
 import { useForm } from 'hooks/form-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { signup, signin } from 'store/thunks/auth-thunk';
@@ -18,15 +16,9 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_EQUAL,
 } from 'util/validators';
-import 'styles/auth.scss';
 
 const LoginPage: React.FC = () => {
-  const {
-    dispatchThunk,
-    loading,
-    error,
-    data: message,
-  } = useAppThunk<string | null>(null);
+  const { dispatchThunk, loading } = useAppThunk();
 
   const { formState, setFormInput, setFormData } = useForm({
     email: { value: '', isValid: false },
@@ -44,14 +36,6 @@ const LoginPage: React.FC = () => {
     });
   };
 
-  const googleLoginHandler = async (response: any) => {
-    await dispatchThunk(signin({ tokenId: response.tokenId }), {
-      errorMessage: false,
-    });
-
-    navigateHandler();
-  };
-
   const submitHandler = async () => {
     if (!formState.isValid) return;
 
@@ -61,7 +45,7 @@ const LoginPage: React.FC = () => {
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
         }),
-        { errorMessage: false }
+        { response: { timer: 5000 } }
       );
     } else {
       await dispatchThunk(
@@ -107,11 +91,7 @@ const LoginPage: React.FC = () => {
       <Helmet>
         <title>{isLogin ? 'Signin' : 'Signup'} - WatchTrees</title>
       </Helmet>
-      <div className="auth-page">
-        <Response
-          type={error ? 'error' : 'message'}
-          content={error || message}
-        />
+      <AuthLayout>
         {isLogin && (
           <Form onSubmit={submitHandler}>
             <Input
@@ -184,23 +164,7 @@ const LoginPage: React.FC = () => {
             <Button loading={loading}>SIGN UP</Button>
           </Form>
         )}
-        <GoogleLogin
-          className="google-login-button"
-          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID!}
-          prompt="select_account"
-          cookiePolicy={'single_host_origin'}
-          onSuccess={googleLoginHandler}
-          render={(renderProps) => (
-            <Button
-              onClick={renderProps.onClick}
-              disabled={renderProps.disabled || loading}
-              loading={renderProps.disabled}
-            >
-              <GoogleIcon />
-              GOOGLE SIGN IN
-            </Button>
-          )}
-        />
+        <GoogleLogin onLogin={navigateHandler} />
         {isLogin ? (
           <p>
             Don't have an account?{' '}
@@ -216,7 +180,7 @@ const LoginPage: React.FC = () => {
             </span>
           </p>
         )}
-      </div>
+      </AuthLayout>
     </Fragment>
   );
 };

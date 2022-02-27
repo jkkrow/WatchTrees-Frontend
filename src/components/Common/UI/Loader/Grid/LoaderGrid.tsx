@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 
-import './LoaderList.scss';
+import './LoaderGrid.scss';
 
-interface LoaderListProps {
+interface LoaderGridProps {
   loading: boolean;
   loader: JSX.Element;
   className?: string;
   rows?: number;
 }
 
-const LoaderList: React.FC<LoaderListProps> = ({
+const LoaderGrid: React.FC<LoaderGridProps> = ({
   loading,
   loader,
   className,
@@ -35,7 +35,7 @@ const LoaderList: React.FC<LoaderListProps> = ({
 
   return loading ? (
     <div
-      className={`loader-list${className ? ` ${className}` : ''}`}
+      className={`loader-grid${className ? ` ${className}` : ''}`}
       ref={listRef}
     >
       {loaders.length > 0 ? (
@@ -51,4 +51,4 @@ const LoaderList: React.FC<LoaderListProps> = ({
   ) : null;
 };
 
-export default LoaderList;
+export default LoaderGrid;

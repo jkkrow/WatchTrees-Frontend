@@ -1,9 +1,10 @@
-.user-page {
+.video-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 120rem;
+  max-width: 160rem;
   padding: 1rem;
   margin: auto;
-  gap: 2rem;
+  gap: 3rem;
+  overflow-x: hidden;
 }

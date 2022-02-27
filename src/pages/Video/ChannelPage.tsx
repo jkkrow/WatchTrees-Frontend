@@ -3,12 +3,12 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import ChannelItem from 'components/User/Channel/Item/ChannelItem';
-import VideoList from 'components/Video/List/VideoList';
+import VideoContainer from 'components/Video/Container/VideoContainer';
+import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { useAppThunk } from 'hooks/store-hook';
 import { ChannelData } from 'store/slices/user-slice';
 import { fetchChannel } from 'store/thunks/user-thunk';
 import { fetchVideos } from 'store/thunks/video-thunk';
-import 'styles/video.scss';
 
 const ChannelPage: React.FC = () => {
   const { dispatchThunk, data, loading } = useAppThunk<ChannelData | null>(
@@ -28,10 +28,10 @@ const ChannelPage: React.FC = () => {
           <title>{data.name} - WatchTrees</title>
         </Helmet>
       )}
-      <div className="videos-page">
+      <VideoContainer>
         <ChannelItem data={data} loading={loading} />
-        <VideoList onFetch={fetchVideos} />
-      </div>
+        <VideoGrid onFetch={fetchVideos} />
+      </VideoContainer>
     </Fragment>
   );
 };

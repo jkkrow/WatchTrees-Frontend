@@ -1,0 +1,44 @@
+.video-grid {
+  max-width: 160rem;
+
+  &__container,
+  &__loader {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
+    justify-content: center;
+    align-items: center;
+    gap: 3rem 2rem;
+  }
+
+  &__label {
+    width: fit-content;
+    margin-bottom: 2rem;
+
+    &.loading {
+      width: 40%;
+      height: 3rem;
+      border-radius: 5px;
+      color: transparent;
+      background-color: var(--bg-secondary);
+    }
+  }
+
+  &__empty {
+    width: 100%;
+    padding: 3rem;
+    border-radius: 5px;
+    border: 2px solid var(--text-secondary);
+    color: var(--text-secondary);
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  @media (max-width: 1113px) {
+    &__container,
+    &__loader {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+}

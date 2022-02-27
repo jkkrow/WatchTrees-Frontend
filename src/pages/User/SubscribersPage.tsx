@@ -1,9 +1,8 @@
 import { Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 
-import ChannelList from 'components/User/Channel/List/ChannelList';
+import ChannelGrid from 'components/User/Channel/Grid/ChannelGrid';
 import { fetchSubscribers } from 'store/thunks/user-thunk';
-import 'styles/user.scss';
 
 const SubscribersPage: React.FC = () => {
   return (
@@ -11,9 +10,7 @@ const SubscribersPage: React.FC = () => {
       <Helmet>
         <title>Subscribers - WatchTrees</title>
       </Helmet>
-      <div className="user-page">
-        <ChannelList label="Subscribers" onFetch={fetchSubscribers} />
-      </div>
+      <ChannelGrid label="Subscribers" onFetch={fetchSubscribers} />
     </Fragment>
   );
 };

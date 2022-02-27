@@ -48,7 +48,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
     const { top, bottom, left, width, height } =
       itemRef.current.getBoundingClientRect();
 
-    const container = document.querySelector('.videos-page')!;
+    const container = document.querySelector('.video-container')!;
     const { left: containerLeft, width: containerWidth } =
       container.getBoundingClientRect();
 

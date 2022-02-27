@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from 'axios';
 
 import { AppThunk } from 'store';
 import { uploadActions } from 'store/slices/upload-slice';
-import { uiActions } from 'store/slices/ui-slice';
 import { findById, traverseNodes } from 'util/tree';
 
 export const initiateUpload = (): AppThunk => {
@@ -280,17 +279,13 @@ export const saveUpload = (message: string): AppThunk => {
 
     if (!uploadTree) return;
 
-    await client.patch(`/videos/${uploadTree._id}`, { uploadTree });
+    const { data } = await client.patch(`/videos/${uploadTree._id}`, {
+      uploadTree,
+    });
 
     dispatch(uploadActions.saveUpload());
 
-    dispatch(
-      uiActions.setMessage({
-        type: 'message',
-        content: message,
-        timer: 3000,
-      })
-    );
+    return data;
   };
 };
 
@@ -298,8 +293,10 @@ export const submitUpload = (): AppThunk => {
   return async (dispatch) => {
     dispatch(uploadActions.setTree({ info: { isEditing: false } }));
 
-    await dispatch(saveUpload('Video uploaded successfully'));
+    const data = await dispatch(saveUpload('Video uploaded successfully'));
 
     dispatch(uploadActions.finishUpload());
+
+    return data;
   };
 };

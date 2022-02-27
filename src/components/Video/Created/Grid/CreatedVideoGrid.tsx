@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import MyVideoItem from '../Item/CreatedVideoItem';
-import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
+import LoaderGrid from 'components/Common/UI/Loader/Grid/LoaderGrid';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
@@ -10,14 +10,14 @@ import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchCreated } from 'store/thunks/video-thunk';
-import './CreatedVideoList.scss';
+import './CreatedVideoGrid.scss';
 
-interface CreatedVideoListProps {
+interface CreatedVideoGridProps {
   onDelete: (item: VideoTreeClient) => void;
   onFetched: (fn: ReturnType<AppThunk>) => void;
 }
 
-const CreatedVideoList: React.FC<CreatedVideoListProps> = ({
+const CreatedVideoGrid: React.FC<CreatedVideoGridProps> = ({
   onDelete,
   onFetched,
 }) => {
@@ -40,14 +40,14 @@ const CreatedVideoList: React.FC<CreatedVideoListProps> = ({
   }, [onFetched, reload]);
 
   return (
-    <div className="created-video-list">
-      <LoaderList
-        className="created-video-list__loader"
+    <div className="created-video-grid">
+      <LoaderGrid
+        className="created-video-grid__loader"
         loading={!loaded}
         loader={<VideoLoader detail />}
         rows={3}
       />
-      <div className="created-video-list__container">
+      <div className="created-video-grid__container">
         <LoadingSpinner on={loaded && loading} overlay />
         {loaded &&
           data.videos.length > 0 &&
@@ -56,7 +56,7 @@ const CreatedVideoList: React.FC<CreatedVideoListProps> = ({
           ))}
       </div>
       {!loading && loaded && !data.videos.length && (
-        <div className="created-video-list__empty">No video found</div>
+        <div className="created-video-grid__empty">No video found</div>
       )}
       {loaded && (
         <Pagination
@@ -69,4 +69,4 @@ const CreatedVideoList: React.FC<CreatedVideoListProps> = ({
   );
 };
 
-export default CreatedVideoList;
+export default CreatedVideoGrid;

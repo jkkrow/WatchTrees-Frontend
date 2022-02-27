@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Navigation, Pagination, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-import VideoThumbnail from '../../UI/Thumbnail/VideoThumbnail';
+import VideoThumbnail from '../UI/Thumbnail/VideoThumbnail';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
 import Card from 'components/Common/UI/Card/Card';
 import { useAppThunk } from 'hooks/store-hook';

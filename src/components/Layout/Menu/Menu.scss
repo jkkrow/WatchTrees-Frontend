@@ -13,7 +13,6 @@
   width: 35rem;
   height: 100vh;
   background-color: var(--bg-primary);
-  transition: transform 300ms ease-in-out;
   will-change: transform;
   z-index: 110;
 
@@ -80,18 +79,17 @@
 
   &-enter {
     transform: translateX(100%);
-
-    &-active {
-      transform: translateX(0%);
-    }
   }
-
+  &-enter-active {
+    transform: translateX(0%);
+    transition: transform 300ms ease-in-out;
+  }
   &-exit {
     transform: translateX(0%);
-
-    &-active {
-      transform: translateX(100%);
-    }
+  }
+  &-exit-active {
+    transform: translateX(100%);
+    transition: transform 300ms ease-in-out;
   }
 
   @media (max-width: 450px) {

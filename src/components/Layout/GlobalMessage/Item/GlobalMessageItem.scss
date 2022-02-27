@@ -3,6 +3,7 @@
   font-weight: 500;
   color: var(--text-inversed);
   background-color: var(--bg-tertiary);
+  cursor: pointer;
   transform-origin: right;
   transition: all 300ms ease-out;
 
@@ -27,11 +28,6 @@
 
   &.error {
     color: var(--text-invalid);
-  }
-
-  svg {
-    min-width: 2.5rem;
-    min-height: 2.5rem;
   }
 
   // CSS Transition

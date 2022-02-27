@@ -2,7 +2,6 @@ import axios from 'axios';
 
 import { AppThunk } from 'store';
 import { userActions } from 'store/slices/user-slice';
-import { uiActions } from 'store/slices/ui-slice';
 
 export const updateUserName = (name: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -14,13 +13,8 @@ export const updateUserName = (name: string): AppThunk => {
     });
 
     dispatch(userActions.setUserData({ ...userData, name }));
-    dispatch(
-      uiActions.setMessage({
-        type: 'message',
-        content: data.message,
-        timer: 5000,
-      })
-    );
+
+    return data;
   };
 };
 
@@ -34,13 +28,7 @@ export const updateUserPassword = (payload: {
 
     const { data } = await client.patch('users/password', { ...payload });
 
-    dispatch(
-      uiActions.setMessage({
-        type: 'message',
-        content: data.message,
-        timer: 5000,
-      })
-    );
+    return data;
   };
 };
 
@@ -63,13 +51,8 @@ export const updateUserPicture = (file: File | null): AppThunk => {
     }
 
     dispatch(userActions.setUserData({ ...userData, picture: data.picture }));
-    dispatch(
-      uiActions.setMessage({
-        type: 'message',
-        content: data.message,
-        timer: 5000,
-      })
-    );
+
+    return data;
   };
 };
 

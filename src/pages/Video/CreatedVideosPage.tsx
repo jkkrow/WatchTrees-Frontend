@@ -1,7 +1,8 @@
 import { Fragment, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
-import CreatedVideoList from 'components/Video/Created/List/CreatedVideoList';
+import VideoContainer from 'components/Video/Container/VideoContainer';
+import CreatedVideoGrid from 'components/Video/Created/Grid/CreatedVideoGrid';
 import UploadButton from 'components/Upload/Button/UploadButton';
 import Reload from 'components/Common/UI/Reload/Reload';
 import Modal from 'components/Layout/Modal/Modal';
@@ -9,12 +10,11 @@ import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { useAppThunk } from 'hooks/store-hook';
+import { AppThunk } from 'store';
 import { deleteVideo } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
-import 'styles/user.scss';
-import { AppThunk } from 'store';
 
-const CreatedVideoListPage: React.FC = () => {
+const CreatedVideosPage: React.FC = () => {
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
@@ -57,7 +57,7 @@ const CreatedVideoListPage: React.FC = () => {
       <Helmet>
         <title>Created Videos - WatchTrees</title>
       </Helmet>
-      <div className="videos-page">
+      <VideoContainer>
         <Modal
           on={displayModal}
           type="form"
@@ -93,13 +93,13 @@ const CreatedVideoListPage: React.FC = () => {
           <Reload onReload={reloadHandler} />
           <UploadButton />
         </div>
-        <CreatedVideoList
+        <CreatedVideoGrid
           onDelete={openWarningHandler}
           onFetched={fetchedHandler}
         />
-      </div>
+      </VideoContainer>
     </Fragment>
   );
 };
 
-export default CreatedVideoListPage;
+export default CreatedVideosPage;

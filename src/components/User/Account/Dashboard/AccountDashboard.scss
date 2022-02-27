@@ -1,8 +1,8 @@
-.account-profile {
+.account-dashboard {
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: clamp(40rem, 60%, 80rem);
   padding: 2rem;
   margin: auto;
   gap: 2rem;

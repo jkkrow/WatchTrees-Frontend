@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useParams } from 'react-router';
 
 import VideoItem from '../Item/VideoItem';
-import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
+import LoaderGrid from 'components/Common/UI/Loader/Grid/LoaderGrid';
 import VideoLoader from '../Loader/VideoLoader';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
@@ -11,9 +11,9 @@ import { useSearch } from 'hooks/search-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { VideoTreeClient } from 'store/slices/video-slice';
-import './VideoList.scss';
+import './VideoGrid.scss';
 
-interface VideoListProps {
+interface VideoGridProps {
   id?: 'history' | 'favorites';
   label?: string;
   max?: number;
@@ -21,7 +21,7 @@ interface VideoListProps {
   onFetch: ReturnType<AppThunk>;
 }
 
-const VideoList: React.FC<VideoListProps> = ({
+const VideoGrid: React.FC<VideoGridProps> = ({
   id,
   label,
   max = 12,
@@ -69,19 +69,19 @@ const VideoList: React.FC<VideoListProps> = ({
   );
 
   return (
-    <div className="video-list">
+    <div className="video-grid">
       {label && (!loaded || data.videos.length > 0) && (
-        <h3 className={`video-list__label${!loaded ? ' loading' : ''}`}>
+        <h3 className={`video-grid__label${!loaded ? ' loading' : ''}`}>
           {label}
         </h3>
       )}
-      <LoaderList
-        className="video-list__loader"
+      <LoaderGrid
+        className="video-grid__loader"
         loading={!loaded}
         loader={<VideoLoader detail />}
         rows={3}
       />
-      <div className="video-list__container">
+      <div className="video-grid__container">
         <LoadingSpinner on={loaded && loading} overlay />
         {loaded &&
           data.videos.length > 0 &&
@@ -95,7 +95,7 @@ const VideoList: React.FC<VideoListProps> = ({
           ))}
       </div>
       {!loading && loaded && !data.videos.length && (
-        <div className="video-list__empty">No {label || 'video found'}</div>
+        <div className="video-grid__empty">No {label || 'video found'}</div>
       )}
       {loaded && (
         <Pagination
@@ -109,4 +109,4 @@ const VideoList: React.FC<VideoListProps> = ({
   );
 };
 
-export default VideoList;
+export default VideoGrid;

@@ -7,9 +7,7 @@ const NotFoundPage: React.FC = () => {
       <Helmet>
         <title>Not Found - WatchTrees</title>
       </Helmet>
-      <div className="layout">
-        <h2 className="center">404 - Not Found</h2>
-      </div>
+      <h2 className="center">404 - Not Found</h2>
     </Fragment>
   );
 };

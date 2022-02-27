@@ -1,9 +1,9 @@
 import { Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 
-import VideoList from 'components/Video/List/VideoList';
+import VideoContainer from 'components/Video/Container/VideoContainer';
+import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { fetchFavorites } from 'store/thunks/video-thunk';
-import 'styles/video.scss';
 
 const FavoritesPage: React.FC = () => {
   return (
@@ -11,13 +11,13 @@ const FavoritesPage: React.FC = () => {
       <Helmet>
         <title>Favorite Videos - WatchTrees</title>
       </Helmet>
-      <div className="videos-page">
-        <VideoList
+      <VideoContainer>
+        <VideoGrid
           id="favorites"
           label="Favorite Videos"
           onFetch={fetchFavorites}
         />
-      </div>
+      </VideoContainer>
     </Fragment>
   );
 };

@@ -1,14 +1,14 @@
 import { Fragment } from 'react';
 import { Helmet } from 'react-helmet';
 
-import VideoCarousel from 'components/Video/Slide/Carousel/VideoCarousel';
-import VideoGroup from 'components/Video/Slide/Group/VideoGroup';
-import VideoList from 'components/Video/List/VideoList';
+import VideoContainer from 'components/Video/Container/VideoContainer';
+import VideoCarousel from 'components/Video/Carousel/VideoCarousel';
+import VideoGroup from 'components/Video/Group/VideoGroup';
+import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { useSearch } from 'hooks/search-hook';
 import { fetchVideos, fetchHistory } from 'store/thunks/video-thunk';
-import 'styles/video.scss';
 
-const VideoListPage: React.FC = () => {
+const HomePage: React.FC = () => {
   const { keyword } = useSearch();
 
   return (
@@ -16,7 +16,7 @@ const VideoListPage: React.FC = () => {
       <Helmet>
         <title>WatchTrees</title>
       </Helmet>
-      <div className="videos-page">
+      <VideoContainer>
         {!keyword && (
           <>
             <VideoCarousel />
@@ -31,13 +31,13 @@ const VideoListPage: React.FC = () => {
           </>
         )}
         {keyword && <h2>Tag: #{keyword}</h2>}
-        <VideoList
+        <VideoGrid
           label={!keyword ? 'Recent Videos' : undefined}
           onFetch={fetchVideos}
         />
-      </div>
+      </VideoContainer>
     </Fragment>
   );
 };
 
-export default VideoListPage;
+export default HomePage;

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import ChannelItem from '../Item/ChannelItem';
 import ChannelLoader from '../Loader/ChannelLoader';
-import LoaderList from 'components/Common/UI/Loader/List/LoaderList';
+import LoaderGrid from 'components/Common/UI/Loader/Grid/LoaderGrid';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import { usePaginate } from 'hooks/page-hook';
@@ -10,15 +10,15 @@ import { useSearch } from 'hooks/search-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { AppThunk } from 'store';
 import { ChannelData } from 'store/slices/user-slice';
-import './ChannelList.scss';
+import './ChannelGrid.scss';
 
-interface ChannelListProps {
+interface ChannelGridProps {
   label?: string;
   max?: number;
   onFetch: ReturnType<AppThunk>;
 }
 
-const ChannelList: React.FC<ChannelListProps> = ({
+const ChannelGrid: React.FC<ChannelGridProps> = ({
   label,
   max = 12,
   onFetch,
@@ -38,19 +38,19 @@ const ChannelList: React.FC<ChannelListProps> = ({
   }, [dispatchThunk, currentPage, itemsPerPage, keyword, onFetch]);
 
   return (
-    <div className="channel-list">
+    <div className="channel-grid">
       {label && (!loaded || data.channels.length > 0) && (
-        <h3 className={`channel-list__label${!loaded ? ' loading' : ''}`}>
+        <h3 className={`channel-grid__label${!loaded ? ' loading' : ''}`}>
           {label}
         </h3>
       )}
-      <LoaderList
-        className="channel-list__loader"
+      <LoaderGrid
+        className="channel-grid__loader"
         loading={!loaded}
         loader={<ChannelLoader />}
         rows={3}
       />
-      <div className="channel-list__container">
+      <div className="channel-grid__container">
         <LoadingSpinner on={loaded && loading} overlay />
         {loaded &&
           data.channels.length > 0 &&
@@ -59,7 +59,7 @@ const ChannelList: React.FC<ChannelListProps> = ({
           ))}
       </div>
       {!loading && loaded && !data.channels.length && (
-        <div className="channel-list__empty">No {label || 'channel found'}</div>
+        <div className="channel-grid__empty">No {label || 'channel found'}</div>
       )}
       {loaded && (
         <Pagination
@@ -73,4 +73,4 @@ const ChannelList: React.FC<ChannelListProps> = ({
   );
 };
 
-export default ChannelList;
+export default ChannelGrid;

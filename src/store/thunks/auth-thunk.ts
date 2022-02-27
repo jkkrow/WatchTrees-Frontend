@@ -16,13 +16,8 @@ export const signup = (credentials: {
     const { data } = await client.post('/users/signup', credentials);
 
     dispatch(authActions.signin(data));
-    dispatch(
-      uiActions.setMessage({
-        content: data.message,
-        type: 'message',
-        timer: 5000,
-      })
-    );
+
+    return data;
   };
 };
 
@@ -35,6 +30,8 @@ export const signin = (
     const { data } = await client.post('/users/signin', credentials);
 
     dispatch(authActions.signin(data));
+
+    return data;
   };
 };
 
@@ -88,7 +85,7 @@ export const sendVerification = (email: string): AppThunk => {
 
     const { data } = await client.post('/users/verification', { email });
 
-    return data.message;
+    return data;
   };
 };
 
@@ -101,7 +98,7 @@ export const checkVerification = (token: string): AppThunk => {
 
     userData && dispatch(authActions.setVerified());
 
-    return data.message;
+    return data;
   };
 };
 
@@ -111,7 +108,7 @@ export const sendRecovery = (email: string): AppThunk => {
 
     const { data } = await client.post('/users/recovery', { email });
 
-    return data.message;
+    return data;
   };
 };
 
@@ -119,7 +116,9 @@ export const checkRecovery = (token: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    await client.get(`/users/recovery/${token}`);
+    const { data } = await client.get(`/users/recovery/${token}`);
+
+    return data;
   };
 };
 
@@ -136,6 +135,6 @@ export const resetPassword = (
       confirmPassword,
     });
 
-    return data.message;
+    return data;
   };
 };

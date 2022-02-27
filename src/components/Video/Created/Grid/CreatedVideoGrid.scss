@@ -1,23 +1,12 @@
-.channel-list {
-  &__container {
+.created-video-grid {
+  &__container,
+  &__loader {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(25rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
     justify-content: center;
     align-items: center;
     gap: 3rem 2rem;
-  }
-
-  &__label {
-    width: fit-content;
-    margin-bottom: 2rem;
-
-    &.loading {
-      width: 45%;
-      border-radius: 5px;
-      color: transparent;
-      background-color: var(--bg-tertiary);
-    }
   }
 
   &__empty {

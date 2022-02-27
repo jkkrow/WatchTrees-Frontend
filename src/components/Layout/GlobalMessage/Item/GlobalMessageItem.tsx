@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useTimeout } from 'hooks/timer-hook';
 import { useAppDispatch } from 'hooks/store-hook';
 import { Message, uiActions } from 'store/slices/ui-slice';
@@ -50,11 +49,9 @@ const GlobalMessageItem: React.FC<GlobalMessageItemProps> = ({ message }) => {
         className={`global-message-item${
           message.type === 'error' ? ' error' : ' message'
         }`}
+        onClick={closeMessageHandler}
       >
-        <div className="global-message-item__body">
-          <div className="global-message-item__content">{message.content}</div>
-          <RemoveIcon className="btn" onClick={closeMessageHandler} />
-        </div>
+        <div className="global-message-item__body">{message.content}</div>
         {message.timer && (
           <div
             className="global-message-item__timer"
