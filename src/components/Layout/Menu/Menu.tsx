@@ -80,70 +80,78 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
               </div>
             )}
 
-            <ul className="menu__list">
-              {userData && (
-                <>
-                  <li>
-                    <NavLink
-                      className={({ isActive }) => (isActive ? ' active' : '')}
-                      to="/user/account"
-                    >
-                      <UserIcon />
-                      Account
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      className={({ isActive }) => (isActive ? ' active' : '')}
-                      to="/user/subscribes"
-                    >
-                      <SubscribeUsersIcon />
-                      Subscribes
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      className={({ isActive }) => (isActive ? ' active' : '')}
-                      to="/user/favorites"
-                    >
-                      <FavoriteIcon />
-                      Favorites
-                    </NavLink>
-                  </li>
-                </>
-              )}
-              <li>
-                <NavLink
-                  className={({ isActive }) => (isActive ? ' active' : '')}
-                  to="/history"
-                >
-                  <TimeIcon />
-                  History
-                </NavLink>
-              </li>
-              {userData && (
+            <nav className="menu__navigation">
+              <ul className="menu__list">
+                {userData && (
+                  <>
+                    <li>
+                      <NavLink
+                        className={({ isActive }) =>
+                          isActive ? ' active' : ''
+                        }
+                        to="/user/account"
+                      >
+                        <UserIcon />
+                        Account
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        className={({ isActive }) =>
+                          isActive ? ' active' : ''
+                        }
+                        to="/user/subscribes"
+                      >
+                        <SubscribeUsersIcon />
+                        Subscribes
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        className={({ isActive }) =>
+                          isActive ? ' active' : ''
+                        }
+                        to="/user/favorites"
+                      >
+                        <FavoriteIcon />
+                        Favorites
+                      </NavLink>
+                    </li>
+                  </>
+                )}
                 <li>
-                  <NavLink to="/auth" onClick={logoutHandler}>
-                    <SignoutIcon />
-                    Signout
-                  </NavLink>
-                </li>
-              )}
-              <li>
-                {!userData && (
                   <NavLink
                     className={({ isActive }) => (isActive ? ' active' : '')}
-                    to="/auth"
+                    to="/history"
                   >
-                    <SigninIcon />
-                    Signin
+                    <TimeIcon />
+                    History
                   </NavLink>
+                </li>
+                {userData && (
+                  <li>
+                    <NavLink to="/auth" onClick={logoutHandler}>
+                      <SignoutIcon />
+                      Signout
+                    </NavLink>
+                  </li>
                 )}
-              </li>
-              <li>
-                <Theme />
-              </li>
-            </ul>
+                <li>
+                  {!userData && (
+                    <NavLink
+                      className={({ isActive }) => (isActive ? ' active' : '')}
+                      to="/auth"
+                    >
+                      <SigninIcon />
+                      Signin
+                    </NavLink>
+                  )}
+                </li>
+                <li>
+                  <Theme />
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </CSSTransition>

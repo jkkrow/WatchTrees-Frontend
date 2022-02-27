@@ -16,11 +16,11 @@ const VideoTimestamp: React.FC<VideoTimestampProps> = ({
 
   const { timeSinceString, dateString } = useMemo(() => {
     const timeSinceString = formatDate(createdAt);
-    const dateString = new Date(createdAt)
-      .toDateString()
-      .split(' ')
-      .slice(1)
-      .join(' ');
+    const dateString = new Date(createdAt).toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
 
     return { timeSinceString, dateString };
   }, [createdAt]);
