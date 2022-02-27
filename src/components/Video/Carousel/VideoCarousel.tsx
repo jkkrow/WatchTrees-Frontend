@@ -1,13 +1,10 @@
-import { useEffect } from 'react';
 import { Navigation, Pagination, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 import VideoThumbnail from '../UI/Thumbnail/VideoThumbnail';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
 import Card from 'components/Common/UI/Card/Card';
-import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
-import { fetchVideos } from 'store/thunks/video-thunk';
 
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
@@ -20,21 +17,12 @@ import { Link } from 'react-router-dom';
 import VideoViews from 'components/Video/UI/Views/VideoViews';
 import VideoFavorites from 'components/Video/UI/Favorites/VideoFavorites';
 
-const CAROUSEL_VIDEOS_NUMBER = 5;
+interface VideoCarouselProps {
+  data: { videos: VideoTreeClient[] };
+  loaded: boolean;
+}
 
-const VideoCarousel: React.FC = () => {
-  const { dispatchThunk, data, loaded } = useAppThunk<{
-    videos: VideoTreeClient[];
-    count: number;
-  }>({
-    videos: [],
-    count: 0,
-  });
-
-  useEffect(() => {
-    dispatchThunk(fetchVideos({ max: CAROUSEL_VIDEOS_NUMBER }));
-  }, [dispatchThunk]);
-
+const VideoCarousel: React.FC<VideoCarouselProps> = ({ data, loaded }) => {
   return (
     <div className="video-carousel">
       <VideoLoader on={!loaded} />

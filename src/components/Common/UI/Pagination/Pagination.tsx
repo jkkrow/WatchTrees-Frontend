@@ -11,22 +11,22 @@ import './Pagination.scss';
 interface PaginationProps {
   count: number;
   currentPage: number;
-  itemsPerPage: number;
+  pageSize: number;
   keyword?: string;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
   count,
   currentPage = 1,
-  itemsPerPage,
+  pageSize,
   keyword,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const totalPage = useMemo(
-    () => Math.ceil(count / itemsPerPage),
-    [count, itemsPerPage]
+    () => Math.ceil(count / pageSize),
+    [count, pageSize]
   );
 
   const pageHandler = (pageNumber: number) => {
@@ -35,7 +35,7 @@ const Pagination: React.FC<PaginationProps> = ({
     }
 
     const destinationUrl = `${location.pathname}${
-      keyword ? `?search=${keyword}&page=${pageNumber}` : `?page=${pageNumber}`
+      keyword ? `?keyword=${keyword}&page=${pageNumber}` : `?page=${pageNumber}`
     }`;
 
     navigate(destinationUrl);

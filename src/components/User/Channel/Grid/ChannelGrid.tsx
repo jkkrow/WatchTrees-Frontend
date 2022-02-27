@@ -1,42 +1,32 @@
-import { useEffect } from 'react';
-
 import ChannelItem from '../Item/ChannelItem';
 import ChannelLoader from '../Loader/ChannelLoader';
 import LoaderGrid from 'components/Common/UI/Loader/Grid/LoaderGrid';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
-import { usePaginate } from 'hooks/page-hook';
-import { useSearch } from 'hooks/search-hook';
-import { useAppThunk } from 'hooks/store-hook';
-import { AppThunk } from 'store';
+import NotFound from 'components/Common/UI/NotFound/NotFound';
+import { ReactComponent as SubscribeUserIcon } from 'assets/icons/subscribe-users.svg';
 import { ChannelData } from 'store/slices/user-slice';
 import './ChannelGrid.scss';
 
 interface ChannelGridProps {
+  data: { channels: ChannelData[]; count: number };
+  loading: boolean;
+  loaded: boolean;
+  currentPage: number;
+  pageSize: number;
+  keyword?: string;
   label?: string;
-  max?: number;
-  onFetch: ReturnType<AppThunk>;
 }
 
 const ChannelGrid: React.FC<ChannelGridProps> = ({
+  data,
+  loading,
+  loaded,
+  currentPage,
+  pageSize,
+  keyword,
   label,
-  max = 12,
-  onFetch,
 }) => {
-  const { dispatchThunk, data, loading, loaded } = useAppThunk<{
-    channels: ChannelData[];
-    count: number;
-  }>({ channels: [], count: 0 });
-
-  const { currentPage, itemsPerPage } = usePaginate(max);
-  const { keyword } = useSearch();
-
-  useEffect(() => {
-    dispatchThunk(
-      onFetch({ page: currentPage, max: itemsPerPage, search: keyword })
-    );
-  }, [dispatchThunk, currentPage, itemsPerPage, keyword, onFetch]);
-
   return (
     <div className="channel-grid">
       {label && (!loaded || data.channels.length > 0) && (
@@ -59,13 +49,16 @@ const ChannelGrid: React.FC<ChannelGridProps> = ({
           ))}
       </div>
       {!loading && loaded && !data.channels.length && (
-        <div className="channel-grid__empty">No {label || 'channel found'}</div>
+        <NotFound
+          text={`No ${label || 'channel found'}`}
+          icon={<SubscribeUserIcon />}
+        />
       )}
       {loaded && (
         <Pagination
           count={data.count}
           currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
+          pageSize={pageSize}
           keyword={keyword}
         />
       )}

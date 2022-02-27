@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 
 import VideoContainer from 'components/Video/Container/VideoContainer';
@@ -9,12 +9,25 @@ import Modal from 'components/Layout/Modal/Modal';
 import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
+import { usePaginate } from 'hooks/page-hook';
 import { useAppThunk } from 'hooks/store-hook';
-import { AppThunk } from 'store';
-import { deleteVideo } from 'store/thunks/video-thunk';
+import { deleteVideo, fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 
 const CreatedVideosPage: React.FC = () => {
+  const {
+    dispatchThunk: fetchThunk,
+    data: fetchData,
+    loading: fetchLoading,
+    loaded: fetchLoaded,
+    reload,
+  } = useAppThunk<{
+    videos: VideoTreeClient[];
+    count: number;
+  }>({ videos: [], count: 0 });
+
+  const { dispatchThunk: deleteThunk, loading: deleteLoading } = useAppThunk();
+
   const [displayModal, setDisplayModal] = useState(false);
   const [targetItem, setTargetItem] = useState<VideoTreeClient | null>(null);
 
@@ -22,9 +35,11 @@ const CreatedVideosPage: React.FC = () => {
     video: { value: '', isValid: false },
   });
 
-  const { dispatchThunk: deleteThunk, loading: deleteLoading } = useAppThunk();
+  const { currentPage, pageSize } = usePaginate();
 
-  const reloadRef = useRef<ReturnType<AppThunk> | null>(null);
+  useEffect(() => {
+    fetchThunk(fetchCreated({ page: currentPage, max: pageSize }));
+  }, [fetchThunk, currentPage, pageSize]);
 
   const openWarningHandler = (item: VideoTreeClient) => {
     setDisplayModal(true);
@@ -36,20 +51,12 @@ const CreatedVideosPage: React.FC = () => {
     setTargetItem(null);
   };
 
-  const reloadHandler = () => {
-    reloadRef.current && reloadRef.current();
-  };
-
   const deleteHandler = async () => {
     if (!targetItem || !targetItem._id) return;
 
     await deleteThunk(deleteVideo(targetItem));
 
-    reloadHandler();
-  };
-
-  const fetchedHandler = (fn: ReturnType<AppThunk>) => {
-    reloadRef.current = fn;
+    reload();
   };
 
   return (
@@ -90,12 +97,16 @@ const CreatedVideosPage: React.FC = () => {
             gap: '1rem',
           }}
         >
-          <Reload onReload={reloadHandler} />
+          <Reload onReload={reload} />
           <UploadButton />
         </div>
         <CreatedVideoGrid
+          data={fetchData}
+          loading={fetchLoading}
+          loaded={fetchLoaded}
+          currentPage={currentPage}
+          pageSize={pageSize}
           onDelete={openWarningHandler}
-          onFetched={fetchedHandler}
         />
       </VideoContainer>
     </Fragment>

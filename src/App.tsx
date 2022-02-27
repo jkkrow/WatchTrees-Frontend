@@ -2,6 +2,7 @@ import { useEffect, lazy, Fragment } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import HomePage from 'pages/Video/HomePage';
+import SearchPage from 'pages/Video/SearchPage';
 import VideoPage from 'pages/Video/VideoPage';
 import HistoryPage from 'pages/Video/HistoryPage';
 import ChannelPage from 'pages/Video/ChannelPage';
@@ -53,6 +54,7 @@ const App: React.FC = () => {
       <Main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="search" element={<SearchPage />} />
           <Route path="video/:id" element={<VideoPage />} />
           <Route path="channel/:id" element={<ChannelPage />} />
           <Route path="history" element={<HistoryPage />} />

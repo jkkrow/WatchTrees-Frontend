@@ -47,7 +47,10 @@ const ChannelItem: React.FC<ChannelItemProps> = ({ data, loading, button }) => {
       return navigate('/auth', { state: location.pathname });
     }
 
-    await dispatchThunk(toggleSubscribe(detail._id));
+    await dispatchThunk(toggleSubscribe(detail._id), {
+      response: { timer: 3000 },
+    });
+
     setDetail((prev) => ({
       ...prev!,
       subscribers: prev!.isSubscribed

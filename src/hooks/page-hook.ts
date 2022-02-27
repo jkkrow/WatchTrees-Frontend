@@ -1,9 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useLocation } from 'react-router';
 
-export const usePaginate = (max: number = 10) => {
-  const [itemsPerPage, setItemsPerPage] = useState(max);
-
+export const usePaginate = (pageSize = 12) => {
   const location = useLocation();
 
   const currentPage = useMemo(() => {
@@ -21,5 +19,5 @@ export const usePaginate = (max: number = 10) => {
     return page;
   }, [location.search]);
 
-  return { currentPage, itemsPerPage, setItemsPerPage };
+  return { currentPage, pageSize };
 };

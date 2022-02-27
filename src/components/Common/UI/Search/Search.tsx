@@ -23,7 +23,7 @@ const Search = () => {
 
     if (!keyword) return;
 
-    navigate(`/?search=${keyword}`);
+    navigate(`/search/?keyword=${keyword}`);
     inputRef.current!.blur();
   };
 

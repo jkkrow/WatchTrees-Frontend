@@ -1,44 +1,30 @@
-import { useEffect } from 'react';
-
 import MyVideoItem from '../Item/CreatedVideoItem';
 import LoaderGrid from 'components/Common/UI/Loader/Grid/LoaderGrid';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
-import { usePaginate } from 'hooks/page-hook';
-import { useAppThunk } from 'hooks/store-hook';
-import { AppThunk } from 'store';
+import NotFound from 'components/Common/UI/NotFound/NotFound';
+import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
 import { VideoTreeClient } from 'store/slices/video-slice';
-import { fetchCreated } from 'store/thunks/video-thunk';
 import './CreatedVideoGrid.scss';
 
 interface CreatedVideoGridProps {
+  data: { videos: VideoTreeClient[]; count: number };
+  loading: boolean;
+  loaded: boolean;
+  currentPage: number;
+  pageSize: number;
   onDelete: (item: VideoTreeClient) => void;
-  onFetched: (fn: ReturnType<AppThunk>) => void;
 }
 
 const CreatedVideoGrid: React.FC<CreatedVideoGridProps> = ({
+  data,
+  loading,
+  loaded,
+  currentPage,
+  pageSize,
   onDelete,
-  onFetched,
 }) => {
-  const { dispatchThunk, reload, data, loading, loaded } = useAppThunk<{
-    videos: VideoTreeClient[];
-    count: number;
-  }>({
-    videos: [],
-    count: 0,
-  });
-
-  const { currentPage, itemsPerPage } = usePaginate(12);
-
-  useEffect(() => {
-    dispatchThunk(fetchCreated({ page: currentPage, max: itemsPerPage }));
-  }, [dispatchThunk, currentPage, itemsPerPage]);
-
-  useEffect(() => {
-    onFetched(() => reload());
-  }, [onFetched, reload]);
-
   return (
     <div className="created-video-grid">
       <LoaderGrid
@@ -56,13 +42,13 @@ const CreatedVideoGrid: React.FC<CreatedVideoGridProps> = ({
           ))}
       </div>
       {!loading && loaded && !data.videos.length && (
-        <div className="created-video-grid__empty">No video found</div>
+        <NotFound text="No Video" icon={<VideoIcon />} />
       )}
       {loaded && (
         <Pagination
           count={data.count}
           currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
+          pageSize={pageSize}
         />
       )}
     </div>

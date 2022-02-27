@@ -9,7 +9,7 @@ export const useSearch = () => {
 
     if (location.search) {
       const urlQuery = new URLSearchParams(location.search);
-      text = urlQuery.get('search') || '';
+      text = urlQuery.get('keyword') || '';
     }
 
     return text;

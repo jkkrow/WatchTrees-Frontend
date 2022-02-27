@@ -4,28 +4,30 @@ import { Helmet } from 'react-helmet';
 import VideoContainer from 'components/Video/Container/VideoContainer';
 import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { usePaginate } from 'hooks/page-hook';
+import { useSearch } from 'hooks/search-hook';
 import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
-import { fetchHistory } from 'store/thunks/video-thunk';
+import { fetchVideos } from 'store/thunks/video-thunk';
 
-const HistoryPage: React.FC = () => {
+const HomePage: React.FC = () => {
   const { dispatchThunk, data, loading, loaded } = useAppThunk<{
     videos: VideoTreeClient[];
     count: number;
   }>({ videos: [], count: 0 });
 
   const { currentPage, pageSize } = usePaginate();
+  const { keyword } = useSearch();
 
   useEffect(() => {
-    dispatchThunk(fetchHistory({ page: currentPage, max: pageSize }), {
-      forceUpdate: true,
-    });
-  }, [dispatchThunk, currentPage, pageSize]);
+    dispatchThunk(
+      fetchVideos({ page: currentPage, max: pageSize, search: keyword })
+    );
+  }, [dispatchThunk, currentPage, pageSize, keyword]);
 
   return (
     <Fragment>
       <Helmet>
-        <title>History - WatchTrees</title>
+        <title>WatchTrees</title>
       </Helmet>
       <VideoContainer>
         <VideoGrid
@@ -34,12 +36,12 @@ const HistoryPage: React.FC = () => {
           loaded={loaded}
           currentPage={currentPage}
           pageSize={pageSize}
-          id="history"
-          label="Watch History"
+          keyword={keyword}
+          label={`Tag: #${keyword}`}
         />
       </VideoContainer>
     </Fragment>
   );
 };
 
-export default HistoryPage;
+export default HomePage;
