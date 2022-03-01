@@ -54,8 +54,8 @@ const App: React.FC = () => {
       <Main>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="search" element={<SearchPage />} />
           <Route path="video/:id" element={<VideoPage />} />
+          <Route path="search" element={<SearchPage />} />
           <Route path="channel/:id" element={<ChannelPage />} />
           <Route path="history" element={<HistoryPage />} />
           <Route path="auth" element={<LoginPage />} />

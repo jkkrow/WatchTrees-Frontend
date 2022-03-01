@@ -26,57 +26,57 @@ const VideoCarousel: React.FC<VideoCarouselProps> = ({ data, loaded }) => {
   return (
     <div className="video-carousel">
       <VideoLoader on={!loaded} />
-      {loaded && data.videos.length > 0 && (
-        <Card>
-          <Swiper
-            modules={[Navigation, Pagination, Autoplay]}
-            pagination={{ clickable: true }}
-            autoplay={{
-              delay: 3000,
-              pauseOnMouseEnter: true,
-              disableOnInteraction: false,
-            }}
-            speed={700}
-            navigation
-            loop
-          >
-            {data.videos.map((video) => (
-              <SwiperSlide key={video._id} className="video-carousel__slider">
+      <Card>
+        <Swiper
+          modules={[Navigation, Pagination, Autoplay]}
+          pagination={{ clickable: true }}
+          autoplay={{
+            delay: 3000,
+            pauseOnMouseEnter: true,
+            disableOnInteraction: false,
+          }}
+          speed={700}
+          navigation
+          loop
+        >
+          {data.videos.map((video) => (
+            <SwiperSlide key={video._id} className="video-carousel__slider">
+              <div className="video-carousel__thumbnail">
                 <VideoThumbnail video={video} />
-                <div className="video-carousel__info">
-                  <Link
-                    to={`/video/${video._id}`}
-                    className="video-carousel__title"
-                  >
-                    {video.info.title}
-                  </Link>
-                  <div className="video-carousel__creator">
-                    <VideoCreator info={video.info} />
-                  </div>
-                  <div className="video-carousel__duration">
-                    <VideoDuration
-                      brief
-                      minDuration={video.info.minDuration}
-                      maxDuration={video.info.maxDuration}
-                    />
-                  </div>
-                  <div className="video-carousel__data">
-                    <VideoViews views={video.data.views} brief />
-                    <VideoFavorites
-                      videoId={video._id}
-                      favorites={video.data.favorites}
-                      isFavorite={video.data.isFavorite}
-                    />
-                  </div>
-                  <div className="video-carousel__description">
-                    {video.info.description}
-                  </div>
+              </div>
+              <div className="video-carousel__info">
+                <Link
+                  to={`/video/${video._id}`}
+                  className="video-carousel__title"
+                >
+                  {video.info.title}
+                </Link>
+                <div className="video-carousel__creator">
+                  <VideoCreator info={video.info} />
                 </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </Card>
-      )}
+                <div className="video-carousel__duration">
+                  <VideoDuration
+                    brief
+                    minDuration={video.info.minDuration}
+                    maxDuration={video.info.maxDuration}
+                  />
+                </div>
+                <div className="video-carousel__data">
+                  <VideoViews views={video.data.views} brief />
+                  <VideoFavorites
+                    videoId={video._id}
+                    favorites={video.data.favorites}
+                    isFavorite={video.data.isFavorite}
+                  />
+                </div>
+                <div className="video-carousel__description">
+                  {video.info.description}
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </Card>
     </div>
   );
 };

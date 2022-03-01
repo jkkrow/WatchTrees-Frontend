@@ -29,7 +29,7 @@ const ChannelGrid: React.FC<ChannelGridProps> = ({
 }) => {
   return (
     <div className="channel-grid">
-      {label && (!loaded || data.channels.length > 0) && (
+      {label && (
         <h3 className={`channel-grid__label${!loaded ? ' loading' : ''}`}>
           {label}
         </h3>
@@ -42,11 +42,9 @@ const ChannelGrid: React.FC<ChannelGridProps> = ({
       />
       <div className="channel-grid__container">
         <LoadingSpinner on={loaded && loading} overlay />
-        {loaded &&
-          data.channels.length > 0 &&
-          data.channels.map((item) => (
-            <ChannelItem key={item._id} data={item} button />
-          ))}
+        {data.channels.map((item) => (
+          <ChannelItem key={item._id} data={item} button />
+        ))}
       </div>
       {!loading && loaded && !data.channels.length && (
         <NotFound

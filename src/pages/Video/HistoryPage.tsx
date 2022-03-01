@@ -17,9 +17,16 @@ const HistoryPage: React.FC = () => {
   const { currentPage, pageSize } = usePaginate();
 
   useEffect(() => {
-    dispatchThunk(fetchHistory({ page: currentPage, max: pageSize }), {
-      forceUpdate: true,
-    });
+    dispatchThunk(
+      fetchHistory({
+        page: currentPage,
+        max: pageSize,
+        skipFullyWatched: false,
+      }),
+      {
+        forceUpdate: true,
+      }
+    );
   }, [dispatchThunk, currentPage, pageSize]);
 
   return (

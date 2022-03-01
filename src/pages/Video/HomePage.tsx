@@ -1,4 +1,5 @@
 import { Fragment, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import VideoContainer from 'components/Video/Container/VideoContainer';
@@ -49,13 +50,13 @@ const HomePage: React.FC = () => {
   }, [gridThunk, currentPage, pageSize]);
 
   useEffect(() => {
-    groupThunk(fetchHistory({ max: 10, skipFullyWatched: true }), {
+    groupThunk(fetchHistory({ page: 1, max: 10, skipFullyWatched: true }), {
       forceUpdate: true,
     });
   }, [groupThunk]);
 
   useEffect(() => {
-    carouselThunk(fetchVideos({ max: 5 }));
+    carouselThunk(fetchVideos({ page: 1, max: 5 }));
   }, [carouselThunk]);
 
   return (
@@ -81,6 +82,7 @@ const HomePage: React.FC = () => {
           label="Recent Videos"
         />
       </VideoContainer>
+      <Outlet />
     </Fragment>
   );
 };

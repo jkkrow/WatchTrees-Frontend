@@ -35,11 +35,9 @@ const CreatedVideoGrid: React.FC<CreatedVideoGridProps> = ({
       />
       <div className="created-video-grid__container">
         <LoadingSpinner on={loaded && loading} overlay />
-        {loaded &&
-          data.videos.length > 0 &&
-          data.videos.map((item) => (
-            <MyVideoItem key={item._id} item={item} onDelete={onDelete} />
-          ))}
+        {data.videos.map((item) => (
+          <MyVideoItem key={item._id} item={item} onDelete={onDelete} />
+        ))}
       </div>
       {!loading && loaded && !data.videos.length && (
         <NotFound text="No Video" icon={<VideoIcon />} />

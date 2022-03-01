@@ -1,21 +1,25 @@
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
 import VideoDetail from 'components/Video/UI/Detail/VideoDetail';
+import Loader from '../Player/UI/Loader/Loader';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import './VideoLayout.scss';
 
 interface VideoLayoutProps {
-  video: VideoTreeClient;
+  video: VideoTreeClient | null;
+  loaded: boolean;
 }
 
-const VideoLayout: React.FC<VideoLayoutProps> = ({ video }) => {
+const VideoLayout: React.FC<VideoLayoutProps> = ({ video, loaded }) => {
   return (
     <div className="video-layout">
       <section>
-        <VideoTree tree={video} history={video.history} />
+        <Loader
+          on={!loaded}
+          style={{ backgroundColor: 'hsl(0, 0%, 0%)', zIndex: 120 }}
+        />
+        {video && <VideoTree tree={video} history={video.history} />}
       </section>
-      <section>
-        <VideoDetail video={video} />
-      </section>
+      <section>{video && <VideoDetail video={video} />}</section>
     </div>
   );
 };

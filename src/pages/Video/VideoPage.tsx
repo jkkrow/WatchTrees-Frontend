@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import VideoLayout from 'components/Video/Layout/VideoLayout';
-import Loader from 'components/Video/Player/UI/Loader/Loader';
 import { useAppThunk } from 'hooks/store-hook';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideo } from 'store/thunks/video-thunk';
@@ -35,11 +34,7 @@ const VideoPage: React.FC = () => {
           <meta name="description" content={data.info.description} />
         </Helmet>
       )}
-      <Loader
-        on={!loaded}
-        style={{ backgroundColor: 'hsl(0, 0%, 0%)', zIndex: 120 }}
-      />
-      {data && <VideoLayout video={data} />}
+      <VideoLayout video={data} loaded={loaded} />
     </Fragment>
   );
 };

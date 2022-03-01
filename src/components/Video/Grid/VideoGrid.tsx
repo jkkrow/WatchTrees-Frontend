@@ -52,15 +52,11 @@ const VideoGrid: React.FC<VideoGridProps> = ({
 
   return (
     <div className="video-grid">
-      {label &&
-        (!loaded || videos.length > 0) &&
-        (!loaded ? (
-          <h3 className="video-group__label loading">{label}</h3>
-        ) : (
-          <h3 className="video-group__label">
-            {to ? <Link to={to}>{label}</Link> : label}
-          </h3>
-        ))}
+      {label && (
+        <h3 className={`video-grid__label${!loaded ? ' loading' : ''}`}>
+          {to ? <Link to={to}>{label}</Link> : label}
+        </h3>
+      )}
       <LoaderGrid
         className="video-grid__loader"
         loading={!loaded}
@@ -69,16 +65,14 @@ const VideoGrid: React.FC<VideoGridProps> = ({
       />
       <div className="video-grid__container">
         <LoadingSpinner on={loaded && loading} overlay />
-        {loaded &&
-          videos.length > 0 &&
-          videos.map((item) => (
-            <VideoItem
-              key={item._id}
-              id={id}
-              video={item}
-              onDelete={filterList}
-            />
-          ))}
+        {videos.map((item) => (
+          <VideoItem
+            key={item._id}
+            id={id}
+            video={item}
+            onDelete={filterList}
+          />
+        ))}
       </div>
       {!loading && loaded && !videos.length && (
         <NotFound text={`No ${label || 'video'}`} icon={<VideoIcon />} />

@@ -25,7 +25,12 @@ export const fetchVideo = (id: string): AppThunk => {
   };
 };
 
-export const fetchVideos = (params: any): AppThunk => {
+export const fetchVideos = (params: {
+  page: number;
+  max: number;
+  search?: string;
+  channelId?: string;
+}): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData;
     const userId = userData ? userData._id : '';
@@ -41,7 +46,10 @@ export const fetchVideos = (params: any): AppThunk => {
   };
 };
 
-export const fetchCreated = (params: any): AppThunk => {
+export const fetchCreated = (params: {
+  page: number;
+  max: number;
+}): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
@@ -53,7 +61,11 @@ export const fetchCreated = (params: any): AppThunk => {
   };
 };
 
-export const fetchHistory = (params: any): AppThunk => {
+export const fetchHistory = (params: {
+  page: number;
+  max: number;
+  skipFullyWatched: boolean;
+}): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData;
     const client = dispatch(api());
@@ -79,7 +91,10 @@ export const fetchHistory = (params: any): AppThunk => {
   };
 };
 
-export const fetchFavorites = (params: any): AppThunk => {
+export const fetchFavorites = (params: {
+  page: number;
+  max: number;
+}): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 

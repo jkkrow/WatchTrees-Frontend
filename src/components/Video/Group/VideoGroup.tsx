@@ -42,50 +42,44 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
     [setVideos]
   );
 
-  return (
+  return !loaded || videos.length > 0 ? (
     <div className="video-group">
-      {label &&
-        (!loaded || videos.length > 0) &&
-        (!loaded ? (
-          <h3 className="video-group__label loading">{label}</h3>
-        ) : (
-          <h3 className="video-group__label">
-            {to ? <Link to={to}>{label}</Link> : label}
-          </h3>
-        ))}
+      {label && (
+        <h3 className={`video-group__label${!loaded ? ' loading' : ''}`}>
+          {to ? <Link to={to}>{label}</Link> : label}
+        </h3>
+      )}
       <LoaderGrid
         className="video-group__loader"
         loading={!loaded}
         loader={<VideoLoader detail />}
       />
-      {!!loaded && videos.length > 0 && (
-        <Swiper
-          className="video-group__slider"
-          modules={[Navigation]}
-          slidesPerView={2}
-          slidesPerGroup={2}
-          breakpoints={{
-            1114: {
-              slidesPerView: 3,
-              slidesPerGroup: 3,
-            },
-            1374: {
-              slidesPerView: 4,
-              slidesPerGroup: 4,
-            },
-          }}
-          spaceBetween={20}
-          navigation
-        >
-          {videos.map((video) => (
-            <SwiperSlide key={video._id}>
-              <VideoItem id={id} video={video} onDelete={filterList} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      )}
+      <Swiper
+        className="video-group__slider"
+        modules={[Navigation]}
+        slidesPerView={2}
+        slidesPerGroup={2}
+        breakpoints={{
+          1114: {
+            slidesPerView: 3,
+            slidesPerGroup: 3,
+          },
+          1374: {
+            slidesPerView: 4,
+            slidesPerGroup: 4,
+          },
+        }}
+        spaceBetween={20}
+        navigation
+      >
+        {videos.map((video) => (
+          <SwiperSlide key={video._id}>
+            <VideoItem id={id} video={video} onDelete={filterList} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
-  );
+  ) : null;
 };
 
 export default VideoGroup;
