@@ -1,5 +1,4 @@
 import { Fragment, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import VideoContainer from 'components/Video/Container/VideoContainer';
@@ -82,7 +81,6 @@ const HomePage: React.FC = () => {
           label="Recent Videos"
         />
       </VideoContainer>
-      <Outlet />
     </Fragment>
   );
 };
