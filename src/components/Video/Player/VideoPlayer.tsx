@@ -9,11 +9,13 @@ import Progress from './UI/Controls/Progress/Progress';
 import Time from './UI/Controls/Time/Time';
 import Fullscreen from './UI/Controls/Fullscreen/Fullscreen';
 import Settings from './UI/Controls/Settings/Settings';
+import Records from './UI/Controls/Records/Records';
 import Marker from './UI/Controls/Marker/Marker';
 import VideoHeader from './UI/Header/VideoHeader';
 import Selector from './UI/Selector/Selector';
 import Loader from './UI/Loader/Loader';
 import KeyAction from './UI/KeyAction/KeyAction';
+import Error from './UI/Error/Error';
 import { useTimeout, useInterval } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
@@ -23,7 +25,6 @@ import { addToHistory } from 'store/thunks/video-thunk';
 import { formatTime } from 'util/format';
 import { findParents } from 'util/tree';
 import './VideoPlayer.scss';
-import { uiActions } from 'store/slices/ui-slice';
 
 interface VideoPlayerProps {
   currentVideo: VideoNode;
@@ -105,6 +106,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   // vp-navigation
   const [selectionTimeMarked, setSelectionTimeMarked] = useState(false);
 
+  // error
+  const [videoError, setVideoError] = useState(false);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoProgressRef = useRef<HTMLDivElement>(null);
@@ -129,12 +133,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const treeId = useMemo(() => videoTree!._id, [videoTree]);
   const rootId = useMemo(() => videoTree!.root._id, [videoTree]);
   const videoInfo = useMemo(() => currentVideo.info!, [currentVideo.info]);
-  const totalProgress = useMemo(() => {
-    return findParents(videoTree!, currentVideo._id).reduce(
-      (acc, cur) => acc + cur.info.duration,
-      0
-    );
-  }, [videoTree, currentVideo._id]);
+  const previousVideos = useMemo(
+    () => findParents(videoTree!, currentVideo._id),
+    [videoTree, currentVideo._id]
+  );
+  const totalProgress = useMemo(
+    () => previousVideos.reduce((acc, cur) => acc + cur.info.duration, 0),
+    [previousVideos]
+  );
   const { selectionStartPoint, selectionEndPoint } = useMemo(() => {
     const { selectionTimeStart, selectionTimeEnd, duration } = videoInfo;
 
@@ -188,6 +194,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (video.paused || video.ended) {
       playPromise.current = video.play();
+      showControlsHandler();
       return;
     }
 
@@ -826,17 +833,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    * ERROR HANDLER
    */
 
-  const errorHandler = useCallback(
-    (error: any) => {
-      dispatch(
-        uiActions.setMessage({
-          type: 'error',
-          content: error,
-        })
-      );
-    },
-    [dispatch]
-  );
+  const errorHandler = useCallback(() => {
+    setVideoError(true);
+  }, []);
 
   /**
    * INITIATE PLAYER
@@ -862,19 +861,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       // Connect video to Shaka Player
       const player = new shaka.Player(video);
 
-      player.addEventListener('error', (event: any) => {
-        errorHandler(event.detail);
-      });
-
       if (activeNodeId === currentVideo._id && initialProgress) {
         startTime = initialProgress;
       }
 
-      try {
-        await player.load(src, startTime);
-      } catch (err) {
-        errorHandler(err);
-      }
+      await player.load(src, startTime);
 
       dispatch(videoActions.setInitialProgress(0));
 
@@ -884,7 +875,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     })();
   }, [
     dispatch,
-    errorHandler,
     currentVideo._id,
     videoInfo.isConverted,
     videoInfo.url,
@@ -972,7 +962,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    * RENDER
    */
 
-  return (
+  return videoError ? (
+    <Error />
+  ) : (
     <div
       className="vp-container"
       ref={videoContainerRef}
@@ -1003,6 +995,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onSeeked={hideLoaderHandler}
         onWaiting={showLoaderHandler}
         onCanPlay={hideLoaderHandler}
+        onError={errorHandler}
       />
       <Loader on={displayLoader} />
       <KeyAction on={displayKeyAction} volume={volumeState} />
@@ -1069,6 +1062,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onChangeResolution={changeResolutionHandler}
               onChangePlaybackRate={changePlaybackRateHandler}
             />
+            <Records />
             <Fullscreen
               isFullscreen={fullscreenState}
               onToggle={toggleFullscreenHandler}
