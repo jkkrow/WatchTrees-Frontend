@@ -6,6 +6,8 @@ $vp-accent--primary: hsl(357, 83%, 44%);
 $vp-accent--secondary: hsl(2, 100%, 21%);
 $vp-range--selection-time: hsl(32, 100%, 50%);
 
+$controls-height: clamp(15rem, 15vw, 25rem);
+
 @mixin vp-range($color) {
   position: relative;
   display: flex;
@@ -94,12 +96,13 @@ $vp-range--selection-time: hsl(32, 100%, 50%);
   justify-content: center;
   width: 100%;
   height: 100%;
+  font-size: clamp(1.2rem, 2vw, 2rem);
   color: $vp-text;
   background-color: $vp-bg;
   outline: none;
 
   video {
-    position: relative;
+    width: 100%;
     height: 100%;
     z-index: 1;
   }
@@ -118,11 +121,11 @@ $vp-range--selection-time: hsl(32, 100%, 50%);
   left: -1px;
   right: -1px;
   bottom: -1px;
-  height: clamp(8rem, 30%, 15rem);
+  height: $controls-height;
   padding-bottom: 1rem;
   color: $vp-text;
   background-image: linear-gradient(transparent, $vp-bg);
-  transition: all 300ms ease-out;
+  transition: opacity 300ms ease-out;
   z-index: 15;
 
   &.hide {
@@ -145,10 +148,10 @@ $vp-range--selection-time: hsl(32, 100%, 50%);
     align-items: center;
     width: 100%;
     height: 50%;
+    padding: 0 2rem;
+    gap: 2rem;
 
-    &__left,
-    &__center,
-    &__right {
+    > div {
       display: flex;
       justify-content: center;
       width: 100%;
@@ -162,7 +165,7 @@ $vp-range--selection-time: hsl(32, 100%, 50%);
       }
     }
 
-    &__left > div {
+    &:first-child > div {
       max-width: 100%;
     }
   }

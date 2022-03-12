@@ -7,6 +7,7 @@
   align-items: center;
   width: clamp(2.5rem, 3.5vw, 4.5rem);
   margin: auto;
+  font-size: inherit;
   color: $vp-text;
   background-color: transparent;
   aspect-ratio: 1/1;
@@ -21,16 +22,15 @@
     content: attr(data-label);
     position: absolute;
     display: none;
-    top: clamp(-6rem, -150%, -2rem);
+    bottom: 150%;
     width: max-content;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.75rem;
     color: $vp-text;
     background-color: rgba($vp-bg, 0.8);
-    font-size: clamp(1.2rem, 2vw, 1.75rem);
     font-weight: 600;
+    pointer-events: none;
     opacity: 0;
-    visibility: hidden;
-    transition: all 200ms ease-out;
+    transition: opacity 200ms ease-out;
   }
 
   &.label::before {
@@ -41,10 +41,9 @@
     svg {
       transform: scale(1.3);
     }
+  }
 
-    &::before {
-      opacity: 1;
-      visibility: visible;
-    }
+  &:hover::before {
+    opacity: 1;
   }
 }

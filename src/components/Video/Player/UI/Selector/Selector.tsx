@@ -5,7 +5,6 @@ import './Selector.scss';
 
 interface SelectorProps {
   on: boolean;
-  high: boolean;
   next: VideoNode[];
   currentTime: number;
   selectionEndPoint: number;
@@ -14,14 +13,13 @@ interface SelectorProps {
 
 const Selector: React.FC<SelectorProps> = ({
   on,
-  high,
   next,
   currentTime,
   selectionEndPoint,
   onSelect,
 }) => {
   return (
-    <div className={`vp-selector${on ? ' active' : ''}${high ? ' high' : ''}`}>
+    <div className={`vp-selector${on ? ' active' : ''}`}>
       <div className="vp-selector__container">
         {next.map(
           (video: VideoNode, index: number) =>

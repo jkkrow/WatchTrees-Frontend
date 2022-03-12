@@ -13,23 +13,19 @@
 
   &__tooltip {
     position: absolute;
-    top: -1.5rem;
-    font-size: 1.2rem;
+    bottom: clamp(4rem, 5vw, 5rem);
     padding: 0.5rem 0.75rem;
     color: $vp-text;
     background-color: rgba($vp-bg, 0.8);
     border-radius: 5px;
     font-weight: 700;
+    pointer-events: none;
     opacity: 0;
-    visibility: hidden;
     transform: translateX(-50%);
-    transition-property: opacity, visibility;
-    transition-duration: 200ms;
-    transition-timing-function: ease-out;
+    transition: opacity 200ms ease-out;
   }
 
   &:hover &__tooltip {
     opacity: 1;
-    visibility: visible;
   }
 }

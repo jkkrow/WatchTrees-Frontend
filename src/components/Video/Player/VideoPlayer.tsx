@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import shaka from 'shaka-player';
 
+import VideoHeader from './UI/Header/VideoHeader';
 import Playback from './UI/Controls/Playback/Playback';
 import Skip from './UI/Controls/Skip/Skip';
 import Rewind from './UI/Controls/Rewind/Rewind';
@@ -11,10 +12,10 @@ import Fullscreen from './UI/Controls/Fullscreen/Fullscreen';
 import Settings from './UI/Controls/Settings/Settings';
 import Records from './UI/Controls/Records/Records';
 import Marker from './UI/Controls/Marker/Marker';
-import VideoHeader from './UI/Header/VideoHeader';
+import Dropdown from './UI/Controls/Dropdown/Dropdown';
 import Selector from './UI/Selector/Selector';
 import Loader from './UI/Loader/Loader';
-import KeyAction from './UI/KeyAction/KeyAction';
+import KeyAction, { KeyActionHandle } from './UI/KeyAction/KeyAction';
 import Error from './UI/Error/Error';
 import { useTimeout, useInterval } from 'hooks/timer-hook';
 import { useCompare, useFirstRender } from 'hooks/cycle-hook';
@@ -49,12 +50,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   } = useAppSelector((state) => state.video);
   const dispatch = useAppDispatch();
 
-  // vp-container
+  // container
   const [displayCursor, setDisplayCursor] = useState(
     active ? 'default' : 'none'
   );
 
-  // vp-controls
+  // controls
   const [canPlayType, setCanPlayType] = useState(true);
   const [displayControls, setDisplayControls] = useState(active);
 
@@ -83,9 +84,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   // resolutions
   const [resolutions, setResolutions] = useState<shaka.extern.TrackList>([]);
-  const [activeResolution, setActiveResolution] = useState<number | 'auto'>(
-    videoResolution || 'auto'
-  );
+  const [activeResolutionHeight, setActiveResolutionHeight] = useState<
+    number | 'auto'
+  >(videoResolution || 'auto');
 
   // playbackRate
   const [playbackRates] = useState([0.5, 0.75, 1, 1.25, 1.5]);
@@ -93,17 +94,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     videoPlaybackRate || 1
   );
 
-  // vp-loader
+  // dropdown
+  const [displayDropdown, setDisplayDropdown] = useState(false);
+
+  // loader
   const [displayLoader, setDisplayLoader] = useState(true);
 
-  // vp-selector
+  // selector
   const [displaySelector, setDisplaySelector] = useState(false);
   const [selectedNextVideoId, setSelectedNextVideoId] = useState<string>('');
 
-  // vp-key-action
+  // key-action
   const [displayKeyAction, setDisplayKeyAction] = useState(false);
 
-  // vp-navigation
+  // navigation
   const [selectionTimeMarked, setSelectionTimeMarked] = useState(false);
 
   // error
@@ -112,6 +116,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const videoProgressRef = useRef<HTMLDivElement>(null);
+  const videoKeyActionRef = useRef<KeyActionHandle>(null);
 
   const shakaPlayer = useRef<shaka.Player>();
   const playPromise = useRef<Promise<void>>();
@@ -121,7 +126,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const [setControlsTimeout] = useTimeout();
   const [setVolumeTimeout] = useTimeout();
-  const [setKeyActionSkipTimeout] = useTimeout();
   const [setKeyActionVolumeTimeout] = useTimeout();
   const [setLoaderTimeout, clearLoaderTimeout] = useTimeout();
   const [setHistoryInterval, clearHistoryInterval] = useInterval();
@@ -143,13 +147,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   );
   const { selectionStartPoint, selectionEndPoint } = useMemo(() => {
     const { selectionTimeStart, selectionTimeEnd, duration } = videoInfo;
-
-    const selectionStartPoint =
-      selectionTimeStart >= duration ? duration - 10 : selectionTimeStart;
-    const selectionEndPoint =
-      selectionTimeEnd > duration ? duration : selectionTimeEnd;
-
-    return { selectionStartPoint, selectionEndPoint };
+    return {
+      selectionStartPoint:
+        selectionTimeStart >= duration ? duration - 10 : selectionTimeStart,
+      selectionEndPoint:
+        selectionTimeEnd > duration ? duration : selectionTimeEnd,
+    };
   }, [videoInfo]);
 
   /**
@@ -403,6 +406,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     // Selector
     if (
+      !video.paused &&
       currentTime >= selectionStartPoint &&
       currentTime < selectionEndPoint &&
       currentVideo.children.length > 0 &&
@@ -503,6 +507,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    * Settings
    */
 
+  const toggleDropdownHandler = useCallback(() => {
+    setDisplayDropdown((prev) => !prev);
+  }, []);
+
   const changeResolutionHandler = useCallback(
     (resolution: shaka.extern.Track | 'auto') => {
       const player = shakaPlayer.current!;
@@ -517,7 +525,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         resolutionHeight = resolution.height as number;
       }
 
-      setActiveResolution(resolutionHeight);
+      setActiveResolutionHeight(resolutionHeight);
       dispatch(videoActions.setVideoResolution(resolutionHeight));
     },
     [dispatch]
@@ -533,6 +541,68 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     },
     [dispatch]
   );
+
+  /**
+   * REWIND & SKIP
+   */
+
+  const rewindHandler = useCallback(() => {
+    const video = videoRef.current!;
+
+    video.currentTime -= 10;
+
+    const rewindContainer = videoKeyActionRef.current!.rewind;
+    const rewindElement = rewindContainer.firstElementChild as HTMLElement;
+
+    rewindContainer.animate(
+      [{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }],
+      {
+        duration: 1000,
+        easing: 'ease-out',
+        fill: 'forwards',
+      }
+    );
+    rewindElement.animate(
+      [
+        { opacity: 1, transform: 'translateX(0)' },
+        { opacity: 0, transform: `translateX(-20%)` },
+      ],
+      {
+        duration: 1000,
+        easing: 'ease-in-out',
+        fill: 'forwards',
+      }
+    );
+  }, []);
+
+  const skipHandler = useCallback(() => {
+    const video = videoRef.current!;
+
+    video.currentTime += 10;
+
+    const forwardContainer = videoKeyActionRef.current!.skip;
+    const forwardElement = forwardContainer.firstElementChild as HTMLElement;
+
+    forwardContainer.animate(
+      [{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }],
+      {
+        duration: 1000,
+        easing: 'ease-out',
+        fill: 'forwards',
+      }
+    );
+    forwardElement.animate(
+      [
+        { opacity: 1, transform: 'translateX(0)' },
+        { opacity: 0, transform: `translateX(20%)` },
+      ],
+      {
+        duration: 1000,
+        easing: 'ease-in-out',
+        fill: 'forwards',
+      }
+    );
+  }, []);
 
   /**
    * NAVIGATION
@@ -678,55 +748,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
       switch (key) {
         case 'ArrowLeft':
+          event.preventDefault();
+
+          rewindHandler();
+          break;
         case 'ArrowRight':
           event.preventDefault();
 
-          video.currentTime =
-            key === 'ArrowLeft'
-              ? video.currentTime - 10
-              : video.currentTime + 10;
-
-          const rewind = document.querySelector(
-            '.vp-key-action__skip.rewind'
-          ) as HTMLElement;
-          const forward = document.querySelector(
-            '.vp-key-action__skip.forward'
-          ) as HTMLElement;
-
-          const targetContainer = key === 'ArrowLeft' ? rewind : forward;
-          const targetElement =
-            targetContainer.firstElementChild as HTMLElement;
-
-          targetContainer.style.display = 'flex';
-          targetContainer.animate(
-            [{ opacity: 0 }, { opacity: 1 }, { opacity: 1 }, { opacity: 0 }],
-            {
-              duration: 1000,
-              easing: 'ease-out',
-              fill: 'forwards',
-            }
-          );
-          targetElement.animate(
-            [
-              { opacity: 1, transform: 'translateX(0)' },
-              {
-                opacity: 0,
-                transform: `translateX(${
-                  key === 'ArrowLeft' ? '-20%' : '20%'
-                })`,
-              },
-            ],
-            {
-              duration: 1000,
-              easing: 'ease-in-out',
-              fill: 'forwards',
-            }
-          );
-          setKeyActionSkipTimeout(() => {
-            rewind.style.display = 'none';
-            forward.style.display = 'none';
-          }, 1000);
-
+          skipHandler();
           break;
         case 'ArrowUp':
           event.preventDefault();
@@ -776,9 +805,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
     },
     [
+      rewindHandler,
+      skipHandler,
       togglePlayHandler,
       selectNextVideoHandler,
-      setKeyActionSkipTimeout,
       setKeyActionVolumeTimeout,
     ]
   );
@@ -903,7 +933,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     if (videoResolution === 'auto') {
       player.configure({ abr: { enabled: true } });
-      setActiveResolution(videoResolution);
+      setActiveResolutionHeight(videoResolution);
       return;
     }
 
@@ -915,7 +945,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     if (matchedResolution) {
       player.configure({ abr: { enabled: false } });
       player.selectVariantTrack(matchedResolution);
-      setActiveResolution(videoResolution);
+      setActiveResolutionHeight(videoResolution);
     }
   }, [active, videoResolution]);
 
@@ -998,10 +1028,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onError={errorHandler}
       />
       <Loader on={displayLoader} />
-      <KeyAction on={displayKeyAction} volume={volumeState} />
+      <KeyAction
+        ref={videoKeyActionRef}
+        on={displayKeyAction}
+        volume={volumeState}
+      />
       <Selector
         on={displaySelector}
-        high={displayControls}
         next={currentVideo.children}
         currentTime={seekProgress}
         selectionEndPoint={selectionEndPoint}
@@ -1013,6 +1046,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         }`}
         onMouseDown={showControlsHandler}
       >
+        <Dropdown
+          on={displayDropdown}
+          resolutions={resolutions}
+          playbackRates={playbackRates}
+          activeResolutionHeight={activeResolutionHeight}
+          activePlaybackRate={activePlaybackRate}
+          onClose={setDisplayDropdown}
+          onChangeResolution={changeResolutionHandler}
+          onChangePlaybackRate={changePlaybackRateHandler}
+        />
         <div className="vp-controls__header">
           <Time time={currentTimeUI} />
           <Progress
@@ -1032,14 +1075,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           <Time time={remainedTimeUI} />
         </div>
         <div className="vp-controls__body">
-          <div className="vp-controls__body__left">
+          <div>
             <Volume
               volume={volumeState}
               onToggle={toggleMuteHandler}
               onSeek={volumeInputHandler}
             />
           </div>
-          <div className="vp-controls__body__center">
+          <div>
             <Rewind
               onRestart={restartVideoTreeHandler}
               onPrev={navigateToPreviousVideoHandler}
@@ -1047,21 +1090,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <Playback isPaused={playbackState} onToggle={togglePlayHandler} />
             <Skip onNext={navigateToNextVideoHandler} />
           </div>
-          <div className="vp-controls__body__right">
+          <div>
             {editMode && (
               <Marker
                 isMarked={selectionTimeMarked}
                 onMark={markSelectionTimeHandler}
               />
             )}
-            <Settings
-              resolutions={resolutions}
-              playbackRates={playbackRates}
-              activeResolution={activeResolution}
-              activePlaybackRate={activePlaybackRate}
-              onChangeResolution={changeResolutionHandler}
-              onChangePlaybackRate={changePlaybackRateHandler}
-            />
+            <Settings onToggle={toggleDropdownHandler} />
             <Records />
             <Fullscreen
               isFullscreen={fullscreenState}

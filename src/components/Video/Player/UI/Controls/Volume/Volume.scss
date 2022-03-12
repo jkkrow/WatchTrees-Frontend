@@ -17,7 +17,7 @@
     @include vp-range($vp-text);
     position: absolute;
     left: 50%;
-    width: clamp(6rem, 40%, 10rem);
+    width: clamp(6rem, 10vw, 12rem);
     height: 6rem;
     transform: scaleX(0);
     transform-origin: left;

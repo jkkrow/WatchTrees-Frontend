@@ -12,6 +12,7 @@
       text-overflow: ellipsis;
       white-space: nowrap;
       border-radius: 5px;
+      pointer-events: none;
       color: transparent;
       background-color: var(--bg-secondary);
     }

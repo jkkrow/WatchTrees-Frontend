@@ -9,15 +9,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: clamp(4rem, 6vw, 6rem);
   background-color: rgba($vp-bg, 0.5);
   z-index: 30;
 
   div {
-    width: 4rem;
-    height: 4rem;
+    width: 1em;
+    height: 1em;
     border-radius: 50%;
-    box-shadow: 2px 2px 0 0 $vp-accent--primary;
-    transform-origin: 2rem;
+    box-shadow: 0.05em 0.05em 0 0 $vp-accent--primary;
+    transform-origin: 0.5em;
     animation: vp-loader 1s linear infinite;
   }
 

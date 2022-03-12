@@ -4,24 +4,22 @@
   position: absolute;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   bottom: 0;
   left: 0;
   right: 0;
-  bottom: clamp(8rem, 30%, 15rem);
-  gap: clamp(1rem, 2vw, 3rem);
+  padding-bottom: clamp(4rem, 5vw, 6rem);
+  gap: clamp(2rem, 2vw, 3rem);
+  pointer-events: none;
   opacity: 0;
-  visibility: hidden;
-  transform: translateY(clamp(8rem, 30%, 15rem));
-  transition: all 400ms ease-out;
+  transform: translateY(-50%);
+  transition: transform 400ms ease-out, opacity 400ms ease-out;
   z-index: 15;
 
   &.active {
+    pointer-events: initial;
     opacity: 1;
-    visibility: visible;
-  }
-
-  &.high {
-    transform: translateY(0%);
+    transform: translateY(0);
   }
 
   &__container {
@@ -34,15 +32,15 @@
 
   &__btn {
     width: 40%;
-    padding: 1.5rem;
+    padding: clamp(1rem, 1.5vw, 2rem);
     border: 1px solid $vp-bg--tertiary;
     border-radius: 5px;
     text-align: center;
     cursor: pointer;
-    font-size: clamp(1.2rem, 1vw, 1.7rem);
+    font-size: inherit;
     color: $vp-text;
     background-color: rgba($vp-bg, 0.8);
-    transition: all 200ms ease-out;
+    transition: background-color 200ms ease-out;
 
     &:hover {
       background-color: $vp-bg--tertiary;
@@ -50,7 +48,7 @@
   }
 
   &__timer {
-    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-size: larger;
     font-weight: 600;
     text-align: center;
     text-shadow: 0.1rem 0 black, 0 0.1rem black, -0.1rem 0 black,
