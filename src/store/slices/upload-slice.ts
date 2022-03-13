@@ -17,6 +17,7 @@ interface UploadSliceState {
   uploadTree: UploadTree | null;
   previewTree: UploadTree | null;
   activeNodeId: string;
+  isPreviewActive: boolean;
   isUploadSaved: boolean;
 }
 
@@ -24,6 +25,7 @@ const initialState: UploadSliceState = {
   uploadTree: null,
   previewTree: null,
   activeNodeId: '',
+  isPreviewActive: false,
   isUploadSaved: false,
 };
 
@@ -195,6 +197,10 @@ const uploadSlice = createSlice({
 
     setActiveNode: (state, { payload }: PayloadAction<string>) => {
       state.activeNodeId = payload;
+    },
+
+    setActivePreview: (state, { payload }: PayloadAction<boolean>) => {
+      state.isPreviewActive = payload;
     },
 
     saveUpload: (state) => {

@@ -87,6 +87,7 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
 
   const activeVideoHandler = (id: string) => {
     dispatch(videoActions.setActiveNode(id));
+    dispatch(uploadActions.setActivePreview(true));
   };
 
   return (

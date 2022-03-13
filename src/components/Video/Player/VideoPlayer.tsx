@@ -2,17 +2,17 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import shaka from 'shaka-player';
 
 import VideoHeader from './UI/Header/VideoHeader';
-import Playback from './UI/Controls/Playback/Playback';
-import Skip from './UI/Controls/Skip/Skip';
-import Rewind from './UI/Controls/Rewind/Rewind';
-import Volume from './UI/Controls/Volume/Volume';
-import Progress from './UI/Controls/Progress/Progress';
-import Time from './UI/Controls/Time/Time';
-import Fullscreen from './UI/Controls/Fullscreen/Fullscreen';
-import Settings from './UI/Controls/Settings/Settings';
-import Records from './UI/Controls/Records/Records';
-import Marker from './UI/Controls/Marker/Marker';
-import Dropdown from './UI/Controls/Dropdown/Dropdown';
+import Playback from './Controls/Playback/Playback';
+import Skip from './Controls/Skip/Skip';
+import Rewind from './Controls/Rewind/Rewind';
+import Volume from './Controls/Volume/Volume';
+import Progress from './Controls/Progress/Progress';
+import Time from './Controls/Time/Time';
+import Fullscreen from './Controls/Fullscreen/Fullscreen';
+import Settings from './Controls/Settings/Settings';
+import Records from './Controls/Records/Records';
+import Marker from './Controls/Marker/Marker';
+import Dropdown from './Controls/Dropdown/Dropdown';
 import Selector from './UI/Selector/Selector';
 import Loader from './UI/Loader/Loader';
 import KeyAction, { KeyActionHandle } from './UI/KeyAction/KeyAction';
@@ -977,6 +977,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }, [firstRender, active, activeChange]);
 
   useEffect(() => {
+    if (editMode) return;
+
     if (active) {
       document.addEventListener('keydown', keyEventHandler);
     } else {
@@ -986,7 +988,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     return () => {
       document.removeEventListener('keydown', keyEventHandler);
     };
-  }, [active, keyEventHandler]);
+  }, [active, editMode, keyEventHandler]);
 
   /**
    * RENDER

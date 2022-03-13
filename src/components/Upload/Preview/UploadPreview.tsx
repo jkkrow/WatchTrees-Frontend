@@ -1,9 +1,9 @@
-import { useState } from 'react';
-
 import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
+import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
 import { VideoTree as VideoTreeType } from 'store/slices/video-slice';
+import { uploadActions } from 'store/slices/upload-slice';
 import './UploadPreview.scss';
 
 interface PreviewProps {
@@ -11,17 +11,20 @@ interface PreviewProps {
 }
 
 const Preview: React.FC<PreviewProps> = ({ tree }) => {
-  const [activePreview, setActivePreview] = useState(false);
+  const dispatch = useAppDispatch();
+  const isPreviewActive = useAppSelector(
+    (state) => state.upload.isPreviewActive
+  );
 
   const togglePreviewHandler = () => {
-    setActivePreview((prev) => !prev);
+    dispatch(uploadActions.setActivePreview(!isPreviewActive));
   };
 
   return (
-    <div className={`upload-preview${activePreview ? ' active' : ''}`}>
+    <div className={`upload-preview${isPreviewActive ? ' active' : ''}`}>
       <div className="upload-preview__toggle" onClick={togglePreviewHandler}>
-        <PreviewIcon className={!activePreview ? ' active' : ''} />
-        <RemoveIcon className={activePreview ? ' active' : ''} />
+        <PreviewIcon className={!isPreviewActive ? ' active' : ''} />
+        <RemoveIcon className={isPreviewActive ? ' active' : ''} />
       </div>
 
       <div className="upload-preview__background">
