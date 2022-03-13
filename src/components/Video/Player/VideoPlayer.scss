@@ -42,8 +42,8 @@ $controls-height: clamp(15rem, 15vw, 25rem);
     &__thumb {
       position: absolute;
       right: 0;
-      width: 2rem;
-      height: 2rem;
+      width: clamp(2rem, 2vw, 3rem);
+      height: clamp(2rem, 2vw, 3rem);
       border-radius: 50px;
       background-color: $color;
       transform: translateX(50%) scale(0);

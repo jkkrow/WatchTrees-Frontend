@@ -1,6 +1,7 @@
 @use '../../VideoPlayer.scss' as *;
 
 .vp-error {
+  position: absolute;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,8 +9,11 @@
   width: 100%;
   height: 100%;
   gap: 2rem;
+  font-size: 1.5em;
+  font-weight: 600;
   color: var(--text-invalid);
-  background-color: $vp-bg;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 100;
 
   svg {
     width: 5rem;

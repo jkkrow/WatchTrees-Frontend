@@ -1,27 +1,21 @@
-import { useCallback, useState } from 'react';
+import { memo } from 'react';
 
+import Btn from '../Btn/Btn';
 import { ReactComponent as LayersIcon } from 'assets/icons/layers.svg';
 import './Records.scss';
-import Btn from '../Btn/Btn';
 
-const Records: React.FC = () => {
-  const [isOpened, setIsOpened] = useState(false);
+interface RecordsProps {
+  onToggle: () => void;
+}
 
-  const toggleDropdownHandler = useCallback(() => {
-    setIsOpened((prev) => !prev);
-  }, []);
-
-  const closeDropdownHandler = useCallback(() => {
-    setIsOpened(false);
-  }, []);
-
+const Records: React.FC<RecordsProps> = ({ onToggle }) => {
   return (
     <div className="vp-controls__records">
-      <Btn label="Records" onClick={toggleDropdownHandler}>
+      <Btn label="Records" onClick={onToggle}>
         <LayersIcon />
       </Btn>
     </div>
   );
 };
 
-export default Records;
+export default memo(Records);

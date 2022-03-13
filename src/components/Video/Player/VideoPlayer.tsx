@@ -95,7 +95,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   );
 
   // dropdown
-  const [displayDropdown, setDisplayDropdown] = useState(false);
+  const [displaySettings, setDisplaySettings] = useState(false);
+  const [displayRecords, setDisplayRecords] = useState(false);
 
   // loader
   const [displayLoader, setDisplayLoader] = useState(true);
@@ -486,30 +487,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }
   }, []);
 
-  /*
-   * SELECTOR
+  /**
+   * DROPDOWN
    */
 
-  const selectNextVideoHandler = useCallback(
-    (index: number) => {
-      const validVideos = currentVideo.children.filter((video) => video.info);
-      const selectedVideo = validVideos[index];
+  const toggleSettingsHandler = useCallback(() => {
+    setDisplaySettings((prev) => !prev);
+  }, []);
 
-      if (!selectedVideo) return;
-
-      setSelectedNextVideoId(selectedVideo._id);
-      setDisplaySelector(false);
-    },
-    [currentVideo.children]
-  );
+  const toggleRecordsHandler = useCallback(() => {
+    setDisplayRecords((prev) => !prev);
+  }, []);
 
   /**
    * Settings
    */
-
-  const toggleDropdownHandler = useCallback(() => {
-    setDisplayDropdown((prev) => !prev);
-  }, []);
 
   const changeResolutionHandler = useCallback(
     (resolution: shaka.extern.Track | 'auto') => {
@@ -603,6 +595,23 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
     );
   }, []);
+
+  /*
+   * SELECTOR
+   */
+
+  const selectNextVideoHandler = useCallback(
+    (index: number) => {
+      const validVideos = currentVideo.children.filter((video) => video.info);
+      const selectedVideo = validVideos[index];
+
+      if (!selectedVideo) return;
+
+      setSelectedNextVideoId(selectedVideo._id);
+      setDisplaySelector(false);
+    },
+    [currentVideo.children]
+  );
 
   /**
    * NAVIGATION
@@ -994,9 +1003,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
    * RENDER
    */
 
-  return videoError ? (
-    <Error />
-  ) : (
+  return (
     <div
       className="vp-container"
       ref={videoContainerRef}
@@ -1042,6 +1049,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         selectionEndPoint={selectionEndPoint}
         onSelect={selectNextVideoHandler}
       />
+      <Error on={videoError} />
       <div
         className={`vp-controls${!canPlayType ? ' hidden' : ''}${
           !displayControls ? ' hide' : ''
@@ -1049,12 +1057,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onMouseDown={showControlsHandler}
       >
         <Dropdown
-          on={displayDropdown}
+          on={displaySettings}
           resolutions={resolutions}
           playbackRates={playbackRates}
           activeResolutionHeight={activeResolutionHeight}
           activePlaybackRate={activePlaybackRate}
-          onClose={setDisplayDropdown}
+          onClose={setDisplaySettings}
           onChangeResolution={changeResolutionHandler}
           onChangePlaybackRate={changePlaybackRateHandler}
         />
@@ -1099,8 +1107,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 onMark={markSelectionTimeHandler}
               />
             )}
-            <Settings onToggle={toggleDropdownHandler} />
-            <Records />
+            <Settings onToggle={toggleSettingsHandler} />
+            <Records onToggle={toggleRecordsHandler} />
             <Fullscreen
               isFullscreen={fullscreenState}
               onToggle={toggleFullscreenHandler}
