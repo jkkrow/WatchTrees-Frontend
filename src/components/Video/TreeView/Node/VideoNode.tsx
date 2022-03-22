@@ -5,6 +5,7 @@ import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import {
   VideoNode as VideoNodeType,
+  PlayerNode,
   videoActions,
 } from 'store/slices/video-slice';
 import './VideoNode.scss';
@@ -43,7 +44,7 @@ const VideoNode: React.FC<VideoNodeProps> = ({
             }`}
           >
             <VideoPlayer
-              currentVideo={currentVideo}
+              currentVideo={currentVideo as PlayerNode}
               autoPlay={autoPlay}
               editMode={editMode}
               active={activeNodeId === currentVideo._id}

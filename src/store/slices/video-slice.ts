@@ -53,6 +53,21 @@ export interface VideoTree {
   createdAt: string;
 }
 
+export interface PlayerNode {
+  _id: string;
+  parentId: string | null;
+  layer: number;
+  info: NodeInfo;
+  children: VideoNode[];
+}
+
+export interface PlayerTree {
+  _id: string;
+  root: PlayerNode;
+  info: TreeInfo;
+  createdAt: string;
+}
+
 export interface History {
   tree: string;
   activeNodeId: string;
