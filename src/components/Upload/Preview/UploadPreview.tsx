@@ -22,7 +22,10 @@ const Preview: React.FC<PreviewProps> = ({ tree }) => {
 
   return (
     <div className={`upload-preview${isPreviewActive ? ' active' : ''}`}>
-      <div className="upload-preview__toggle" onClick={togglePreviewHandler}>
+      <div
+        className="upload-preview__toggle btn"
+        onClick={togglePreviewHandler}
+      >
         <PreviewIcon className={!isPreviewActive ? ' active' : ''} />
         <RemoveIcon className={isPreviewActive ? ' active' : ''} />
       </div>

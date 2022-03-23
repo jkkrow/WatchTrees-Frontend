@@ -1,5 +1,6 @@
 import { useCallback, useRef, useMemo } from 'react';
 
+import Controls from './Controls/Controls';
 import VideoHeader from './UI/Header/VideoHeader';
 import Playback from './Controls/Playback/Playback';
 import Skip from './Controls/Skip/Skip';
@@ -49,7 +50,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   editMode = false,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const videoDependencies = useMemo(
     () => ({
       videoRef,
@@ -60,6 +60,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     }),
     [editMode, active, autoPlay, currentVideo]
   );
+
+  /**
+   * HOOKS
+   */
 
   const { player } = usePlayer(videoDependencies);
 
@@ -214,10 +218,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
     >
       {!editMode && (
-        <VideoHeader
-          className={!displayControls || displaySelector ? 'hide' : ''}
-          onMouseDown={showControls}
-        />
+        <VideoHeader hideOn={!displayControls || displaySelector} />
       )}
       <video
         ref={videoRef}
@@ -249,11 +250,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         onSelect={selectNextVideo}
       />
       <Error error={videoError} />
-      <div
-        className={`vp-controls${
-          !displayControls || displaySelector ? ' hide' : ''
-        }`}
-      >
+      <Controls hideOn={!displayControls || displaySelector}>
         <Dropdown
           on={displaySettings}
           resolutions={resolutions}
@@ -264,7 +261,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           onChangeResolution={changeResolution}
           onChangePlaybackRate={changePlaybackRate}
         />
-        <div className="vp-controls__header">
+        <section>
           <Time time={currentTimeUI} />
           <Progress
             bufferProgress={bufferProgress}
@@ -279,8 +276,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             onSeek={changeProgressWithInput}
           />
           <Time time={remainedTimeUI} />
-        </div>
-        <div className="vp-controls__body">
+        </section>
+        <section>
           <div>
             <Volume
               volume={volumeState}
@@ -310,8 +307,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onToggle={toggleFullscreen}
             />
           </div>
-        </div>
-      </div>
+        </section>
+      </Controls>
     </div>
   );
 };

@@ -6,10 +6,10 @@ import { videoActions } from 'store/slices/video-slice';
 
 interface Dependencies {
   videoRef: React.RefObject<HTMLVideoElement>;
-  active: boolean;
+  active?: boolean;
 }
 
-export const useVolume = ({ videoRef, active }: Dependencies) => {
+export const useVolume = ({ videoRef, active = true }: Dependencies) => {
   const videoVolume = useAppSelector((state) => state.video.videoVolume);
   const dispatch = useAppDispatch();
 

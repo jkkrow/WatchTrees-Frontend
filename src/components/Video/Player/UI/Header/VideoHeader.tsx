@@ -5,21 +5,14 @@ import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import './VideoHeader.scss';
 
 interface VideoHeaderProps {
-  className: string;
-  onMouseDown: React.MouseEventHandler<HTMLDivElement>;
+  hideOn: boolean;
 }
 
-const VideoHeader: React.FC<VideoHeaderProps> = ({
-  className,
-  onMouseDown,
-}) => {
+const VideoHeader: React.FC<VideoHeaderProps> = ({ hideOn }) => {
   const navigate = useNavigate();
 
   return (
-    <div
-      className={`vp-header${className ? ` ${className}` : ''}`}
-      onMouseDown={onMouseDown}
-    >
+    <div className={`vp-header${hideOn ? ` hide` : ''}`}>
       <AngleLeftIcon className="btn" onClick={() => navigate(-1)} />
     </div>
   );

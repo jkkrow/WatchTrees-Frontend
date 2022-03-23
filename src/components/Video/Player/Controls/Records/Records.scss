@@ -1,3 +1,5 @@
+@use '/src/components/Video/Player/VideoPlayer.scss' as *;
+
 .vp-controls__records {
   > div {
     display: flex;

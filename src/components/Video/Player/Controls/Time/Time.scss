@@ -1,4 +1,4 @@
-@use '../../VideoPlayer' as *;
+@use '/src/components/Video/Player/VideoPlayer.scss' as *;
 
 .vp-controls__time {
   width: clamp(10rem, 20%, 20rem);

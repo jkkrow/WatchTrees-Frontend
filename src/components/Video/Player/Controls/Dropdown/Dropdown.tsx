@@ -141,9 +141,6 @@ const Dropdown: React.FC<DropdownProps> = ({
         onClick={changeResolutionHandler('auto')}
       >
         <span>Auto</span>
-        {activeResolutionHeight === 'auto' && (
-          <span>({autoResolutionHeight}p)</span>
-        )}
       </li>
     </ul>
   );

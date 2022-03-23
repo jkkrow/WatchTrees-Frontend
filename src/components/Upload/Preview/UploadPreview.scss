@@ -22,19 +22,15 @@
     height: 6rem;
     border-radius: 50%;
     cursor: pointer;
-    background-color: var(--bg-tertiary);
+    color: var(--text-inversed);
+    background-color: var(--bg-inversed);
     transform: translate(50%, 50%);
-    transition: background-color 200ms ease-out;
     z-index: 30;
-
-    &:hover {
-      background-color: var(--bg-secondary);
-    }
 
     svg {
       position: absolute;
-      width: 3.5rem;
-      height: 3.5rem;
+      width: 3rem;
+      height: 3rem;
       transform: scale(0);
       transition: transform 400ms;
 

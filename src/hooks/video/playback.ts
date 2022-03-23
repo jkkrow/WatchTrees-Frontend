@@ -4,11 +4,15 @@ import { useCompare, useFirstRender } from 'hooks/cycle-hook';
 
 interface Dependencies {
   videoRef: React.RefObject<HTMLVideoElement>;
-  autoPlay: boolean;
-  active: boolean;
+  autoPlay?: boolean;
+  active?: boolean;
 }
 
-export const usePlayback = ({ videoRef, autoPlay, active }: Dependencies) => {
+export const usePlayback = ({
+  videoRef,
+  autoPlay = true,
+  active = true,
+}: Dependencies) => {
   const [playbackState, setPlaybackState] = useState(false);
 
   const playPromise = useRef<Promise<void>>();
