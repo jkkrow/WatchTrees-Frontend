@@ -30,6 +30,21 @@
     gap: 2rem;
   }
 
+  &__timer {
+    font-size: larger;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0.1rem 0 black, 0 0.1rem black, -0.1rem 0 black,
+      0 -0.1rem black, -0.1rem -0.1rem black, -0.1rem 0.1rem black,
+      0.1rem -0.1rem black, 0.1rem 0.1rem black;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+
+    &.active {
+      opacity: 1;
+    }
+  }
+
   &__btn {
     width: 40%;
     padding: clamp(1rem, 1.5vw, 2rem);
@@ -47,18 +62,18 @@
     }
   }
 
-  &__timer {
-    font-size: larger;
-    font-weight: 600;
-    text-align: center;
-    text-shadow: 0.1rem 0 black, 0 0.1rem black, -0.1rem 0 black,
-      0 -0.1rem black, -0.1rem -0.1rem black, -0.1rem 0.1rem black,
-      0.1rem -0.1rem black, 0.1rem 0.1rem black;
+  &__btn-enter {
+    opacity: 0;
+  }
+  &__btn-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-out;
+  }
+  &__btn-exit {
+    opacity: 1;
+  }
+  &__btn-exit-active {
     opacity: 0;
     transition: opacity 300ms ease-out;
-
-    &.active {
-      opacity: 1;
-    }
   }
 }

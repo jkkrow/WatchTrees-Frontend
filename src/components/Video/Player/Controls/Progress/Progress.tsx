@@ -11,7 +11,8 @@ interface ProgressProps {
   selectionStartPoint: number;
   selectionEndPoint: number;
   editMode: boolean;
-  onHover: (event: React.MouseEvent) => void;
+  onHover: (event: React.MouseEvent<HTMLInputElement>) => void;
+  onTouch: (event: React.TouchEvent<HTMLInputElement>) => void;
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -25,12 +26,9 @@ const Progress: React.FC<ProgressProps> = ({
   selectionEndPoint,
   editMode,
   onHover,
+  onTouch,
   onSeek,
 }) => {
-  const preventDefault = (e: React.KeyboardEvent) => {
-    e.preventDefault();
-  };
-
   return (
     <div className="vp-controls__progress">
       <div className="vp-controls__progress__range">
@@ -64,8 +62,8 @@ const Progress: React.FC<ProgressProps> = ({
           max={videoDuration}
           value={currentProgress}
           onMouseMove={onHover}
+          onTouchMove={onTouch}
           onChange={onSeek}
-          onKeyDown={preventDefault}
         />
       </div>
 

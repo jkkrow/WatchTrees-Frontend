@@ -13,9 +13,11 @@
     transition: all 300ms ease-in-out;
   }
 
-  &:hover > *:first-child {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-200%);
+  @media (hover: hover) {
+    &:hover > *:first-child {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-200%);
+    }
   }
 }

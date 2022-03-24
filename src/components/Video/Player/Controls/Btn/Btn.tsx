@@ -6,16 +6,11 @@ interface BtnProps {
 }
 
 const Btn: React.FC<BtnProps> = ({ label, onClick, children }) => {
-  const preventDefault = (e: React.KeyboardEvent) => {
-    e.preventDefault();
-  };
-
   return (
     <button
       className={`vp-controls__btn${label ? ' label' : ''}`}
       data-label={label}
       onClick={onClick}
-      onKeyDown={preventDefault}
     >
       {children}
     </button>

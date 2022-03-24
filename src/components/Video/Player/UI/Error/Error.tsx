@@ -14,10 +14,8 @@ const Error: React.FC<ErrorProps> = ({ error }) => {
 
   return error ? (
     <div className="vp-error">
-      <p>
-        {error.code ? `${error.code}: ` : ''}
-        {error.message || 'Error occurred! Please try again'}
-      </p>
+      {error.code && <p>Error Code: {error.code}</p>}
+      <p>{error.message || 'Error occurred! Please try again'}</p>
       <ReloadIcon className="btn" onClick={refreshHandler} />
     </div>
   ) : null;

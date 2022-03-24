@@ -60,32 +60,23 @@ $controls-height: clamp(15rem, 15vw, 25rem);
   }
 
   &--seek {
-    -webkit-appearance: none;
     position: absolute;
     width: 100%;
     height: 100%;
-    outline: none;
-    background-color: transparent;
     cursor: pointer;
-    z-index: 5;
+    opacity: 0;
+  }
 
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 1rem;
-      height: 1rem;
-      transform: scale(0);
-    }
-
-    &::-moz-range-thumb {
-      -moz-appearance: none;
-      width: 1rem;
-      height: 1rem;
-      transform: scale(0);
+  @media (hover: hover) {
+    &:hover &--current__thumb {
+      transform: translateX(50%) scale(1);
     }
   }
 
-  &:hover &--current__thumb {
-    transform: translateX(50%) scale(1);
+  @media (hover: none) {
+    &--current__thumb {
+      transform: translateX(50%) scale(1);
+    }
   }
 }
 
@@ -105,5 +96,9 @@ $controls-height: clamp(15rem, 15vw, 25rem);
     width: 100%;
     height: 100%;
     z-index: 1;
+
+    @media (hover: none) {
+      pointer-events: none;
+    }
   }
 }

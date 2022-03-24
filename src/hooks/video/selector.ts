@@ -1,139 +1,104 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useTimeout } from 'hooks/timer-hook';
+import { useAppDispatch } from 'hooks/store-hook';
 import { PlayerNode, videoActions } from 'store/slices/video-slice';
 
 interface Dependencies {
   videoRef: React.RefObject<HTMLVideoElement>;
   currentVideo: PlayerNode;
+  active: boolean;
 }
 
-export const useSelector = ({ videoRef, currentVideo }: Dependencies) => {
-  const videoTree = useAppSelector((state) => state.video.videoTree!);
+export const useSelector = ({
+  videoRef,
+  currentVideo,
+  active,
+}: Dependencies) => {
   const dispatch = useAppDispatch();
 
   const [displaySelector, setDisplaySelector] = useState(false);
-  const [selectedNextVideoId, setSelectedNextVideoId] = useState<string>('');
+  const [displaySelectorTimer, setDisplaySelectorTimer] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
+  const [temporarilyVisible, setTemporarilyVisible] = useState(false);
+  const [leftTime, setLeftTime] = useState(0);
+  const [nextVideos, setNextVideos] = useState(
+    currentVideo.children.filter((video) => video.info) as PlayerNode[]
+  );
 
-  const isSelectorAvailable = useRef(false);
-
-  const rootId = useMemo(() => videoTree.root._id, [videoTree]);
-  const { selectionStartPoint, selectionEndPoint } = useMemo(() => {
-    const { selectionTimeStart, selectionTimeEnd, duration } =
-      currentVideo.info;
-
-    return {
-      selectionStartPoint:
-        selectionTimeStart >= duration ? duration - 10 : selectionTimeStart,
-      selectionEndPoint:
-        selectionTimeEnd > duration ? duration : selectionTimeEnd,
-    };
-  }, [currentVideo.info]);
+  const [setSelectorTimeout] = useTimeout();
 
   const updateSelector = useCallback(() => {
     const video = videoRef.current!;
     const currentTime = video.currentTime || 0;
+    const selectionTimeStart = currentVideo.info.selectionTimeStart;
+    const selectionTimeEnd = currentVideo.info.selectionTimeEnd;
 
     if (
+      currentTime >= selectionTimeStart &&
+      currentTime < selectionTimeEnd &&
+      nextVideos.length &&
       !video.paused &&
-      currentTime >= selectionStartPoint &&
-      currentTime < selectionEndPoint &&
-      currentVideo.children.length > 0 &&
-      !selectedNextVideoId
+      !isSelected
     ) {
       setDisplaySelector(true);
-      isSelectorAvailable.current = true;
     } else {
       setDisplaySelector(false);
-      isSelectorAvailable.current = false;
+    }
+
+    if (!isSelected && selectionTimeEnd - currentTime <= 5) {
+      setDisplaySelectorTimer(true);
+      setLeftTime(Math.floor(selectionTimeEnd) - Math.floor(currentTime));
+    } else {
+      setDisplaySelectorTimer(false);
     }
   }, [
     videoRef,
-    currentVideo.children,
-    selectionStartPoint,
-    selectionEndPoint,
-    selectedNextVideoId,
+    currentVideo.info.selectionTimeStart,
+    currentVideo.info.selectionTimeEnd,
+    nextVideos.length,
+    isSelected,
   ]);
 
   const selectNextVideo = useCallback(
     (index: number) => {
-      if (!isSelectorAvailable.current) return;
+      if (!displaySelector || !nextVideos[index] || isSelected) return;
 
-      const validVideos = currentVideo.children.filter((video) => video.info);
-      const selectedVideo = validVideos[index];
-
-      if (!selectedVideo) return;
-
-      setSelectedNextVideoId(selectedVideo._id);
+      setNextVideos([nextVideos[index]]);
       setDisplaySelector(false);
+      setDisplaySelectorTimer(false);
+      setIsSelected(true);
+      setTemporarilyVisible(true);
+
+      setSelectorTimeout(() => {
+        setTemporarilyVisible(false);
+      }, 2000);
     },
-    [currentVideo.children]
+    [displaySelector, nextVideos, isSelected, setSelectorTimeout]
   );
 
   const videoEndedHandler = useCallback(() => {
-    const firstValidChild = currentVideo.children.find((item) => item.info);
-    const isLastVideo = currentVideo.children.length === 0 || !firstValidChild;
+    if (!nextVideos.length) return;
 
-    if (isLastVideo) {
-      return;
-    }
+    dispatch(videoActions.setActiveNode(nextVideos[0]._id));
+  }, [dispatch, nextVideos]);
 
-    if (selectedNextVideoId) {
-      dispatch(videoActions.setActiveNode(selectedNextVideoId));
-      return;
-    }
+  useEffect(() => {
+    if (active) return;
 
-    if (firstValidChild) {
-      dispatch(videoActions.setActiveNode(firstValidChild._id));
-      return;
-    }
-  }, [dispatch, currentVideo.children, selectedNextVideoId]);
-
-  const navigateToNextVideo = useCallback(() => {
-    const video = videoRef.current!;
-    const firstValidChild = currentVideo.children.find((item) => item.info);
-    const isLastVideo = currentVideo.children.length === 0 || !firstValidChild;
-
-    if (video.currentTime < selectionStartPoint) {
-      video.currentTime = selectionStartPoint;
-      return;
-    }
-
-    if (isLastVideo) {
-      video.currentTime = video.duration;
-      return;
-    }
-
-    videoEndedHandler();
-  }, [videoRef, currentVideo.children, selectionStartPoint, videoEndedHandler]);
-
-  const navigateToPreviousVideo = useCallback(() => {
-    if (!currentVideo.parentId) {
-      videoRef.current!.currentTime = 0;
-      return;
-    }
-
-    dispatch(videoActions.setActiveNode(currentVideo.parentId));
-  }, [videoRef, dispatch, currentVideo.parentId]);
-
-  const navigateToFirstVideo = useCallback(() => {
-    if (!currentVideo.parentId) {
-      videoRef.current!.currentTime = 0;
-      return;
-    }
-
-    dispatch(videoActions.setActiveNode(rootId));
-  }, [videoRef, dispatch, rootId, currentVideo.parentId]);
+    setIsSelected(false);
+    setNextVideos(
+      currentVideo.children.filter((video) => video.info) as PlayerNode[]
+    );
+  }, [active, currentVideo.children]);
 
   return {
-    displaySelector,
-    selectionStartPoint,
-    selectionEndPoint,
+    displaySelector: displaySelector || temporarilyVisible,
+    displaySelectorTimer,
+    leftTime,
+    nextVideos,
     updateSelector,
     selectNextVideo,
     videoEndedHandler,
-    navigateToNextVideo,
-    navigateToPreviousVideo,
-    navigateToFirstVideo,
   };
 };

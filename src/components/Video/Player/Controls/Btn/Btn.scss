@@ -37,13 +37,27 @@
     display: block;
   }
 
-  &:hover {
-    svg {
-      transform: scale(1.3);
+  @media (hover: hover) {
+    &:hover {
+      svg {
+        transform: scale(1.3);
+      }
+    }
+
+    &:hover::before {
+      opacity: 1;
     }
   }
 
-  &:hover::before {
-    opacity: 1;
+  @media (hover: none) {
+    &:active {
+      svg {
+        transform: scale(1.3);
+      }
+    }
+
+    &:active::before {
+      opacity: 1;
+    }
   }
 }

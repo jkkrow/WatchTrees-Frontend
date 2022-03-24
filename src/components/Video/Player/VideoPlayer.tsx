@@ -27,10 +27,11 @@ import { useVolume } from 'hooks/video/volume';
 import { useTime } from 'hooks/video/time';
 import { useProgress } from 'hooks/video/progress';
 import { useLoader } from 'hooks/video/loader';
-import { useSelector } from 'hooks/video/selector';
 import { useFullscreen } from 'hooks/video/fullscreen';
 import { useSettings } from 'hooks/video/settings';
 import { usePlaybackRate } from 'hooks/video/playback-rate';
+import { useSelector } from 'hooks/video/selector';
+import { useNavigation } from 'hooks/video/navigation';
 import { useError } from 'hooks/video/error';
 import { useKeyControls } from 'hooks/video/key-control';
 import { useEdit } from 'hooks/video/edit';
@@ -98,6 +99,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     progressTooltipPosition,
     updateProgress,
     updateTooltip,
+    updateTooltipMobile,
     changeProgressWithInput,
     changeProgressWithKey,
     configureDuration,
@@ -125,15 +127,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const {
     displaySelector,
-    selectionStartPoint,
-    selectionEndPoint,
+    displaySelectorTimer,
+    leftTime,
+    nextVideos,
     updateSelector,
     selectNextVideo,
     videoEndedHandler,
-    navigateToNextVideo,
-    navigateToPreviousVideo,
-    navigateToFirstVideo,
   } = useSelector(videoDependencies);
+
+  const { navigateToNextVideo, navigateToPreviousVideo, navigateToFirstVideo } =
+    useNavigation(videoDependencies);
 
   const { startHistoryUpdate, stopHistoryUpdate } =
     useHistory(videoDependencies);
@@ -212,6 +215,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       className="vp-container"
       style={{ cursor: displayCursor ? 'default' : 'none' }}
       onMouseMove={showControls}
+      onTouchMove={showControls}
       onMouseLeave={hideControls}
       onContextMenu={(e) =>
         process.env.NODE_ENV !== 'development' && e.preventDefault()
@@ -244,9 +248,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       />
       <Selector
         on={displaySelector}
-        next={currentVideo.children}
-        currentTime={currentProgress}
-        selectionEndPoint={selectionEndPoint}
+        timerOn={displaySelectorTimer}
+        leftTime={leftTime}
+        next={nextVideos}
         onSelect={selectNextVideo}
       />
       <Error error={videoError} />
@@ -269,10 +273,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             videoDuration={videoDuration}
             progressTooltip={progressTooltip}
             progressTooltipPosition={progressTooltipPosition}
-            selectionStartPoint={selectionStartPoint}
-            selectionEndPoint={selectionEndPoint}
+            selectionStartPoint={currentVideo.info.selectionTimeStart}
+            selectionEndPoint={currentVideo.info.selectionTimeEnd}
             editMode={editMode}
             onHover={updateTooltip}
+            onTouch={updateTooltipMobile}
             onSeek={changeProgressWithInput}
           />
           <Time time={remainedTimeUI} />
@@ -291,7 +296,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               onPrev={navigateToPreviousVideo}
             />
             <Playback isPaused={playbackState} onToggle={togglePlayback} />
-            <Skip onNext={navigateToNextVideo} />
+            <Skip onNext={navigateToNextVideo(nextVideos)} />
           </div>
           <div>
             {editMode && (

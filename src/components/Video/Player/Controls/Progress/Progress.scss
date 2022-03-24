@@ -25,7 +25,9 @@
     transition: opacity 200ms ease-out;
   }
 
-  &:hover &__tooltip {
-    opacity: 1;
+  @media (hover: hover) {
+    &:hover &__tooltip {
+      opacity: 1;
+    }
   }
 }

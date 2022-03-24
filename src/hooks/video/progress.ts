@@ -39,7 +39,7 @@ export const useProgress = ({ videoRef }: Dependencies) => {
   }, [videoRef]);
 
   const updateTooltip = useCallback(
-    (event: React.MouseEvent) => {
+    (event: React.MouseEvent<HTMLInputElement>) => {
       const video = videoRef.current!;
 
       const rect = event.currentTarget.getBoundingClientRect();
@@ -56,6 +56,32 @@ export const useProgress = ({ videoRef }: Dependencies) => {
       } else {
         formattedTime = formatTime(skipTo);
         setProgressTooltipPosition(`${event.nativeEvent.offsetX}px`);
+      }
+
+      setProgressTooltip(formattedTime);
+    },
+    [videoRef]
+  );
+
+  const updateTooltipMobile = useCallback(
+    (event: React.TouchEvent<HTMLInputElement>) => {
+      const video = videoRef.current!;
+
+      const rect = event.currentTarget.getBoundingClientRect();
+      const touchedPosition = event.targetTouches[0].pageX - rect.left;
+      const skipTo = (touchedPosition / rect.width) * video.duration;
+
+      progressSeekData.current = skipTo;
+
+      let formattedTime: string;
+
+      if (skipTo > video.duration) {
+        formattedTime = formatTime(video.duration);
+      } else if (skipTo < 0) {
+        formattedTime = '00:00';
+      } else {
+        formattedTime = formatTime(skipTo);
+        setProgressTooltipPosition(`${touchedPosition}px`);
       }
 
       setProgressTooltip(formattedTime);
@@ -102,6 +128,7 @@ export const useProgress = ({ videoRef }: Dependencies) => {
     progressTooltipPosition,
     updateProgress,
     updateTooltip,
+    updateTooltipMobile,
     changeProgressWithInput,
     changeProgressWithKey,
     configureDuration,
