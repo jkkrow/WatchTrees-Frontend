@@ -3,11 +3,11 @@ import { CSSTransition } from 'react-transition-group';
 
 import { ReactComponent as ArrowLeftIcon } from 'assets/icons/arrow-left.svg';
 import { useOutsideClickHander } from 'hooks/outside-click-hook';
-import './Dropdown.scss';
+import './SettingsDropdown.scss';
 
 type SettingsType = 'resolution' | 'speed';
 
-interface DropdownProps {
+interface SettingsDropdownProps {
   on: boolean;
   resolutions: shaka.extern.TrackList;
   playbackRates: number[];
@@ -18,7 +18,7 @@ interface DropdownProps {
   onChangePlaybackRate: (playbackRate: number) => void;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
+const SettingsDropdown: React.FC<SettingsDropdownProps> = ({
   on,
   resolutions,
   playbackRates,
@@ -95,11 +95,11 @@ const Dropdown: React.FC<DropdownProps> = ({
   )?.height;
 
   const indexMenu = (
-    <div className="vp-controls__dropdown__menu">
-      <ul className="vp-controls__dropdown__list">
+    <div className="vp-controls__settings__dropdown__menu">
+      <ul className="vp-controls__settings__dropdown__list">
         {resolutions.length > 0 && (
           <li
-            className="vp-controls__dropdown__item"
+            className="vp-controls__settings__dropdown__item"
             onClick={selectMenuHandler('resolution')}
           >
             <span>Resolution</span>
@@ -111,7 +111,7 @@ const Dropdown: React.FC<DropdownProps> = ({
           </li>
         )}
         <li
-          className="vp-controls__dropdown__item"
+          className="vp-controls__settings__dropdown__item"
           onClick={selectMenuHandler('speed')}
         >
           <span>Speed</span>
@@ -122,11 +122,11 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 
   const resolutionList = (
-    <ul className="vp-controls__dropdown__list">
+    <ul className="vp-controls__settings__dropdown__list">
       {resolutions.map((resolution) => (
         <li
           key={resolution.id}
-          className={`vp-controls__dropdown__item${
+          className={`vp-controls__settings__dropdown__item${
             activeResolutionHeight === resolution.height ? ' active' : ''
           }`}
           onClick={changeResolutionHandler(resolution)}
@@ -135,7 +135,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         </li>
       ))}
       <li
-        className={`vp-controls__dropdown__item${
+        className={`vp-controls__settings__dropdown__item${
           activeResolutionHeight === 'auto' ? ' active' : ''
         }`}
         onClick={changeResolutionHandler('auto')}
@@ -146,11 +146,11 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 
   const playbackRateList = (
-    <ul className="vp-controls__dropdown__list">
+    <ul className="vp-controls__settings__dropdown__list">
       {playbackRates.map((playbackRate) => (
         <li
           key={playbackRate}
-          className={`vp-controls__dropdown__item${
+          className={`vp-controls__settings__dropdown__item${
             activePlaybackRate === playbackRate ? ' active' : ''
           }`}
           onClick={changePlaybackRateHandler(playbackRate)}
@@ -162,9 +162,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 
   const mainMenu = (
-    <div className="vp-controls__dropdown__menu">
+    <div className="vp-controls__settings__dropdown__menu">
       <div
-        className="vp-controls__dropdown__label"
+        className="vp-controls__settings__dropdown__label"
         onClick={() => setIsIndex(true)}
       >
         <ArrowLeftIcon />
@@ -187,7 +187,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       onExited={dropdownExitedHandler}
     >
       <div
-        className="vp-controls__dropdown"
+        className="vp-controls__settings__dropdown"
         ref={dropdownRef}
         style={{ height: dropdownHeight }}
       >
@@ -217,4 +217,4 @@ const Dropdown: React.FC<DropdownProps> = ({
   );
 };
 
-export default memo(Dropdown);
+export default memo(SettingsDropdown);

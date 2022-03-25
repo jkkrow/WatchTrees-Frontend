@@ -3,38 +3,40 @@ import { useCallback, useRef, useMemo } from 'react';
 import Controls from './Controls/Controls';
 import VideoHeader from './UI/Header/VideoHeader';
 import Playback from './Controls/Playback/Playback';
-import Skip from './Controls/Skip/Skip';
-import Rewind from './Controls/Rewind/Rewind';
 import Volume from './Controls/Volume/Volume';
-import Progress from './Controls/Progress/Progress';
 import Time from './Controls/Time/Time';
+import Progress from './Controls/Progress/Progress';
 import Fullscreen from './Controls/Fullscreen/Fullscreen';
 import Settings from './Controls/Settings/Settings';
+import SettingsDropdown from './Controls/SettingsDropdown/SettingsDropdown';
 import Records from './Controls/Records/Records';
+import RecordsModal from './Controls/RecordsModal/RecordsModal';
 import Marker from './Controls/Marker/Marker';
-import Dropdown from './Controls/Dropdown/Dropdown';
-import Selector from './UI/Selector/Selector';
 import Loader from './UI/Loader/Loader';
-import KeyAction from './UI/KeyAction/KeyAction';
+import Skip from './Controls/Skip/Skip';
+import Rewind from './Controls/Rewind/Rewind';
 import Error from './UI/Error/Error';
+import Selector from './UI/Selector/Selector';
+import KeyAction from './UI/KeyAction/KeyAction';
 import { usePlayer } from 'hooks/video/player';
 import { useControls } from 'hooks/video/controls';
 import { usePlayback } from 'hooks/video/playback';
-import { useHistory } from 'hooks/video/history';
-import { PlayerNode } from 'store/slices/video-slice';
-import { useResolution } from 'hooks/video/resolution';
 import { useVolume } from 'hooks/video/volume';
 import { useTime } from 'hooks/video/time';
 import { useProgress } from 'hooks/video/progress';
-import { useLoader } from 'hooks/video/loader';
 import { useFullscreen } from 'hooks/video/fullscreen';
 import { useSettings } from 'hooks/video/settings';
+import { useResolution } from 'hooks/video/resolution';
 import { usePlaybackRate } from 'hooks/video/playback-rate';
+import { useRecords } from 'hooks/video/records';
+import { useLoader } from 'hooks/video/loader';
 import { useSelector } from 'hooks/video/selector';
 import { useNavigation } from 'hooks/video/navigation';
 import { useError } from 'hooks/video/error';
-import { useKeyControls } from 'hooks/video/key-control';
+import { useHistory } from 'hooks/video/history';
 import { useEdit } from 'hooks/video/edit';
+import { useKeyControls } from 'hooks/video/key-control';
+import { PlayerNode } from 'store/slices/video-slice';
 import './VideoPlayer.scss';
 
 interface VideoPlayerProps {
@@ -110,6 +112,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const { displaySettings, setDisplaySettings, toggleSettings } = useSettings();
 
   const {
+    resolutions,
+    activeResolutionHeight,
+    changeResolution,
+    configureResolution,
+  } = useResolution({ ...videoDependencies, player });
+
+  const {
     playbackRates,
     activePlaybackRate,
     changePlaybackRate,
@@ -117,11 +126,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   } = usePlaybackRate(videoDependencies);
 
   const {
-    resolutions,
-    activeResolutionHeight,
-    changeResolution,
-    configureResolution,
-  } = useResolution({ ...videoDependencies, player });
+    records,
+    displayRecords,
+    setDisplayRecords,
+    toggleRecords,
+    navigateToSelectedVideo,
+  } = useRecords(videoDependencies);
 
   const { displayLoader, showLoader, hideLoader } = useLoader();
 
@@ -138,10 +148,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const { navigateToNextVideo, navigateToPreviousVideo, navigateToFirstVideo } =
     useNavigation(videoDependencies);
 
+  const { videoError, errorHandler } = useError(videoDependencies);
+
   const { startHistoryUpdate, stopHistoryUpdate } =
     useHistory(videoDependencies);
-
-  const { videoError, errorHandler } = useError(videoDependencies);
 
   const { selectionTimeMarked, markSelectionTime } = useEdit(videoDependencies);
 
@@ -255,7 +265,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       />
       <Error error={videoError} />
       <Controls hideOn={!displayControls || displaySelector}>
-        <Dropdown
+        <SettingsDropdown
           on={displaySettings}
           resolutions={resolutions}
           playbackRates={playbackRates}
@@ -264,6 +274,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           onClose={setDisplaySettings}
           onChangeResolution={changeResolution}
           onChangePlaybackRate={changePlaybackRate}
+        />
+        <RecordsModal
+          on={displayRecords}
+          records={records}
+          onClose={setDisplayRecords}
+          onSelect={navigateToSelectedVideo}
         />
         <section>
           <Time time={currentTimeUI} />
@@ -306,7 +322,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               />
             )}
             <Settings onToggle={toggleSettings} />
-            <Records onToggle={() => {}} />
+            <Records onToggle={toggleRecords} />
             <Fullscreen
               isFullscreen={fullscreenState}
               onToggle={toggleFullscreen}

@@ -26,7 +26,8 @@ export const useHistory = ({
     [videoTree, currentVideo._id]
   );
   const totalProgress = useMemo(
-    () => previousVideos.reduce((acc, cur) => acc + cur.info.duration, 0),
+    () =>
+      previousVideos.reduce((acc, cur) => acc + (cur.info?.duration || 0), 0),
     [previousVideos]
   );
 

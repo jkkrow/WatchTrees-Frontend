@@ -34,14 +34,8 @@
     overflow: visible;
   }
 
-  &:hover {
-    .swiper-button-prev,
-    .swiper-button-next {
-      opacity: 1;
-    }
-    .swiper-button-disabled {
-      opacity: 0.4;
-    }
+  .swiper-slide {
+    height: auto;
   }
 
   .swiper-button-prev,
@@ -51,13 +45,6 @@
     color: var(--text-primary);
     background-color: transparent;
     z-index: 1;
-
-    &:hover {
-      background-color: transparent;
-    }
-    &:not(.swiper-button-disabled):hover {
-      opacity: 0.7;
-    }
   }
 
   .swiper-button-prev {
@@ -65,8 +52,33 @@
     right: 4rem;
   }
 
-  .swiper-slide {
-    height: auto;
+  @media (hover: hover) {
+    &:hover {
+      .swiper-button-prev,
+      .swiper-button-next {
+        opacity: 1;
+
+        &:hover {
+          background-color: transparent;
+        }
+        &:not(.swiper-button-disabled):hover {
+          opacity: 0.7;
+        }
+      }
+      .swiper-button-disabled {
+        opacity: 0.4;
+      }
+    }
+  }
+
+  @media (hover: none) {
+    .swiper-button-prev,
+    .swiper-button-next {
+      opacity: 1;
+    }
+    .swiper-button-disabled {
+      opacity: 0.4;
+    }
   }
 
   @media (max-width: 1113px) {

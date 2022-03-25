@@ -1,0 +1,39 @@
+@use '/src/components/Video/Player/VideoPlayer.scss' as *;
+
+.vp-controls__records__modal {
+  position: absolute;
+  bottom: 100%;
+  width: 100%;
+  height: 30rem;
+  overflow-x: auto;
+  background-color: rgba($vp-bg, 0.4);
+  transition: opacity 200ms ease-out;
+
+  &__container {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    text-align: center;
+    border: 1px solid black;
+  }
+}
+
+/* CSS Transition */
+
+.vp-modal-enter {
+  opacity: 0;
+}
+.vp-modal-enter-active {
+  opacity: 1;
+}
+.vp-modal-exit-active {
+  opacity: 0;
+}

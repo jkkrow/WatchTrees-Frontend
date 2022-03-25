@@ -152,7 +152,7 @@ export const mapTree = (node: VideoNode) => {
 export const findParents = (tree: VideoTree, nodeId: string) => {
   const map = mapTree(tree.root);
 
-  const parents = [];
+  const parents: VideoNode[] = [];
   let parentId = map[nodeId]?.parentId;
 
   while (parentId) {
