@@ -13,7 +13,7 @@ interface SettingsDropdownProps {
   playbackRates: number[];
   activeResolutionHeight: number | 'auto';
   activePlaybackRate: number;
-  onClose: (on: boolean) => void;
+  onClose: () => void;
   onChangeResolution: (resolution: shaka.extern.Track | 'auto') => void;
   onChangePlaybackRate: (playbackRate: number) => void;
 }

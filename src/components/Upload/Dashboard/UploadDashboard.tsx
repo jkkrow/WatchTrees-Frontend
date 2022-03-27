@@ -134,7 +134,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const saveUploadHandler = () => {
-    dispatchThunk(saveUpload('Upload progress saved'));
+    dispatchThunk(saveUpload());
   };
 
   const submitUploadHandler = () => {

@@ -22,8 +22,6 @@ const VideoDropdown: React.FC<VideoDropdownProps> = ({
 }) => {
   const [isOpened, setIsOpened] = useState(false);
 
-  const dropdownRef = useOutsideClickHander<HTMLDivElement>(setIsOpened);
-
   const toggleDropdownHandler = () => {
     setIsOpened((prev) => !prev);
   };
@@ -41,6 +39,9 @@ const VideoDropdown: React.FC<VideoDropdownProps> = ({
       onDispatch(toggleFavorites(video._id));
     }
   };
+
+  const dropdownRef =
+    useOutsideClickHander<HTMLDivElement>(closeDropdownHandler);
 
   return id ? (
     <div className="video-dropdown" ref={dropdownRef}>

@@ -7,5 +7,9 @@ export const useSettings = () => {
     setDisplaySettings((prev) => !prev);
   }, []);
 
-  return { displaySettings, setDisplaySettings, toggleSettings };
+  const closeSettings = useCallback(() => {
+    setDisplaySettings(false);
+  }, []);
+
+  return { displaySettings, toggleSettings, closeSettings };
 };

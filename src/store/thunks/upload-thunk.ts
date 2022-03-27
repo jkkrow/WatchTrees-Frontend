@@ -2,6 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 
 import { AppThunk } from 'store';
 import { uploadActions } from 'store/slices/upload-slice';
+import { uiActions } from 'store/slices/ui-slice';
 import { findById, traverseNodes } from 'util/tree';
 
 export const initiateUpload = (): AppThunk => {
@@ -104,7 +105,6 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
       const response = await client.post('/videos/upload/multipart', {
         videoId: uploadTree._id,
-        isRoot: nodeId === uploadTree.root._id,
         fileName: file.name,
         fileType: file.type,
       });
@@ -227,7 +227,14 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
         );
       }
 
-      dispatch(saveUpload('Upload progress saved'));
+      await dispatch(saveUpload());
+      dispatch(
+        uiActions.setMessage({
+          type: 'message',
+          content: 'Auto saved progress',
+          timer: 3000,
+        })
+      );
     } catch (err) {
       dispatch(
         uploadActions.setNode({
@@ -268,11 +275,18 @@ export const updateThumbnail = (file?: File): AppThunk => {
       })
     );
 
-    dispatch(saveUpload('Video thumbnail has updated'));
+    await dispatch(saveUpload());
+    dispatch(
+      uiActions.setMessage({
+        type: 'message',
+        content: 'Auto saved progress',
+        timer: 3000,
+      })
+    );
   };
 };
 
-export const saveUpload = (message: string): AppThunk => {
+export const saveUpload = (): AppThunk => {
   return async (dispatch, getState, api) => {
     const uploadTree = getState().upload.uploadTree;
     const client = dispatch(api());
@@ -293,7 +307,7 @@ export const submitUpload = (): AppThunk => {
   return async (dispatch) => {
     dispatch(uploadActions.setTree({ info: { isEditing: false } }));
 
-    const data = await dispatch(saveUpload('Video uploaded successfully'));
+    const data = await dispatch(saveUpload());
 
     dispatch(uploadActions.finishUpload());
 

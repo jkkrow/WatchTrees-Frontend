@@ -109,7 +109,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const { fullscreenState, toggleFullscreen } = useFullscreen();
 
-  const { displaySettings, setDisplaySettings, toggleSettings } = useSettings();
+  const { displaySettings, toggleSettings, closeSettings } = useSettings();
 
   const {
     resolutions,
@@ -128,7 +128,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const {
     records,
     displayRecords,
-    setDisplayRecords,
+    closeRecords,
     toggleRecords,
     navigateToSelectedVideo,
   } = useRecords(videoDependencies);
@@ -271,14 +271,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           playbackRates={playbackRates}
           activeResolutionHeight={activeResolutionHeight}
           activePlaybackRate={activePlaybackRate}
-          onClose={setDisplaySettings}
+          onClose={closeSettings}
           onChangeResolution={changeResolution}
           onChangePlaybackRate={changePlaybackRate}
         />
         <RecordsModal
           on={displayRecords}
           records={records}
-          onClose={setDisplayRecords}
+          onClose={closeRecords}
           onSelect={navigateToSelectedVideo}
         />
         <section>

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 export const useOutsideClickHander = <T extends HTMLElement>(
-  onClose: (on: boolean) => void,
+  onClose: () => void,
   isMounted?: boolean
 ) => {
   const targetRef = useRef<T>(null);
@@ -12,7 +12,7 @@ export const useOutsideClickHander = <T extends HTMLElement>(
     const outsideClickHandler = (event: MouseEvent) => {
       if (!targetRef || !targetRef.current) return;
       if (!targetRef.current.contains(event.target as Node)) {
-        onClose(false);
+        onClose();
       }
     };
 

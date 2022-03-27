@@ -7,7 +7,6 @@
   height: 30rem;
   overflow-x: auto;
   background-color: rgba($vp-bg, 0.4);
-  transition: opacity 200ms ease-out;
 
   &__container {
     width: 100%;
@@ -21,8 +20,15 @@
     align-items: center;
     width: 100%;
     height: auto;
+    padding: 2rem 0;
+    gap: 2rem;
     text-align: center;
-    border: 1px solid black;
+  }
+
+  &__image {
+    display: flex;
+    width: 100%;
+    aspect-ratio: 16/9;
   }
 }
 
@@ -33,7 +39,9 @@
 }
 .vp-modal-enter-active {
   opacity: 1;
+  transition: opacity 200ms ease-out;
 }
 .vp-modal-exit-active {
   opacity: 0;
+  transition: opacity 200ms ease-out;
 }

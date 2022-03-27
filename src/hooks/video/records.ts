@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { findParents } from 'util/tree';
@@ -15,6 +15,8 @@ export const useRecords = ({ videoRef, currentVideo }: Dependencies) => {
 
   const [displayRecords, setDisplayRecords] = useState(false);
 
+  const wasPlaying = useRef(false);
+
   const records = useMemo(() => {
     const parents = findParents(videoTree, currentVideo._id);
     parents.push(currentVideo);
@@ -26,6 +28,10 @@ export const useRecords = ({ videoRef, currentVideo }: Dependencies) => {
 
   const toggleRecords = useCallback(() => {
     setDisplayRecords((prev) => !prev);
+  }, []);
+
+  const closeRecords = useCallback(() => {
+    setDisplayRecords(false);
   }, []);
 
   const navigateToSelectedVideo = useCallback(
@@ -41,11 +47,26 @@ export const useRecords = ({ videoRef, currentVideo }: Dependencies) => {
     videoRef.current!.pause();
   }, [videoRef, displayRecords]);
 
+  useEffect(() => {
+    const video = videoRef.current!;
+
+    return () => {
+      if (!displayRecords && !video.paused) {
+        wasPlaying.current = true;
+      }
+
+      if (displayRecords && wasPlaying.current) {
+        video.play();
+        wasPlaying.current = false;
+      }
+    };
+  }, [videoRef, displayRecords]);
+
   return {
     records,
     displayRecords,
-    setDisplayRecords,
     toggleRecords,
+    closeRecords,
     navigateToSelectedVideo,
   };
 };
