@@ -103,22 +103,13 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
        * Initiate upload
        */
 
-      const response = await client.post('/videos/upload/multipart', {
+      const initiateResponse = await client.post('/videos/upload/multipart', {
         videoId: uploadTree._id,
         fileName: file.name,
         fileType: file.type,
       });
 
-      const { uploadId } = response.data;
-
-      const fileSize = file.size;
-      const CHUNK_SIZE = 10000000; // 10MB
-      const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
-      const promisesArray: Promise<AxiosResponse>[] = [];
-      const progressArray: number[] = [];
-      const uploadPartsArray: { ETag: string; PartNumber: number }[] = [];
-
-      let start, end, blob;
+      const { uploadId } = initiateResponse.data;
 
       const getDuplicatedNodeIds = () => {
         const uploadTree = getState().upload.uploadTree!;
@@ -136,65 +127,66 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
         return duplicatedNodeIds;
       };
-      const uploadProgressHandler = async (
-        event: ProgressEvent,
-        index: number
-      ) => {
-        if (event.loaded >= event.total) return;
 
-        const currentProgress = Math.round(event.loaded * 100) / event.total;
+      const progressArray: number[] = [];
+      const uploadProgressHandler = (index: number, count: number) => {
+        return (event: ProgressEvent) => {
+          if (event.loaded >= event.total) return;
 
-        progressArray[index - 1] = currentProgress;
-        const sum = progressArray.reduce((acc, cur) => acc + cur);
-        const progress = Math.round(sum / CHUNKS_COUNT);
+          const currentProgress = Math.round(event.loaded * 100) / event.total;
 
-        for (let id of getDuplicatedNodeIds()) {
-          dispatch(
-            uploadActions.setNode({
-              info: { progress },
-              nodeId: id,
-            })
-          );
-        }
+          progressArray[index - 1] = currentProgress;
+          const sum = progressArray.reduce((acc, cur) => acc + cur);
+          const progress = Math.round(sum / count);
+
+          for (let id of getDuplicatedNodeIds()) {
+            dispatch(
+              uploadActions.setNode({
+                info: { progress },
+                nodeId: id,
+              })
+            );
+          }
+        };
       };
 
-      for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
-        start = (index - 1) * CHUNK_SIZE;
-        end = index * CHUNK_SIZE;
-        blob =
-          index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
+      const partSize = 10 * 1024 * 1024; // 10MB
+      const partCount = Math.floor(file.size / partSize) + 1;
 
-        // Get presigned urls
-        const getUploadUrlResponse = await client.put(
-          `/videos/upload/multipart/${uploadId}`,
-          {
-            videoId: uploadTree._id,
-            fileName: file.name,
-            partNumber: index,
-          }
-        );
+      const processResponse = await client.put(
+        `/videos/upload/multipart/${uploadId}`,
+        {
+          videoId: uploadTree._id,
+          fileName: file.name,
+          partCount,
+        }
+      );
 
-        const { presignedUrl } = getUploadUrlResponse.data;
+      const presignedUrls: { presignedUrl: string; partNumber: number }[] =
+        processResponse.data;
+      const uploadPartsPromises: Promise<AxiosResponse>[] = [];
 
-        // Save promises
+      presignedUrls.forEach(({ presignedUrl, partNumber }) => {
+        const start = (partNumber - 1) * partSize;
+        const end = partNumber * partSize;
+        const blob =
+          partNumber < partCount ? file.slice(start, end) : file.slice(start);
+
         const uploadPromise = axios.put(presignedUrl, blob, {
-          onUploadProgress: (e) => uploadProgressHandler(e, index),
+          onUploadProgress: uploadProgressHandler(partNumber, partCount),
           headers: {
             'Content-Type': file.type,
           },
         });
-        promisesArray.push(uploadPromise);
-      }
+        uploadPartsPromises.push(uploadPromise);
+      });
 
       // Upload parts
-      const resolvedArray = await Promise.all(promisesArray);
-
-      resolvedArray.forEach((resolvedPromise, index) => {
-        uploadPartsArray.push({
-          ETag: resolvedPromise.headers.etag,
-          PartNumber: index + 1,
-        });
-      });
+      const uploadPartsResponse = await Promise.all(uploadPartsPromises);
+      const uploadParts = uploadPartsResponse.map((resolvedPromise, index) => ({
+        ETag: resolvedPromise.headers.etag,
+        PartNumber: index + 1,
+      }));
 
       /**
        * Complete upload
@@ -205,7 +197,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
         {
           videoId: uploadTree._id,
           fileName: file.name,
-          parts: uploadPartsArray,
+          parts: uploadParts,
         }
       );
 
