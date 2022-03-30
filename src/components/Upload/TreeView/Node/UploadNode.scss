@@ -96,6 +96,7 @@
 
     &--current {
       background-color: var(--accent-primary);
+      transition: width 200ms ease-out;
     }
   }
 

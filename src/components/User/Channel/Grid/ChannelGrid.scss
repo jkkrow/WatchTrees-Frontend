@@ -17,10 +17,8 @@
     margin-bottom: 2rem;
 
     &.loading {
-      width: 45%;
-      border-radius: 5px;
-      color: transparent;
-      background-color: var(--bg-tertiary);
+      opacity: 0;
+      pointer-events: none;
     }
   }
 }

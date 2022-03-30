@@ -6,15 +6,8 @@
     margin-bottom: 2rem;
 
     &.loading {
-      width: 40%;
-      height: 3rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      border-radius: 5px;
+      opacity: 0;
       pointer-events: none;
-      color: transparent;
-      background-color: var(--bg-secondary);
     }
 
     a {

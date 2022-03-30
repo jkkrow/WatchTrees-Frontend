@@ -16,11 +16,8 @@
     margin-bottom: 2rem;
 
     &.loading {
-      width: 40%;
-      height: 3rem;
-      border-radius: 5px;
-      color: transparent;
-      background-color: var(--bg-secondary);
+      opacity: 0;
+      pointer-events: none;
     }
   }
 
