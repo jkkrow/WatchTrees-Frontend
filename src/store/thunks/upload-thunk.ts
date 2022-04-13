@@ -111,14 +111,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
       const { uploadId } = response.data;
 
-      const fileSize = file.size;
-      const CHUNK_SIZE = 10000000; // 10MB
-      const CHUNKS_COUNT = Math.floor(fileSize / CHUNK_SIZE) + 1;
-      const promisesArray: Promise<AxiosResponse>[] = [];
       const progressArray: number[] = [];
-      const uploadPartsArray: { ETag: string; PartNumber: number }[] = [];
-
-      let start, end, blob;
 
       const getDuplicatedNodeIds = () => {
         const uploadTree = getState().upload.uploadTree!;
@@ -136,65 +129,64 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
         return duplicatedNodeIds;
       };
-      const uploadProgressHandler = async (
-        event: ProgressEvent,
-        index: number
-      ) => {
-        if (event.loaded >= event.total) return;
+      const uploadProgressHandler = (index: number, count: number) => {
+        return (event: ProgressEvent) => {
+          if (event.loaded >= event.total) return;
 
-        const currentProgress = Math.round(event.loaded * 100) / event.total;
+          const currentProgress = Math.round(event.loaded * 100) / event.total;
+          progressArray[index - 1] = currentProgress;
+          const sum = progressArray.reduce((acc, cur) => acc + cur);
+          const progress = Math.round(sum / count);
 
-        progressArray[index - 1] = currentProgress;
-        const sum = progressArray.reduce((acc, cur) => acc + cur);
-        const progress = Math.round(sum / CHUNKS_COUNT);
-
-        for (let id of getDuplicatedNodeIds()) {
-          dispatch(
-            uploadActions.setNode({
-              info: { progress },
-              nodeId: id,
-            })
-          );
-        }
+          for (let id of getDuplicatedNodeIds()) {
+            dispatch(uploadActions.setNode({ info: { progress }, nodeId: id }));
+          }
+        };
       };
 
-      for (let index = 1; index < CHUNKS_COUNT + 1; index++) {
-        start = (index - 1) * CHUNK_SIZE;
-        end = index * CHUNK_SIZE;
-        blob =
-          index < CHUNKS_COUNT ? file.slice(start, end) : file.slice(start);
+      /**
+       * Upload Parts
+       */
 
-        // Get presigned urls
-        const getUploadUrlResponse = await client.put(
-          `/videos/upload/multipart/${uploadId}`,
-          {
-            videoId: uploadTree._id,
-            fileName: file.name,
-            partNumber: index,
-          }
-        );
+      const partSize = 10 * 1024 * 1024; // 10MB
+      const partCount = Math.floor(file.size / partSize) + 1;
 
-        const { presignedUrl } = getUploadUrlResponse.data;
+      // get presigned urls for each parts
+      const getUrlResponse = await client.put(
+        `/videos/upload/multipart/${uploadId}`,
+        {
+          videoId: uploadTree._id,
+          fileName: file.name,
+          partCount,
+        }
+      );
 
-        // Save promises
-        const uploadPromise = axios.put(presignedUrl, blob, {
-          onUploadProgress: (e) => uploadProgressHandler(e, index),
-          headers: {
-            'Content-Type': file.type,
-          },
+      const { presignedUrls } = getUrlResponse.data;
+      const uploadPartPromises: Promise<AxiosResponse>[] = [];
+
+      presignedUrls.forEach((presignedUrl: string, index: number) => {
+        const partNumber = index + 1;
+        const start = index * partSize;
+        const end = partNumber * partSize;
+        const blob =
+          partNumber < partCount ? file.slice(start, end) : file.slice(start);
+
+        const uploadPartPromise = axios.put(presignedUrl, blob, {
+          onUploadProgress: uploadProgressHandler(partNumber, partCount),
+          headers: { 'Content-Type': file.type },
         });
-        promisesArray.push(uploadPromise);
-      }
 
-      // Upload parts
-      const resolvedArray = await Promise.all(promisesArray);
-
-      resolvedArray.forEach((resolvedPromise, index) => {
-        uploadPartsArray.push({
-          ETag: resolvedPromise.headers.etag,
-          PartNumber: index + 1,
-        });
+        uploadPartPromises.push(uploadPartPromise);
       });
+
+      // upload parts to aws s3
+      const uploadPartResponses = await Promise.all(uploadPartPromises);
+      const uploadParts = uploadPartResponses.map(
+        (uploadPartResponse, index) => ({
+          ETag: uploadPartResponse.headers.etag,
+          PartNumber: index + 1,
+        })
+      );
 
       /**
        * Complete upload
@@ -205,7 +197,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
         {
           videoId: uploadTree._id,
           fileName: file.name,
-          parts: uploadPartsArray,
+          parts: uploadParts,
         }
       );
 
