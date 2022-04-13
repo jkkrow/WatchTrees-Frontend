@@ -48,7 +48,7 @@ export const api = (forceUpdate = true) => {
       (err) => {
         let axiosError: AxiosError | undefined;
 
-        if (err.response) {
+        if (err.response && err.response.data && err.response.data.message) {
           axiosError = err.response.data;
         }
 
