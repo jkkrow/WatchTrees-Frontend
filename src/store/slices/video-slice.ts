@@ -18,6 +18,7 @@ export interface VideoNode {
   parentId: string | null;
   layer: number;
   info: NodeInfo | null;
+  creator?: string;
   children: VideoNode[];
 }
 
