@@ -15,7 +15,7 @@ export const fetchVideo = (id: string): AppThunk => {
     const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
-    const response = await client.get(`/videos/${id}/client`, {
+    const response = await client.get(`/videos/client/${id}`, {
       params: { userId },
     });
 
