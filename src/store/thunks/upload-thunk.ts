@@ -17,7 +17,7 @@ export const initiateUpload = (): AppThunk => {
 export const continueUpload = (id: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
-    const { data } = await client.get(`/videos/${id}`);
+    const { data } = await client.get(`/videos/created/${id}`);
 
     dispatch(uploadActions.initiateUpload(data.video));
   };

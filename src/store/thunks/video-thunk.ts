@@ -53,7 +53,7 @@ export const fetchCreated = (params: {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    const response = await client.get('/videos', { params });
+    const response = await client.get('/videos/created', { params });
 
     const { videos, count } = response.data;
 
