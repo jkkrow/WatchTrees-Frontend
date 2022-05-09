@@ -5,7 +5,7 @@ import VideoContainer from 'components/Video/Container/VideoContainer';
 import CreatedVideoGrid from 'components/Video/Created/Grid/CreatedVideoGrid';
 import UploadButton from 'components/Upload/Button/UploadButton';
 import Reload from 'components/Common/UI/Reload/Reload';
-import Modal from 'components/Layout/Modal/Modal';
+import FormModal from 'components/Layout/Modal/Form/FormModal';
 import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
@@ -65,30 +65,34 @@ const CreatedVideosPage: React.FC = () => {
         <title>Created Videos - WatchTrees</title>
       </Helmet>
       <VideoContainer>
-        <Modal
+        <FormModal
           on={displayModal}
-          type="form"
           header="Delete Video"
+          content={
+            <>
+              <div>
+                To proceed type the video name{' '}
+                <strong>{targetItem?.info.title}</strong>.
+              </div>
+              <Input
+                id="video"
+                formInput
+                validators={
+                  targetItem
+                    ? [VALIDATOR_EQUAL(targetItem.info.title)]
+                    : undefined
+                }
+                onForm={setFormInput}
+              />
+            </>
+          }
           footer="DELETE"
           loading={deleteLoading}
           invalid
           disabled={!formState.isValid}
           onConfirm={deleteHandler}
           onClose={closeWarningHandler}
-        >
-          <div>
-            To proceed type the video name{' '}
-            <strong>{targetItem?.info.title}</strong>.
-          </div>
-          <Input
-            id="video"
-            formInput
-            validators={
-              targetItem ? [VALIDATOR_EQUAL(targetItem.info.title)] : undefined
-            }
-            onForm={setFormInput}
-          />
-        </Modal>
+        />
         <div
           style={{
             display: 'flex',

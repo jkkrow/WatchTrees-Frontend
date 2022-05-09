@@ -9,37 +9,6 @@
   transform: translate(-50%, -50%);
   z-index: 150;
 
-  > * {
-    width: 100%;
-  }
-
-  form {
-    padding: 2rem;
-    border-radius: 10px;
-    background-color: var(--bg-tertiary);
-  }
-
-  &__header {
-    width: 100%;
-    padding: 1rem 0;
-    font-weight: 600;
-  }
-
-  &__content {
-    padding: 1rem 0.5rem;
-  }
-
-  &__footer {
-    display: flex;
-    justify-content: flex-end;
-    padding: 1rem 0.5rem;
-    gap: 1rem;
-  }
-
-  &__backdrop {
-    z-index: 149;
-  }
-
   /* CSS Transition */
 
   &-enter {

@@ -8,9 +8,7 @@ export const updateUserName = (name: string): AppThunk => {
     const userData = getState().user.userData!;
     const client = dispatch(api());
 
-    const { data } = await client.patch('users/name', {
-      name,
-    });
+    const { data } = await client.patch('users/name', { name });
 
     dispatch(userActions.setUserData({ ...userData, name }));
 
@@ -62,7 +60,7 @@ export const fetchChannel = (channelId: string): AppThunk => {
     const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
-    const response = await client.get(`/users/${channelId}/channel`, {
+    const response = await client.get(`/users/channel/${channelId}`, {
       params: { userId },
     });
 

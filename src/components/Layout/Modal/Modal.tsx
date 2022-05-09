@@ -3,46 +3,19 @@ import { createPortal } from 'react-dom';
 import { CSSTransition } from 'react-transition-group';
 
 import Backdrop from '../Backdrop/Backdrop';
-import Button from 'components/Common/Element/Button/Button';
 import './Modal.scss';
 
 interface ModalProps {
   on: boolean;
-  type: 'form' | 'image' | 'message';
-  header?: string;
-  footer?: string;
-  loading?: boolean;
-  disabled?: boolean;
-  invalid?: boolean;
-  onConfirm?: () => Promise<any>;
-  onClose?: () => void;
+  onClose: () => void;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  on,
-  type,
-  header,
-  footer,
-  loading,
-  disabled,
-  invalid,
-  onConfirm,
-  onClose,
-  children,
-}) => {
+const Modal: React.FC<ModalProps> = ({ on, onClose, children }) => {
   const [displayModal, setDisplayModal] = useState(on);
 
   useEffect(() => {
-    on && setDisplayModal(!!on);
+    setDisplayModal(on);
   }, [on]);
-
-  const submitHandler = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    onConfirm && (await onConfirm());
-
-    setDisplayModal(false);
-  };
 
   const closeModalHandler = () => {
     setDisplayModal(false);
@@ -58,30 +31,7 @@ const Modal: React.FC<ModalProps> = ({
         unmountOnExit
         onExited={onClose}
       >
-        <div className="modal">
-          {type === 'image' && children}
-          {type !== 'image' && (
-            <form onSubmit={submitHandler}>
-              <h3 className="modal__header">{header}</h3>
-              <div className="modal__content">{children}</div>
-              <div className="modal__footer">
-                {type === 'form' && (
-                  <Button
-                    small
-                    invalid={invalid}
-                    loading={loading}
-                    disabled={disabled}
-                  >
-                    {footer}
-                  </Button>
-                )}
-                <Button type="button" small onClick={closeModalHandler}>
-                  {type === 'form' ? 'CANCEL' : 'OK'}
-                </Button>
-              </div>
-            </form>
-          )}
-        </div>
+        <div className="modal">{children}</div>
       </CSSTransition>
       <Backdrop
         className="modal__backdrop"

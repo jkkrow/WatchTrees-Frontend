@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import DragDrop from 'components/Upload/DragDrop/DragDrop';
-import Modal from 'components/Layout/Modal/Modal';
+import ImageModal from 'components/Layout/Modal/Image/ImageModal';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import './FileInput.scss';
 
@@ -150,20 +150,16 @@ const FileInput: React.FC<FileInputProps> = ({
         )}
       </ul>
       {type === 'image' && (
-        <Modal
+        <ImageModal
           on={!!filePreview}
-          type="image"
+          src={
+            filePreview?.url.substring(0, 4) === 'blob'
+              ? filePreview.url
+              : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${filePreview?.url}`
+          }
+          alt={label}
           onClose={() => setFilePreview(null)}
-        >
-          <img
-            src={
-              filePreview?.url.substring(0, 4) === 'blob'
-                ? filePreview.url
-                : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${filePreview?.url}`
-            }
-            alt={label}
-          />
-        </Modal>
+        />
       )}
     </div>
   );
