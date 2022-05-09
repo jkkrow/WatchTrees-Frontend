@@ -15,8 +15,9 @@ import { VideoTree } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import {
   saveUpload,
-  updateThumbnail,
   submitUpload,
+  updateThumbnail,
+  deleteThumbnail,
 } from 'store/thunks/upload-thunk';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
@@ -130,7 +131,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   };
 
   const thumbnailDeleteHandler = () => {
-    dispatchThunk(updateThumbnail());
+    dispatchThunk(deleteThumbnail());
   };
 
   const saveUploadHandler = () => {

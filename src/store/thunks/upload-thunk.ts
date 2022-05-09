@@ -238,43 +238,54 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
   };
 };
 
-export const updateThumbnail = (file?: File): AppThunk => {
+export const updateThumbnail = (file: File): AppThunk => {
   return async (dispatch, getState, api) => {
     const uploadTree = getState().upload.uploadTree;
     const client = dispatch(api());
 
     if (!uploadTree) return;
 
-    const response = await client.patch('/videos/upload/thumbnail', {
+    const { data } = await client.patch('/videos/upload/thumbnail', {
       key: uploadTree.info.thumbnail.url,
-      isNewFile: !!file,
       fileType: file ? file.type : null,
     });
 
-    const { presignedUrl, key } = response.data;
-
-    if (file) {
-      await axios.put(presignedUrl, file, {
-        headers: { 'Content-Type': file.type },
-      });
-    }
+    await axios.put(data.presignedUrl, file, {
+      headers: { 'Content-Type': file.type },
+    });
 
     dispatch(
       uploadActions.setTree({
-        info: {
-          thumbnail: { name: file ? file.name : '', url: file ? key : '' },
-        },
+        info: { thumbnail: { name: file.name, url: data.key } },
       })
     );
 
     await dispatch(saveUpload());
+
+    return data;
+  };
+};
+
+export const deleteThumbnail = (): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const uploadTree = getState().upload.uploadTree;
+    const client = dispatch(api());
+
+    if (!uploadTree) return;
+
+    const { data } = await client.delete('/videos/upload/thumbnail', {
+      params: { key: uploadTree.info.thumbnail.url },
+    });
+
     dispatch(
-      uiActions.setMessage({
-        type: 'message',
-        content: 'Auto saved progress',
-        timer: 3000,
+      uploadActions.setTree({
+        info: { thumbnail: { name: '', url: '' } },
       })
     );
+
+    await dispatch(saveUpload());
+
+    return data;
   };
 };
 
