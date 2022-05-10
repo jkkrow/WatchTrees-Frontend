@@ -21,8 +21,9 @@ export const api = (forceUpdate = true) => {
       if (!refreshToken || !accessToken) return req;
 
       const { exp } = jwt_decode<JwtPayload>(accessToken);
+      const expiresIn = (exp as number) * 1000;
 
-      if ((exp as number) * 1000 < Date.now()) {
+      if (expiresIn < Date.now()) {
         const { refreshToken } = getState().auth;
 
         const { data } = await axios.get('/users/access-token', {

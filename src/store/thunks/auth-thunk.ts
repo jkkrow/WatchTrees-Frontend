@@ -2,7 +2,6 @@ import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import { AppThunk } from 'store';
 import { authActions } from 'store/slices/auth-slice';
-import { uiActions } from 'store/slices/ui-slice';
 
 export const signup = (credentials: {
   name: string;
@@ -38,43 +37,33 @@ export const signin = (
 export const setAuthOnload = (): AppThunk => {
   return async (dispatch, getState, api) => {
     const { refreshToken } = getState().auth;
-    if (!refreshToken) {
-      return dispatch(authActions.signout());
-    }
+    if (!refreshToken) return dispatch(authActions.signout());
 
     const client = dispatch(api());
-    try {
-      const { exp } = jwt_decode<JwtPayload>(refreshToken);
-      const expiresIn = (exp as number) * 1000;
+    const { exp } = jwt_decode<JwtPayload>(refreshToken);
+    const expiresIn = (exp as number) * 1000;
 
-      const i = Date.now();
-      const j = i + 86400000 * 6;
+    const i = Date.now(); // now
+    const j = i + 86400000 * 6; // 6 days later
 
-      if (expiresIn >= i && expiresIn < j) {
-        const { data } = await client.get('/users/refresh-token', {
-          headers: { Authorization: 'Bearer ' + refreshToken },
-        });
+    if (expiresIn >= i && expiresIn < j) {
+      // Update refresh token and access token
+      const { data } = await client.get('/users/refresh-token', {
+        headers: { Authorization: 'Bearer ' + refreshToken },
+      });
 
-        dispatch(authActions.setRefreshToken(data.refreshToken));
-        dispatch(authActions.setAccessToken(data.accessToken));
-      } else if (expiresIn >= j) {
-        const { data } = await client.get('/users/access-token', {
-          headers: { Authorization: 'Bearer ' + refreshToken },
-        });
+      dispatch(authActions.setRefreshToken(data.refreshToken));
+      dispatch(authActions.setAccessToken(data.accessToken));
+    } else if (expiresIn >= j) {
+      // Only update access token
+      const { data } = await client.get('/users/access-token', {
+        headers: { Authorization: 'Bearer ' + refreshToken },
+      });
 
-        dispatch(authActions.setAccessToken(data.accessToken));
-      } else {
-        return dispatch(authActions.signout());
-      }
-    } catch (err) {
-      dispatch(
-        uiActions.setMessage({
-          type: 'error',
-          content: `${
-            (err as Error).message
-          }: Authentication failed, please refresh the page or re-signin`,
-        })
-      );
+      dispatch(authActions.setAccessToken(data.accessToken));
+    } else {
+      // Refresh token expired
+      return dispatch(authActions.signout());
     }
   };
 };

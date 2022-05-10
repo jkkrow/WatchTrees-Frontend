@@ -12,7 +12,7 @@ import Main from 'components/Layout/Main/Main';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Layout/GlobalMessage/List/GlobalMessageList';
 import AuthProvider from 'providers/AuthProvider';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppThunk, useAppSelector } from 'hooks/store-hook';
 import {
   useStorageWatcher,
   useAuthWatcher,
@@ -36,7 +36,7 @@ const FavoritesPage = lazy(() => import('pages/Video/FavoritesPage'));
 const App: React.FC = () => {
   const refreshToken = useAppSelector((state) => state.auth.refreshToken);
   const userData = useAppSelector((state) => state.user.userData);
-  const dispatch = useAppDispatch();
+  const { dispatchThunk } = useAppThunk();
 
   useStorageWatcher('refreshToken', refreshToken);
   useStorageWatcher('userData', userData);
@@ -44,8 +44,8 @@ const App: React.FC = () => {
   useUploadWatcher();
 
   useEffect(() => {
-    dispatch(setAuthOnload());
-  }, [dispatch]);
+    dispatchThunk(setAuthOnload());
+  }, [dispatchThunk]);
 
   return (
     <Fragment>
