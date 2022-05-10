@@ -30,27 +30,46 @@ export const updateUserPassword = (payload: {
   };
 };
 
-export const updateUserPicture = (file: File | null): AppThunk => {
+export const updateUserPicture = (file: File): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData!;
     const client = dispatch(api());
 
-    const isNewFile = !!file;
-
-    const { data } = await client.patch('users/picture', {
-      isNewFile,
-      fileType: file ? file.type : null,
+    const { data } = await client.put('upload/image', {
+      fileType: file.type,
+      key: userData.picture,
     });
 
-    if (file) {
-      await axios.put(data.presignedUrl, file, {
-        headers: { 'Content-Type': file.type },
-      });
-    }
+    await axios.put(data.presignedUrl, file, {
+      headers: { 'Content-Type': file.type },
+    });
 
-    dispatch(userActions.setUserData({ ...userData, picture: data.picture }));
+    const response = await client.patch('users/picture', {
+      picture: data.key,
+    });
 
-    return data;
+    dispatch(userActions.setUserData({ ...userData, picture: data.key }));
+
+    return response.data;
+  };
+};
+
+export const deleteUserPicture = (): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const userData = getState().user.userData!;
+    const client = dispatch(api());
+
+    await client.delete('upload/image', {
+      params: { key: userData.picture },
+    });
+
+    const response = await client.patch('users/picture', {
+      picture: '',
+    });
+
+    dispatch(userActions.setUserData({ ...userData, picture: '' }));
+
+    return response.data;
   };
 };
 

@@ -6,7 +6,7 @@ import DragDrop from 'components/Upload/DragDrop/DragDrop';
 import { ReactComponent as ChangeIcon } from 'assets/icons/reload.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { useAppSelector, useAppThunk } from 'hooks/store-hook';
-import { updateUserPicture } from 'store/thunks/user-thunk';
+import { updateUserPicture, deleteUserPicture } from 'store/thunks/user-thunk';
 import './EditPicture.scss';
 
 interface EditPictureProps {
@@ -35,7 +35,11 @@ const EditPicture: React.FC<EditPictureProps> = ({ onSuccess }) => {
   const submitPictureHandler = async () => {
     if (userData!.picture === userPicture) return;
 
-    await dispatchThunk(updateUserPicture(pictureFile));
+    if (!pictureFile) {
+      await dispatchThunk(deleteUserPicture());
+    } else {
+      await dispatchThunk(updateUserPicture(pictureFile));
+    }
 
     onSuccess();
   };

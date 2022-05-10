@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from 'axios';
 
 import { AppThunk } from 'store';
 import { uploadActions } from 'store/slices/upload-slice';
-import { uiActions } from 'store/slices/ui-slice';
 import { findById, traverseNodes } from 'util/tree';
 
 export const initiateUpload = (): AppThunk => {
@@ -70,7 +69,6 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
       );
 
       // Check if file is duplicated
-
       const uploadNodes = traverseNodes(uploadTree.root);
 
       for (let node of uploadNodes) {
@@ -102,8 +100,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
       /**
        * Initiate upload
        */
-
-      const response = await client.post('/videos/upload/multipart', {
+      const response = await client.post('/upload/multipart', {
         videoId: uploadTree._id,
         fileName: file.name,
         fileType: file.type,
@@ -147,19 +144,15 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
       /**
        * Upload Parts
        */
-
       const partSize = 10 * 1024 * 1024; // 10MB
       const partCount = Math.floor(file.size / partSize) + 1;
 
       // get presigned urls for each parts
-      const getUrlResponse = await client.put(
-        `/videos/upload/multipart/${uploadId}`,
-        {
-          videoId: uploadTree._id,
-          fileName: file.name,
-          partCount,
-        }
-      );
+      const getUrlResponse = await client.put(`/upload/multipart/${uploadId}`, {
+        videoId: uploadTree._id,
+        fileName: file.name,
+        partCount,
+      });
 
       const { presignedUrls } = getUrlResponse.data;
       const uploadPartPromises: Promise<AxiosResponse>[] = [];
@@ -191,9 +184,8 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
       /**
        * Complete upload
        */
-
       const completeUploadReseponse = await client.post(
-        `/videos/upload/multipart/${uploadId}`,
+        `/upload/multipart/${uploadId}`,
         {
           videoId: uploadTree._id,
           fileName: file.name,
@@ -219,14 +211,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
         );
       }
 
-      await dispatch(saveUpload());
-      dispatch(
-        uiActions.setMessage({
-          type: 'message',
-          content: 'Auto saved progress',
-          timer: 3000,
-        })
-      );
+      return await dispatch(saveUpload());
     } catch (err) {
       dispatch(
         uploadActions.setNode({
@@ -245,7 +230,7 @@ export const updateThumbnail = (file: File): AppThunk => {
 
     if (!uploadTree) return;
 
-    const { data } = await client.patch('/videos/upload/thumbnail', {
+    const { data } = await client.put('/upload/image', {
       key: uploadTree.info.thumbnail.url,
       fileType: file ? file.type : null,
     });
@@ -260,9 +245,7 @@ export const updateThumbnail = (file: File): AppThunk => {
       })
     );
 
-    await dispatch(saveUpload());
-
-    return data;
+    return await dispatch(saveUpload());
   };
 };
 
@@ -273,7 +256,7 @@ export const deleteThumbnail = (): AppThunk => {
 
     if (!uploadTree) return;
 
-    const { data } = await client.delete('/videos/upload/thumbnail', {
+    await client.delete('/upload/image', {
       params: { key: uploadTree.info.thumbnail.url },
     });
 
@@ -283,9 +266,7 @@ export const deleteThumbnail = (): AppThunk => {
       })
     );
 
-    await dispatch(saveUpload());
-
-    return data;
+    return await dispatch(saveUpload());
   };
 };
 
