@@ -155,11 +155,7 @@ const Input: React.FC<InputProps> = ({
     >
       {element}
       {label && <label htmlFor={id}>{label}</label>}
-      {message && (
-        <div>
-          <p>{message}</p>
-        </div>
-      )}
+      {message && <p>{message}</p>}
     </div>
   );
 };

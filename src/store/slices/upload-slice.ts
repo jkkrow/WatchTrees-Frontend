@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
 import { VideoTree, NodeInfo } from 'store/slices/video-slice';
+import { authActions } from './auth-slice';
 import {
   findById,
   findByChildId,
@@ -213,6 +214,14 @@ const uploadSlice = createSlice({
       state.activeNodeId = '';
       state.isUploadSaved = false;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(authActions.signout, (state) => {
+      state.uploadTree = null;
+      state.previewTree = null;
+      state.activeNodeId = '';
+      state.isUploadSaved = false;
+    });
   },
 });
 

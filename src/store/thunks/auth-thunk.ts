@@ -127,3 +127,13 @@ export const resetPassword = (
     return data;
   };
 };
+
+export const deleteAccount = (email: string, password: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const { data } = await client.post('/users/deletion', { email, password });
+
+    return data;
+  };
+};

@@ -14,7 +14,6 @@ import { ReactComponent as SigninIcon } from 'assets/icons/signin.svg';
 import { ReactComponent as SignoutIcon } from 'assets/icons/signout.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
 import { authActions } from 'store/slices/auth-slice';
-import { uploadActions } from 'store/slices/upload-slice';
 import './Menu.scss';
 
 interface MenuProps {
@@ -38,7 +37,6 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
       }
     }
 
-    dispatch(uploadActions.finishUpload());
     dispatch(authActions.signout());
   };
 

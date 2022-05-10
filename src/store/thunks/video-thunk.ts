@@ -1,7 +1,6 @@
 import { AppThunk } from 'store';
 
 import { VideoTree, VideoTreeClient, History } from 'store/slices/video-slice';
-import { uploadActions } from 'store/slices/upload-slice';
 import {
   getLocalHistory,
   addToLocalHistory,
@@ -138,16 +137,9 @@ export const removeFromHistory = (video: VideoTreeClient): AppThunk => {
 };
 
 export const deleteVideo = (video: VideoTree): AppThunk => {
-  return async (dispatch, getState, api) => {
-    const uploadTree = getState().upload.uploadTree;
+  return async (dispatch, _, api) => {
     const client = dispatch(api());
-
     const { data } = await client.delete(`/videos/${video._id}`);
-
-    if (uploadTree) {
-      uploadTree.root._id === video.root._id &&
-        dispatch(uploadActions.finishUpload());
-    }
 
     return data;
   };

@@ -10,11 +10,14 @@ import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/form-hook';
 import { usePaginate } from 'hooks/page-hook';
-import { useAppThunk } from 'hooks/store-hook';
+import { useAppThunk, useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { uploadActions } from 'store/slices/upload-slice';
 import { deleteVideo, fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 
 const CreatedVideosPage: React.FC = () => {
+  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const dispatch = useAppDispatch();
   const {
     dispatchThunk: fetchThunk,
     data: fetchData,
@@ -56,6 +59,10 @@ const CreatedVideosPage: React.FC = () => {
 
     await deleteThunk(deleteVideo(targetItem));
 
+    if (uploadTree && uploadTree._id === targetItem._id) {
+      dispatch(uploadActions.finishUpload());
+    }
+
     reload();
   };
 
@@ -71,7 +78,7 @@ const CreatedVideosPage: React.FC = () => {
           content={
             <>
               <div>
-                To proceed type the video name{' '}
+                To proceed, type the video name{' '}
                 <strong>{targetItem?.info.title}</strong>.
               </div>
               <Input
@@ -82,6 +89,7 @@ const CreatedVideosPage: React.FC = () => {
                     ? [VALIDATOR_EQUAL(targetItem.info.title)]
                     : undefined
                 }
+                placeholder={targetItem?.info.title}
                 onForm={setFormInput}
               />
             </>
@@ -89,6 +97,7 @@ const CreatedVideosPage: React.FC = () => {
           footer="DELETE"
           loading={deleteLoading}
           invalid
+          preventEnterSubmit
           disabled={!formState.isValid}
           onConfirm={deleteHandler}
           onClose={closeWarningHandler}

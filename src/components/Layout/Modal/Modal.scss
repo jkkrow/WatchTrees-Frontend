@@ -2,12 +2,16 @@
   position: fixed;
   display: flex;
   justify-content: center;
-  top: 50%;
+  top: 40%;
   left: 50%;
   width: 80%;
   max-width: 80rem;
   transform: translate(-50%, -50%);
   z-index: 150;
+
+  &__backdrop {
+    z-index: 149;
+  }
 
   /* CSS Transition */
 

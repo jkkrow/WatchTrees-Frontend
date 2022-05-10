@@ -12,6 +12,7 @@ interface FormModalProps {
   loading?: boolean;
   disabled?: boolean;
   invalid?: boolean;
+  preventEnterSubmit?: boolean;
   onConfirm: () => Promise<any>;
   onClose: () => void;
 }
@@ -24,6 +25,7 @@ const FormModal: React.FC<FormModalProps> = ({
   loading,
   disabled,
   invalid,
+  preventEnterSubmit,
   onConfirm,
   onClose,
 }) => {
@@ -45,16 +47,26 @@ const FormModal: React.FC<FormModalProps> = ({
     setDisplayModal(false);
   };
 
+  const formKeyHandler = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && preventEnterSubmit) {
+      event.preventDefault();
+    }
+  };
+
   return (
     <Modal on={displayModal} onClose={onClose}>
-      <form className="form-modal" onSubmit={submitHandler}>
+      <form
+        className="form-modal"
+        onSubmit={submitHandler}
+        onKeyDown={formKeyHandler}
+      >
         <h3 className="form-modal__header">{header}</h3>
         <div className="form-modal__content">{content}</div>
         <div className="form-modal__footer">
           <Button small invalid={invalid} loading={loading} disabled={disabled}>
-            {footer}
+            {footer.toUpperCase()}
           </Button>
-          <Button type="button" small onClick={closeModalHandler}>
+          <Button small onClick={closeModalHandler}>
             CANCEL
           </Button>
         </div>
