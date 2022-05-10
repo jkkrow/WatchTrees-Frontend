@@ -25,7 +25,7 @@ const Form: React.FC<FormProps> = ({
 
   return (
     <form
-      className={`form${className ? className : ''}`}
+      className={`form${className ? ` ${className}` : ''}`}
       style={style}
       onSubmit={submitHandler}
     >

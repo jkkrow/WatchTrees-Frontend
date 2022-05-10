@@ -114,7 +114,7 @@ const DragDrop = forwardRef<HTMLInputElement, PropsWithChildren<DragDropProps>>(
         />
         {children || (
           <div>
-            <UploadIcon />
+            <UploadIcon style={{ width: '7rem', height: '7rem' }} />
             <div>
               {error
                 ? error

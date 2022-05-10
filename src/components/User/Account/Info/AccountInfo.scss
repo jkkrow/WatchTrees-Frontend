@@ -1,0 +1,44 @@
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  &__picture {
+    position: relative;
+    width: max-content;
+    padding: 0 3rem;
+    margin: 0 auto 2rem auto;
+    gap: 1rem;
+  }
+
+  &__name,
+  &__email {
+    position: relative;
+    display: flex;
+    width: 100%;
+    gap: 1rem;
+    font-weight: 500;
+    text-align: end;
+
+    &::before {
+      content: attr(data-label);
+      margin-right: auto;
+    }
+  }
+
+  &__name {
+    padding-right: 3.5rem;
+  }
+
+  &__edit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2rem;
+    margin: 0;
+  }
+
+  > button:first-of-type {
+    margin-top: 2rem;
+  }
+}

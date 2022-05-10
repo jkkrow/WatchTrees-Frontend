@@ -30,7 +30,7 @@ const EditName: React.FC<EditNameProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={submitHandler}>
+    <Form className="edit-name" onSubmit={submitHandler}>
       <Input
         id="name"
         formInput

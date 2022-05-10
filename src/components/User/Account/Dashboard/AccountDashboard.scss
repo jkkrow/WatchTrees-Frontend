@@ -1,41 +1,9 @@
 .account-dashboard {
   position: relative;
-  display: flex;
   flex-direction: column;
   width: clamp(40rem, 60%, 80rem);
   padding: 2rem;
   margin: auto;
-  gap: 2rem;
   border: 1px solid var(--text-secondary);
   border-radius: 5px;
-
-  &__picture {
-    display: flex;
-    gap: 1rem;
-  }
-
-  &__info {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 1rem;
-    font-weight: 500;
-    text-align: end;
-
-    div {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    div::before {
-      content: attr(data-label);
-      margin-right: auto;
-    }
-  }
-
-  &__edit {
-    width: 2rem;
-    margin: 0;
-  }
 }

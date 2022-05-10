@@ -39,7 +39,7 @@ const EditPassword: React.FC<EditPasswordProps> = ({ onSuccess }) => {
   };
 
   return (
-    <Form onSubmit={submitHandler}>
+    <Form className="edit-password" onSubmit={submitHandler}>
       <Input
         id="currentPassword"
         type="password"

@@ -1,6 +1,6 @@
-import EditName from './EditName';
-import EditPassword from './EditPassword';
-import EditPicture from './EditPicture';
+import EditName from './Name/EditName';
+import EditPassword from './Password/EditPassword';
+import EditPicture from './Picture/EditPicture';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import './EditAccount.scss';
 
