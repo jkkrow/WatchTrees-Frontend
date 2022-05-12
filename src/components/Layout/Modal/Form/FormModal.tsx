@@ -66,7 +66,7 @@ const FormModal: React.FC<FormModalProps> = ({
           <Button small invalid={invalid} loading={loading} disabled={disabled}>
             {footer.toUpperCase()}
           </Button>
-          <Button small onClick={closeModalHandler}>
+          <Button small type="button" onClick={closeModalHandler}>
             CANCEL
           </Button>
         </div>
