@@ -1,0 +1,36 @@
+.google-login-button {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+
+  &__core {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__view {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    gap: 1rem;
+    border-radius: 5px;
+    pointer-events: none;
+    background-color: var(--bg-inversed);
+    transition: background-color 200ms ease-out;
+
+    &.loading {
+      background-color: var(--bg-disabled);
+    }
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+}

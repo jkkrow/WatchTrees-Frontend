@@ -96,18 +96,18 @@ const LoginPage: React.FC = () => {
           <Form onSubmit={submitHandler}>
             <Input
               id="email"
+              label="Email *"
               formInput
               autoComplete="email"
-              label="Email *"
               validators={[VALIDATOR_EMAIL()]}
               onForm={setFormInput}
             />
             <Input
               id="password"
               type="password"
+              label="Password *"
               formInput
               autoComplete="current-password"
-              label="Password *"
               validators={[VALIDATOR_REQUIRE()]}
               onForm={setFormInput}
             />
@@ -127,27 +127,28 @@ const LoginPage: React.FC = () => {
           <Form onSubmit={submitHandler}>
             <Input
               id="name"
-              formInput
-              autoComplete="name"
               label="Name *"
+              formInput
+              autoFocus
+              autoComplete="name"
               message="At least 4 characters"
               validators={[VALIDATOR_MINLENGTH(4)]}
               onForm={setFormInput}
             />
             <Input
               id="email"
+              label="Email *"
               formInput
               autoComplete="email"
-              label="Email *"
               validators={[VALIDATOR_EMAIL()]}
               onForm={setFormInput}
             />
             <Input
               id="password"
               type="password"
+              label="Password *"
               formInput
               autoComplete="new-password"
-              label="Password *"
               message="At least 8 characters with lowercase, uppercase, number, and special character"
               validators={[VALIDATOR_PASSWORD()]}
               onForm={setFormInput}
@@ -155,9 +156,9 @@ const LoginPage: React.FC = () => {
             <Input
               id="confirmPassword"
               type="password"
+              label="Confirm Password *"
               formInput
               autoComplete="new-password"
-              label="Confirm Password *"
               validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
               onForm={setFormInput}
             />
