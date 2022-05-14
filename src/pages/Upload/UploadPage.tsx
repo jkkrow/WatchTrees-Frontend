@@ -6,7 +6,7 @@ import UploadLayout from 'components/Upload/Layout/UploadLayout';
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
 import UploadPreview from 'components/Upload/Preview/UploadPreview';
-import { useAppSelector } from 'hooks/store-hook';
+import { useAppSelector } from 'hooks/common/store';
 
 const UploadPage: React.FC = () => {
   const previewTree = useAppSelector((state) => state.upload.previewTree);

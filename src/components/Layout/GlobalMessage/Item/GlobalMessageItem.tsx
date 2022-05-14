@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import { useTimeout } from 'hooks/timer-hook';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useTimeout } from 'hooks/common/timer';
+import { useAppDispatch } from 'hooks/common/store';
 import { Message, uiActions } from 'store/slices/ui-slice';
 import './GlobalMessageItem.scss';
 

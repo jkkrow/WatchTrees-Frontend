@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
-import { useInterval } from 'hooks/timer-hook';
+import { useInterval } from 'hooks/common/timer';
 import { videoActions } from 'store/slices/video-slice';
-import { useAppSelector, useAppDispatch } from 'hooks/store-hook';
+import { useAppSelector, useAppDispatch } from 'hooks/common/store';
 
 interface Dependencies {
   player: shaka.Player | null;

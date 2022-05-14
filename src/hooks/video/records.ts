@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { findParents } from 'util/tree';
 import { videoActions, VideoNode } from 'store/slices/video-slice';
 

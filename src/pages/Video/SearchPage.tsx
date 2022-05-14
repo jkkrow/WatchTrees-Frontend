@@ -3,9 +3,9 @@ import { Helmet } from 'react-helmet';
 
 import VideoContainer from 'components/Video/Container/VideoContainer';
 import VideoGrid from 'components/Video/Grid/VideoGrid';
-import { usePaginate } from 'hooks/page-hook';
-import { useSearch } from 'hooks/search-hook';
-import { useAppThunk } from 'hooks/store-hook';
+import { usePaginate } from 'hooks/common/page';
+import { useSearch } from 'hooks/common/search';
+import { useAppThunk } from 'hooks/common/store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideos } from 'store/thunks/video-thunk';
 

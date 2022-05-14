@@ -8,9 +8,13 @@ import Reload from 'components/Common/UI/Reload/Reload';
 import FormModal from 'components/Layout/Modal/Form/FormModal';
 import Input from 'components/Common/Element/Input/Input';
 import { VideoTreeClient } from 'store/slices/video-slice';
-import { useForm } from 'hooks/form-hook';
-import { usePaginate } from 'hooks/page-hook';
-import { useAppThunk, useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useForm } from 'hooks/common/form';
+import { usePaginate } from 'hooks/common/page';
+import {
+  useAppThunk,
+  useAppDispatch,
+  useAppSelector,
+} from 'hooks/common/store';
 import { uploadActions } from 'store/slices/upload-slice';
 import { deleteVideo, fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';

@@ -12,7 +12,7 @@ import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
 import { ReactComponent as TimeIcon } from 'assets/icons/time.svg';
 import { ReactComponent as SigninIcon } from 'assets/icons/signin.svg';
 import { ReactComponent as SignoutIcon } from 'assets/icons/signout.svg';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { authActions } from 'store/slices/auth-slice';
 import './Menu.scss';
 

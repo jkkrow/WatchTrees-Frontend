@@ -1,8 +1,8 @@
 import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
-import { useForm } from 'hooks/form-hook';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useForm } from 'hooks/common/form';
+import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { updateUserName } from 'store/thunks/user-thunk';
 import { VALIDATOR_MINLENGTH } from 'util/validators';
 import './EditName.scss';

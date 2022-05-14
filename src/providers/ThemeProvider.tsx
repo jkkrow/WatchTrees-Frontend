@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTheme } from 'hooks/theme-hook';
+import { useTheme } from 'hooks/common/theme';
 
 export type Theme = 'light' | 'dark';
 

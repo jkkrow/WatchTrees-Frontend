@@ -1,4 +1,4 @@
-import jwt_decode, { JwtPayload } from 'jwt-decode';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 
 import { AppThunk } from 'store';
 import { authActions } from 'store/slices/auth-slice';
@@ -40,7 +40,7 @@ export const setAuthOnload = (): AppThunk => {
     if (!refreshToken) return dispatch(authActions.signout());
 
     const client = dispatch(api());
-    const { exp } = jwt_decode<JwtPayload>(refreshToken);
+    const { exp } = jwtDecode<JwtPayload>(refreshToken);
     const expiresIn = (exp as number) * 1000;
 
     const i = Date.now(); // now
@@ -128,11 +128,13 @@ export const resetPassword = (
   };
 };
 
-export const deleteAccount = (email: string, password: string): AppThunk => {
+export const deleteAccount = (
+  credentials: { email: string; password: string } | { tokenId: string }
+): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    const { data } = await client.post('/users/deletion', { email, password });
+    const { data } = await client.post('/users/deletion', credentials);
 
     return data;
   };

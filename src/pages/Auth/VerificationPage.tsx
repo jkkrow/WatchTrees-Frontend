@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet';
 import AuthLayout from 'components/Auth/Layout/AuthLayout';
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
-import { useAppThunk } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/common/store';
 import { checkVerification } from 'store/thunks/auth-thunk';
 
 const VerificationPage: React.FC = () => {

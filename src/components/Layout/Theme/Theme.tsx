@@ -1,7 +1,7 @@
 import Toggle from 'components/Common/Element/Toggle/Toggle';
 import { ReactComponent as ThemeLightIcon } from 'assets/icons/theme-light.svg';
 import { ReactComponent as ThemeDarkIcon } from 'assets/icons/theme-dark.svg';
-import { useTheme } from 'hooks/theme-hook';
+import { useTheme } from 'hooks/common/theme';
 import './Theme.scss';
 
 const Theme: React.FC = () => {

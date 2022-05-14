@@ -1,6 +1,6 @@
 import axios, { AxiosAdapter, AxiosError } from 'axios';
 import { cacheAdapterEnhancer } from 'axios-extensions';
-import jwt_decode, { JwtPayload } from 'jwt-decode';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
 
 import { AppDispatch, AppState } from 'store';
 import { authActions } from 'store/slices/auth-slice';
@@ -20,7 +20,7 @@ export const api = (forceUpdate = true) => {
 
       if (!refreshToken || !accessToken) return req;
 
-      const { exp } = jwt_decode<JwtPayload>(accessToken);
+      const { exp } = jwtDecode<JwtPayload>(accessToken);
       const expiresIn = (exp as number) * 1000;
 
       if (expiresIn < Date.now()) {

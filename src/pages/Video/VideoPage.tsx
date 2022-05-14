@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import VideoLayout from 'components/Video/Layout/VideoLayout';
-import { useAppThunk } from 'hooks/store-hook';
+import { useAppThunk } from 'hooks/common/store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchVideo } from 'store/thunks/video-thunk';
 

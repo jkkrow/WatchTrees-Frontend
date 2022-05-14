@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router';
 
 import VideoPlayer from '../../Player/VideoPlayer';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import {
   VideoNode as VideoNodeType,
   PlayerNode,

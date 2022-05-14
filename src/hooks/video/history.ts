@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
-import { useInterval } from 'hooks/timer-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useInterval } from 'hooks/common/timer';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { VideoNode } from 'store/slices/video-slice';
 import { addToHistory } from 'store/thunks/video-thunk';
 import { findParents } from 'util/tree';

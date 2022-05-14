@@ -12,12 +12,12 @@ import Main from 'components/Layout/Main/Main';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Layout/GlobalMessage/List/GlobalMessageList';
 import AuthProvider from 'providers/AuthProvider';
-import { useAppThunk, useAppSelector } from 'hooks/store-hook';
+import { useAppThunk, useAppSelector } from 'hooks/common/store';
 import {
   useStorageWatcher,
   useAuthWatcher,
   useUploadWatcher,
-} from 'hooks/watch-hook';
+} from 'hooks/common/watch';
 import { setAuthOnload } from 'store/thunks/auth-thunk';
 import 'styles/index.scss';
 

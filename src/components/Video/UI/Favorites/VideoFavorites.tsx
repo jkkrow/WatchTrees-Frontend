@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
 import { ReactComponent as FavoriteActiveIcon } from 'assets/icons/favorite-active.svg';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { toggleFavorites } from 'store/thunks/video-thunk';
 import { formatNumber } from 'util/format';
 import './VideoFavorites.scss';

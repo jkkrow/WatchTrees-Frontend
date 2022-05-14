@@ -2,7 +2,7 @@ import { useState, memo, useCallback, useEffect } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { ReactComponent as ArrowLeftIcon } from 'assets/icons/arrow-left.svg';
-import { useOutsideClickHander } from 'hooks/outside-click-hook';
+import { useOutsideClickHander } from 'hooks/common/outside-click';
 import './SettingsDropdown.scss';
 
 type SettingsType = 'resolution' | 'speed';

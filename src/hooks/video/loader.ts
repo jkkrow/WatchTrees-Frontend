@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 
-import { useTimeout } from 'hooks/timer-hook';
+import { useTimeout } from 'hooks/common/timer';
 
 export const useLoader = () => {
   const [displayLoader, setDisplayLoader] = useState(true);

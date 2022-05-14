@@ -8,7 +8,7 @@ import { ReactComponent as VolumeMuteIcon } from 'assets/icons/volume-mute.svg';
 import { usePlayer } from 'hooks/video/player';
 import { useVolume } from 'hooks/video/volume';
 import { useLoader } from 'hooks/video/loader';
-import { useLocalStorage } from 'hooks/storage-hook';
+import { useLocalStorage } from 'hooks/common/storage';
 import { PlayerNode } from 'store/slices/video-slice';
 import './PreviewPlayer.scss';
 

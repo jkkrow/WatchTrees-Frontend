@@ -1,5 +1,5 @@
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppDispatch } from 'hooks/common/store';
 import { VideoNode } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 

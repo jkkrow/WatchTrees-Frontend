@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import shaka from 'shaka-player';
 
-import { useFirstRender } from 'hooks/cycle-hook';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useFirstRender } from 'hooks/common/cycle';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { PlayerNode, videoActions } from 'store/slices/video-slice';
 
 interface Dependencies {

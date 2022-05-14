@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTimeout } from 'hooks/timer-hook';
-import { useAppDispatch } from 'hooks/store-hook';
+import { useTimeout } from 'hooks/common/timer';
+import { useAppDispatch } from 'hooks/common/store';
 import { PlayerNode, videoActions } from 'store/slices/video-slice';
 
 interface Dependencies {

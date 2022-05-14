@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
 import { KeyActionHandle } from 'components/Video/Player/UI/KeyAction/KeyAction';
-import { useTimeout } from 'hooks/timer-hook';
+import { useTimeout } from 'hooks/common/timer';
 
 interface Dependencies {
   editMode: boolean;

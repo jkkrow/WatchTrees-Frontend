@@ -5,7 +5,7 @@ import Avatar from 'components/Common/UI/Avatar/Avatar';
 import DragDrop from 'components/Upload/DragDrop/DragDrop';
 import { ReactComponent as ChangeIcon } from 'assets/icons/reload.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { updateUserPicture, deleteUserPicture } from 'store/thunks/user-thunk';
 import './EditPicture.scss';
 

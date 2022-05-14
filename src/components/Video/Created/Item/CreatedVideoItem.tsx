@@ -11,7 +11,7 @@ import VideoTimestamp from 'components/Video/UI/Timestamp/VideoTimestamp';
 import Card from 'components/Common/UI/Card/Card';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
 import { ReactComponent as DeleteIcon } from 'assets/icons/delete.svg';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import { continueUpload } from 'store/thunks/upload-thunk';
 import './CreatedVideoItem.scss';

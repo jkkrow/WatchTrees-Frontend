@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { PlayerNode, videoActions } from 'store/slices/video-slice';
 
 interface Dependencies {

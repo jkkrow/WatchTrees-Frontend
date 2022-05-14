@@ -2,8 +2,8 @@ import { Fragment, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
 import ChannelGrid from 'components/User/Channel/Grid/ChannelGrid';
-import { usePaginate } from 'hooks/page-hook';
-import { useAppThunk } from 'hooks/store-hook';
+import { usePaginate } from 'hooks/common/page';
+import { useAppThunk } from 'hooks/common/store';
 import { ChannelData } from 'store/slices/user-slice';
 import { fetchSubscribes } from 'store/thunks/user-thunk';
 

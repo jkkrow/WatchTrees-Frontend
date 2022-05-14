@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useLocalStorage } from './storage-hook';
+import { useLocalStorage } from './storage';
 import { Theme } from 'providers/ThemeProvider';
 
 export const useTheme = () => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import VideoNode from '../Node/VideoNode';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import {
   VideoTree as VideoTreeType,
   videoActions,

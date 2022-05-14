@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTimeout } from 'hooks/timer-hook';
+import { useTimeout } from 'hooks/common/timer';
 
 interface Dependencies {
   videoRef: React.RefObject<HTMLVideoElement>;

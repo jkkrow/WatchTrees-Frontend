@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
 import { ReactComponent as EditIcon } from 'assets/icons/edit.svg';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { initiateUpload } from 'store/thunks/upload-thunk';
 import './UploadButton.scss';
 

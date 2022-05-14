@@ -9,7 +9,7 @@ import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
 import { ReactComponent as SubscribeUsersIcon } from 'assets/icons/subscribe-users.svg';
 import { ReactComponent as SubscribeAddIcon } from 'assets/icons/subscribe-add.svg';
 import { ReactComponent as SubscribeAddedIcon } from 'assets/icons/subscribe-added.svg';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { ChannelData } from 'store/slices/user-slice';
 import { toggleSubscribe } from 'store/thunks/user-thunk';
 import { formatNumber } from 'util/format';

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 
-import { useCompare, useFirstRender } from 'hooks/cycle-hook';
+import { useCompare, useFirstRender } from 'hooks/common/cycle';
 
 interface Dependencies {
   videoRef: React.RefObject<HTMLVideoElement>;

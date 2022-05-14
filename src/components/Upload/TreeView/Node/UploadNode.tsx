@@ -2,7 +2,7 @@ import Content from './Body/Content';
 import Controls from './Body/Controls';
 import Error from './Body/Error';
 import DragDrop from 'components/Upload/DragDrop/DragDrop';
-import { useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { VideoNode } from 'store/slices/video-slice';
 import { uploadVideo } from 'store/thunks/upload-thunk';
 import './UploadNode.scss';

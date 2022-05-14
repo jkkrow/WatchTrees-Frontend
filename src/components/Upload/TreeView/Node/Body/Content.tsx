@@ -9,7 +9,7 @@ import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
 import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
 import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
-import { useAppDispatch, useAppSelector } from 'hooks/store-hook';
+import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { uploadActions } from 'store/slices/upload-slice';
 import { VideoNode, videoActions } from 'store/slices/video-slice';
 import { formatTime, formatSize } from 'util/format';

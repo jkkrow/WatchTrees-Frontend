@@ -8,8 +8,8 @@ import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import Response from 'components/Common/UI/Response/Response';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
-import { useForm } from 'hooks/form-hook';
-import { useAppThunk } from 'hooks/store-hook';
+import { useForm } from 'hooks/common/form';
+import { useAppThunk } from 'hooks/common/store';
 import { checkRecovery, resetPassword } from 'store/thunks/auth-thunk';
 import { VALIDATOR_PASSWORD, VALIDATOR_EQUAL } from 'util/validators';
 

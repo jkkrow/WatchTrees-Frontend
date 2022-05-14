@@ -24,13 +24,28 @@
     background-color: var(--bg-inversed);
     transition: background-color 200ms ease-out;
 
-    &.loading {
-      background-color: var(--bg-disabled);
-    }
-
     svg {
       width: 1.5rem;
       height: 1.5rem;
     }
+  }
+
+  &.loading &__view {
+    background-color: var(--bg-disabled);
+  }
+
+  &.disabled &__view {
+    cursor: not-allowed;
+    color: var(--text-disabled);
+    background-color: var(--bg-disabled);
+  }
+
+  &.disabled &__core {
+    pointer-events: none;
+  }
+
+  &.invalid &__view {
+    color: var(--text-primary);
+    background-color: var(--bg-invalid);
   }
 }

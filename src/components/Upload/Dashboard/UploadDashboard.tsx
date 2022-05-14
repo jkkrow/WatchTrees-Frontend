@@ -9,8 +9,12 @@ import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
-import { useTimeout } from 'hooks/timer-hook';
-import { useAppDispatch, useAppSelector, useAppThunk } from 'hooks/store-hook';
+import { useTimeout } from 'hooks/common/timer';
+import {
+  useAppDispatch,
+  useAppSelector,
+  useAppThunk,
+} from 'hooks/common/store';
 import { VideoTree } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import {

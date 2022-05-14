@@ -6,8 +6,8 @@ import Form from 'components/Common/Element/Form/Form';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import GoogleLogin from 'components/Auth/GoogleLogin/GoogleLogin';
-import { useForm } from 'hooks/form-hook';
-import { useAppThunk } from 'hooks/store-hook';
+import { useForm } from 'hooks/common/form';
+import { useAppThunk } from 'hooks/common/store';
 import { signup, signin } from 'store/thunks/auth-thunk';
 import {
   VALIDATOR_EMAIL,
@@ -18,7 +18,9 @@ import {
 } from 'util/validators';
 
 const LoginPage: React.FC = () => {
-  const { dispatchThunk, loading } = useAppThunk();
+  const { dispatchThunk: authThunk, loading: authLoading } = useAppThunk();
+  const { dispatchThunk: googleAuthThunk, loading: googleAuthLoading } =
+    useAppThunk();
 
   const { formState, setFormInput, setFormData } = useForm({
     email: { value: '', isValid: false },
@@ -40,7 +42,7 @@ const LoginPage: React.FC = () => {
     if (!formState.isValid) return;
 
     if (isLogin) {
-      await dispatchThunk(
+      await authThunk(
         signin({
           email: formState.inputs.email.value,
           password: formState.inputs.password.value,
@@ -48,7 +50,7 @@ const LoginPage: React.FC = () => {
         { response: { timer: 5000 } }
       );
     } else {
-      await dispatchThunk(
+      await authThunk(
         signup({
           name: formState.inputs.name.value,
           email: formState.inputs.email.value,
@@ -57,6 +59,14 @@ const LoginPage: React.FC = () => {
         })
       );
     }
+
+    navigateHandler();
+  };
+
+  const googleLoginHandler = async (credential: string) => {
+    await googleAuthThunk(signin({ tokenId: credential }), {
+      response: { timer: 5000 },
+    });
 
     navigateHandler();
   };
@@ -120,7 +130,7 @@ const LoginPage: React.FC = () => {
                 Forgot Password
               </Link>
             </>
-            <Button loading={loading}>SIGN IN</Button>
+            <Button loading={authLoading}>SIGN IN</Button>
           </Form>
         )}
         {!isLogin && (
@@ -162,10 +172,14 @@ const LoginPage: React.FC = () => {
               validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
               onForm={setFormInput}
             />
-            <Button loading={loading}>SIGN UP</Button>
+            <Button loading={authLoading}>SIGN UP</Button>
           </Form>
         )}
-        <GoogleLogin onLogin={navigateHandler} />
+        <GoogleLogin
+          label="GOOGLE SIGN IN"
+          loading={googleAuthLoading}
+          onVerify={googleLoginHandler}
+        />
         {isLogin ? (
           <p>
             Don't have an account?{' '}

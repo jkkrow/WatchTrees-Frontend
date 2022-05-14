@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { useAppSelector, useAppDispatch } from './store-hook';
+import { useAppSelector, useAppDispatch } from './store';
 import { authActions } from 'store/slices/auth-slice';
 
 export const useStorageWatcher = (key: string, value: any) => {

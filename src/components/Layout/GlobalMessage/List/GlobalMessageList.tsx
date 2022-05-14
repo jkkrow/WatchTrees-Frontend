@@ -1,5 +1,5 @@
 import GlobalMessageItem from '../Item/GlobalMessageItem';
-import { useAppSelector } from 'hooks/store-hook';
+import { useAppSelector } from 'hooks/common/store';
 import './GlobalMessageList.scss';
 
 const GlobalMessageList: React.FC = () => {

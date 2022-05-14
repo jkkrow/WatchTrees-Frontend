@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
-import { useAppSelector } from 'hooks/store-hook';
+import { useAppSelector } from 'hooks/common/store';
 import './Main.scss';
 
 const Main: React.FC = ({ children }) => {

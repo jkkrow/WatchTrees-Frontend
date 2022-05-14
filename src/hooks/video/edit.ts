@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { useAppDispatch } from 'hooks/store-hook';
+import { useAppDispatch } from 'hooks/common/store';
 import { PlayerNode } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 
