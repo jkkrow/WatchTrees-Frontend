@@ -22,12 +22,16 @@
     border-radius: 5px;
     pointer-events: none;
     background-color: var(--bg-inversed);
-    transition: background-color 200ms ease-out;
+    transition: opacity 200ms ease-out;
 
     svg {
       width: 1.5rem;
       height: 1.5rem;
     }
+  }
+
+  &:hover:not(.disabled):not(.loading) &__view {
+    opacity: 0;
   }
 
   &.loading &__view {

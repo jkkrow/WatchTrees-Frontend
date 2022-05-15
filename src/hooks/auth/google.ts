@@ -26,7 +26,7 @@ export const useGoogleAuth = (
       });
       google.accounts.id.renderButton(googleButtonRef.current!, {
         type: 'standard',
-        width: 1000,
+        shape: 'circle',
       });
     };
 
