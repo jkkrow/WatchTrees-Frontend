@@ -21,16 +21,24 @@ export const useAppThunk = <T = any>(initialData?: T) => {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState('');
 
-  const isUnmounted = useRef(false);
-  const reload = useRef<ReturnType<AppThunk>>();
-  const type = useNavigationType();
+  const navigationType = useNavigationType();
   const dispatch = useAppDispatch();
+
+  const isUnmounted = useRef(false);
+  const type = useRef(navigationType);
+  const reload = useRef<ReturnType<AppThunk>>();
 
   useEffect(() => {
     return () => {
       isUnmounted.current = true;
     };
   }, []);
+
+  useEffect(() => {
+    return () => {
+      type.current = navigationType;
+    };
+  }, [navigationType]);
 
   const dispatchThunk = useCallback(
     async (
@@ -56,7 +64,7 @@ export const useAppThunk = <T = any>(initialData?: T) => {
           });
 
         const data = await dispatch((dispatch, getState, api) => {
-          const client = dispatch(api(forceUpdate ?? type !== 'POP'));
+          const client = dispatch(api(forceUpdate ?? type.current !== 'POP'));
           return thunk(dispatch, getState, () => () => client);
         });
 
@@ -97,7 +105,7 @@ export const useAppThunk = <T = any>(initialData?: T) => {
         throw err;
       }
     },
-    [dispatch, type]
+    [dispatch]
   );
 
   return {
