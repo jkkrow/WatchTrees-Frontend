@@ -1,6 +1,4 @@
 .video-grid {
-  max-width: 160rem;
-
   &__container,
   &__loader {
     position: relative;
@@ -18,6 +16,10 @@
     &.loading {
       opacity: 0;
       pointer-events: none;
+    }
+
+    a {
+      font-weight: inherit;
     }
   }
 

@@ -14,6 +14,33 @@ import 'swiper/scss';
 import 'styles/swiper.scss';
 import './VideoGroup.scss';
 
+const INITIAL_WIDTH = 1114;
+const INITIAL_COUNT = 3;
+const BASE_WIDTH = 1374;
+const BASE_COUNT = 4;
+const STEP_WIDTH = 340;
+
+const breakpoints: { [key: number]: any } = {
+  [INITIAL_WIDTH]: {
+    slidesPerView: INITIAL_COUNT,
+    slidesPerGroup: INITIAL_COUNT,
+  },
+  [BASE_WIDTH]: {
+    slidesPerView: BASE_COUNT,
+    slidesPerGroup: BASE_COUNT,
+  },
+};
+
+for (let i = 1; i < 20; i++) {
+  const step = BASE_WIDTH + i * STEP_WIDTH;
+  const count = BASE_COUNT + i;
+
+  breakpoints[step] = {
+    slidesPerView: count,
+    slidesPerGroup: count,
+  };
+}
+
 interface VideoGroupProps {
   data: { videos: VideoTreeClient[] };
   loaded: boolean;
@@ -59,16 +86,7 @@ const VideoGroup: React.FC<VideoGroupProps> = ({
         modules={[Navigation]}
         slidesPerView={2}
         slidesPerGroup={2}
-        breakpoints={{
-          1114: {
-            slidesPerView: 3,
-            slidesPerGroup: 3,
-          },
-          1374: {
-            slidesPerView: 4,
-            slidesPerGroup: 4,
-          },
-        }}
+        breakpoints={breakpoints}
         spaceBetween={20}
         navigation
       >

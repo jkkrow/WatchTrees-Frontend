@@ -1,6 +1,14 @@
 .video-group {
   z-index: 1;
 
+  &__loader {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+  }
+
   &__label {
     width: fit-content;
     margin-bottom: 2rem;
@@ -11,19 +19,11 @@
     }
 
     a {
-      font-weight: bold;
+      font-weight: inherit;
     }
   }
 
-  &__loader {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(32rem, 1fr));
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  &__slider {
+  .swiper {
     overflow: visible;
   }
 

@@ -1,7 +1,6 @@
 import { Fragment, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 
-import VideoContainer from 'components/Video/Container/VideoContainer';
 import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { usePaginate } from 'hooks/common/page';
 import { useAppThunk } from 'hooks/common/store';
@@ -25,17 +24,16 @@ const FavoritesPage: React.FC = () => {
       <Helmet>
         <title>Favorite Videos - WatchTrees</title>
       </Helmet>
-      <VideoContainer>
-        <VideoGrid
-          data={data}
-          loading={loading}
-          loaded={loaded}
-          currentPage={currentPage}
-          pageSize={pageSize}
-          id="favorites"
-          label="Favorite Videos"
-        />
-      </VideoContainer>
+
+      <VideoGrid
+        data={data}
+        loading={loading}
+        loaded={loaded}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        id="favorites"
+        label="Favorite Videos"
+      />
     </Fragment>
   );
 };
