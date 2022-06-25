@@ -26,7 +26,6 @@ export const usePlayer = ({ videoRef, currentVideo }: Dependencies) => {
 
       const video = videoRef.current!;
       let src = currentVideo.info.url;
-      let startTime: number | null = null;
 
       // Edit mode
       if (src.substring(0, 4) === 'blob') {
@@ -41,13 +40,13 @@ export const usePlayer = ({ videoRef, currentVideo }: Dependencies) => {
       const shakaPlayer = new shaka.Player(video);
 
       if (activeNodeId === currentVideo._id && initialProgress) {
-        startTime = initialProgress;
+        await shakaPlayer.load(src, initialProgress);
+        dispatch(videoActions.setInitialProgress(0));
+      } else {
+        await shakaPlayer.load(src);
       }
 
-      await shakaPlayer.load(src, startTime);
-
       setPlayer(shakaPlayer);
-      dispatch(videoActions.setInitialProgress(0));
     })();
   }, [
     dispatch,

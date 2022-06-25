@@ -91,7 +91,8 @@ export interface VideoTreeClient extends VideoTree {
 interface VideoSliceState {
   videoTree: VideoTree | null;
   activeNodeId: string;
-  initialProgress: number | null;
+  initialProgress: number;
+  currentProgress: number;
   videoVolume: number;
   videoResolution: number | 'auto';
   videoPlaybackRate: number;
@@ -102,7 +103,8 @@ const videoVolumeStorage = localStorage.getItem('video-volume');
 const initialState: VideoSliceState = {
   videoTree: null,
   activeNodeId: '',
-  initialProgress: null,
+  initialProgress: 0,
+  currentProgress: 0,
   videoVolume: videoVolumeStorage ? +videoVolumeStorage : 1,
   videoResolution: 'auto',
   videoPlaybackRate: 1,
@@ -120,8 +122,12 @@ const videoSlice = createSlice({
       state.activeNodeId = payload;
     },
 
-    setInitialProgress: (state, { payload }: PayloadAction<number | null>) => {
+    setInitialProgress: (state, { payload }: PayloadAction<number>) => {
       state.initialProgress = payload;
+    },
+
+    setCurrentProgress: (state, { payload }: PayloadAction<number>) => {
+      state.currentProgress = payload;
     },
 
     setVideoVolume: (state, { payload }: PayloadAction<number>) => {

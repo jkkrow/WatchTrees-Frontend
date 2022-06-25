@@ -33,7 +33,6 @@ import { useLoader } from 'hooks/video/loader';
 import { useSelector } from 'hooks/video/selector';
 import { useNavigation } from 'hooks/video/navigation';
 import { useError } from 'hooks/video/error';
-import { useHistory } from 'hooks/video/history';
 import { useEdit } from 'hooks/video/edit';
 import { useKeyControls } from 'hooks/video/key-control';
 import { PlayerNode } from 'store/slices/video-slice';
@@ -150,9 +149,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const { videoError, errorHandler } = useError(videoDependencies);
 
-  const { startHistoryUpdate, stopHistoryUpdate } =
-    useHistory(videoDependencies);
-
   const { selectionTimeMarked, markSelectionTime } = useEdit(videoDependencies);
 
   const keyControlsDependencies = useMemo(
@@ -185,14 +181,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const videoPlayHandler = useCallback(() => {
     hideControlsInSeconds();
     setPlaybackState(true);
-    startHistoryUpdate();
-  }, [hideControlsInSeconds, setPlaybackState, startHistoryUpdate]);
+  }, [hideControlsInSeconds, setPlaybackState]);
 
   const videoPauseHandler = useCallback(() => {
     showControls();
     setPlaybackState(false);
-    stopHistoryUpdate();
-  }, [showControls, setPlaybackState, stopHistoryUpdate]);
+  }, [showControls, setPlaybackState]);
 
   const timeChangeHandler = useCallback(() => {
     updateTime();
@@ -222,6 +216,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   return (
     <div
+      id="video-player"
       className="vp-container"
       style={{ cursor: displayCursor ? 'default' : 'none' }}
       onMouseMove={showControls}

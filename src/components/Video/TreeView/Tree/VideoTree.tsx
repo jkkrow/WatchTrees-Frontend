@@ -7,7 +7,7 @@ import {
   videoActions,
   History,
 } from 'store/slices/video-slice';
-
+import { addToHistory } from 'store/thunks/video-thunk';
 import './VideoTree.scss';
 
 interface VideoTreeProps {
@@ -23,17 +23,11 @@ const VideoTree: React.FC<VideoTreeProps> = ({
   autoPlay = true,
   editMode = false,
 }) => {
-  const { videoTree, activeNodeId, initialProgress } = useAppSelector(
-    (state) => state.video
-  );
+  const { videoTree, activeNodeId } = useAppSelector((state) => state.video);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(videoActions.setVideoTree(tree));
-
-    return () => {
-      dispatch(videoActions.setVideoTree(null));
-    };
   }, [dispatch, tree]);
 
   useEffect(() => {
@@ -47,16 +41,25 @@ const VideoTree: React.FC<VideoTreeProps> = ({
 
     dispatch(videoActions.setActiveNode(initialNodeId));
     dispatch(videoActions.setInitialProgress(initialTime));
-
-    return () => {
-      dispatch(videoActions.setActiveNode(''));
-      dispatch(videoActions.setInitialProgress(null));
-    };
   }, [dispatch, tree.root._id, history]);
 
+  useEffect(() => {
+    activeNodeId && !editMode && dispatch(addToHistory());
+  }, [dispatch, editMode, activeNodeId]);
+
+  useEffect(() => {
+    return () => {
+      !editMode && dispatch(addToHistory(true));
+      dispatch(videoActions.setVideoTree(null));
+      dispatch(videoActions.setActiveNode(''));
+      dispatch(videoActions.setInitialProgress(0));
+      dispatch(videoActions.setCurrentProgress(0));
+    };
+  }, [dispatch, editMode]);
+
   return (
-    <div className="video-tree">
-      {videoTree && activeNodeId && initialProgress !== null && (
+    <div id="video-tree" className="video-tree">
+      {videoTree && activeNodeId && (
         <VideoNode
           currentVideo={tree.root}
           autoPlay={autoPlay}

@@ -1,12 +1,17 @@
 import { useState, useRef, useCallback } from 'react';
 
+import { useAppDispatch } from 'hooks/common/store';
+import { videoActions } from 'store/slices/video-slice';
 import { formatTime } from 'util/format';
 
 interface Dependencies {
   videoRef: React.RefObject<HTMLVideoElement>;
+  active: boolean;
 }
 
-export const useProgress = ({ videoRef }: Dependencies) => {
+export const useProgress = ({ videoRef, active }: Dependencies) => {
+  const dispatch = useAppDispatch();
+
   const [currentProgress, setCurrentProgress] = useState(0);
   const [bufferProgress, setBufferProgress] = useState(0);
   const [videoDuration, setVideoDuration] = useState(0);
@@ -36,7 +41,11 @@ export const useProgress = ({ videoRef }: Dependencies) => {
         }
       }
     }
-  }, [videoRef]);
+
+    if (active) {
+      dispatch(videoActions.setCurrentProgress(currentTime));
+    }
+  }, [dispatch, videoRef, active]);
 
   const updateTooltip = useCallback(
     (event: React.MouseEvent<HTMLInputElement>) => {
@@ -117,7 +126,9 @@ export const useProgress = ({ videoRef }: Dependencies) => {
 
   const configureDuration = useCallback(() => {
     const video = videoRef.current!;
-    setVideoDuration(video.duration);
+    const duration = video.duration;
+
+    setVideoDuration(duration);
   }, [videoRef]);
 
   return {

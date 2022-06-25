@@ -39,9 +39,11 @@ const VideoNode: React.FC<VideoNodeProps> = ({
         currentVideo.parentId === activeNodeId) &&
         (currentVideo.info ? (
           <div
+            id="video-node"
             className={`video-node${
               activeNodeId === currentVideo._id ? ' active' : ''
             }`}
+            data-active={activeNodeId === currentVideo._id}
           >
             <VideoPlayer
               currentVideo={currentVideo as PlayerNode}

@@ -7,6 +7,7 @@ import {
   removeFromLocalHistory,
   attachLocalHistory,
 } from 'util/video';
+import { findById, findParents } from 'util/tree';
 
 export const fetchVideo = (id: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -105,13 +106,44 @@ export const fetchFavorites = (params: {
   };
 };
 
-export const addToHistory = (history: History): AppThunk => {
+export const addToHistory = (unmount?: boolean): AppThunk => {
   return async (dispatch, getState, api) => {
+    const { activeNodeId, initialProgress, currentProgress, videoTree } =
+      getState().video;
     const userData = getState().user.userData;
 
+    if (!videoTree || !activeNodeId) return;
+    const activeNode = findById(videoTree, activeNodeId);
+    if (!activeNode || !activeNode.info) return;
+
+    const threshold =
+      activeNode.info.duration * 0.95 > activeNode.info.duration - 10
+        ? activeNode.info.duration - 10
+        : activeNode.info.duration * 0.95;
+    const isLastVideo = activeNode.children.length === 0;
+    const endAt = activeNode.info!.duration - threshold > 180 ? 180 : threshold;
+
+    const previousNodes = findParents(videoTree, activeNode._id);
+    const previousProgress = previousNodes.reduce(
+      (acc, cur) => acc + (cur.info?.duration || 0),
+      0
+    );
+
+    const progress = unmount ? currentProgress : initialProgress || 0;
+    const totalProgress = progress + previousProgress;
+    const isEnded = isLastVideo && progress > endAt ? true : false;
+
+    const history: History = {
+      tree: videoTree._id,
+      activeNodeId,
+      progress,
+      totalProgress,
+      isEnded: isEnded,
+      updatedAt: new Date(),
+    };
+
     if (!userData) {
-      addToLocalHistory(history);
-      return;
+      return addToLocalHistory(history);
     }
 
     const client = dispatch(api());
