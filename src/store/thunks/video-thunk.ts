@@ -46,6 +46,25 @@ export const fetchVideos = (params: {
   };
 };
 
+export const fetchFeatured = (params: {
+  page: number;
+  max: number;
+}): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const userData = getState().user.userData;
+    const userId = userData ? userData._id : '';
+    const client = dispatch(api());
+
+    const response = await client.get('/videos/client/featured', {
+      params: { ...params, userId },
+    });
+
+    const { videos, count } = response.data;
+
+    return { videos: userId ? videos : attachLocalHistory(videos), count };
+  };
+};
+
 export const fetchCreated = (params: {
   page: number;
   max: number;

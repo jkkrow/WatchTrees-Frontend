@@ -2,6 +2,8 @@ import { useEffect, lazy, Fragment } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import HomePage from 'pages/Video/HomePage';
+import RecentPage from 'pages/Video/RecentPage';
+import FeaturedPage from 'pages/Video/FeaturedPage';
 import SearchPage from 'pages/Video/SearchPage';
 import VideoPage from 'pages/Video/VideoPage';
 import HistoryPage from 'pages/Video/HistoryPage';
@@ -54,6 +56,8 @@ const App: React.FC = () => {
       <Main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/recent" element={<RecentPage />} />
+          <Route path="/featured" element={<FeaturedPage />} />
           <Route path="video/:id" element={<VideoPage />} />
           <Route path="search" element={<SearchPage />} />
           <Route path="channel/:id" element={<ChannelPage />} />

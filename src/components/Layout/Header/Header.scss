@@ -1,5 +1,5 @@
 .theme-light .header {
-  background-color: transparent;
+  background-color: var(--bg-primary-high-opacity);
   background-image: none;
 }
 
@@ -17,9 +17,11 @@
   font-weight: 600;
   text-align: center;
   background-image: linear-gradient(var(--bg-primary), transparent);
+  transition: background-color 200ms ease-out;
   z-index: 110;
 
-  &__logo {
-    margin-right: auto;
+  &:hover,
+  &.menu-opened {
+    background-color: var(--bg-primary);
   }
 }

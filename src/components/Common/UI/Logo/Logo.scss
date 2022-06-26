@@ -1,7 +1,3 @@
-.theme-light .logo {
-  background-color: var(--bg-primary);
-}
-
 .logo {
   display: flex;
   justify-content: center;
@@ -10,7 +6,6 @@
   height: 5rem;
   padding: 1rem;
   margin: 0 0.5rem;
-  border-radius: 100px;
 
   svg {
     width: 100%;

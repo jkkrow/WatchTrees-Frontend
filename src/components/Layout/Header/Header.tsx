@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
 import Logo from 'components/Common/UI/Logo/Logo';
+import Navigation from './Navigation/Navigation';
 import Search from 'components/Common/UI/Search/Search';
 import Menu from 'components/Layout/Menu/Menu';
 import MenuButton from '../Menu/Button/MenuButton';
@@ -21,10 +22,11 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="header">
-      <Link to="/" className="header__logo">
+    <header className={`header${displayMenu ? ' menu-opened' : ''}`}>
+      <Link to="/">
         <Logo />
       </Link>
+      <Navigation />
       <Search />
       <MenuButton active={displayMenu} onClick={displayMenuHandler} />
       <Menu on={displayMenu} onClose={() => setDisplayMenu(false)} />

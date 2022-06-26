@@ -79,6 +79,7 @@ const HomePage: React.FC = () => {
           currentPage={currentPage}
           pageSize={pageSize}
           label="Recent Videos"
+          to="/recent"
         />
       </VideoContainer>
     </Fragment>
