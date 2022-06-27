@@ -1,6 +1,10 @@
 .upload-node {
   width: 100%;
 
+  &.active > &__body {
+    margin-top: 0;
+  }
+
   &.active > &__children {
     width: 90%;
     margin-left: auto;
@@ -13,7 +17,6 @@
     justify-content: center;
     margin-top: 1rem;
     font-weight: 500;
-    border-radius: 10px;
 
     &.layer-even {
       background-color: var(--bg-tertiary);
@@ -151,7 +154,6 @@
     left: 0;
     right: 0;
     gap: 2rem;
-    border-radius: 10px;
     font-size: 1.7rem;
     color: hsl(0, 0%, 90%);
     background-color: hsla(0, 0%, 0%, 0.7);

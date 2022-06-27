@@ -29,7 +29,7 @@ const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
   const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (uploadTree) {
       const result = window.confirm(
-        'There is unfinished uploading process. The process will be lost if you logout. Are you sure to proceed?'
+        'There is unfinished upload process. The unsaved changes will be lost if you logout. Are you sure to continue?'
       );
 
       if (!result) {

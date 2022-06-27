@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import Modal from '../Modal';
 import Button from 'components/Common/Element/Button/Button';
@@ -30,15 +30,24 @@ const FormModal: React.FC<FormModalProps> = ({
   onClose,
 }) => {
   const [displayModal, setDisplayModal] = useState(on);
+  const isUnmounted = useRef(false);
 
   useEffect(() => {
     setDisplayModal(on);
   }, [on]);
 
+  useEffect(() => {
+    return () => {
+      isUnmounted.current = true;
+    };
+  }, []);
+
   const submitHandler = async (event: React.FormEvent) => {
     event.preventDefault();
 
     onConfirm && (await onConfirm());
+
+    if (isUnmounted.current) return;
 
     setDisplayModal(false);
   };
@@ -66,7 +75,7 @@ const FormModal: React.FC<FormModalProps> = ({
           <Button small invalid={invalid} loading={loading} disabled={disabled}>
             {footer.toUpperCase()}
           </Button>
-          <Button small type="button" onClick={closeModalHandler}>
+          <Button small inversed type="button" onClick={closeModalHandler}>
             CANCEL
           </Button>
         </div>

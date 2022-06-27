@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 
+import FormModal from 'components/Layout/Modal/Form/FormModal';
 import Input from 'components/Common/Element/Input/Input';
 import Button from 'components/Common/Element/Button/Button';
 import FileInput from 'components/Common/Element/FileInput/FIleInput';
@@ -9,6 +10,7 @@ import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { ReactComponent as EnterIcon } from 'assets/icons/enter.svg';
 import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as SaveIcon } from 'assets/icons/save.svg';
+import { ReactComponent as UndoIcon } from 'assets/icons/undo.svg';
 import { useTimeout } from 'hooks/common/timer';
 import {
   useAppDispatch,
@@ -42,6 +44,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const [descriptionInput, setDescriptionInput] = useState(
     tree.info.description
   );
+  const [isUndoing, setIsUndoing] = useState(false);
 
   const [setTitleTimeout] = useTimeout();
   const [setDescriptionTimeout] = useTimeout();
@@ -138,6 +141,18 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     dispatchThunk(deleteThumbnail());
   };
 
+  const pendUndoHandler = () => {
+    setIsUndoing(true);
+  };
+
+  const cancelUndoHandler = () => {
+    setIsUndoing(false);
+  };
+
+  const confirmUndoHandler = async () => {
+    dispatch(uploadActions.finishUpload());
+  };
+
   const saveUploadHandler = () => {
     dispatchThunk(saveUpload());
   };
@@ -148,6 +163,14 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
 
   return (
     <div className="upload-dashboard">
+      <FormModal
+        on={isUndoing}
+        header="Undo Upload"
+        content="Your upload process is unfinished and the unsaved changes will be lost. Are you sure to continue?"
+        footer="Undo"
+        onClose={cancelUndoHandler}
+        onConfirm={confirmUndoHandler}
+      />
       <LoadingSpinner on={loading} overlay />
       <div className="upload-dashboard__header">
         <div className="upload-dashboard__title">
@@ -228,14 +251,14 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
           </div>
         </div>
         <div className="upload-dashboard__buttons">
+          <Button inversed onClick={pendUndoHandler}>
+            <UndoIcon />
+          </Button>
           <Button
             disabled={isUploadSaved || loading}
             onClick={saveUploadHandler}
           >
-            <SaveIcon
-              className="upload-dashboard__save"
-              style={{ width: '2.5rem', height: '2.5rem' }}
-            />
+            <SaveIcon />
           </Button>
           <Tooltip text={disableSubmit} direction="bottom" invalid>
             <Button

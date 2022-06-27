@@ -1,12 +1,14 @@
 .upload-layout {
-  display: flex;
-  flex-direction: column;
-  max-width: 150rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50rem, 1fr));
   padding: 1rem;
   margin: auto;
-  gap: 1rem;
+  gap: 2rem;
 
-  @media (min-width: 800px) {
-    flex-direction: row;
+  &__group {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: start;
+    gap: 2rem;
   }
 }

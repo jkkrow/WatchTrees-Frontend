@@ -19,7 +19,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
   const activeVideoId = useAppSelector((state) => state.video.activeNodeId);
   const dispatch = useAppDispatch();
 
-  const [warning, setWarning] = useState(false);
+  const [isWarning, setIsWarning] = useState(false);
 
   const activeNodeHandler = (id: string) => {
     dispatch(uploadActions.setActiveNode(id));
@@ -30,30 +30,34 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
   };
 
   const removeNodeHandler = () => {
+    dispatch(uploadActions.removeNode({ nodeId: currentNode._id }));
+
+    if (currentNode._id === activeNodeId) {
+      activeNodeHandler(currentNode.parentId!);
+    }
+
+    if (currentNode._id === activeVideoId) {
+      activeVideoHandler(currentNode.parentId!);
+    }
+  };
+
+  const pendRemoveHandler = () => {
     const isNotEmpty = validateNodes(currentNode, 'info', null, false);
 
-    if (isNotEmpty && !warning) {
-      setWarning(true);
+    if (isNotEmpty) {
+      setIsWarning(true);
     } else {
-      dispatch(uploadActions.removeNode({ nodeId: currentNode._id }));
-
-      if (currentNode._id === activeNodeId) {
-        activeNodeHandler(currentNode.parentId!);
-      }
-
-      if (currentNode._id === activeVideoId) {
-        activeVideoHandler(currentNode.parentId!);
-      }
+      removeNodeHandler();
     }
   };
 
   const cancelRemoveHandler = () => {
-    setWarning(false);
+    setIsWarning(false);
   };
 
   return (
     <>
-      {warning && (
+      {isWarning && (
         <Warning onRemove={removeNodeHandler} onCancel={cancelRemoveHandler} />
       )}
       {currentNode._id !== rootId && currentNode._id !== activeNodeId && (
@@ -65,7 +69,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
             width: '2.4rem',
             height: '2.4rem',
           }}
-          onClick={removeNodeHandler}
+          onClick={pendRemoveHandler}
         />
       )}
       {!currentNode.info &&
