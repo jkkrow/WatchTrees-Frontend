@@ -25,12 +25,12 @@ const UploadButton: React.FC = () => {
       <Button inversed onClick={addNewVideoHandler} loading={loading}>
         {!uploadTree ? (
           <>
-            <PlusIcon style={{ width: '1.2rem', height: '1.2rem' }} />
+            <PlusIcon />
             NEW VIDEO
           </>
         ) : (
           <>
-            <EditIcon style={{ width: '1.5rem', height: '1.5rem' }} />
+            <EditIcon />
             CONTINUE
           </>
         )}

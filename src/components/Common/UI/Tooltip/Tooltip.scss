@@ -98,6 +98,7 @@
   }
 
   &.invalid::after {
+    color: var(--text-primary);
     background-color: var(--bg-invalid);
   }
 

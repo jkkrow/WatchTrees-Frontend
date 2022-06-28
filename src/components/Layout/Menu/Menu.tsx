@@ -6,7 +6,7 @@ import Backdrop from 'components/Layout/Backdrop/Backdrop';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Theme from 'components/Layout/Theme/Theme';
 import { ReactComponent as UserIcon } from 'assets/icons/user.svg';
-import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
+import { ReactComponent as VideoIcon } from 'assets/icons/video.svg';
 import { ReactComponent as SubscribeUsersIcon } from 'assets/icons/subscribe-users.svg';
 import { ReactComponent as FavoriteIcon } from 'assets/icons/favorite.svg';
 import { ReactComponent as TimeIcon } from 'assets/icons/time.svg';

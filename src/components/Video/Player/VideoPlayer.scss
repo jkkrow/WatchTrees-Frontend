@@ -4,7 +4,7 @@ $vp-bg--tertiary: hsl(0, 0%, 20%);
 $vp-text: hsl(0, 0%, 100%);
 $vp-accent--primary: hsl(357, 83%, 44%);
 $vp-accent--secondary: hsl(2, 100%, 21%);
-$vp-range--selection-time: hsl(32, 100%, 50%);
+$vp-range--selection-time: hsl(357, 83%, 75%);
 
 @mixin vp-range($color) {
   position: relative;

@@ -5,7 +5,7 @@ import Card from 'components/Common/UI/Card/Card';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import Button from 'components/Common/Element/Button/Button';
 import ChannelLoader from '../Loader/ChannelLoader';
-import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
+import { ReactComponent as VideoIcon } from 'assets/icons/video.svg';
 import { ReactComponent as SubscribeUsersIcon } from 'assets/icons/subscribe-users.svg';
 import { ReactComponent as SubscribeAddIcon } from 'assets/icons/subscribe-add.svg';
 import { ReactComponent as SubscribeAddedIcon } from 'assets/icons/subscribe-added.svg';

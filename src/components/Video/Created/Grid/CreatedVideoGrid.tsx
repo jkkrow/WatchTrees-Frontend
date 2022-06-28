@@ -4,7 +4,7 @@ import VideoLoader from 'components/Video/Loader/VideoLoader';
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import NotFound from 'components/Common/UI/NotFound/NotFound';
-import { ReactComponent as VideoIcon } from 'assets/icons/preview.svg';
+import { ReactComponent as VideoIcon } from 'assets/icons/video.svg';
 import { VideoTreeClient } from 'store/slices/video-slice';
 import './CreatedVideoGrid.scss';
 

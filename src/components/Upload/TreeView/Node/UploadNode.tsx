@@ -36,7 +36,14 @@ const UploadNode: React.FC<UploadNodeProps> = ({ currentNode, rootId }) => {
           <Controls currentNode={currentNode} rootId={rootId} />
           {currentNode.info ? (
             <>
-              <Content currentNode={currentNode} rootId={rootId} />
+              <Content
+                id={currentNode._id}
+                parentId={currentNode.parentId}
+                rootId={rootId}
+                layer={currentNode.layer}
+                info={currentNode.info}
+                children={currentNode.children}
+              />
               <Error currentNode={currentNode} error={currentNode.info.error} />
             </>
           ) : (

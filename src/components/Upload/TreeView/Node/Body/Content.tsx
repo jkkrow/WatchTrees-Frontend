@@ -1,36 +1,48 @@
-import { useMemo } from 'react';
-
 import Input from 'components/Common/Element/Input/Input';
 import Tooltip from 'components/Common/UI/Tooltip/Tooltip';
+import Button from 'components/Common/Element/Button/Button';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as AngleLeftDoubleIcon } from 'assets/icons/angle-left-double.svg';
 import { ReactComponent as PlusIcon } from 'assets/icons/plus.svg';
-import { ReactComponent as PreviewIcon } from 'assets/icons/preview.svg';
+import { ReactComponent as VideoIcon } from 'assets/icons/video.svg';
 import { ReactComponent as CircleDashIcon } from 'assets/icons/circle-dash.svg';
 import { ReactComponent as CircleCheckIcon } from 'assets/icons/circle-check.svg';
 import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading.svg';
+import { ReactComponent as MarkerIcon } from 'assets/icons/marker.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { uploadActions } from 'store/slices/upload-slice';
-import { VideoNode, videoActions } from 'store/slices/video-slice';
+import { VideoNode, videoActions, NodeInfo } from 'store/slices/video-slice';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 
 interface ContentProps {
-  currentNode: VideoNode;
+  id: string;
+  parentId: string | null;
   rootId: string;
+  layer: number;
+  info: NodeInfo;
+  children: VideoNode[];
 }
 
-const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
+const Content: React.FC<ContentProps> = ({
+  id,
+  parentId,
+  rootId,
+  info,
+  children,
+}) => {
   const activeNodeId = useAppSelector((state) => state.upload.activeNodeId);
+  const activeVideoId = useAppSelector((state) => state.video.activeNodeId);
+  const currentProgress = useAppSelector(
+    (state) => state.video.currentProgress
+  );
   const dispatch = useAppDispatch();
-
-  const nodeInfo = useMemo(() => currentNode.info!, [currentNode.info]);
 
   const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
       uploadActions.setNode({
         info: { label: event.target.value },
-        nodeId: currentNode._id,
+        nodeId: id,
       })
     );
   };
@@ -40,18 +52,18 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   ) => {
     let value = +event.target.value;
 
-    if (value > nodeInfo.duration) {
-      value = nodeInfo.duration;
+    if (value > info.duration) {
+      value = info.duration;
     }
 
-    if (value > nodeInfo.selectionTimeEnd) {
-      value = nodeInfo.selectionTimeEnd;
+    if (value > info.selectionTimeEnd) {
+      value = info.selectionTimeEnd;
     }
 
     dispatch(
       uploadActions.setNode({
         info: { selectionTimeStart: value },
-        nodeId: currentNode._id,
+        nodeId: id,
       })
     );
   };
@@ -61,24 +73,72 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   ) => {
     let value = +event.target.value;
 
-    if (value < nodeInfo.selectionTimeStart) {
-      value = nodeInfo.selectionTimeStart;
+    if (value < info.selectionTimeStart) {
+      value = info.selectionTimeStart;
     }
 
-    if (value > nodeInfo.duration) {
-      value = nodeInfo.duration;
+    if (value > info.duration) {
+      value = info.duration;
     }
 
     dispatch(
       uploadActions.setNode({
         info: { selectionTimeEnd: value },
-        nodeId: currentNode._id,
+        nodeId: id,
       })
     );
   };
 
+  const setSelectionTimeStartHandler = () => {
+    const { selectionTimeEnd, duration } = info;
+
+    dispatch(
+      uploadActions.setNode({
+        info: { selectionTimeStart: +currentProgress.toFixed(3) },
+        nodeId: id,
+      })
+    );
+
+    if (currentProgress > (selectionTimeEnd || 0)) {
+      dispatch(
+        uploadActions.setNode({
+          info: {
+            selectionTimeEnd:
+              currentProgress + 10 > duration
+                ? +duration.toFixed(3)
+                : +(currentProgress + 10).toFixed(3),
+          },
+          nodeId: id,
+        })
+      );
+    }
+  };
+
+  const setSelectionTimeEndHandler = () => {
+    const { selectionTimeStart } = info;
+
+    dispatch(
+      uploadActions.setNode({
+        info: { selectionTimeEnd: +currentProgress.toFixed(3) },
+        nodeId: id,
+      })
+    );
+
+    if (currentProgress < (selectionTimeStart || 0)) {
+      dispatch(
+        uploadActions.setNode({
+          info: {
+            selectionTimeStart:
+              currentProgress - 10 < 0 ? 0 : +(currentProgress - 10).toFixed(3),
+          },
+          nodeId: id,
+        })
+      );
+    }
+  };
+
   const addChildHandler = () => {
-    dispatch(uploadActions.appendNode({ nodeId: currentNode._id }));
+    dispatch(uploadActions.appendNode({ nodeId: id }));
   };
 
   const activeNodeHandler = (id: string) => {
@@ -92,12 +152,12 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
   return (
     <div className="upload-node__content">
       <div className="upload-node__header">
-        {currentNode._id === rootId ? (
+        {!parentId ? (
           <Tooltip text="This is first video">
             <strong>ROOT</strong>
           </Tooltip>
         ) : (
-          currentNode._id === activeNodeId && (
+          id === activeNodeId && (
             <div className="upload-node__navigation">
               <AngleLeftDoubleIcon
                 className="btn"
@@ -105,36 +165,25 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
               />
               <AngleLeftIcon
                 className="btn"
-                onClick={() => activeNodeHandler(currentNode.parentId!)}
+                onClick={() => activeNodeHandler(parentId)}
               />
             </div>
           )
         )}
         <div
           className="upload-node__title"
-          style={
-            currentNode._id === activeNodeId
-              ? { pointerEvents: 'none' }
-              : undefined
-          }
-          onClick={() => activeNodeHandler(currentNode._id)}
+          style={id === activeNodeId ? { pointerEvents: 'none' } : undefined}
+          onClick={() => activeNodeHandler(id)}
         >
-          {nodeInfo.name}
+          {info.name}
         </div>
         <div className="upload-node__action">
           <Tooltip text="Show preview" direction="left">
-            <PreviewIcon
-              className="btn"
-              onClick={() => activeVideoHandler(currentNode._id)}
-            />
+            <VideoIcon className="btn" onClick={() => activeVideoHandler(id)} />
           </Tooltip>
-          {currentNode.children.length < 4 && (
+          {children.length < 4 && (
             <Tooltip text="Append next video" direction="left">
-              <PlusIcon
-                className="btn"
-                onClick={addChildHandler}
-                style={{ width: '1.7rem', height: '1.7rem' }}
-              />
+              <PlusIcon className="btn" onClick={addChildHandler} />
             </Tooltip>
           )}
         </div>
@@ -144,53 +193,85 @@ const Content: React.FC<ContentProps> = ({ currentNode, rootId }) => {
         <div className="upload-node__progress--background" />
         <div
           className="upload-node__progress--current"
-          style={{ width: nodeInfo.progress + '%' }}
+          style={{ width: info.progress + '%' }}
         />
       </div>
 
       <div className="upload-node__info">
         <div className="upload-node__info__size" data-label="FileSize">
-          {formatSize(nodeInfo.size)}
+          {formatSize(info.size)}
         </div>
         <div className="upload-node__info__duration" data-label="Duration">
-          {formatTime(nodeInfo.duration)}
+          {formatTime(info.duration)}
         </div>
-        {currentNode._id !== rootId && (
+        {id !== rootId && (
           <label className="upload-node__info__label" data-label="Label">
             <div className="upload-node__info__input">
               <Input
                 id="label"
                 type="text"
-                value={nodeInfo.label}
+                value={info.label}
                 onChange={labelChangeHandler}
               />
             </div>
           </label>
         )}
-        <label
+        <div
           className="upload-node__info__selection-time"
           data-label="Selection Time"
         >
           <div className="upload-node__info__input">
+            <Tooltip
+              text={
+                id !== activeVideoId
+                  ? 'Show preview first'
+                  : 'Set to current time'
+              }
+              direction="bottom"
+            >
+              <Button
+                small
+                disabled={id !== activeVideoId}
+                onClick={setSelectionTimeStartHandler}
+              >
+                <MarkerIcon />
+              </Button>
+            </Tooltip>
             <Input
               id="selectionTimeStart"
               type="number"
-              value={nodeInfo.selectionTimeStart.toString()}
+              value={info.selectionTimeStart.toString()}
               onChange={selectionTimeStartChangeHandler}
             />
             <span>to</span>
+            <Tooltip
+              text={
+                id !== activeVideoId
+                  ? 'Show preview first'
+                  : 'Set to current time'
+              }
+              direction="bottom"
+            >
+              <Button
+                small
+                disabled={id !== activeVideoId}
+                onClick={setSelectionTimeEndHandler}
+              >
+                <MarkerIcon />
+              </Button>
+            </Tooltip>
             <Input
               id="selectionTimeEnd"
               type="number"
-              value={nodeInfo.selectionTimeEnd.toString()}
+              value={info.selectionTimeEnd.toString()}
               onChange={selectionTimeEndChangeHandler}
             />
           </div>
-        </label>
+        </div>
         <div className="upload-node__info__children" data-label="Next Videos">
           <div className="upload-node__info__children__status">
-            {currentNode.children.length
-              ? currentNode.children.map((node) => {
+            {children.length
+              ? children.map((node) => {
                   if (!node.info)
                     return (
                       <CircleDashIcon

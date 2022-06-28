@@ -11,7 +11,6 @@ import Settings from './Controls/Settings/Settings';
 import SettingsDropdown from './Controls/SettingsDropdown/SettingsDropdown';
 import Records from './Controls/Records/Records';
 import RecordsModal from './Controls/RecordsModal/RecordsModal';
-import Marker from './Controls/Marker/Marker';
 import Loader from './UI/Loader/Loader';
 import Skip from './Controls/Skip/Skip';
 import Rewind from './Controls/Rewind/Rewind';
@@ -33,7 +32,6 @@ import { useLoader } from 'hooks/video/loader';
 import { useSelector } from 'hooks/video/selector';
 import { useNavigation } from 'hooks/video/navigation';
 import { useError } from 'hooks/video/error';
-import { useEdit } from 'hooks/video/edit';
 import { useKeyControls } from 'hooks/video/key-control';
 import { PlayerNode } from 'store/slices/video-slice';
 import './VideoPlayer.scss';
@@ -148,8 +146,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     useNavigation(videoDependencies);
 
   const { videoError, errorHandler } = useError(videoDependencies);
-
-  const { selectionTimeMarked, markSelectionTime } = useEdit(videoDependencies);
 
   const keyControlsDependencies = useMemo(
     () => ({
@@ -308,12 +304,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             <Skip onNext={navigateToNextVideo(nextVideos)} />
           </div>
           <div>
-            {editMode && (
-              <Marker
-                isMarked={selectionTimeMarked}
-                onMark={markSelectionTime}
-              />
-            )}
             <Settings onToggle={toggleSettings} />
             <Records onToggle={toggleRecords} />
             <Fullscreen

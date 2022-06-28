@@ -52,8 +52,8 @@
     gap: 0.5rem;
 
     svg {
-      width: 2rem;
-      height: 2rem;
+      width: 1.5rem;
+      height: 1.5rem;
     }
   }
 
@@ -63,8 +63,8 @@
     gap: 1.5rem;
 
     svg {
-      width: 2rem;
-      height: 2rem;
+      width: 2.5rem;
+      height: 2.5rem;
     }
   }
 
@@ -134,6 +134,11 @@
         text-align: center;
         padding: 0.5rem;
       }
+
+      button {
+        height: auto;
+        padding: 1rem;
+      }
     }
 
     &__children__status {
@@ -157,7 +162,7 @@
     font-size: 1.7rem;
     color: hsl(0, 0%, 90%);
     background-color: hsla(0, 0%, 0%, 0.7);
-    z-index: 1;
+    z-index: 5;
 
     &__message {
       padding: 0 4rem;
