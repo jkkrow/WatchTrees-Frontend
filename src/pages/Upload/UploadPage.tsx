@@ -11,7 +11,7 @@ const UploadPage: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    !previewTree && navigate('/user/videos');
+    !previewTree && navigate('/user/videos', { replace: true });
   }, [previewTree, navigate]);
 
   return (

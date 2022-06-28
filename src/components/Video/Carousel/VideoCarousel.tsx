@@ -41,9 +41,7 @@ const VideoCarousel: React.FC<VideoCarouselProps> = ({ data, loaded }) => {
         >
           {data.videos.map((video) => (
             <SwiperSlide key={video._id} className="video-carousel__slider">
-              <div className="video-carousel__thumbnail">
-                <VideoThumbnail video={video} />
-              </div>
+              <VideoThumbnail video={video} />
               <div className="video-carousel__info">
                 <Link
                   to={`/video/${video._id}`}

@@ -6,6 +6,8 @@
   height: 5rem;
   padding: 0 2rem;
   gap: 1rem;
+  border: 1px solid;
+  border-color: var(--text-secondary);
   border-radius: 5px;
   font-weight: 600;
   font-size: 1.4rem;
@@ -26,8 +28,9 @@
   &.inversed:active:disabled,
   &.inversed:hover:disabled,
   &.inversed:disabled svg {
-    background-color: var(--bg-disabled);
     color: var(--text-disabled);
+    background-color: var(--bg-disabled);
+    border-color: var(--bg-disabled);
     cursor: not-allowed;
     opacity: 1;
   }
@@ -35,18 +38,20 @@
   &.inversed {
     color: var(--text-primary);
     background-color: var(--bg-primary);
-    border: 1px solid var(--text-secondary);
+    border-color: var(--text-secondary);
   }
 
   &.invalid {
     color: var(--text-primary);
     background-color: var(--bg-invalid);
+    border-color: var(--bg-invalid);
 
     &:disabled,
     &:hover:disabled,
     &:active:disabled {
-      background-color: var(--accent-secondary);
       color: var(--text-disabled);
+      background-color: var(--accent-secondary);
+      border-color: var(--accent-secondary);
       cursor: not-allowed;
       opacity: 1;
     }
@@ -55,7 +60,7 @@
   &.inversed.invalid {
     color: var(--text-invalid);
     background-color: var(--bg-primary);
-    border: 1px solid var(--text-invalid);
+    border-color: var(--text-invalid);
   }
 
   > svg {
