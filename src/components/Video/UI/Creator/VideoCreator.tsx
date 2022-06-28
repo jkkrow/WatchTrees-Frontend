@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
 
 import Avatar from 'components/Common/UI/Avatar/Avatar';
-import { TreeInfoWithCreator } from 'store/slices/video-slice';
+import { TreeInfoClient } from 'store/slices/video-slice';
 import './VideoCreator.scss';
 
 interface VideoCreatorProps {
-  info: TreeInfoWithCreator;
+  info: TreeInfoClient;
 }
 
 const VideoCreator: React.FC<VideoCreatorProps> = ({ info }) => {

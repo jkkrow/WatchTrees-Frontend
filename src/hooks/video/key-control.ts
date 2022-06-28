@@ -4,7 +4,7 @@ import { KeyActionHandle } from 'components/Video/Player/UI/KeyAction/KeyAction'
 import { useTimeout } from 'hooks/common/timer';
 
 interface Dependencies {
-  active: boolean;
+  active?: boolean;
   onProgress: (direction: 1 | 0) => void;
   onVolume: (direction: 1 | 0) => void;
   onPlayback: () => void;

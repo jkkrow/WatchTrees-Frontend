@@ -1,15 +1,11 @@
 import { useState, useRef, useCallback } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useAppDispatch } from 'hooks/common/store';
 import { videoActions } from 'store/slices/video-slice';
 import { formatTime } from 'util/format';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  active: boolean;
-}
-
-export const useProgress = ({ videoRef, active }: Dependencies) => {
+export const useProgress = ({ videoRef, active }: VideoPlayerDependencies) => {
   const dispatch = useAppDispatch();
 
   const [currentProgress, setCurrentProgress] = useState(0);

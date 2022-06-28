@@ -1,15 +1,11 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import { findParents } from 'util/tree';
-import { videoActions, VideoNode } from 'store/slices/video-slice';
+import { findById, findParents } from 'util/tree';
+import { videoActions } from 'store/slices/video-slice';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  currentVideo: VideoNode;
-}
-
-export const useRecords = ({ videoRef, currentVideo }: Dependencies) => {
+export const useRecords = ({ videoRef, id }: VideoPlayerDependencies) => {
   const videoTree = useAppSelector((state) => state.video.videoTree!);
   const dispatch = useAppDispatch();
 
@@ -18,13 +14,14 @@ export const useRecords = ({ videoRef, currentVideo }: Dependencies) => {
   const wasPlaying = useRef(false);
 
   const records = useMemo(() => {
-    const parents = findParents(videoTree, currentVideo._id);
+    const currentVideo = findById(videoTree, id)!;
+    const parents = findParents(videoTree, id);
     parents.push(currentVideo);
 
     return parents.sort((videoA, videoB) =>
       videoA.layer < videoB.layer ? 1 : -1
     );
-  }, [videoTree, currentVideo]);
+  }, [videoTree, id]);
 
   const toggleRecords = useCallback(() => {
     setDisplayRecords((prev) => !prev);

@@ -1,28 +1,27 @@
 import { useCallback, useMemo } from 'react';
 
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import { PlayerNode, videoActions } from 'store/slices/video-slice';
+import { VideoNode, videoActions } from 'store/slices/video-slice';
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  currentVideo: PlayerNode;
-}
-
-export const useNavigation = ({ videoRef, currentVideo }: Dependencies) => {
+export const useNavigation = ({
+  videoRef,
+  parentId,
+  info,
+  children,
+}: VideoPlayerDependencies) => {
   const videoTree = useAppSelector((state) => state.video.videoTree!);
   const dispatch = useAppDispatch();
 
   const rootId = useMemo(() => videoTree.root._id, [videoTree]);
 
   const navigateToNextVideo = useCallback(
-    (nextVideos: PlayerNode[]) => {
+    (nextVideos: VideoNode[]) => {
       return () => {
         const video = videoRef.current!;
-        const validNextVideos = currentVideo.children.filter(
-          (video) => video.info
-        );
+        const validNextVideos = children.filter((video) => video.info);
         const isLastVideo = !validNextVideos.length;
-        const selectionTimeStart = currentVideo.info.selectionTimeStart;
+        const selectionTimeStart = info.selectionTimeStart;
 
         if (isLastVideo) {
           video.currentTime = video.duration;
@@ -39,31 +38,26 @@ export const useNavigation = ({ videoRef, currentVideo }: Dependencies) => {
         );
       };
     },
-    [
-      videoRef,
-      currentVideo.info.selectionTimeStart,
-      currentVideo.children,
-      dispatch,
-    ]
+    [videoRef, info.selectionTimeStart, children, dispatch]
   );
 
   const navigateToPreviousVideo = useCallback(() => {
-    if (!currentVideo.parentId) {
+    if (!parentId) {
       videoRef.current!.currentTime = 0;
       return;
     }
 
-    dispatch(videoActions.setActiveNode(currentVideo.parentId));
-  }, [videoRef, dispatch, currentVideo.parentId]);
+    dispatch(videoActions.setActiveNode(parentId));
+  }, [videoRef, dispatch, parentId]);
 
   const navigateToFirstVideo = useCallback(() => {
-    if (!currentVideo.parentId) {
+    if (!parentId) {
       videoRef.current!.currentTime = 0;
       return;
     }
 
     dispatch(videoActions.setActiveNode(rootId));
-  }, [videoRef, dispatch, rootId, currentVideo.parentId]);
+  }, [videoRef, dispatch, rootId, parentId]);
 
   return {
     navigateToNextVideo,

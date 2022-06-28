@@ -10,7 +10,7 @@ interface ProgressProps {
   progressTooltipPosition: string;
   selectionStartPoint: number;
   selectionEndPoint: number;
-  editMode: boolean;
+  editMode?: boolean;
   onHover: (event: React.MouseEvent<HTMLInputElement>) => void;
   onTouch: (event: React.TouchEvent<HTMLInputElement>) => void;
   onSeek: (event: React.ChangeEvent<HTMLInputElement>) => void;

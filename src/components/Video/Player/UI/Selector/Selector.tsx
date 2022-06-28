@@ -1,13 +1,13 @@
 import { memo } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import { PlayerNode } from 'store/slices/video-slice';
+import { VideoNode } from 'store/slices/video-slice';
 import './Selector.scss';
 
 interface SelectorProps {
   on: boolean;
   timerOn: boolean;
-  next: PlayerNode[];
+  next: VideoNode[];
   leftTime: number;
   onSelect: (index: number) => void;
 }
@@ -32,7 +32,7 @@ const Selector: React.FC<SelectorProps> = ({
               className="vp-selector__btn"
               onClick={() => onSelect(index)}
             >
-              {video.info.label}
+              {video.info!.label}
             </button>
           </CSSTransition>
         ))}

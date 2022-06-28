@@ -1,5 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export interface VideoTree {
+  _id: string;
+  root: VideoNode;
+  info: TreeInfo;
+  createdAt: string;
+}
+
+export interface VideoTreeClient extends VideoTree {
+  info: TreeInfoClient;
+  data: TreeDataClient;
+  history: History | null;
+}
+
+export interface VideoNode {
+  _id: string;
+  parentId: string | null;
+  layer: number;
+  info: NodeInfo | null;
+  creator?: string;
+  children: VideoNode[];
+}
+
 export interface NodeInfo {
   name: string;
   label: string;
@@ -11,15 +33,6 @@ export interface NodeInfo {
   progress: number;
   isConverted: boolean;
   url: string;
-}
-
-export interface VideoNode {
-  _id: string;
-  parentId: string | null;
-  layer: number;
-  info: NodeInfo | null;
-  creator?: string;
-  children: VideoNode[];
 }
 
 export interface TreeInfo {
@@ -35,7 +48,7 @@ export interface TreeInfo {
   isEditing: boolean;
 }
 
-export interface TreeInfoWithCreator extends TreeInfo {
+export interface TreeInfoClient extends TreeInfo {
   creatorInfo: {
     name: string;
     picture: string;
@@ -47,26 +60,8 @@ export interface TreeData {
   favorites: number;
 }
 
-export interface VideoTree {
-  _id: string;
-  root: VideoNode;
-  info: TreeInfo;
-  createdAt: string;
-}
-
-export interface PlayerNode {
-  _id: string;
-  parentId: string | null;
-  layer: number;
-  info: NodeInfo;
-  children: VideoNode[];
-}
-
-export interface PlayerTree {
-  _id: string;
-  root: PlayerNode;
-  info: TreeInfo;
-  createdAt: string;
+export interface TreeDataClient extends TreeData {
+  isFavorite: boolean;
 }
 
 export interface History {
@@ -76,16 +71,6 @@ export interface History {
   totalProgress: number;
   isEnded: boolean;
   updatedAt: Date;
-}
-
-export interface VideoTreeClient extends VideoTree {
-  info: TreeInfoWithCreator;
-  history: History | null;
-  data: {
-    views: number;
-    favorites: number;
-    isFavorite: boolean;
-  };
 }
 
 interface VideoSliceState {

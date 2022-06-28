@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { videoActions } from 'store/slices/video-slice';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  active: boolean;
-}
-
-export const usePlaybackRate = ({ videoRef, active }: Dependencies) => {
+export const usePlaybackRate = ({
+  videoRef,
+  active,
+}: VideoPlayerDependencies) => {
   const videoPlaybackRate = useAppSelector(
     (state) => state.video.videoPlaybackRate
   );

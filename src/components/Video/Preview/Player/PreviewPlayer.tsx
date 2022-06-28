@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Loader from 'components/Video/Player/UI/Loader/Loader';
@@ -9,23 +9,24 @@ import { usePlayer } from 'hooks/video/player';
 import { useVolume } from 'hooks/video/volume';
 import { useLoader } from 'hooks/video/loader';
 import { useLocalStorage } from 'hooks/common/storage';
-import { PlayerNode } from 'store/slices/video-slice';
+import { NodeInfo, VideoNode } from 'store/slices/video-slice';
 import './PreviewPlayer.scss';
 
 interface PreviewPlayerProps {
   treeId: string;
-  video: PlayerNode;
+  id: string;
+  info: NodeInfo;
+  children: VideoNode[];
 }
 
-const PreviewPlayer: React.FC<PreviewPlayerProps> = ({ treeId, video }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+const PreviewPlayer: React.FC<PreviewPlayerProps> = ({ treeId, ...rest }) => {
   const navigate = useNavigate();
 
   const [isEnded, setIsEnded] = useState(false);
   const [isMuted, setIsMuted] = useLocalStorage('preview-mute', false);
 
-  usePlayer({ videoRef, currentVideo: video });
-  const { toggleMute, configureVolume } = useVolume({ videoRef });
+  const videoPlayerDependencies = usePlayer({ ...rest });
+  const { toggleMute, configureVolume } = useVolume(videoPlayerDependencies);
   const { displayLoader, showLoader, hideLoader } = useLoader();
 
   const previewEndedHandler = useCallback(() => {
@@ -39,8 +40,8 @@ const PreviewPlayer: React.FC<PreviewPlayerProps> = ({ treeId, video }) => {
 
   const videoLoadHandler = useCallback(() => {
     configureVolume();
-    isMuted && (videoRef.current!.volume = 0);
-  }, [configureVolume, isMuted]);
+    isMuted && (videoPlayerDependencies.videoRef.current!.volume = 0);
+  }, [configureVolume, videoPlayerDependencies.videoRef, isMuted]);
 
   const navigateToVideoHandler = useCallback(() => {
     navigate(`/video/${treeId}`);
@@ -52,7 +53,7 @@ const PreviewPlayer: React.FC<PreviewPlayerProps> = ({ treeId, video }) => {
         <Loader on={displayLoader} style={{ fontSize: '3rem' }} />
       </div>
       <video
-        ref={videoRef}
+        ref={videoPlayerDependencies.videoRef}
         autoPlay={true}
         onClick={navigateToVideoHandler}
         onLoadedMetadata={videoLoadHandler}

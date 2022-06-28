@@ -1,4 +1,4 @@
-import { useCallback, useRef, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import Controls from './Controls/Controls';
 import VideoHeader from './UI/Header/VideoHeader';
@@ -33,39 +33,31 @@ import { useSelector } from 'hooks/video/selector';
 import { useNavigation } from 'hooks/video/navigation';
 import { useError } from 'hooks/video/error';
 import { useKeyControls } from 'hooks/video/key-control';
-import { PlayerNode } from 'store/slices/video-slice';
+import { NodeInfo, VideoNode } from 'store/slices/video-slice';
 import './VideoPlayer.scss';
 
-interface VideoPlayerProps {
-  currentVideo: PlayerNode;
-  active: boolean;
+export interface VideoPlayerProps {
+  id: string;
+  parentId?: string | null;
+  layer?: number;
+  info: NodeInfo;
+  children: VideoNode[];
+  active?: boolean;
   autoPlay?: boolean;
   editMode?: boolean;
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({
-  currentVideo,
-  active,
-  autoPlay = true,
-  editMode = false,
-}) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoDependencies = useMemo(
-    () => ({
-      videoRef,
-      editMode,
-      active,
-      autoPlay,
-      currentVideo,
-    }),
-    [editMode, active, autoPlay, currentVideo]
-  );
+export interface VideoPlayerDependencies extends VideoPlayerProps {
+  videoRef: React.RefObject<HTMLVideoElement>;
+  player: shaka.Player | null;
+}
 
+const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
   /**
    * HOOKS
    */
 
-  const { player } = usePlayer(videoDependencies);
+  const videoPlayerDependencies = usePlayer(props);
 
   const {
     displayControls,
@@ -73,10 +65,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     showControls,
     hideControls,
     hideControlsInSeconds,
-  } = useControls(videoDependencies);
+  } = useControls(videoPlayerDependencies);
 
   const { playbackState, setPlaybackState, togglePlayback, startAutoPlay } =
-    usePlayback(videoDependencies);
+    usePlayback(videoPlayerDependencies);
 
   const {
     volumeState,
@@ -85,10 +77,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     changeVolumeWithKey,
     configureVolume,
     toggleMute,
-  } = useVolume(videoDependencies);
+  } = useVolume(videoPlayerDependencies);
 
-  const { currentTimeUI, remainedTimeUI, updateTime } =
-    useTime(videoDependencies);
+  const { currentTimeUI, remainedTimeUI, updateTime } = useTime(
+    videoPlayerDependencies
+  );
 
   const {
     currentProgress,
@@ -102,7 +95,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     changeProgressWithInput,
     changeProgressWithKey,
     configureDuration,
-  } = useProgress(videoDependencies);
+  } = useProgress(videoPlayerDependencies);
 
   const { fullscreenState, toggleFullscreen } = useFullscreen();
 
@@ -113,14 +106,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     activeResolutionHeight,
     changeResolution,
     configureResolution,
-  } = useResolution({ ...videoDependencies, player });
+  } = useResolution(videoPlayerDependencies);
 
   const {
     playbackRates,
     activePlaybackRate,
     changePlaybackRate,
     configurePlaybackRate,
-  } = usePlaybackRate(videoDependencies);
+  } = usePlaybackRate(videoPlayerDependencies);
 
   const {
     records,
@@ -128,7 +121,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     closeRecords,
     toggleRecords,
     navigateToSelectedVideo,
-  } = useRecords(videoDependencies);
+  } = useRecords(videoPlayerDependencies);
 
   const { displayLoader, showLoader, hideLoader } = useLoader();
 
@@ -140,23 +133,23 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
     updateSelector,
     selectNextVideo,
     videoEndedHandler,
-  } = useSelector(videoDependencies);
+  } = useSelector(videoPlayerDependencies);
 
   const { navigateToNextVideo, navigateToPreviousVideo, navigateToFirstVideo } =
-    useNavigation(videoDependencies);
+    useNavigation(videoPlayerDependencies);
 
-  const { videoError, errorHandler } = useError(videoDependencies);
+  const { videoError, errorHandler } = useError(videoPlayerDependencies);
 
   const keyControlsDependencies = useMemo(
     () => ({
-      active,
+      active: videoPlayerDependencies.active,
       onPlayback: togglePlayback,
       onProgress: changeProgressWithKey,
       onVolume: changeVolumeWithKey,
       onSelect: selectNextVideo,
     }),
     [
-      active,
+      videoPlayerDependencies.active,
       togglePlayback,
       changeProgressWithKey,
       changeVolumeWithKey,
@@ -210,7 +203,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   return (
     <div
-      id="video-player"
       className="vp-container"
       style={{ cursor: displayCursor ? 'default' : 'none' }}
       onMouseMove={showControls}
@@ -220,11 +212,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         process.env.NODE_ENV !== 'development' && e.preventDefault()
       }
     >
-      {!editMode && (
+      {!videoPlayerDependencies.editMode && (
         <VideoHeader hideOn={!displayControls || displaySelector} />
       )}
       <video
-        ref={videoRef}
+        ref={videoPlayerDependencies.videoRef}
         onLoadedMetadata={videoLoadedHandler}
         onClick={togglePlayback}
         onPlay={videoPlayHandler}
@@ -278,9 +270,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             videoDuration={videoDuration}
             progressTooltip={progressTooltip}
             progressTooltipPosition={progressTooltipPosition}
-            selectionStartPoint={currentVideo.info.selectionTimeStart}
-            selectionEndPoint={currentVideo.info.selectionTimeEnd}
-            editMode={editMode}
+            selectionStartPoint={
+              videoPlayerDependencies.info.selectionTimeStart
+            }
+            selectionEndPoint={videoPlayerDependencies.info.selectionTimeEnd}
+            editMode={videoPlayerDependencies.editMode}
             onHover={updateTooltip}
             onTouch={updateTooltipMobile}
             onSeek={changeProgressWithInput}

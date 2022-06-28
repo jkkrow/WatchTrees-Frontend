@@ -1,15 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useTimeout } from 'hooks/common/timer';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { videoActions } from 'store/slices/video-slice';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  active?: boolean;
-}
-
-export const useVolume = ({ videoRef, active = true }: Dependencies) => {
+export const useVolume = ({ videoRef, active }: VideoPlayerDependencies) => {
   const videoVolume = useAppSelector((state) => state.video.videoVolume);
   const dispatch = useAppDispatch();
 

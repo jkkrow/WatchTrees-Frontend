@@ -1,15 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useInterval } from 'hooks/common/timer';
 import { videoActions } from 'store/slices/video-slice';
 import { useAppSelector, useAppDispatch } from 'hooks/common/store';
 
-interface Dependencies {
-  player: shaka.Player | null;
-  active: boolean;
-}
-
-export const useResolution = ({ player, active }: Dependencies) => {
+export const useResolution = ({ player, active }: VideoPlayerDependencies) => {
   const videoResolution = useAppSelector(
     (state) => state.video.videoResolution
   );

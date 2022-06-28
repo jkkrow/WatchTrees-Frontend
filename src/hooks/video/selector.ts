@@ -1,20 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useTimeout } from 'hooks/common/timer';
 import { useAppDispatch } from 'hooks/common/store';
-import { PlayerNode, videoActions } from 'store/slices/video-slice';
-
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  currentVideo: PlayerNode;
-  active: boolean;
-}
+import { videoActions } from 'store/slices/video-slice';
 
 export const useSelector = ({
   videoRef,
-  currentVideo,
+  info,
+  children,
   active,
-}: Dependencies) => {
+}: VideoPlayerDependencies) => {
   const dispatch = useAppDispatch();
 
   const [displaySelector, setDisplaySelector] = useState(false);
@@ -23,7 +19,7 @@ export const useSelector = ({
   const [temporarilyVisible, setTemporarilyVisible] = useState(false);
   const [leftTime, setLeftTime] = useState(0);
   const [nextVideos, setNextVideos] = useState(
-    currentVideo.children.filter((video) => video.info) as PlayerNode[]
+    children.filter((video) => video.info)
   );
 
   const [setSelectorTimeout] = useTimeout();
@@ -31,8 +27,8 @@ export const useSelector = ({
   const updateSelector = useCallback(() => {
     const video = videoRef.current!;
     const currentTime = video.currentTime || 0;
-    const selectionTimeStart = currentVideo.info.selectionTimeStart;
-    const selectionTimeEnd = currentVideo.info.selectionTimeEnd;
+    const selectionTimeStart = info.selectionTimeStart;
+    const selectionTimeEnd = info.selectionTimeEnd;
 
     if (
       currentTime >= selectionTimeStart &&
@@ -54,8 +50,8 @@ export const useSelector = ({
     }
   }, [
     videoRef,
-    currentVideo.info.selectionTimeStart,
-    currentVideo.info.selectionTimeEnd,
+    info.selectionTimeStart,
+    info.selectionTimeEnd,
     nextVideos.length,
     isSelected,
   ]);
@@ -87,10 +83,8 @@ export const useSelector = ({
     if (active) return;
 
     setIsSelected(false);
-    setNextVideos(
-      currentVideo.children.filter((video) => video.info) as PlayerNode[]
-    );
-  }, [active, currentVideo.children]);
+    setNextVideos(children.filter((video) => video.info));
+  }, [active, children]);
 
   return {
     displaySelector: displaySelector || temporarilyVisible,

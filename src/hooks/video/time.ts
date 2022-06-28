@@ -1,12 +1,9 @@
 import { useState, useCallback } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { formatTime } from 'util/format';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-}
-
-export const useTime = ({ videoRef }: Dependencies) => {
+export const useTime = ({ videoRef }: VideoPlayerDependencies) => {
   const [currentTimeUI, setCurrentTimeUI] = useState('00:00');
   const [remainedTimeUI, setRemainedTimeUI] = useState('00:00');
 

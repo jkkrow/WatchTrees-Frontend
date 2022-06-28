@@ -1,13 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useTimeout } from 'hooks/common/timer';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  active: boolean;
-}
-
-export const useControls = ({ videoRef, active }: Dependencies) => {
+export const useControls = ({ videoRef, active }: VideoPlayerDependencies) => {
   const [displayCursor, setDisplayCursor] = useState(active);
   const [displayControls, setDisplayControls] = useState(active);
 

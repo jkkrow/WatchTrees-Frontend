@@ -1,18 +1,13 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useCompare, useFirstRender } from 'hooks/common/cycle';
-
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-  autoPlay?: boolean;
-  active?: boolean;
-}
 
 export const usePlayback = ({
   videoRef,
-  autoPlay = true,
-  active = true,
-}: Dependencies) => {
+  autoPlay,
+  active,
+}: VideoPlayerDependencies) => {
   const [playbackState, setPlaybackState] = useState(false);
 
   const playPromise = useRef<Promise<void>>();

@@ -58,7 +58,7 @@ const VideoTree: React.FC<VideoTreeProps> = ({
   }, [dispatch, editMode]);
 
   return (
-    <div id="video-tree" className="video-tree">
+    <div className="video-tree">
       {videoTree && activeNodeId && (
         <VideoNode
           currentVideo={tree.root}

@@ -1,10 +1,8 @@
 import { useCallback, useState } from 'react';
 
-interface Dependencies {
-  videoRef: React.RefObject<HTMLVideoElement>;
-}
+import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 
-export const useError = ({ videoRef }: Dependencies) => {
+export const useError = ({ videoRef }: VideoPlayerDependencies) => {
   const [videoError, setVideoError] = useState<MediaError | null>(null);
 
   const errorHandler = useCallback(() => {
