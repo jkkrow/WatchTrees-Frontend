@@ -67,7 +67,7 @@ const RecordsModal: React.FC<RecordsModalProps> = ({
               slidesPerGroup: 3,
             },
           }}
-          spaceBetween={30}
+          spaceBetween={60}
           dir="rtl"
           centeredSlides
           navigation

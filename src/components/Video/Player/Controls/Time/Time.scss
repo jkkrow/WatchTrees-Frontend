@@ -1,6 +1,6 @@
 @use '/src/components/Video/Player/VideoPlayer.scss' as *;
 
 .vp-controls__time {
-  width: clamp(10rem, 20%, 20rem);
+  width: clamp(12rem, 20%, 20rem);
   text-align: center;
 }

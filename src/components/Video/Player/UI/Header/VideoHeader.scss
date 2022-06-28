@@ -19,6 +19,8 @@
   }
 
   svg {
-    width: clamp(2.5rem, 3.5vw, 5rem);
+    width: clamp(2rem, 3%, 3.5rem);
+    height: auto;
+    aspect-ratio: 1/1;
   }
 }

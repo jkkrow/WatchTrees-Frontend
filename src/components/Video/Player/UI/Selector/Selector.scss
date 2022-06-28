@@ -8,8 +8,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding-bottom: clamp(4rem, 5vw, 6rem);
-  gap: clamp(2rem, 2vw, 3rem);
+  padding-bottom: 4rem;
+  gap: 2rem;
   pointer-events: none;
   opacity: 0;
   transform: translateY(-50%);
@@ -31,7 +31,6 @@
   }
 
   &__timer {
-    font-size: larger;
     font-weight: 600;
     text-align: center;
     text-shadow: 0.1rem 0 black, 0 0.1rem black, -0.1rem 0 black,
@@ -46,8 +45,8 @@
   }
 
   &__btn {
-    width: 40%;
-    padding: clamp(1rem, 1.5vw, 2rem);
+    width: 35%;
+    padding: 1.5%;
     border: 1px solid $vp-bg--tertiary;
     border-radius: 5px;
     text-align: center;

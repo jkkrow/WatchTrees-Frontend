@@ -3,7 +3,7 @@
 .vp-controls__settings__dropdown {
   position: absolute;
   bottom: 100%;
-  right: 0;
+  right: 1px;
   width: clamp(30rem, 35%, 40rem);
   overflow: hidden;
   transition: opacity 200ms ease-out, height 300ms ease-out;
@@ -24,7 +24,7 @@
   &__item {
     display: flex;
     align-items: center;
-    padding: clamp(1rem, 1vw, 2rem) clamp(2rem, 2vw, 4rem);
+    padding: 5% 10%;
     gap: 1rem;
     cursor: pointer;
     transition: background-color 200ms;

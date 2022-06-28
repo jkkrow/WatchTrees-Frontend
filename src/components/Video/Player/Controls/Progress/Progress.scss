@@ -13,7 +13,7 @@
 
   &__tooltip {
     position: absolute;
-    bottom: clamp(4rem, 5vw, 5rem);
+    bottom: 5rem;
     padding: 0.5rem 0.75rem;
     color: $vp-text;
     background-color: rgba($vp-bg, 0.8);

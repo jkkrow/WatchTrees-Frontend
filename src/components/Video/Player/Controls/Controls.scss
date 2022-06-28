@@ -9,8 +9,7 @@
   left: -1px;
   right: -1px;
   bottom: -1px;
-  height: $controls-height;
-  padding-bottom: 1rem;
+  max-height: 25rem;
   color: $vp-text;
   background-image: linear-gradient(transparent, $vp-bg);
   transition: opacity 300ms ease-out;
@@ -26,7 +25,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: clamp(3rem, 100%, 5rem);
+    height: 4rem;
     margin-top: auto;
   }
 
@@ -36,25 +35,26 @@
     align-items: center;
     width: 100%;
     height: 50%;
-    padding: 0 2rem;
+    padding: 0 2rem 1rem 2rem;
     gap: 2rem;
 
     > div {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       justify-content: center;
       width: 100%;
       height: 100%;
+      max-width: 45rem;
+      margin: auto;
+
+      &:last-of-type {
+        grid-template-columns: repeat(4, 1fr);
+      }
 
       > div {
         display: flex;
-        width: 100%;
-        height: 100%;
-        max-width: 15rem;
+        aspect-ratio: 1/1;
       }
-    }
-
-    &:first-child > div {
-      max-width: 100%;
     }
   }
 }

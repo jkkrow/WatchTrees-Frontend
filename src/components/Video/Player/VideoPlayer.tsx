@@ -153,7 +153,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   const keyControlsDependencies = useMemo(
     () => ({
-      editMode,
       active,
       onPlayback: togglePlayback,
       onProgress: changeProgressWithKey,
@@ -161,7 +160,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       onSelect: selectNextVideo,
     }),
     [
-      editMode,
       active,
       togglePlayback,
       changeProgressWithKey,

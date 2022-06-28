@@ -4,7 +4,6 @@ import { KeyActionHandle } from 'components/Video/Player/UI/KeyAction/KeyAction'
 import { useTimeout } from 'hooks/common/timer';
 
 interface Dependencies {
-  editMode: boolean;
   active: boolean;
   onProgress: (direction: 1 | 0) => void;
   onVolume: (direction: 1 | 0) => void;
@@ -13,7 +12,6 @@ interface Dependencies {
 }
 
 export const useKeyControls = ({
-  editMode,
   active,
   onProgress,
   onVolume,
@@ -119,8 +117,6 @@ export const useKeyControls = ({
   );
 
   useEffect(() => {
-    if (editMode) return;
-
     if (active) {
       document.addEventListener('keydown', keyEventHandler);
     } else {
@@ -130,7 +126,7 @@ export const useKeyControls = ({
     return () => {
       document.removeEventListener('keydown', keyEventHandler);
     };
-  }, [active, editMode, keyEventHandler]);
+  }, [active, keyEventHandler]);
 
   return { displayKeyAction, videoKeyActionRef };
 };
