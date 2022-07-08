@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useNavigate } from 'react-router';
 
 import VideoPlayer from '../../Player/VideoPlayer';
@@ -7,6 +8,7 @@ import {
   VideoNode as VideoNodeType,
   videoActions,
 } from 'store/slices/video-slice';
+import { findAncestors } from 'util/tree';
 import './VideoNode.scss';
 
 interface VideoNodeProps {
@@ -20,13 +22,28 @@ const VideoNode: React.FC<VideoNodeProps> = ({
   autoPlay = true,
   editMode = false,
 }) => {
-  const { activeNodeId } = useAppSelector((state) => state.video);
+  const { activeNodeId, videoTree } = useAppSelector((state) => state.video);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const isActive = useMemo(
+    () => currentVideo._id === activeNodeId,
+    [currentVideo._id, activeNodeId]
+  );
+  const isActiveChild = useMemo(
+    () => currentVideo.parentId === activeNodeId,
+    [currentVideo.parentId, activeNodeId]
+  );
+  const isAncestor = useMemo(() => {
+    const ancestors = findAncestors(videoTree!, activeNodeId, true);
+    const ids = ancestors.map((item) => item._id);
+
+    return (id: string) => ids.includes(id);
+  }, [videoTree, activeNodeId]);
+
   const returnHandler = () => {
-    if (currentVideo.layer !== 0) {
-      dispatch(videoActions.setActiveNode(currentVideo.parentId!));
+    if (currentVideo.parentId) {
+      dispatch(videoActions.setActiveNode(currentVideo.parentId));
     } else {
       navigate(-1);
     }
@@ -34,14 +51,9 @@ const VideoNode: React.FC<VideoNodeProps> = ({
 
   return (
     <>
-      {(currentVideo._id === activeNodeId ||
-        currentVideo.parentId === activeNodeId) &&
-        (currentVideo.info ? (
-          <div
-            className={`video-node${
-              activeNodeId === currentVideo._id ? ' active' : ''
-            }`}
-          >
+      {(isActive || isActiveChild) && (
+        <div className="video-node" data-active={isActive}>
+          {currentVideo.info ? (
             <VideoPlayer
               id={currentVideo._id}
               parentId={currentVideo.parentId}
@@ -52,27 +64,26 @@ const VideoNode: React.FC<VideoNodeProps> = ({
               editMode={editMode}
               active={activeNodeId === currentVideo._id}
             />
-          </div>
-        ) : (
-          <div
-            className={`video-node__not-found${
-              activeNodeId === currentVideo._id ? ' active' : ''
-            }`}
-            key={currentVideo._id}
-          >
-            <p>Not Found</p>
-            <AngleLeftIcon className="btn" onClick={returnHandler} />
-          </div>
-        ))}
+          ) : (
+            <div className="video-node__not-found">
+              <p>Not Found</p>
+              <AngleLeftIcon className="btn" onClick={returnHandler} />
+            </div>
+          )}
+        </div>
+      )}
 
-      {currentVideo.children.map((video: VideoNodeType) => (
-        <VideoNode
-          key={video._id}
-          currentVideo={video}
-          autoPlay={autoPlay}
-          editMode={editMode}
-        />
-      ))}
+      {currentVideo.children.map(
+        (video: VideoNodeType) =>
+          (isActive || isAncestor(video._id)) && (
+            <VideoNode
+              key={video._id}
+              currentVideo={video}
+              autoPlay={autoPlay}
+              editMode={editMode}
+            />
+          )
+      )}
     </>
   );
 };

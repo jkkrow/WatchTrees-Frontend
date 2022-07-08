@@ -1,11 +1,11 @@
 .upload-node {
   width: 100%;
 
-  &.active > &__body {
+  &[data-active='true'] > &__body {
     margin-top: 0;
   }
 
-  &.active > &__children {
+  &[data-active='true'] > &__children {
     width: 90%;
     margin-left: auto;
   }
@@ -17,13 +17,10 @@
     justify-content: center;
     margin-top: 1rem;
     font-weight: 500;
+    background-color: var(--bg-secondary);
 
-    &.layer-even {
+    &[data-even='true'] {
       background-color: var(--bg-tertiary);
-    }
-
-    &.layer-odd {
-      background-color: var(--bg-secondary);
     }
 
     > svg {
@@ -112,18 +109,18 @@
 
     > * {
       display: flex;
+      justify-content: space-between;
       align-items: center;
 
       &::before {
         content: attr(data-label);
-        margin-right: auto;
       }
     }
 
     &__input {
       display: flex;
       align-items: center;
-      width: 50%;
+      width: clamp(20rem, 60%, 30rem);
       gap: 1rem;
 
       > div {

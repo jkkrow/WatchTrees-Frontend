@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 
 import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import { findById, findParents } from 'util/tree';
+import { findAncestors } from 'util/tree';
 import { videoActions } from 'store/slices/video-slice';
 
 export const useRecords = ({ videoRef, id }: VideoPlayerDependencies) => {
@@ -14,11 +14,9 @@ export const useRecords = ({ videoRef, id }: VideoPlayerDependencies) => {
   const wasPlaying = useRef(false);
 
   const records = useMemo(() => {
-    const currentVideo = findById(videoTree, id)!;
-    const parents = findParents(videoTree, id);
-    parents.push(currentVideo);
+    const ancestors = findAncestors(videoTree, id, true);
 
-    return parents.sort((videoA, videoB) =>
+    return ancestors.sort((videoA, videoB) =>
       videoA.layer < videoB.layer ? 1 : -1
     );
   }, [videoTree, id]);
@@ -33,6 +31,7 @@ export const useRecords = ({ videoRef, id }: VideoPlayerDependencies) => {
 
   const navigateToSelectedVideo = useCallback(
     (id: string) => {
+      setDisplayRecords(false);
       dispatch(videoActions.setActiveNode(id));
     },
     [dispatch]

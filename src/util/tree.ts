@@ -149,16 +149,22 @@ export const mapTree = (node: VideoNode) => {
   return map;
 };
 
-export const findParents = (tree: VideoTree, nodeId: string) => {
+export const findAncestors = (
+  tree: VideoTree,
+  nodeId: string,
+  include?: boolean
+) => {
   const map = mapTree(tree.root);
 
-  const parents: VideoNode[] = [];
+  const ancestors: VideoNode[] = [];
   let parentId = map[nodeId]?.parentId;
 
+  include && ancestors.push(map[nodeId]);
+
   while (parentId) {
-    parents.push(map[parentId]);
+    ancestors.push(map[parentId]);
     parentId = map[parentId]?.parentId;
   }
 
-  return parents;
+  return ancestors;
 };

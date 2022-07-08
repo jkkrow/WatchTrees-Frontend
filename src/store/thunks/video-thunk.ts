@@ -7,7 +7,7 @@ import {
   removeFromLocalHistory,
   attachLocalHistory,
 } from 'util/video';
-import { findById, findParents } from 'util/tree';
+import { findById, findAncestors } from 'util/tree';
 
 export const fetchVideo = (id: string): AppThunk => {
   return async (dispatch, getState, api) => {
@@ -142,7 +142,7 @@ export const addToHistory = (unmount?: boolean): AppThunk => {
     const isLastVideo = activeNode.children.length === 0;
     const endAt = activeNode.info!.duration - threshold > 180 ? 180 : threshold;
 
-    const previousNodes = findParents(videoTree, activeNode._id);
+    const previousNodes = findAncestors(videoTree, activeNode._id);
     const previousProgress = previousNodes.reduce(
       (acc, cur) => acc + (cur.info?.duration || 0),
       0
