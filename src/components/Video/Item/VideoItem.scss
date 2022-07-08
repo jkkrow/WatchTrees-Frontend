@@ -12,6 +12,14 @@
     position: relative;
     width: 100%;
     heigh: 100%;
+
+    img {
+      transition: transform 300ms ease-out;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
+    }
   }
 
   &__duration {
