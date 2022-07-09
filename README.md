@@ -51,7 +51,7 @@ You also need the API of this project to run the app properly. Go to the reposit
 
 ## Browser Support
 
-| ![Chrome](https://unpkg.com/simple-icons@v7/icons/googlechrome.svg)<br />Chrome | ![Firefox](https://unpkg.com/simple-icons@v7/icons/firefox.svg)<br />Firefox |
+| ![Chrome](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/72.0.0/chrome/chrome.svg)Chrome | ![Firefox](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/72.0.0/firefox/firefox.svg)Firefox |
 | :---------: | :---------: |
 | Latest &#10003;| Latest &#10003;
 
