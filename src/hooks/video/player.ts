@@ -23,35 +23,38 @@ export const usePlayer = ({
 
   const [player, setPlayer] = useState<shaka.Player | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isUnmounted = useRef(false);
 
   useEffect(() => {
+    if (!firstRender) return;
+
+    const video = videoRef.current!;
+    let src = info.url;
+
+    // Edit mode
+    if (src.substring(0, 4) === 'blob') {
+      return video.setAttribute('src', src);
+    }
+
+    src = info.isConverted
+      ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
+      : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
+
+    // Connect video to Shaka Player
+    const shakaPlayer = new shaka.Player(video);
+
     (async () => {
-      if (!firstRender) return;
-
-      const video = videoRef.current!;
-      let src = info.url;
-
-      // Edit mode
-      if (src.substring(0, 4) === 'blob') {
-        return video.setAttribute('src', src);
-      }
-
-      src = info.isConverted
-        ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
-        : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
-
-      // Connect video to Shaka Player
-      const shakaPlayer = new shaka.Player(video);
-
       if (activeNodeId === id && initialProgress) {
         await shakaPlayer.load(src, initialProgress);
         dispatch(videoActions.setInitialProgress(0));
       } else {
         await shakaPlayer.load(src);
       }
-
-      setPlayer(shakaPlayer);
     })();
+
+    if (isUnmounted.current) return;
+
+    setPlayer(shakaPlayer);
   }, [
     dispatch,
     id,
@@ -61,6 +64,12 @@ export const usePlayer = ({
     initialProgress,
     firstRender,
   ]);
+
+  useEffect(() => {
+    return () => {
+      isUnmounted.current = true;
+    };
+  }, []);
 
   return { videoRef, player, id, info, ...rest };
 };
