@@ -30,7 +30,7 @@ export const useResolution = ({ player, active }: VideoPlayerDependencies) => {
         player.configure({ abr: { enabled: false } });
         player.selectVariantTrack(resolution);
 
-        resolutionHeight = resolution.height as number;
+        resolutionHeight = resolution.height || 'auto';
       }
 
       setActiveResolutionHeight(resolutionHeight);
@@ -42,40 +42,38 @@ export const useResolution = ({ player, active }: VideoPlayerDependencies) => {
   const configureResolution = useCallback(() => {
     if (!player) return;
 
-    if (videoResolution === 'auto') {
-      player.configure({ abr: { enabled: true } });
-      setActiveResolutionHeight(videoResolution);
-      return;
-    }
-
+    let resolutionHeight: number | 'auto' = 'auto';
     const tracks = player.getVariantTracks();
     const matchedResolution = tracks.find(
       (track) => track.height === videoResolution
     );
 
-    if (matchedResolution) {
+    if (videoResolution === 'auto' || !matchedResolution) {
+      player.configure({ abr: { enabled: true } });
+    } else {
       player.configure({ abr: { enabled: false } });
       player.selectVariantTrack(matchedResolution);
+
+      resolutionHeight = matchedResolution.height || 'auto';
     }
+
+    setResolutions(tracks);
+    setActiveResolutionHeight(resolutionHeight);
   }, [player, videoResolution]);
 
-  const setTracks = useCallback(() => {
-    if (!player) return;
-    setResolutions(player.getVariantTracks());
-  }, [player]);
-
-  useEffect(setTracks, [setTracks]);
-
   useEffect(() => {
-    if (activeResolutionHeight === 'auto') {
+    if (activeResolutionHeight !== 'auto') {
       clearResolutionInterval();
       return;
     }
 
-    setResolutionInterval(setTracks, 5000);
+    setResolutionInterval(() => {
+      if (!player) return;
+      setResolutions(player.getVariantTracks());
+    }, 5000);
   }, [
+    player,
     activeResolutionHeight,
-    setTracks,
     setResolutionInterval,
     clearResolutionInterval,
   ]);
