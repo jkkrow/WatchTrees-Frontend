@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import Loader from 'components/Video/Player/UI/Loader/Loader';
 import { ReactComponent as PlayIcon } from 'assets/icons/play.svg';
@@ -13,19 +12,16 @@ import { NodeInfo, VideoNode } from 'store/slices/video-slice';
 import './PreviewPlayer.scss';
 
 interface PreviewPlayerProps {
-  treeId: string;
   id: string;
   info: NodeInfo;
   children: VideoNode[];
 }
 
-const PreviewPlayer: React.FC<PreviewPlayerProps> = ({ treeId, ...rest }) => {
-  const navigate = useNavigate();
-
+const PreviewPlayer: React.FC<PreviewPlayerProps> = (props) => {
   const [isEnded, setIsEnded] = useState(false);
   const [isMuted, setIsMuted] = useLocalStorage('preview-mute', false);
 
-  const videoPlayerDependencies = usePlayer({ ...rest });
+  const videoPlayerDependencies = usePlayer(props);
   const { toggleMute, configureVolume } = useVolume(videoPlayerDependencies);
   const { displayLoader, showLoader, hideLoader } = useLoader();
 
@@ -33,44 +29,39 @@ const PreviewPlayer: React.FC<PreviewPlayerProps> = ({ treeId, ...rest }) => {
     setIsEnded(true);
   }, []);
 
-  const toggleMuteHandler = useCallback(() => {
-    toggleMute();
-    setIsMuted(!isMuted);
-  }, [isMuted, toggleMute, setIsMuted]);
+  const toggleMuteHandler = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      toggleMute();
+      setIsMuted(!isMuted);
+    },
+    [isMuted, toggleMute, setIsMuted]
+  );
 
   const videoLoadHandler = useCallback(() => {
     configureVolume();
     isMuted && (videoPlayerDependencies.videoRef.current!.volume = 0);
   }, [configureVolume, videoPlayerDependencies.videoRef, isMuted]);
 
-  const navigateToVideoHandler = useCallback(() => {
-    navigate(`/video/${treeId}`);
-  }, [navigate, treeId]);
-
   return (
     <div className="preview-player">
-      <div className="preview-player__loader" onClick={navigateToVideoHandler}>
+      <div className="preview-player__loader">
         <Loader on={displayLoader} style={{ fontSize: '3rem' }} />
       </div>
       <video
         ref={videoPlayerDependencies.videoRef}
         autoPlay={true}
-        onClick={navigateToVideoHandler}
         onLoadedMetadata={videoLoadHandler}
         onEnded={previewEndedHandler}
         onWaiting={showLoader}
         onCanPlay={hideLoader}
       />
-      <div
-        className={`preview-player__playback${isEnded ? ' active' : ''}`}
-        onClick={navigateToVideoHandler}
-      >
+      <div className={`preview-player__playback${isEnded ? ' active' : ''}`}>
         <PlayIcon />
       </div>
       <div
-        className={`preview-player__volume${
-          !displayLoader && !isEnded ? ' active' : ''
-        }`}
+        className="preview-player__volume"
+        data-active={!displayLoader && !isEnded}
         onClick={toggleMuteHandler}
       >
         {isMuted ? <VolumeMuteIcon /> : <VolumeHighIcon />}

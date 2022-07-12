@@ -5,8 +5,8 @@ import { ReactComponent as VolumeHighIcon } from 'assets/icons/volume-high.svg';
 import { ReactComponent as VolumeMiddleIcon } from 'assets/icons/volume-middle.svg';
 import { ReactComponent as VolumeLowIcon } from 'assets/icons/volume-low.svg';
 import { ReactComponent as VolumeMuteIcon } from 'assets/icons/volume-mute.svg';
-import { ReactComponent as AngleBackwardIcon } from 'assets/icons/angle-backward.svg';
-import { ReactComponent as AngleForwardIcon } from 'assets/icons/angle-forward.svg';
+import { ReactComponent as TrackRewindIcon } from 'assets/icons/track-rewind.svg';
+import { ReactComponent as TrackSkipIcon } from 'assets/icons/track-skip.svg';
 import './KeyAction.scss';
 
 export interface KeyActionHandle {
@@ -63,13 +63,13 @@ const KeyAction = forwardRef<KeyActionHandle, KeyActionProps>(
 
         <div className="vp-key-action__progress rewind" ref={rewindRef}>
           <div className="vp-key-action__progress__container">
-            <AngleBackwardIcon />
+            <TrackRewindIcon />
             <span>- 10 seconds</span>
           </div>
         </div>
         <div className="vp-key-action__progress skip" ref={skipRef}>
           <div className="vp-key-action__progress__container">
-            <AngleForwardIcon />
+            <TrackSkipIcon />
             <span>+ 10 seconds</span>
           </div>
         </div>

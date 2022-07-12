@@ -1,5 +1,7 @@
 .video-group {
-  z-index: 1;
+  &:hover &__label a::after {
+    opacity: 1;
+  }
 
   &__loader {
     display: grid;
@@ -19,7 +21,16 @@
     }
 
     a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
       font-weight: inherit;
+
+      &::after {
+        content: '»';
+        opacity: 0;
+        transition: opacity 200ms ease-out;
+      }
     }
   }
 

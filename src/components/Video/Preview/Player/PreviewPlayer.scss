@@ -13,7 +13,7 @@
     opacity: 0;
     transition: opacity 300ms ease-out;
 
-    &.active {
+    &[data-active='true'] {
       opacity: 1;
       pointer-events: initial;
     }

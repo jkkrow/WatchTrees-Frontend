@@ -1,4 +1,5 @@
 import { CSSTransition } from 'react-transition-group';
+import { useNavigate } from 'react-router-dom';
 
 import PreviewPlayer from './Player/PreviewPlayer';
 import { VideoTreeClient } from 'store/slices/video-slice';
@@ -11,6 +12,12 @@ interface PreviewProps {
 }
 
 const Preview: React.FC<PreviewProps> = ({ video, on, onUnmounted }) => {
+  const navigate = useNavigate();
+
+  const watchVideoHandler = () => {
+    navigate(`/video/${video._id}`);
+  };
+
   return video.root.info ? (
     <CSSTransition
       in={on}
@@ -20,9 +27,8 @@ const Preview: React.FC<PreviewProps> = ({ video, on, onUnmounted }) => {
       unmountOnExit
       onExited={onUnmounted}
     >
-      <div className="video-preview">
+      <div className="video-preview" onClick={watchVideoHandler}>
         <PreviewPlayer
-          treeId={video._id}
           id={video.root._id}
           info={video.root.info}
           children={video.root.children}
