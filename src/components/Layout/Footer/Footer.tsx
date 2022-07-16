@@ -8,7 +8,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="footer">
       <small className="footer__copyright">
-        Copyright &copy; {copyrightYear} WatchTrees
+        &copy; {copyrightYear} WatchTrees.
       </small>
     </footer>
   );
