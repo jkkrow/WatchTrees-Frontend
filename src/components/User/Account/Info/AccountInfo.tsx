@@ -1,3 +1,5 @@
+import { PayPalButtons } from '@paypal/react-paypal-js';
+
 import Button from 'components/Common/Element/Button/Button';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
 import DeleteAccount from '../Delete/DeleteAccount';
@@ -50,6 +52,8 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onChangeEditMode }) => {
           Verify Email
         </Button>
       )}
+
+      <PayPalButtons />
 
       {/* {userData!.isVerified && !userData!.isPremium && (
         <Button>Upgrade to Premium</Button>
