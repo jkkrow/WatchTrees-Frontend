@@ -38,7 +38,10 @@
     margin: 0;
   }
 
-  > button:first-of-type {
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     margin-top: 2rem;
   }
 }

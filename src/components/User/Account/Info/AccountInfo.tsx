@@ -1,4 +1,4 @@
-import { PayPalButtons } from '@paypal/react-paypal-js';
+import { useNavigate } from 'react-router-dom';
 
 import Button from 'components/Common/Element/Button/Button';
 import Avatar from 'components/Common/UI/Avatar/Avatar';
@@ -15,6 +15,8 @@ interface AccountInfoProps {
 const AccountInfo: React.FC<AccountInfoProps> = ({ onChangeEditMode }) => {
   const { dispatchThunk, loading } = useAppThunk();
   const { userData } = useAppSelector((state) => state.user);
+
+  const navigate = useNavigate();
 
   const verifyEmailHandler = () => {
     dispatchThunk(sendVerification(userData!.email));
@@ -53,13 +55,15 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onChangeEditMode }) => {
         </Button>
       )}
 
-      <PayPalButtons />
+      <div className="account-info__buttons">
+        {userData!.isVerified && !userData!.isPremium && (
+          <Button onClick={() => navigate('/premium')}>
+            Upgrade to Premium
+          </Button>
+        )}
 
-      {/* {userData!.isVerified && !userData!.isPremium && (
-        <Button>Upgrade to Premium</Button>
-      )} */}
-
-      <DeleteAccount userData={userData!} />
+        <DeleteAccount userData={userData!} />
+      </div>
     </div>
   );
 };

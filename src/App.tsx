@@ -13,7 +13,7 @@ import Header from 'components/Layout/Header/Header';
 import Main from 'components/Layout/Main/Main';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Layout/GlobalMessage/List/GlobalMessageList';
-import AuthProvider from 'providers/AuthProvider';
+import RouteProvider from 'providers/RouteProvider';
 import { useAppThunk, useAppSelector } from 'hooks/common/store';
 import {
   useStorageWatcher,
@@ -34,6 +34,7 @@ const SendRecoveryPage = lazy(() => import('pages/Auth/SendRecoveryPage'));
 const ResetPasswordPage = lazy(() => import('pages/Auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('pages/Error/NotFoundPage'));
 const FavoritesPage = lazy(() => import('pages/Video/FavoritesPage'));
+const PremiumPage = lazy(() => import('pages/User/PremiumPage'));
 
 const App: React.FC = () => {
   const refreshToken = useAppSelector((state) => state.auth.refreshToken);
@@ -58,28 +59,44 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/recent" element={<RecentPage />} />
           <Route path="/featured" element={<FeaturedPage />} />
-          <Route path="video/:id" element={<VideoPage />} />
-          <Route path="search" element={<SearchPage />} />
-          <Route path="channel/:id" element={<ChannelPage />} />
-          <Route path="history" element={<HistoryPage />} />
-          <Route path="auth" element={<LoginPage />} />
-          <Route path="auth/recovery" element={<SendRecoveryPage />} />
+          <Route path="/video/:id" element={<VideoPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/channel/:id" element={<ChannelPage />} />
+          <Route path="/history" element={<HistoryPage />} />
+
+          <Route path="/auth/recovery" element={<SendRecoveryPage />} />
           <Route
-            path="auth/verification/:token"
+            path="/auth/verification/:token"
             element={<VerificationPage />}
           />
           <Route
-            path="auth/reset-password/:token"
+            path="/auth/reset-password/:token"
             element={<ResetPasswordPage />}
           />
-          <Route element={<AuthProvider />}>
-            <Route path="user/account" element={<AccountPage />} />
-            <Route path="user/videos" element={<CreatedVideosPage />} />
-            <Route path="user/subscribes" element={<SubscribesPage />} />
-            <Route path="user/subscribers" element={<SubscribersPage />} />
-            <Route path="user/favorites" element={<FavoritesPage />} />
-            <Route path="upload" element={<UploadPage />} />
-            <Route path="upload/:id" element={<UploadPage />} />
+
+          <Route element={<RouteProvider on={!userData} redirect="/" />}>
+            <Route path="/auth" element={<LoginPage />} />
+          </Route>
+
+          <Route
+            element={
+              <RouteProvider
+                on={!userData?.isPremium}
+                redirect="/user/account"
+              />
+            }
+          >
+            <Route path="/premium" element={<PremiumPage />} />
+          </Route>
+
+          <Route element={<RouteProvider on={!!userData} redirect="/auth" />}>
+            <Route path="/user/account" element={<AccountPage />} />
+            <Route path="/user/videos" element={<CreatedVideosPage />} />
+            <Route path="/user/subscribes" element={<SubscribesPage />} />
+            <Route path="/user/subscribers" element={<SubscribersPage />} />
+            <Route path="/user/favorites" element={<FavoritesPage />} />
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/upload/:id" element={<UploadPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

@@ -13,6 +13,8 @@ axios.defaults.baseURL = process.env.REACT_APP_SERVER_URL;
 const initialOptions = {
   'client-id': process.env.REACT_APP_PAYPAL_CLIENT_ID!,
   currency: 'USD',
+  vault: true,
+  intent: 'subscription',
 };
 
 ReactDOM.render(
