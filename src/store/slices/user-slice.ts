@@ -2,6 +2,16 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { authActions } from './auth-slice';
 
+export interface UserData {
+  _id: string;
+  type: 'native' | 'google';
+  name: string;
+  email: string;
+  picture: string;
+  isVerified: boolean;
+  isPremium: boolean;
+}
+
 export interface ChannelData {
   _id: string;
   name: string;
@@ -11,14 +21,10 @@ export interface ChannelData {
   isSubscribed: boolean;
 }
 
-export interface UserData {
-  _id: string;
-  type: 'native' | 'google';
-  name: string;
-  email: string;
-  picture: string;
-  isVerified: boolean;
-  isPremium: boolean;
+export interface PremiumPlan {
+  name: 'standard' | 'business' | 'enterprise';
+  price: number;
+  description: string[];
 }
 
 interface UserSliceState {

@@ -4,11 +4,28 @@ import { useSearchParams } from 'react-router-dom';
 
 import PremiumDashboard from 'components/User/Premium/Dashboard/PremiumDashboard';
 import PremiumPayment from 'components/User/Premium/Payment/PremiumPayment';
+import { PremiumPlan } from 'store/slices/user-slice';
+
+const plans: PremiumPlan[] = [
+  {
+    name: 'standard',
+    price: 19,
+    description: [
+      'Fully available video upload',
+      'Supports video convert with CMAF format',
+    ],
+  },
+  // { name: 'business', price: 99 },
+  // { name: 'enterprise', price: 199 },
+];
 
 const PremiumPage: React.FC = () => {
   const [searchParams] = useSearchParams();
 
-  const selectedPlan = useMemo(() => searchParams.get('name'), [searchParams]);
+  const selectedPlan = useMemo(() => {
+    const name = searchParams.get('name');
+    return plans.find((plan) => plan.name === name);
+  }, [searchParams]);
 
   return (
     <Fragment>
@@ -16,8 +33,8 @@ const PremiumPage: React.FC = () => {
         <title>Premium - WatchTrees</title>
       </Helmet>
 
-      {!selectedPlan && <PremiumDashboard />}
-      {selectedPlan && <PremiumPayment />}
+      {!selectedPlan && <PremiumDashboard plans={plans} />}
+      {selectedPlan && <PremiumPayment plan={selectedPlan} />}
     </Fragment>
   );
 };

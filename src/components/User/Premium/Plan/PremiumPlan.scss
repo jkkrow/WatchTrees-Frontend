@@ -12,6 +12,10 @@
     height: 7rem;
   }
 
+  &__name {
+    text-transform: capitalize;
+  }
+
   &__price {
     display: flex;
     flex-direction: column;
