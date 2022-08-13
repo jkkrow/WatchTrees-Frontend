@@ -22,6 +22,7 @@ export interface ChannelData {
 }
 
 export interface PremiumPlan {
+  id: string;
   name: 'standard' | 'business' | 'enterprise';
   price: number;
   description: string[];

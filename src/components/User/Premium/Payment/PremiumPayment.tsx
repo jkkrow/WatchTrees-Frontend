@@ -28,7 +28,7 @@ const PremiumPayment: React.FC<PremiumPaymentProps> = ({ plan }) => {
           }}
           createSubscription={(data, actions) => {
             return actions.subscription.create({
-              plan_id: process.env.REACT_APP_PAYPAL_PLAN_STANDARD_ID!,
+              plan_id: plan.id,
             });
           }}
           onInit={() => {}}
