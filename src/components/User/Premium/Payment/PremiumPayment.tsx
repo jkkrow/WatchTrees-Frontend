@@ -1,6 +1,9 @@
 import { PayPalButtons } from '@paypal/react-paypal-js';
 
 import GoBack from 'components/Common/UI/GoBack/GoBack';
+import { useAppSelector } from 'hooks/common/store';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PremiumPlan } from 'store/slices/user-slice';
 import './PremiumPayment.scss';
 
@@ -9,7 +12,14 @@ interface PremiumPaymentProps {
 }
 
 const PremiumPayment: React.FC<PremiumPaymentProps> = ({ plan }) => {
-  return (
+  const { userData } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    !userData && navigate('/auth');
+  }, [userData, navigate]);
+
+  return userData ? (
     <div className="premium-payment">
       <GoBack />
 
@@ -29,16 +39,16 @@ const PremiumPayment: React.FC<PremiumPaymentProps> = ({ plan }) => {
           createSubscription={(data, actions) => {
             return actions.subscription.create({
               plan_id: plan.id,
+              custom_id: userData._id,
             });
           }}
-          onInit={() => {}}
           onApprove={async (data, actions) => {
             console.log(data);
           }}
         />
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default PremiumPayment;

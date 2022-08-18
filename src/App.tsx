@@ -81,7 +81,7 @@ const App: React.FC = () => {
           <Route
             element={
               <RouteProvider
-                on={!userData?.isPremium}
+                on={!!userData && !userData.isPremium}
                 redirect="/user/account"
               />
             }
