@@ -19,7 +19,7 @@ const UploadPage: React.FC = () => {
       <Helmet>
         <title>
           Upload{previewTree?.info.title ? ` - ${previewTree.info.title}` : ''}{' '}
-          - WatchTrees
+          - WatchTree
         </title>
       </Helmet>
       {previewTree && <UploadLayout tree={previewTree} />}

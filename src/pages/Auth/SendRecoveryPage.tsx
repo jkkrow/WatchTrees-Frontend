@@ -33,7 +33,7 @@ const SendRecoveryPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Recover Password - WatchTrees</title>
+        <title>Recover Password - WatchTree</title>
       </Helmet>
       <AuthLayout>
         <Form onSubmit={submitHandler}>

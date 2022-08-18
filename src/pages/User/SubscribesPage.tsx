@@ -22,7 +22,7 @@ const SubscribersPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Subscribes - WatchTrees</title>
+        <title>Subscribes - WatchTree</title>
       </Helmet>
       <ChannelGrid
         data={data}

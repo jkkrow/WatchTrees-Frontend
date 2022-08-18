@@ -22,7 +22,7 @@ const FavoritesPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Favorite Videos - WatchTrees</title>
+        <title>Favorite Videos - WatchTree</title>
       </Helmet>
 
       <VideoGrid

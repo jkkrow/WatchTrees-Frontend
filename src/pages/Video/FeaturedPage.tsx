@@ -23,7 +23,7 @@ const FeaturedPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Featured Videos - WatchTrees</title>
+        <title>Featured Videos - WatchTree</title>
       </Helmet>
       <VideoContainer>
         <VideoGrid

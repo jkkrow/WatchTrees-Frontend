@@ -7,7 +7,7 @@ const AccountPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Account - WatchTrees</title>
+        <title>Account - WatchTree</title>
       </Helmet>
       <AccountDashboard />
     </Fragment>

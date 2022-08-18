@@ -47,7 +47,7 @@ const ResetPasswordPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Reset Password - WatchTrees</title>
+        <title>Reset Password - WatchTree</title>
       </Helmet>
       <AuthLayout>
         {!message && (

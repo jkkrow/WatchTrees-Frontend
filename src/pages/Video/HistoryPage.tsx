@@ -32,7 +32,7 @@ const HistoryPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>History - WatchTrees</title>
+        <title>History - WatchTree</title>
       </Helmet>
       <VideoContainer>
         <VideoGrid
