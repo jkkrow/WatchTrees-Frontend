@@ -99,7 +99,7 @@ const LoginPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>{isLogin ? 'Signin' : 'Signup'} - WatchTrees</title>
+        <title>{isLogin ? 'Signin' : 'Signup'} - WatchTree</title>
       </Helmet>
       <AuthLayout>
         {isLogin && (

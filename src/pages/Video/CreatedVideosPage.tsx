@@ -73,7 +73,7 @@ const CreatedVideosPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Created Videos - WatchTrees</title>
+        <title>Created Videos - WatchTree</title>
       </Helmet>
       <VideoContainer>
         <FormModal

@@ -23,7 +23,7 @@ const RecentPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Recent Videos - WatchTrees</title>
+        <title>Recent Videos - WatchTree</title>
       </Helmet>
       <VideoContainer>
         <VideoGrid

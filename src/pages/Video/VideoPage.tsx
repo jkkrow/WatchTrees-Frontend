@@ -30,7 +30,7 @@ const VideoPage: React.FC = () => {
     <Fragment>
       {data && (
         <Helmet>
-          <title>{data.info.title} - WatchTrees</title>
+          <title>{data.info.title} - WatchTree</title>
           <meta name="description" content={data.info.description} />
         </Helmet>
       )}

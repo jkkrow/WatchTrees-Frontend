@@ -46,7 +46,7 @@ const ChannelPage: React.FC = () => {
     <Fragment>
       {channelData && (
         <Helmet>
-          <title>{channelData.name} - WatchTrees</title>
+          <title>{channelData.name} - WatchTree</title>
         </Helmet>
       )}
       <VideoContainer>

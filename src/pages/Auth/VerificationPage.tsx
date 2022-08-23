@@ -20,7 +20,7 @@ const VerificationPage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Verification - WatchTrees</title>
+        <title>Verification - WatchTree</title>
       </Helmet>
       <AuthLayout>
         <LoadingSpinner on={loading} />

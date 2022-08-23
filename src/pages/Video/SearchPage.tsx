@@ -27,7 +27,7 @@ const HomePage: React.FC = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>WatchTrees</title>
+        <title>WatchTree</title>
       </Helmet>
       <VideoContainer>
         <VideoGrid
