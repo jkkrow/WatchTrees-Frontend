@@ -1,4 +1,4 @@
-import { PayPalButtons } from '@paypal/react-paypal-js';
+// import braintree from 'braintree-web';
 
 import GoBack from 'components/Common/UI/GoBack/GoBack';
 import { useAppSelector } from 'hooks/common/store';
@@ -19,6 +19,10 @@ const PremiumPayment: React.FC<PremiumPaymentProps> = ({ plan }) => {
     !userData && navigate('/auth');
   }, [userData, navigate]);
 
+  useEffect(() => {
+    // braintree.client.create({ authorization: '' }, (err, client) => {});
+  }, []);
+
   return userData ? (
     <div className="premium-payment">
       <GoBack />
@@ -29,24 +33,7 @@ const PremiumPayment: React.FC<PremiumPaymentProps> = ({ plan }) => {
         <h4 data-label="Price">${plan.price}/Month</h4>
       </div>
 
-      <div className="premium-payment__checkout">
-        <PayPalButtons
-          style={{
-            color: 'black',
-            layout: 'horizontal',
-            height: 35,
-          }}
-          createSubscription={(data, actions) => {
-            return actions.subscription.create({
-              plan_id: plan.id,
-              custom_id: userData._id,
-            });
-          }}
-          onApprove={async (data, actions) => {
-            console.log(data);
-          }}
-        />
-      </div>
+      <div className="premium-payment__checkout">{/* Braintree button */}</div>
     </div>
   ) : null;
 };
