@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { useSearchParams } from 'react-router-dom';
 
 import PremiumDashboard from 'components/User/Premium/Dashboard/PremiumDashboard';
-import PremiumPayment from 'components/User/Premium/Payment/PremiumPayment';
+import PremiumCheckout from 'components/User/Premium/Checkout/PremiumCheckout';
 import { PremiumPlan } from 'store/slices/user-slice';
 
 const plans: PremiumPlan[] = [
@@ -35,7 +35,7 @@ const PremiumPage: React.FC = () => {
       </Helmet>
 
       {!selectedPlan && <PremiumDashboard plans={plans} />}
-      {selectedPlan && <PremiumPayment plan={selectedPlan} />}
+      {selectedPlan && <PremiumCheckout plan={selectedPlan} />}
     </Fragment>
   );
 };

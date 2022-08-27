@@ -1,0 +1,10 @@
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 2rem;
+
+  [data-braintree-id='methods-container'] > div {
+    width: 100%;
+  }
+}
