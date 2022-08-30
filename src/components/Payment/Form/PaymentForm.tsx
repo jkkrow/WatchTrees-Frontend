@@ -8,7 +8,15 @@ import { useEffect } from 'react';
 import { fetchClientToken } from 'store/thunks/payment-thunk';
 import './PaymentForm.scss';
 
-const PaymentForm: React.FC = () => {
+interface PaymentFormProps {
+  request: (nonce: string) => Promise<void>;
+  requestLoading: boolean;
+}
+
+const PaymentForm: React.FC<PaymentFormProps> = ({
+  request,
+  requestLoading,
+}) => {
   const { dispatchThunk, data, loaded } = useAppThunk();
 
   const [braintreeInstance, setBraintreeInstance] = useState<Dropin>();
@@ -47,9 +55,8 @@ const PaymentForm: React.FC = () => {
 
     const payload = await braintreeInstance.requestPaymentMethod();
 
-    console.log(payload);
-
     // ajax call
+    await request(payload.nonce);
 
     braintreeInstance.teardown();
     setBraintreeInstance(undefined);
@@ -60,7 +67,11 @@ const PaymentForm: React.FC = () => {
       <LoadingSpinner on={!loaded} />
       <div ref={dropinContainer}></div>
       {loaded && (
-        <Button onClick={requestPaymentHandler} disabled={!isReady}>
+        <Button
+          onClick={requestPaymentHandler}
+          disabled={!isReady}
+          loading={requestLoading}
+        >
           Checkout
         </Button>
       )}
