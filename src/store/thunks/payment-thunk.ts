@@ -18,8 +18,20 @@ export const checkoutSubscription = (
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    const { data } = await client.post(`/payment/subscription/${plan}`, {
+    const { data } = await client.post(`/payment/subscriptions/${plan}`, {
       nonce,
+    });
+
+    return data;
+  };
+};
+
+export const createSubscription = (planName: PremiumPlan['name']): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const { data } = await client.post('/payment/subscriptions/', {
+      planName,
     });
 
     return data;

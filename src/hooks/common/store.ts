@@ -47,7 +47,7 @@ export const useAppThunk = <T = any>(initialData?: T) => {
         response?: { message?: boolean; timer?: number };
         forceUpdate?: boolean;
       }
-    ) => {
+    ): Promise<T> => {
       const forceUpdate = options?.forceUpdate;
       const response = {
         message: options?.response?.message ?? true,
@@ -69,7 +69,7 @@ export const useAppThunk = <T = any>(initialData?: T) => {
         });
 
         if (isUnmounted.current) {
-          return;
+          return data;
         }
 
         data && setData(data);
@@ -88,6 +88,8 @@ export const useAppThunk = <T = any>(initialData?: T) => {
               })
             );
         }
+
+        return data;
       } catch (err) {
         setLoading(false);
         setLoaded(true);

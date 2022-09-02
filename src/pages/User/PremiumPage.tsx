@@ -8,7 +8,6 @@ import { PremiumPlan } from 'store/slices/user-slice';
 
 const plans: PremiumPlan[] = [
   {
-    id: process.env.REACT_APP_PAYPAL_PLAN_STANDARD_ID!,
     name: 'standard',
     price: 19,
     description: [
