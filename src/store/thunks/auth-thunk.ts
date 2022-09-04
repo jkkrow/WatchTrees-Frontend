@@ -35,36 +35,62 @@ export const signin = (
 };
 
 export const setAuthOnload = (): AppThunk => {
-  return async (dispatch, getState, api) => {
+  return async (dispatch, getState) => {
     const { refreshToken } = getState().auth;
-    if (!refreshToken) return dispatch(authActions.signout());
 
-    const client = dispatch(api());
+    if (!refreshToken) {
+      dispatch(authActions.signout());
+      return false;
+    }
+
     const { exp } = jwtDecode<JwtPayload>(refreshToken);
     const expiresIn = (exp as number) * 1000;
 
     const i = Date.now(); // now
     const j = i + 86400000 * 6; // 6 days later
+    let isLoggedIn: boolean;
 
     if (expiresIn >= i && expiresIn < j) {
-      // Update refresh token and access token
-      const { data } = await client.get('/users/refresh-token', {
-        headers: { Authorization: 'Bearer ' + refreshToken },
-      });
-
-      dispatch(authActions.setRefreshToken(data.refreshToken));
-      dispatch(authActions.setAccessToken(data.accessToken));
+      await dispatch(updateRefreshToken(refreshToken));
+      isLoggedIn = true;
     } else if (expiresIn >= j) {
-      // Only update access token
-      const { data } = await client.get('/users/access-token', {
-        headers: { Authorization: 'Bearer ' + refreshToken },
-      });
-
-      dispatch(authActions.setAccessToken(data.accessToken));
+      await dispatch(updateAccessToken(refreshToken));
+      isLoggedIn = true;
     } else {
       // Refresh token expired
-      return dispatch(authActions.signout());
+      dispatch(authActions.signout());
+      isLoggedIn = false;
     }
+    return isLoggedIn;
+  };
+};
+
+export const updateRefreshToken = (refreshToken: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const { data } = await client.get('/users/refresh-token', {
+      headers: { Authorization: 'Bearer ' + refreshToken },
+    });
+
+    dispatch(authActions.setRefreshToken(data.refreshToken));
+    dispatch(authActions.setAccessToken(data.accessToken));
+
+    return data;
+  };
+};
+
+export const updateAccessToken = (refreshToken: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const { data } = await client.get('/users/access-token', {
+      headers: { Authorization: 'Bearer ' + refreshToken },
+    });
+
+    dispatch(authActions.setAccessToken(data.accessToken));
+
+    return data;
   };
 };
 

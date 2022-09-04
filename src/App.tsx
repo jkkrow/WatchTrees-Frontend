@@ -21,6 +21,8 @@ import {
   useUploadWatcher,
 } from 'hooks/common/watch';
 import { setAuthOnload } from 'store/thunks/auth-thunk';
+import { updateUserData } from 'store/thunks/user-thunk';
+import { isPremium } from 'util/user';
 import 'styles/index.scss';
 
 const CreatedVideosPage = lazy(() => import('pages/Video/CreatedVideosPage'));
@@ -47,7 +49,10 @@ const App: React.FC = () => {
   useUploadWatcher();
 
   useEffect(() => {
-    dispatchThunk(setAuthOnload());
+    (async () => {
+      const isLoggedIn = await dispatchThunk(setAuthOnload());
+      isLoggedIn && (await dispatchThunk(updateUserData()));
+    })();
   }, [dispatchThunk]);
 
   return (
@@ -81,7 +86,7 @@ const App: React.FC = () => {
           <Route
             element={
               <RouteProvider
-                on={!!userData && !userData.isPremium}
+                on={!!userData && !isPremium(userData)}
                 redirect="/user/account"
               />
             }

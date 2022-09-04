@@ -9,7 +9,11 @@ export interface UserData {
   email: string;
   picture: string;
   isVerified: boolean;
-  isPremium: boolean;
+  premium: {
+    active: boolean;
+    name?: PremiumPlan['name'];
+    expiredAt?: string;
+  };
 }
 
 export interface ChannelData {

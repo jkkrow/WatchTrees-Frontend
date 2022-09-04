@@ -3,12 +3,24 @@ import axios from 'axios';
 import { AppThunk } from 'store';
 import { userActions } from 'store/slices/user-slice';
 
+export const updateUserData = (): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const { data } = await client.get('/users/data');
+
+    dispatch(userActions.setUserData(data.userData));
+
+    return data;
+  };
+};
+
 export const updateUserName = (name: string): AppThunk => {
   return async (dispatch, getState, api) => {
     const userData = getState().user.userData!;
     const client = dispatch(api());
 
-    const { data } = await client.patch('users/name', { name });
+    const { data } = await client.patch('/users/name', { name });
 
     dispatch(userActions.setUserData({ ...userData, name }));
 
@@ -24,7 +36,7 @@ export const updateUserPassword = (payload: {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    const { data } = await client.patch('users/password', { ...payload });
+    const { data } = await client.patch('/users/password', { ...payload });
 
     return data;
   };
@@ -35,7 +47,7 @@ export const updateUserPicture = (file: File): AppThunk => {
     const userData = getState().user.userData!;
     const client = dispatch(api());
 
-    const { data } = await client.put('upload/image', {
+    const { data } = await client.put('/upload/image', {
       fileType: file.type,
       key: userData.picture,
     });
@@ -44,7 +56,7 @@ export const updateUserPicture = (file: File): AppThunk => {
       headers: { 'Content-Type': file.type },
     });
 
-    const response = await client.patch('users/picture', {
+    const response = await client.patch('/users/picture', {
       picture: data.key,
     });
 
@@ -59,11 +71,11 @@ export const deleteUserPicture = (): AppThunk => {
     const userData = getState().user.userData!;
     const client = dispatch(api());
 
-    await client.delete('upload/image', {
+    await client.delete('/upload/image', {
       params: { key: userData.picture },
     });
 
-    const response = await client.patch('users/picture', {
+    const response = await client.patch('/users/picture', {
       picture: '',
     });
 
