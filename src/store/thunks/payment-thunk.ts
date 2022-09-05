@@ -1,30 +1,5 @@
 import { AppThunk } from 'store';
-import { PremiumPlan } from 'store/slices/user-slice';
-
-export const fetchClientToken = (): AppThunk => {
-  return async (dispatch, _, api) => {
-    const client = dispatch(api());
-
-    const { data } = await client.get('/payment/client-token');
-
-    return data;
-  };
-};
-
-export const checkoutSubscription = (
-  nonce: string,
-  plan: PremiumPlan['name']
-): AppThunk => {
-  return async (dispatch, _, api) => {
-    const client = dispatch(api());
-
-    const { data } = await client.post(`/payment/subscriptions/${plan}`, {
-      nonce,
-    });
-
-    return data;
-  };
-};
+import { userActions, PremiumPlan } from 'store/slices/user-slice';
 
 export const createSubscription = (planName: PremiumPlan['name']): AppThunk => {
   return async (dispatch, _, api) => {
@@ -33,6 +8,20 @@ export const createSubscription = (planName: PremiumPlan['name']): AppThunk => {
     const { data } = await client.post('/payment/subscriptions/', {
       planName,
     });
+
+    return data;
+  };
+};
+
+export const captureSubscription = (subscriptionId: string): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const { data } = await client.post(
+      `/payment/subscriptions/${subscriptionId}/capture`
+    );
+
+    dispatch(userActions.setUserData({ premium: data.premium }));
 
     return data;
   };

@@ -47,9 +47,11 @@ const userSlice = createSlice({
   reducers: {
     setUserData: (
       state,
-      { payload }: PayloadAction<UserSliceState['userData']>
+      { payload }: PayloadAction<Partial<UserSliceState['userData']>>
     ) => {
-      state.userData = payload;
+      for (let key in payload) {
+        (state.userData as any)[key] = (payload as any)[key];
+      }
     },
   },
   extraReducers: (builder) => {

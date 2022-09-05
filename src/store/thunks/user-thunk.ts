@@ -16,13 +16,12 @@ export const updateUserData = (): AppThunk => {
 };
 
 export const updateUserName = (name: string): AppThunk => {
-  return async (dispatch, getState, api) => {
-    const userData = getState().user.userData!;
+  return async (dispatch, _, api) => {
     const client = dispatch(api());
 
     const { data } = await client.patch('/users/name', { name });
 
-    dispatch(userActions.setUserData({ ...userData, name }));
+    dispatch(userActions.setUserData({ name }));
 
     return data;
   };
@@ -60,7 +59,7 @@ export const updateUserPicture = (file: File): AppThunk => {
       picture: data.key,
     });
 
-    dispatch(userActions.setUserData({ ...userData, picture: data.key }));
+    dispatch(userActions.setUserData({ picture: data.key }));
 
     return response.data;
   };
