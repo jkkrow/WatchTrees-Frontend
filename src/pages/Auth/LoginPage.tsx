@@ -172,6 +172,13 @@ const LoginPage: React.FC = () => {
               validators={[VALIDATOR_EQUAL(formState.inputs.password.value)]}
               onForm={setFormInput}
             />
+            <>
+              <small>
+                By clicking "SIGN UP", you agree to our{' '}
+                <Link to="/private-policy">private policy</Link> and{' '}
+                <Link to="/terms-and-conditions">terms and conditions</Link>
+              </small>
+            </>
             <Button loading={authLoading}>SIGN UP</Button>
           </Form>
         )}

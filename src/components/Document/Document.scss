@@ -1,0 +1,19 @@
+.document {
+  display: flex;
+  flex-direction: column;
+  max-width: 90rem;
+  padding: 2rem;
+  margin: auto;
+  gap: 2rem;
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    padding-left: 3rem;
+    gap: 1.5rem;
+  }
+
+  li {
+    list-style: square;
+  }
+}

@@ -1,11 +1,19 @@
 .footer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 10rem;
   padding: 2rem;
+  gap: 1rem;
+  font-size: 1.3rem;
 
-  &__copyright {
-    color: var(--text-disabled);
+  &__nav {
+    display: flex;
+    gap: 2rem;
+
+    a {
+      font-weight: initial;
+    }
   }
 }

@@ -37,6 +37,12 @@ const ResetPasswordPage = lazy(() => import('pages/Auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('pages/Error/NotFoundPage'));
 const FavoritesPage = lazy(() => import('pages/Video/FavoritesPage'));
 const PremiumPage = lazy(() => import('pages/User/PremiumPage'));
+const TermsAndConditionsPage = lazy(
+  () => import('pages/Document/TermsAndConditionsPage')
+);
+const PrivatePolicyPage = lazy(
+  () => import('pages/Document/PrivatePolicyPage')
+);
 
 const App: React.FC = () => {
   const refreshToken = useAppSelector((state) => state.auth.refreshToken);
@@ -68,6 +74,11 @@ const App: React.FC = () => {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/channel/:id" element={<ChannelPage />} />
           <Route path="/history" element={<HistoryPage />} />
+          <Route
+            path="/terms-and-conditions"
+            element={<TermsAndConditionsPage />}
+          />
+          <Route path="/private-policy" element={<PrivatePolicyPage />} />
 
           <Route path="/auth/recovery" element={<SendRecoveryPage />} />
           <Route
