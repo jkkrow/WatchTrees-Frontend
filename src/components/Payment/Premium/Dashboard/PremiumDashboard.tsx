@@ -1,4 +1,4 @@
-import PremiumPlan from '../Plan/PremiumPlan';
+import PremiumPlan from 'components/Payment/Premium/Plan/PremiumPlan';
 import { ReactComponent as FilmIcon } from 'assets/icons/film.svg';
 import { PremiumPlan as PremiumPlanType } from 'store/slices/user-slice';
 import './PremiumDashboard.scss';

@@ -11,9 +11,13 @@ import './PaypalSubscription.scss';
 
 interface PaypalSubscriptionProps {
   plan: PremiumPlan;
+  onSuccess: (subscriptionId: string) => void;
 }
 
-const PaypalSubscription: React.FC<PaypalSubscriptionProps> = ({ plan }) => {
+const PaypalSubscription: React.FC<PaypalSubscriptionProps> = ({
+  plan,
+  onSuccess,
+}) => {
   const [{ isPending }] = usePayPalScriptReducer();
   const { dispatchThunk } = useAppThunk();
 
@@ -24,6 +28,7 @@ const PaypalSubscription: React.FC<PaypalSubscriptionProps> = ({ plan }) => {
 
   const captureSubscriptionHandler = async (data: any, actions: any) => {
     await dispatchThunk(captureSubscription(data.subscriptionID));
+    onSuccess(data.subscriptionID);
   };
 
   return (

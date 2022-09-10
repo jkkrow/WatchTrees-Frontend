@@ -22,7 +22,6 @@ import {
 } from 'hooks/common/watch';
 import { setAuthOnload } from 'store/thunks/auth-thunk';
 import { updateUserData } from 'store/thunks/user-thunk';
-import { isPremium } from 'util/user';
 import 'styles/index.scss';
 
 const CreatedVideosPage = lazy(() => import('pages/Video/CreatedVideosPage'));
@@ -36,7 +35,8 @@ const SendRecoveryPage = lazy(() => import('pages/Auth/SendRecoveryPage'));
 const ResetPasswordPage = lazy(() => import('pages/Auth/ResetPasswordPage'));
 const NotFoundPage = lazy(() => import('pages/Error/NotFoundPage'));
 const FavoritesPage = lazy(() => import('pages/Video/FavoritesPage'));
-const PremiumPage = lazy(() => import('pages/User/PremiumPage'));
+const PremiumPage = lazy(() => import('pages/Payment/PremiumPage'));
+const ReceiptPage = lazy(() => import('pages/Payment/ReceiptPage'));
 const TermsAndConditionsPage = lazy(
   () => import('pages/Document/TermsAndConditionsPage')
 );
@@ -79,7 +79,6 @@ const App: React.FC = () => {
             element={<TermsAndConditionsPage />}
           />
           <Route path="/private-policy" element={<PrivatePolicyPage />} />
-
           <Route path="/auth/recovery" element={<SendRecoveryPage />} />
           <Route
             path="/auth/verification/:token"
@@ -94,17 +93,6 @@ const App: React.FC = () => {
             <Route path="/auth" element={<LoginPage />} />
           </Route>
 
-          <Route
-            element={
-              <RouteProvider
-                on={!!userData && !isPremium(userData)}
-                redirect="/user/account"
-              />
-            }
-          >
-            <Route path="/premium" element={<PremiumPage />} />
-          </Route>
-
           <Route element={<RouteProvider on={!!userData} redirect="/auth" />}>
             <Route path="/user/account" element={<AccountPage />} />
             <Route path="/user/videos" element={<CreatedVideosPage />} />
@@ -113,7 +101,10 @@ const App: React.FC = () => {
             <Route path="/user/favorites" element={<FavoritesPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/upload/:id" element={<UploadPage />} />
+            <Route path="/premium" element={<PremiumPage />} />
+            <Route path="/receipt/:id" element={<ReceiptPage />} />
           </Route>
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Main>

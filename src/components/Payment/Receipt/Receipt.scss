@@ -1,0 +1,18 @@
+.receipt {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  max-width: 50rem;
+  padding: 4rem 2rem;
+  margin: auto;
+  gap: 2rem;
+  box-shadow: 0 0 1px var(--text-primary);
+
+  &__check {
+    width: 5rem;
+    height: 5rem;
+  }
+}
