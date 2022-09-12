@@ -22,6 +22,7 @@ import {
 } from 'hooks/common/watch';
 import { setAuthOnload } from 'store/thunks/auth-thunk';
 import { updateUserData } from 'store/thunks/user-thunk';
+import { isPremium } from 'util/user';
 import 'styles/index.scss';
 
 const CreatedVideosPage = lazy(() => import('pages/Video/CreatedVideosPage'));
@@ -31,9 +32,9 @@ const AccountPage = lazy(() => import('pages/User/AccountPage'));
 const SubscribesPage = lazy(() => import('pages/User/SubscribesPage'));
 const SubscribersPage = lazy(() => import('pages/User/SubscribersPage'));
 const VerificationPage = lazy(() => import('pages/Auth/VerificationPage'));
+const UserPremiumPage = lazy(() => import('pages/User/UserPremiumPage'));
 const SendRecoveryPage = lazy(() => import('pages/Auth/SendRecoveryPage'));
 const ResetPasswordPage = lazy(() => import('pages/Auth/ResetPasswordPage'));
-const NotFoundPage = lazy(() => import('pages/Error/NotFoundPage'));
 const FavoritesPage = lazy(() => import('pages/Video/FavoritesPage'));
 const PremiumPage = lazy(() => import('pages/Payment/PremiumPage'));
 const ReceiptPage = lazy(() => import('pages/Payment/ReceiptPage'));
@@ -43,6 +44,7 @@ const TermsAndConditionsPage = lazy(
 const PrivatePolicyPage = lazy(
   () => import('pages/Document/PrivatePolicyPage')
 );
+const NotFoundPage = lazy(() => import('pages/Error/NotFoundPage'));
 
 const App: React.FC = () => {
   const refreshToken = useAppSelector((state) => state.auth.refreshToken);
@@ -99,10 +101,14 @@ const App: React.FC = () => {
             <Route path="/user/subscribes" element={<SubscribesPage />} />
             <Route path="/user/subscribers" element={<SubscribersPage />} />
             <Route path="/user/favorites" element={<FavoritesPage />} />
+            <Route path="/premium" element={<PremiumPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/upload/:id" element={<UploadPage />} />
-            <Route path="/premium" element={<PremiumPage />} />
             <Route path="/receipt/:id" element={<ReceiptPage />} />
+          </Route>
+
+          <Route element={<RouteProvider on={isPremium(userData)} />}>
+            <Route path="/user/premium" element={<UserPremiumPage />} />
           </Route>
 
           <Route path="*" element={<NotFoundPage />} />

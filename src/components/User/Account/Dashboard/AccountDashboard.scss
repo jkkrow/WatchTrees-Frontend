@@ -1,5 +1,6 @@
 .account-dashboard {
   position: relative;
+  display: flex;
   flex-direction: column;
   width: clamp(40rem, 60%, 80rem);
   padding: 2rem;

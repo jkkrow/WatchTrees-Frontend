@@ -2,6 +2,7 @@ import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Button from 'components/Common/Element/Button/Button';
+import { useAppSelector } from 'hooks/common/store';
 import './PremiumPlan.scss';
 
 interface PremiumPlanProps {
@@ -17,7 +18,14 @@ const PremiumPlan: React.FC<PremiumPlanProps> = ({
   price,
   description,
 }) => {
+  const userData = useAppSelector((state) => state.user.userData!);
   const navigate = useNavigate();
+
+  const isSubscribing = !!userData.premium && userData.premium.name === name;
+
+  const navigateHandler = () => {
+    navigate(`?name=${name}`);
+  };
 
   return (
     <div className="premium-plan">
@@ -29,8 +37,8 @@ const PremiumPlan: React.FC<PremiumPlanProps> = ({
           <li key={desc}>{desc}</li>
         ))}
       </ul>
-      <Button onClick={() => navigate(`?name=${name.toLowerCase()}`)}>
-        START PLAN
+      <Button disabled={isSubscribing} onClick={navigateHandler}>
+        {isSubscribing ? 'Currently Subscribed' : 'Start Plan'}
       </Button>
     </div>
   );

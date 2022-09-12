@@ -13,7 +13,10 @@ const ReceiptPage: React.FC = () => {
     if (!location.state) navigate('/');
   }, [location.state, navigate]);
 
-  const id = params.id as string;
+  if (!params.id || !location.state) {
+    return null;
+  }
+
   const state = location.state as { type: string; message: string };
 
   return (
@@ -22,7 +25,7 @@ const ReceiptPage: React.FC = () => {
         <title>Receipt - WatchTree</title>
       </Helmet>
 
-      <Receipt id={id} type={state.type} message={state.message} />
+      <Receipt id={params.id} type={state.type} message={state.message} />
     </Fragment>
   );
 };

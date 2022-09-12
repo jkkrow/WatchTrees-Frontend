@@ -23,6 +23,12 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onChangeEditMode }) => {
     dispatchThunk(sendVerification(userData!.email));
   };
 
+  const navigateHandler = (path: string) => {
+    return () => {
+      navigate(path);
+    };
+  };
+
   if (!userData) {
     return null;
   }
@@ -61,9 +67,15 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onChangeEditMode }) => {
       )}
 
       <div className="account-info__buttons">
-        {userData.isVerified && !isPremium(userData) && (
-          <Button onClick={() => navigate('/premium')}>
+        {!isPremium(userData) && (
+          <Button onClick={navigateHandler('/premium')}>
             Upgrade to Premium
+          </Button>
+        )}
+
+        {isPremium(userData) && (
+          <Button inversed onClick={navigateHandler('/user/premium')}>
+            Manage Premium Membership
           </Button>
         )}
 

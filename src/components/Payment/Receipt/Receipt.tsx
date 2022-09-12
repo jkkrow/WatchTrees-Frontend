@@ -15,9 +15,7 @@ const Receipt: React.FC<ReceiptProps> = ({ id, type, message }) => {
       <CircleCheckIcon className="receipt__check" />
       <h2>Thank you for purchase!</h2>
       <p>{message}</p>
-      {type === 'subscription' && (
-        <Link to={'/user/account/premium'}>See details</Link>
-      )}
+      {type === 'subscription' && <Link to={'/user/premium'}>See details</Link>}
     </div>
   );
 };

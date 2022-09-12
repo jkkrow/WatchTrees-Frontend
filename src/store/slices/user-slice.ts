@@ -9,11 +9,14 @@ export interface UserData {
   email: string;
   picture: string;
   isVerified: boolean;
-  premium: {
-    active: boolean;
-    name?: PremiumPlan['name'];
-    expiredAt?: string;
-  };
+  premium: UserPremium | null;
+}
+
+export interface UserPremium {
+  id: string;
+  name: PremiumPlan['name'];
+  expiredAt: string;
+  isCancelled: boolean;
 }
 
 export interface ChannelData {
@@ -26,7 +29,7 @@ export interface ChannelData {
 }
 
 export interface PremiumPlan {
-  name: 'standard' | 'business' | 'enterprise';
+  name: 'Standard' | 'Business' | 'Enterprise';
   price: number;
   description: string[];
 }

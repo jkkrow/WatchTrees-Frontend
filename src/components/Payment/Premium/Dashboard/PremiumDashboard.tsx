@@ -10,7 +10,7 @@ interface PremiumDashboardProps {
 const PremiumDashboard: React.FC<PremiumDashboardProps> = ({ plans }) => {
   return (
     <div className="premium-dashboard">
-      <h2>Subscribe for Premium Account</h2>
+      <h2>Subscribe for Premium Membership</h2>
       <p>Upgrade your account to be available for various features</p>
 
       <div className="premium-dashboard__plans">

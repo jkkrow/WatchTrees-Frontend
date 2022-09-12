@@ -11,7 +11,7 @@ interface State {
 
 type Action =
   | { type: 'CHANGE'; value: string }
-  | { type: 'FORM_CHANGE'; value: string; validators: ValidatorAction[] }
+  | { type: 'FORM_CHANGE'; value: string; validators?: ValidatorAction[] }
   | { type: 'FORM_BLUR' };
 
 const inputReducer = (state: State, action: Action): State => {
@@ -26,7 +26,9 @@ const inputReducer = (state: State, action: Action): State => {
       return {
         ...state,
         value: action.value,
-        isValid: validate(action.value, action.validators),
+        isValid: action.validators
+          ? validate(action.value, action.validators)
+          : true,
       };
     case 'FORM_BLUR':
       return {
@@ -94,7 +96,7 @@ const Input: React.FC<InputProps> = ({
       ? dispatch({
           type: 'FORM_CHANGE',
           value: event.target.value,
-          validators: validators!,
+          validators: validators,
         })
       : dispatch({
           type: 'CHANGE',

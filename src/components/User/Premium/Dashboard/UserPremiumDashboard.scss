@@ -1,0 +1,31 @@
+.user-premium-dashboard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: clamp(40rem, 60%, 80rem);
+  padding: 2rem;
+  margin: auto;
+  gap: 1rem;
+  border: 1px solid var(--text-secondary);
+  border-radius: 5px;
+
+  > h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  > div::before {
+    content: attr(data-label);
+  }
+
+  > button {
+    margin-top: 2rem;
+  }
+}

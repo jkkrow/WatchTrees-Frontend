@@ -26,3 +26,30 @@ export const captureSubscription = (subscriptionId: string): AppThunk => {
     return data;
   };
 };
+
+export const cancelSubscription = (
+  subscriptionId: string,
+  reason?: string
+): AppThunk => {
+  return async (dispatch, getState, api) => {
+    const client = dispatch(api());
+    const userData = getState().user.userData;
+
+    if (!userData || !userData.premium) {
+      return;
+    }
+
+    const { data } = await client.post(
+      `/payment/subscriptions/${subscriptionId}/cancel`,
+      { reason }
+    );
+
+    dispatch(
+      userActions.setUserData({
+        premium: { ...userData.premium, isCancelled: true },
+      })
+    );
+
+    return data;
+  };
+};

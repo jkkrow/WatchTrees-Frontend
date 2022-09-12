@@ -6,11 +6,10 @@ import PremiumDashboard from 'components/Payment/Premium/Dashboard/PremiumDashbo
 import PremiumCheckout from 'components/Payment/Premium/Checkout/PremiumCheckout';
 import { useAppSelector } from 'hooks/common/store';
 import { PremiumPlan } from 'store/slices/user-slice';
-import { isPremium } from 'util/user';
 
 const plans: PremiumPlan[] = [
   {
-    name: 'standard',
+    name: 'Standard',
     price: 19,
     description: [
       'Fully available video upload',
@@ -30,10 +29,12 @@ const PremiumPage: React.FC = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    if (!userData || isPremium(userData)) {
-      navigate('/user/account');
+    const name = searchParams.get('name');
+
+    if (name === userData?.premium?.name) {
+      navigate('/premium');
     }
-  }, [userData, navigate]);
+  }, [userData, searchParams, navigate]);
 
   const successHandler = (subscriptionId: string) => {
     navigate(`/receipt/${subscriptionId}`, {

@@ -3,6 +3,18 @@ import axios from 'axios';
 import { AppThunk } from 'store';
 import { userActions } from 'store/slices/user-slice';
 
+export const fetchUserPremium = (): AppThunk => {
+  return async (dispatch, _, api) => {
+    const client = dispatch(api());
+
+    const { data } = await client.get('/users/premium');
+
+    dispatch(userActions.setUserData({ premium: data.premium }));
+
+    return data;
+  };
+};
+
 export const updateUserData = (): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
