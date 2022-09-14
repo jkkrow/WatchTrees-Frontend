@@ -55,7 +55,7 @@ const UserPremiumDashboard: React.FC<UserPremiumDashboardProps> = ({
         onConfirm={confirmCancelHandler}
         onClose={undoCancelHandler}
       />
-      <GoBack />
+      <GoBack to="/user/account" />
 
       <h2>Premium Membership</h2>
       <div data-label="Name">{premium.name}</div>

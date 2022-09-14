@@ -14,6 +14,7 @@ import Main from 'components/Layout/Main/Main';
 import Footer from 'components/Layout/Footer/Footer';
 import GlobalMessageList from 'components/Layout/GlobalMessage/List/GlobalMessageList';
 import RouteProvider from 'providers/RouteProvider';
+import ScrollToTopProvider from 'providers/ScrollToTopProvider';
 import { useAppThunk, useAppSelector } from 'hooks/common/store';
 import {
   useStorageWatcher,
@@ -67,53 +68,55 @@ const App: React.FC = () => {
     <Fragment>
       <Header />
       <GlobalMessageList />
-      <Main>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/recent" element={<RecentPage />} />
-          <Route path="/featured" element={<FeaturedPage />} />
-          <Route path="/video/:id" element={<VideoPage />} />
-          <Route path="/search" element={<SearchPage />} />
-          <Route path="/channel/:id" element={<ChannelPage />} />
-          <Route path="/history" element={<HistoryPage />} />
-          <Route
-            path="/terms-and-conditions"
-            element={<TermsAndConditionsPage />}
-          />
-          <Route path="/private-policy" element={<PrivatePolicyPage />} />
-          <Route path="/auth/recovery" element={<SendRecoveryPage />} />
-          <Route
-            path="/auth/verification/:token"
-            element={<VerificationPage />}
-          />
-          <Route
-            path="/auth/reset-password/:token"
-            element={<ResetPasswordPage />}
-          />
+      <ScrollToTopProvider>
+        <Main>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/recent" element={<RecentPage />} />
+            <Route path="/featured" element={<FeaturedPage />} />
+            <Route path="/video/:id" element={<VideoPage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/channel/:id" element={<ChannelPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route
+              path="/terms-and-conditions"
+              element={<TermsAndConditionsPage />}
+            />
+            <Route path="/private-policy" element={<PrivatePolicyPage />} />
+            <Route path="/auth/recovery" element={<SendRecoveryPage />} />
+            <Route
+              path="/auth/verification/:token"
+              element={<VerificationPage />}
+            />
+            <Route
+              path="/auth/reset-password/:token"
+              element={<ResetPasswordPage />}
+            />
 
-          <Route element={<RouteProvider on={!userData} redirect="/" />}>
-            <Route path="/auth" element={<LoginPage />} />
-          </Route>
+            <Route element={<RouteProvider on={!userData} redirect="/" />}>
+              <Route path="/auth" element={<LoginPage />} />
+            </Route>
 
-          <Route element={<RouteProvider on={!!userData} redirect="/auth" />}>
-            <Route path="/user/account" element={<AccountPage />} />
-            <Route path="/user/videos" element={<CreatedVideosPage />} />
-            <Route path="/user/subscribes" element={<SubscribesPage />} />
-            <Route path="/user/subscribers" element={<SubscribersPage />} />
-            <Route path="/user/favorites" element={<FavoritesPage />} />
-            <Route path="/premium" element={<PremiumPage />} />
-            <Route path="/upload" element={<UploadPage />} />
-            <Route path="/upload/:id" element={<UploadPage />} />
-            <Route path="/receipt/:id" element={<ReceiptPage />} />
-          </Route>
+            <Route element={<RouteProvider on={!!userData} redirect="/auth" />}>
+              <Route path="/user/account" element={<AccountPage />} />
+              <Route path="/user/videos" element={<CreatedVideosPage />} />
+              <Route path="/user/subscribes" element={<SubscribesPage />} />
+              <Route path="/user/subscribers" element={<SubscribersPage />} />
+              <Route path="/user/favorites" element={<FavoritesPage />} />
+              <Route path="/premium" element={<PremiumPage />} />
+              <Route path="/upload" element={<UploadPage />} />
+              <Route path="/upload/:id" element={<UploadPage />} />
+              <Route path="/receipt/:id" element={<ReceiptPage />} />
+            </Route>
 
-          <Route element={<RouteProvider on={isPremium(userData)} />}>
-            <Route path="/user/premium" element={<UserPremiumPage />} />
-          </Route>
+            <Route element={<RouteProvider on={isPremium(userData)} />}>
+              <Route path="/user/premium" element={<UserPremiumPage />} />
+            </Route>
 
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Main>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Main>
+      </ScrollToTopProvider>
       <Footer />
     </Fragment>
   );
