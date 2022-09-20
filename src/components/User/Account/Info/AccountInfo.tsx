@@ -54,20 +54,14 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onChangeEditMode }) => {
         {userData.email}
       </div>
 
-      {userData.type === 'native' && (
-        <Button inversed onClick={onChangeEditMode('password')}>
-          Change Password
-        </Button>
-      )}
-
-      {!userData.isVerified && (
-        <Button loading={loading} onClick={verifyEmailHandler}>
-          Verify Email
-        </Button>
-      )}
-
       <div className="account-info__buttons">
-        {!isPremium(userData) && (
+        {!userData.isVerified && (
+          <Button loading={loading} onClick={verifyEmailHandler}>
+            Verify Email
+          </Button>
+        )}
+
+        {userData.isVerified && !isPremium(userData) && (
           <Button onClick={navigateHandler('/premium')}>
             Upgrade to Premium
           </Button>
@@ -76,6 +70,12 @@ const AccountInfo: React.FC<AccountInfoProps> = ({ onChangeEditMode }) => {
         {isPremium(userData) && (
           <Button inversed onClick={navigateHandler('/user/premium')}>
             Manage Premium Membership
+          </Button>
+        )}
+
+        {userData.type === 'native' && (
+          <Button inversed onClick={onChangeEditMode('password')}>
+            Change Password
           </Button>
         )}
 
