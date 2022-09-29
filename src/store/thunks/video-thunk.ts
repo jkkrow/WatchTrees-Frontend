@@ -15,7 +15,7 @@ export const fetchVideo = (id: string): AppThunk => {
     const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
-    const response = await client.get(`/videos/client/${id}`, {
+    const response = await client.get(`/video-trees/client/${id}`, {
       params: { userId },
     });
 
@@ -36,7 +36,7 @@ export const fetchVideos = (params: {
     const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
-    const response = await client.get('/videos/client', {
+    const response = await client.get('/video-trees/client', {
       params: { ...params, userId },
     });
 
@@ -55,7 +55,7 @@ export const fetchFeatured = (params: {
     const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
-    const response = await client.get('/videos/client/featured', {
+    const response = await client.get('/video-trees/client/featured', {
       params: { ...params, userId },
     });
 
@@ -72,7 +72,7 @@ export const fetchCreated = (params: {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    const response = await client.get('/videos/created', { params });
+    const response = await client.get('/video-trees/created', { params });
 
     const { videos, count } = response.data;
 
@@ -102,7 +102,7 @@ export const fetchHistory = (params: {
     }
 
     const { localHistory, count } = result;
-    const { data } = await client.get('/videos/client', {
+    const { data } = await client.get('/video-trees/client', {
       params: { ids: localHistory },
     });
 
@@ -117,7 +117,7 @@ export const fetchFavorites = (params: {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
 
-    const response = await client.get('/videos/favorites', { params });
+    const response = await client.get('/video-trees/favorites', { params });
 
     const { videos, count } = response.data;
 
@@ -190,7 +190,7 @@ export const removeFromHistory = (video: VideoTreeClient): AppThunk => {
 export const deleteVideo = (video: VideoTree): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
-    const { data } = await client.delete(`/videos/${video._id}`);
+    const { data } = await client.delete(`/video-trees/${video._id}`);
 
     return data;
   };
@@ -199,6 +199,6 @@ export const deleteVideo = (video: VideoTree): AppThunk => {
 export const toggleFavorites = (videoId: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
-    await client.patch(`/videos/${videoId}/favorites`);
+    await client.patch(`/video-trees/${videoId}/favorites`);
   };
 };

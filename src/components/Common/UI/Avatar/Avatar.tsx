@@ -27,7 +27,7 @@ const Avatar: React.FC<AvatarProps> = ({
           src={
             src.substring(0, 4) === 'blob'
               ? src
-              : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`
+              : `${process.env.REACT_APP_SOURCE_URL}/${src}`
           }
           alt=""
         />

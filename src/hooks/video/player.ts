@@ -37,8 +37,8 @@ export const usePlayer = ({
     }
 
     src = info.isConverted
-      ? `${process.env.REACT_APP_RESOURCE_DOMAIN_CONVERTED}/${src}`
-      : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${src}`;
+      ? `${process.env.REACT_APP_MEDIA_URL}/${src}`
+      : `${process.env.REACT_APP_SOURCE_URL}/${src}`;
 
     // Connect video to Shaka Player
     const shakaPlayer = new shaka.Player(video);

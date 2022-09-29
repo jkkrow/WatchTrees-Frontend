@@ -155,7 +155,7 @@ const FileInput: React.FC<FileInputProps> = ({
           src={
             filePreview?.url.substring(0, 4) === 'blob'
               ? filePreview.url
-              : `${process.env.REACT_APP_RESOURCE_DOMAIN_SOURCE}/${filePreview?.url}`
+              : `${process.env.REACT_APP_SOURCE_URL}/${filePreview?.url}`
           }
           alt={label}
           onClose={() => setFilePreview(null)}

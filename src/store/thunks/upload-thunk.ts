@@ -7,7 +7,7 @@ import { findById, traverseNodes } from 'util/tree';
 export const initiateUpload = (): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
-    const { data } = await client.post('/videos');
+    const { data } = await client.post('/video-trees');
 
     dispatch(uploadActions.initiateUpload(data.video));
   };
@@ -16,7 +16,7 @@ export const initiateUpload = (): AppThunk => {
 export const continueUpload = (id: string): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
-    const { data } = await client.get(`/videos/created/${id}`);
+    const { data } = await client.get(`/video-trees/created/${id}`);
 
     dispatch(uploadActions.initiateUpload(data.video));
   };
@@ -277,7 +277,7 @@ export const saveUpload = (): AppThunk => {
 
     if (!uploadTree) return;
 
-    const { data } = await client.patch(`/videos/${uploadTree._id}`, {
+    const { data } = await client.patch(`/video-trees/${uploadTree._id}`, {
       uploadTree,
     });
 
