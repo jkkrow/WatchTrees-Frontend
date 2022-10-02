@@ -14,8 +14,6 @@
     <a href="https://github.com/jkkrow/watchtree-frontend">Frontend App</a>
     ·
     <a href="https://github.com/jkkrow/watchtree-backend">Backend API</a>
-    ·
-    <a href="https://github.com/jkkrow/watchtree-lambda">Lambda Code</a>
   </p>
 </div>
 
@@ -71,10 +69,3 @@ You also need the API of this project to run the app properly. Go to the reposit
 | ![Chrome](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/72.0.0/chrome/chrome.svg)Chrome | ![Firefox](https://cdnjs.cloudflare.com/ajax/libs/browser-logos/72.0.0/firefox/firefox.svg)Firefox |
 | :---------: | :---------: |
 | Latest &#10003;| Latest &#10003;
-
-## Related Apps
-
-Here are related applications of WatchTree project.
-
-- [WatchTree Backend](https://github.com/jkkrow/watchtree-backend): A REST API for WatchTree built with Node.js and MongoDB to handle requests of frontend app.
-- [WatchTree Lambda](http://github.com/jkkrow/watchtree-lambda): An AWS Lambda function code for running serverless jobs.
