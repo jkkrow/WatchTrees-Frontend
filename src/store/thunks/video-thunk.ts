@@ -15,9 +15,7 @@ export const fetchVideo = (id: string): AppThunk => {
     const userId = userData ? userData._id : '';
     const client = dispatch(api());
 
-    const response = await client.get(`/video-trees/client/${id}`, {
-      params: { userId },
-    });
+    const response = await client.get(`/video-trees/client/${id}`);
 
     const { video } = response.data;
 
@@ -37,7 +35,7 @@ export const fetchVideos = (params: {
     const client = dispatch(api());
 
     const response = await client.get('/video-trees/client', {
-      params: { ...params, userId },
+      params: { ...params },
     });
 
     const { videos, count } = response.data;
@@ -56,7 +54,7 @@ export const fetchFeatured = (params: {
     const client = dispatch(api());
 
     const response = await client.get('/video-trees/client/featured', {
-      params: { ...params, userId },
+      params: { ...params },
     });
 
     const { videos, count } = response.data;
