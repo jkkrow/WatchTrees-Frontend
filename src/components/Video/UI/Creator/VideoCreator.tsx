@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import Avatar from 'components/Common/UI/Avatar/Avatar';
-import { TreeInfoClient } from 'store/slices/video-slice';
+import { TreeInfoClient } from 'store/types/video';
 import './VideoCreator.scss';
 
 interface VideoCreatorProps {

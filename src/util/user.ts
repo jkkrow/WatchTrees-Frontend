@@ -1,4 +1,4 @@
-import { UserData } from 'store/slices/user-slice';
+import { UserData } from 'store/types/user';
 
 export const isPremium = (userData: UserData | null) => {
   return (

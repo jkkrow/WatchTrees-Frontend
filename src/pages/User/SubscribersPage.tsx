@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import ChannelGrid from 'components/User/Channel/Grid/ChannelGrid';
 import { usePaginate } from 'hooks/common/page';
 import { useAppThunk } from 'hooks/common/store';
-import { ChannelData } from 'store/slices/user-slice';
+import { ChannelData } from 'store/types/user';
 import { fetchSubscribers } from 'store/thunks/user-thunk';
 
 const SubscribersPage: React.FC = () => {

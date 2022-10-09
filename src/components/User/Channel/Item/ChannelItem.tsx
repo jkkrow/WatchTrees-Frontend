@@ -10,7 +10,7 @@ import { ReactComponent as SubscribeUsersIcon } from 'assets/icons/subscribe-use
 import { ReactComponent as SubscribeAddIcon } from 'assets/icons/subscribe-add.svg';
 import { ReactComponent as SubscribeAddedIcon } from 'assets/icons/subscribe-added.svg';
 import { useAppSelector, useAppThunk } from 'hooks/common/store';
-import { ChannelData } from 'store/slices/user-slice';
+import { ChannelData } from 'store/types/user';
 import { toggleSubscribe } from 'store/thunks/user-thunk';
 import { formatNumber } from 'util/format';
 import './ChannelItem.scss';

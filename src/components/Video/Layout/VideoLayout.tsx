@@ -1,7 +1,7 @@
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
 import VideoDetail from 'components/Video/UI/Detail/VideoDetail';
 import Loader from '../Player/UI/Loader/Loader';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import './VideoLayout.scss';
 
 interface VideoLayoutProps {

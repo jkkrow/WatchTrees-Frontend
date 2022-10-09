@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 
 import VideoLayout from 'components/Video/Layout/VideoLayout';
 import { useAppThunk } from 'hooks/common/store';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import { fetchVideo } from 'store/thunks/video-thunk';
 
 const VideoPage: React.FC = () => {

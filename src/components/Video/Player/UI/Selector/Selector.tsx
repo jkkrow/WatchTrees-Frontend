@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-import { VideoNode } from 'store/slices/video-slice';
+import { VideoNode } from 'store/types/video';
 import './Selector.scss';
 
 interface SelectorProps {

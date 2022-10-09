@@ -5,7 +5,7 @@ import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import NotFound from 'components/Common/UI/NotFound/NotFound';
 import { ReactComponent as VideoIcon } from 'assets/icons/video.svg';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import './CreatedVideoGrid.scss';
 
 interface CreatedVideoGridProps {

@@ -5,7 +5,7 @@ import VideoContainer from 'components/Video/Container/VideoContainer';
 import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { usePaginate } from 'hooks/common/page';
 import { useAppThunk } from 'hooks/common/store';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import { fetchHistory } from 'store/thunks/video-thunk';
 
 const HistoryPage: React.FC = () => {

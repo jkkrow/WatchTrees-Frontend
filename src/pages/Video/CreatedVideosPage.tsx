@@ -7,7 +7,6 @@ import UploadButton from 'components/Upload/Button/UploadButton';
 import Reload from 'components/Common/UI/Reload/Reload';
 import FormModal from 'components/Layout/Modal/Form/FormModal';
 import Input from 'components/Common/Element/Input/Input';
-import { VideoTreeClient } from 'store/slices/video-slice';
 import { useForm } from 'hooks/common/form';
 import { usePaginate } from 'hooks/common/page';
 import {
@@ -16,6 +15,7 @@ import {
   useAppSelector,
 } from 'hooks/common/store';
 import { uploadActions } from 'store/slices/upload-slice';
+import { VideoTreeClient } from 'store/types/video';
 import { deleteVideo, fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 

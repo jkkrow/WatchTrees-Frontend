@@ -1,6 +1,6 @@
 import { AppThunk } from 'store';
 
-import { VideoTree, VideoTreeClient, History } from 'store/slices/video-slice';
+import { VideoTree, VideoTreeClient, History } from 'store/types/video';
 import {
   getLocalHistory,
   addToLocalHistory,

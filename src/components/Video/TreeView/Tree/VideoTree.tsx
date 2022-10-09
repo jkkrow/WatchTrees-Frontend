@@ -2,11 +2,8 @@ import { useEffect } from 'react';
 
 import VideoNode from '../Node/VideoNode';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import {
-  VideoTree as VideoTreeType,
-  videoActions,
-  History,
-} from 'store/slices/video-slice';
+import { videoActions } from 'store/slices/video-slice';
+import { VideoTree as VideoTreeType, History } from 'store/types/video';
 import { addToHistory } from 'store/thunks/video-thunk';
 import './VideoTree.scss';
 

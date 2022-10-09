@@ -1,5 +1,6 @@
 import { AppThunk } from 'store';
-import { userActions, PremiumPlan } from 'store/slices/user-slice';
+import { userActions } from 'store/slices/user-slice';
+import { PremiumPlan } from 'store/types/user';
 
 export const createSubscription = (planName: PremiumPlan['name']): AppThunk => {
   return async (dispatch, _, api) => {

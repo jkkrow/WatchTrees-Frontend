@@ -2,7 +2,7 @@ import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useAppThunk } from 'hooks/common/store';
-import { PremiumPlan } from 'store/slices/user-slice';
+import { PremiumPlan } from 'store/types/user';
 import {
   captureSubscription,
   createSubscription,

@@ -1,5 +1,5 @@
 import VideoTree from 'components/Video/TreeView/Tree/VideoTree';
-import { VideoTree as VideoTreeType } from 'store/slices/video-slice';
+import { VideoTree as VideoTreeType } from 'store/types/video';
 import './UploadPreview.scss';
 
 interface PreviewProps {

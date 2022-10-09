@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { VideoTree, NodeInfo } from 'store/slices/video-slice';
+import { NodeInfo } from 'store/types/video';
+import { UploadTree } from 'store/types/upload';
 import { authActions } from './auth-slice';
 import {
   findById,
@@ -11,8 +12,6 @@ import {
 } from 'util/tree';
 
 type TreeType = 'uploadTree' | 'previewTree';
-
-interface UploadTree extends Omit<VideoTree, 'data'> {}
 
 interface UploadSliceState {
   uploadTree: UploadTree | null;

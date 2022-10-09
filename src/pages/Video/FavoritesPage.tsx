@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { usePaginate } from 'hooks/common/page';
 import { useAppThunk } from 'hooks/common/store';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import { fetchFavorites } from 'store/thunks/video-thunk';
 
 const FavoritesPage: React.FC = () => {

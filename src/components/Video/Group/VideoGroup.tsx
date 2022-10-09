@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import VideoItem from 'components/Video/Item/VideoItem';
 import LoaderGrid from 'components/Common/UI/Loader/Grid/LoaderGrid';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';

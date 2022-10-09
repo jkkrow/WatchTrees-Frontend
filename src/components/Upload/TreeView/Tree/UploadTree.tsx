@@ -1,5 +1,5 @@
 import UploadNode from '../Node/UploadNode';
-import { VideoTree } from 'store/slices/video-slice';
+import { VideoTree } from 'store/types/video';
 import './UploadTree.scss';
 
 interface UploadTreeProps {

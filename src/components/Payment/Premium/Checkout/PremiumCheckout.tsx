@@ -1,7 +1,7 @@
 import GoBack from 'components/Common/UI/GoBack/GoBack';
 import PaypalProvider from 'components/Payment/Paypal/Provider/PaypalProvider';
 import PaypalSubscription from 'components/Payment/Paypal/Subscription/PaypalSubscription';
-import { PremiumPlan } from 'store/slices/user-slice';
+import { PremiumPlan } from 'store/types/user';
 import './PremiumCheckout.scss';
 
 interface PremiumCheckoutProps {

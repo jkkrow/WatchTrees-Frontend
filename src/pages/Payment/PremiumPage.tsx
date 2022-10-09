@@ -5,7 +5,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import PremiumDashboard from 'components/Payment/Premium/Dashboard/PremiumDashboard';
 import PremiumCheckout from 'components/Payment/Premium/Checkout/PremiumCheckout';
 import { useAppSelector } from 'hooks/common/store';
-import { PremiumPlan } from 'store/slices/user-slice';
+import { PremiumPlan } from 'store/types/user';
 
 const plans: PremiumPlan[] = [
   {

@@ -5,7 +5,7 @@ import Controls from './Body/Controls';
 import Error from './Body/Error';
 import DragDrop from 'components/Upload/DragDrop/DragDrop';
 import { useAppSelector, useAppThunk } from 'hooks/common/store';
-import { VideoNode } from 'store/slices/video-slice';
+import { VideoNode } from 'store/types/video';
 import { uploadVideo } from 'store/thunks/upload-thunk';
 import { findAncestors } from 'util/tree';
 import './UploadNode.scss';

@@ -14,7 +14,7 @@ import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useTimeout } from 'hooks/common/timer';
 import { useAppThunk } from 'hooks/common/store';
 import { AppThunk } from 'store';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import './VideoItem.scss';
 
 interface VideoItemProps {

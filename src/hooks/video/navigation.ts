@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react';
 
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import { VideoNode, videoActions } from 'store/slices/video-slice';
+import { videoActions } from 'store/slices/video-slice';
+import { VideoNode } from 'store/types/video';
 import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 
 export const useNavigation = ({

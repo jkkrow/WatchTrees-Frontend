@@ -5,7 +5,8 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as AngleLeftDoubleIcon } from 'assets/icons/angle-left-double.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import { VideoNode, videoActions } from 'store/slices/video-slice';
+import { VideoNode } from 'store/types/video';
+import { videoActions } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import { validateNodes } from 'util/tree';
 

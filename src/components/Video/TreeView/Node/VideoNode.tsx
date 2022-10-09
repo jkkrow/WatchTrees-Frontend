@@ -4,10 +4,8 @@ import { useNavigate } from 'react-router';
 import VideoPlayer from '../../Player/VideoPlayer';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import {
-  VideoNode as VideoNodeType,
-  videoActions,
-} from 'store/slices/video-slice';
+import { VideoNode as VideoNodeType } from 'store/types/video';
+import { videoActions } from 'store/slices/video-slice';
 import { findAncestors } from 'util/tree';
 import './VideoNode.scss';
 

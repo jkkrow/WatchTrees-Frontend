@@ -4,7 +4,7 @@ import VideoFavorites from '../Favorites/VideoFavorites';
 import VideoTags from '../Tags/VideoTags';
 import VideoTimestamp from '../Timestamp/VideoTimestamp';
 import VideoViews from '../Views/VideoViews';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import './VideoDetail.scss';
 
 interface VideoDetailProps {

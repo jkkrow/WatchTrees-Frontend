@@ -17,7 +17,7 @@ import {
   useAppSelector,
   useAppThunk,
 } from 'hooks/common/store';
-import { VideoTree } from 'store/slices/video-slice';
+import { VideoTree } from 'store/types/video';
 import { uploadActions } from 'store/slices/upload-slice';
 import {
   saveUpload,

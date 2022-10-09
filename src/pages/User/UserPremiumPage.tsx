@@ -5,7 +5,7 @@ import UserPremiumDashboard from 'components/User/Premium/Dashboard/UserPremiumD
 import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import { useAppSelector, useAppThunk } from 'hooks/common/store';
 import { fetchUserPremium } from 'store/thunks/user-thunk';
-import { UserPremium } from 'store/slices/user-slice';
+import { UserPremium } from 'store/types/user';
 
 const UserPremiumPage: React.FC = () => {
   const userData = useAppSelector((state) => state.user.userData!);

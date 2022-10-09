@@ -11,7 +11,8 @@ import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading
 import { ReactComponent as MarkerIcon } from 'assets/icons/marker.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { uploadActions } from 'store/slices/upload-slice';
-import { VideoNode, videoActions, NodeInfo } from 'store/slices/video-slice';
+import { VideoNode, NodeInfo } from 'store/types/video';
+import { videoActions } from 'store/slices/video-slice';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 

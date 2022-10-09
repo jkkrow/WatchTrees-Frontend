@@ -5,7 +5,7 @@ import LoadingSpinner from 'components/Common/UI/Loader/Spinner/LoadingSpinner';
 import Pagination from 'components/Common/UI/Pagination/Pagination';
 import NotFound from 'components/Common/UI/NotFound/NotFound';
 import { ReactComponent as SubscribeUserIcon } from 'assets/icons/subscribe-users.svg';
-import { ChannelData } from 'store/slices/user-slice';
+import { ChannelData } from 'store/types/user';
 import './ChannelGrid.scss';
 
 interface ChannelGridProps {

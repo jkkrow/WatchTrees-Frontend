@@ -1,7 +1,7 @@
 import UploadDashboard from 'components/Upload/Dashboard/UploadDashboard';
 import UploadTree from 'components/Upload/TreeView/Tree/UploadTree';
 import UploadPreview from 'components/Upload/Preview/UploadPreview';
-import { VideoTree } from 'store/slices/video-slice';
+import { VideoTree } from 'store/types/video';
 import './UploadLayout.scss';
 
 interface UploadLayoutProps {

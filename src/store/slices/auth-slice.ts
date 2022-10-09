@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { UserData } from './user-slice';
+import { UserData } from '../types/user';
 
 const refreshTokenStorage = localStorage.getItem('refreshToken');
 

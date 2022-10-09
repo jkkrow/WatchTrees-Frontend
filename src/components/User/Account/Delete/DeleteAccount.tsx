@@ -7,7 +7,7 @@ import FormModal from 'components/Layout/Modal/Form/FormModal';
 import GoogleLogin from 'components/Auth/GoogleLogin/GoogleLogin';
 import { useForm } from 'hooks/common/form';
 import { useAppDispatch, useAppThunk } from 'hooks/common/store';
-import { UserData } from 'store/slices/user-slice';
+import { UserData } from 'store/types/user';
 import { authActions } from 'store/slices/auth-slice';
 import { deleteAccount } from 'store/thunks/auth-thunk';
 import {

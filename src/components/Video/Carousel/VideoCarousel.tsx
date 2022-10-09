@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import VideoThumbnail from '../UI/Thumbnail/VideoThumbnail';
 import VideoLoader from 'components/Video/Loader/VideoLoader';
 import Card from 'components/Common/UI/Card/Card';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';

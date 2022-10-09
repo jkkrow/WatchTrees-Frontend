@@ -5,7 +5,7 @@ import { ReactComponent as MoreIcon } from 'assets/icons/more.svg';
 import { ReactComponent as AngleRightIcon } from 'assets/icons/angle-right.svg';
 import { useOutsideClickHander } from 'hooks/common/outside-click';
 import { AppThunk } from 'store';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import { toggleFavorites, removeFromHistory } from 'store/thunks/video-thunk';
 import './VideoDropdown.scss';
 

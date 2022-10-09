@@ -2,7 +2,7 @@ import { CSSTransition } from 'react-transition-group';
 import { useNavigate } from 'react-router-dom';
 
 import PreviewPlayer from './Player/PreviewPlayer';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import './Preview.scss';
 
 interface PreviewProps {

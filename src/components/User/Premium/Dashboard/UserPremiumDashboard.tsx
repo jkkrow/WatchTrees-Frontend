@@ -6,7 +6,7 @@ import FormModal from 'components/Layout/Modal/Form/FormModal';
 import GoBack from 'components/Common/UI/GoBack/GoBack';
 import { useForm } from 'hooks/common/form';
 import { useAppThunk } from 'hooks/common/store';
-import { UserPremium } from 'store/slices/user-slice';
+import { UserPremium } from 'store/types/user';
 import { cancelSubscription } from 'store/thunks/payment-thunk';
 import './UserPremiumDashboard.scss';
 

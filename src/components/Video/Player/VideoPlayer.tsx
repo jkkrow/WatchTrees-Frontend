@@ -33,7 +33,7 @@ import { useSelector } from 'hooks/video/selector';
 import { useNavigation } from 'hooks/video/navigation';
 import { useError } from 'hooks/video/error';
 import { useKeyControls } from 'hooks/video/key-control';
-import { NodeInfo, VideoNode } from 'store/slices/video-slice';
+import { NodeInfo, VideoNode } from 'store/types/video';
 import './VideoPlayer.scss';
 
 export interface VideoPlayerProps {

@@ -1,4 +1,4 @@
-import { NodeInfo, VideoNode, VideoTree } from 'store/slices/video-slice';
+import { NodeInfo, VideoNode, VideoTree } from 'store/types/video';
 
 export const findById = (tree: VideoTree, id: string): VideoNode | null => {
   let currentNode: VideoNode = tree.root;

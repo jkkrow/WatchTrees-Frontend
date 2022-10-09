@@ -7,7 +7,7 @@ import VideoGroup from 'components/Video/Group/VideoGroup';
 import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { usePaginate } from 'hooks/common/page';
 import { useAppThunk } from 'hooks/common/store';
-import { VideoTreeClient } from 'store/slices/video-slice';
+import { VideoTreeClient } from 'store/types/video';
 import { fetchVideos, fetchHistory } from 'store/thunks/video-thunk';
 
 const HomePage: React.FC = () => {

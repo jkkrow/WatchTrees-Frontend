@@ -7,10 +7,10 @@ import VideoContainer from 'components/Video/Container/VideoContainer';
 import VideoGrid from 'components/Video/Grid/VideoGrid';
 import { usePaginate } from 'hooks/common/page';
 import { useAppThunk } from 'hooks/common/store';
-import { ChannelData } from 'store/slices/user-slice';
-import { VideoTreeClient } from 'store/slices/video-slice';
 import { fetchChannel } from 'store/thunks/user-thunk';
 import { fetchVideos } from 'store/thunks/video-thunk';
+import { ChannelData } from 'store/types/user';
+import { VideoTreeClient } from 'store/types/video';
 
 const ChannelPage: React.FC = () => {
   const {
