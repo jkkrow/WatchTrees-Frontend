@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { findAncestors } from 'util/tree';
 import { videoActions } from 'store/slices/video-slice';
 
-export const useRecords = ({ videoRef, id }: VideoPlayerDependencies) => {
+export const useRecords = ({ videoRef, _id }: VideoPlayerDependencies) => {
   const videoTree = useAppSelector((state) => state.video.videoTree!);
   const dispatch = useAppDispatch();
 
@@ -14,12 +14,12 @@ export const useRecords = ({ videoRef, id }: VideoPlayerDependencies) => {
   const wasPlaying = useRef(false);
 
   const records = useMemo(() => {
-    const ancestors = findAncestors(videoTree, id, true);
+    const ancestors = findAncestors(videoTree, _id, true);
 
     return ancestors.sort((videoA, videoB) =>
-      videoA.layer < videoB.layer ? 1 : -1
+      videoA.level < videoB.level ? 1 : -1
     );
-  }, [videoTree, id]);
+  }, [videoTree, _id]);
 
   const toggleRecords = useCallback(() => {
     setDisplayRecords((prev) => !prev);

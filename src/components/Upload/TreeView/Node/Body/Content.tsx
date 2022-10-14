@@ -11,25 +11,26 @@ import { ReactComponent as CircleLoadingIcon } from 'assets/icons/circle-loading
 import { ReactComponent as MarkerIcon } from 'assets/icons/marker.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { uploadActions } from 'store/slices/upload-slice';
-import { VideoNode, NodeInfo } from 'store/types/video';
+import { RenderNode } from 'store/types/upload';
 import { videoActions } from 'store/slices/video-slice';
 import { formatTime, formatSize } from 'util/format';
 import { validateNodes } from 'util/tree';
 
-interface ContentProps {
-  id: string;
-  parentId: string | null;
+interface ContentProps extends RenderNode {
   rootId: string;
-  layer: number;
-  info: NodeInfo;
-  children: VideoNode[];
 }
 
 const Content: React.FC<ContentProps> = ({
-  id,
+  _id,
   parentId,
   rootId,
-  info,
+  name,
+  label,
+  progress,
+  size,
+  duration,
+  selectionTimeStart,
+  selectionTimeEnd,
   children,
 }) => {
   const activeNodeId = useAppSelector((state) => state.upload.activeNodeId);
@@ -41,9 +42,9 @@ const Content: React.FC<ContentProps> = ({
 
   const labelChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
-      uploadActions.setNode({
+      uploadActions.updateNode({
+        id: _id,
         info: { label: event.target.value },
-        nodeId: id,
       })
     );
   };
@@ -53,18 +54,18 @@ const Content: React.FC<ContentProps> = ({
   ) => {
     let value = +event.target.value;
 
-    if (value > info.duration) {
-      value = info.duration;
+    if (value > duration) {
+      value = duration;
     }
 
-    if (value > info.selectionTimeEnd) {
-      value = info.selectionTimeEnd;
+    if (value > selectionTimeEnd) {
+      value = selectionTimeEnd;
     }
 
     dispatch(
-      uploadActions.setNode({
+      uploadActions.updateNode({
+        id: _id,
         info: { selectionTimeStart: value },
-        nodeId: id,
       })
     );
   };
@@ -74,72 +75,68 @@ const Content: React.FC<ContentProps> = ({
   ) => {
     let value = +event.target.value;
 
-    if (value < info.selectionTimeStart) {
-      value = info.selectionTimeStart;
+    if (value < selectionTimeStart) {
+      value = selectionTimeStart;
     }
 
-    if (value > info.duration) {
-      value = info.duration;
+    if (value > duration) {
+      value = duration;
     }
 
     dispatch(
-      uploadActions.setNode({
+      uploadActions.updateNode({
+        id: _id,
         info: { selectionTimeEnd: value },
-        nodeId: id,
       })
     );
   };
 
   const setSelectionTimeStartHandler = () => {
-    const { selectionTimeEnd, duration } = info;
-
     dispatch(
-      uploadActions.setNode({
+      uploadActions.updateNode({
+        id: _id,
         info: { selectionTimeStart: +currentProgress.toFixed(3) },
-        nodeId: id,
       })
     );
 
     if (currentProgress > (selectionTimeEnd || 0)) {
       dispatch(
-        uploadActions.setNode({
+        uploadActions.updateNode({
+          id: _id,
           info: {
             selectionTimeEnd:
               currentProgress + 10 > duration
                 ? +duration.toFixed(3)
                 : +(currentProgress + 10).toFixed(3),
           },
-          nodeId: id,
         })
       );
     }
   };
 
   const setSelectionTimeEndHandler = () => {
-    const { selectionTimeStart } = info;
-
     dispatch(
-      uploadActions.setNode({
+      uploadActions.updateNode({
+        id: _id,
         info: { selectionTimeEnd: +currentProgress.toFixed(3) },
-        nodeId: id,
       })
     );
 
     if (currentProgress < (selectionTimeStart || 0)) {
       dispatch(
-        uploadActions.setNode({
+        uploadActions.updateNode({
+          id: _id,
           info: {
             selectionTimeStart:
               currentProgress - 10 < 0 ? 0 : +(currentProgress - 10).toFixed(3),
           },
-          nodeId: id,
         })
       );
     }
   };
 
   const addChildHandler = () => {
-    dispatch(uploadActions.appendNode({ nodeId: id }));
+    dispatch(uploadActions.addNode({ parentId: _id }));
   };
 
   const activeNodeHandler = (id: string) => {
@@ -158,7 +155,7 @@ const Content: React.FC<ContentProps> = ({
             <strong>ROOT</strong>
           </Tooltip>
         ) : (
-          id === activeNodeId && (
+          _id === activeNodeId && (
             <div className="upload-node__navigation">
               <AngleLeftDoubleIcon
                 className="btn"
@@ -173,14 +170,17 @@ const Content: React.FC<ContentProps> = ({
         )}
         <div
           className="upload-node__title"
-          style={id === activeNodeId ? { pointerEvents: 'none' } : undefined}
-          onClick={() => activeNodeHandler(id)}
+          style={_id === activeNodeId ? { pointerEvents: 'none' } : undefined}
+          onClick={() => activeNodeHandler(_id)}
         >
-          {info.name}
+          {name}
         </div>
         <div className="upload-node__action">
           <Tooltip text="Show preview" direction="left">
-            <VideoIcon className="btn" onClick={() => activeVideoHandler(id)} />
+            <VideoIcon
+              className="btn"
+              onClick={() => activeVideoHandler(_id)}
+            />
           </Tooltip>
           {children.length < 4 && (
             <Tooltip text="Append next video" direction="left">
@@ -194,24 +194,24 @@ const Content: React.FC<ContentProps> = ({
         <div className="upload-node__progress--background" />
         <div
           className="upload-node__progress--current"
-          style={{ width: info.progress + '%' }}
+          style={{ width: progress + '%' }}
         />
       </div>
 
       <div className="upload-node__info">
         <div className="upload-node__info__size" data-label="FileSize">
-          {formatSize(info.size)}
+          {formatSize(size)}
         </div>
         <div className="upload-node__info__duration" data-label="Duration">
-          {formatTime(info.duration)}
+          {formatTime(duration)}
         </div>
-        {id !== rootId && (
+        {_id !== rootId && (
           <label className="upload-node__info__label" data-label="Label">
             <div className="upload-node__info__input">
               <Input
                 id="label"
                 type="text"
-                value={info.label}
+                value={label}
                 onChange={labelChangeHandler}
               />
             </div>
@@ -224,7 +224,7 @@ const Content: React.FC<ContentProps> = ({
           <div className="upload-node__info__input">
             <Tooltip
               text={
-                id !== activeVideoId
+                _id !== activeVideoId
                   ? 'Show preview first'
                   : 'Set to current time'
               }
@@ -232,7 +232,7 @@ const Content: React.FC<ContentProps> = ({
             >
               <Button
                 small
-                disabled={id !== activeVideoId}
+                disabled={_id !== activeVideoId}
                 onClick={setSelectionTimeStartHandler}
               >
                 <MarkerIcon />
@@ -241,13 +241,13 @@ const Content: React.FC<ContentProps> = ({
             <Input
               id="selectionTimeStart"
               type="number"
-              value={info.selectionTimeStart.toString()}
+              value={selectionTimeStart.toString()}
               onChange={selectionTimeStartChangeHandler}
             />
             <span>to</span>
             <Tooltip
               text={
-                id !== activeVideoId
+                _id !== activeVideoId
                   ? 'Show preview first'
                   : 'Set to current time'
               }
@@ -255,7 +255,7 @@ const Content: React.FC<ContentProps> = ({
             >
               <Button
                 small
-                disabled={id !== activeVideoId}
+                disabled={_id !== activeVideoId}
                 onClick={setSelectionTimeEndHandler}
               >
                 <MarkerIcon />
@@ -264,7 +264,7 @@ const Content: React.FC<ContentProps> = ({
             <Input
               id="selectionTimeEnd"
               type="number"
-              value={info.selectionTimeEnd.toString()}
+              value={selectionTimeEnd.toString()}
               onChange={selectionTimeEndChangeHandler}
             />
           </div>
@@ -273,7 +273,7 @@ const Content: React.FC<ContentProps> = ({
           <div className="upload-node__info__children__status">
             {children.length
               ? children.map((node) => {
-                  if (!node.info)
+                  if (!node.url)
                     return (
                       <CircleDashIcon
                         key={node._id}
@@ -283,7 +283,7 @@ const Content: React.FC<ContentProps> = ({
                     );
 
                   if (
-                    validateNodes(node, 'info') ||
+                    validateNodes(node, 'url', '') ||
                     validateNodes(node, 'progress', 100, false)
                   )
                     return (

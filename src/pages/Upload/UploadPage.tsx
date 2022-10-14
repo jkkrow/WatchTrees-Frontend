@@ -6,23 +6,22 @@ import UploadLayout from 'components/Upload/Layout/UploadLayout';
 import { useAppSelector } from 'hooks/common/store';
 
 const UploadPage: React.FC = () => {
-  const previewTree = useAppSelector((state) => state.upload.previewTree);
+  const renderTree = useAppSelector((state) => state.upload.renderTree);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    !previewTree && navigate('/user/videos', { replace: true });
-  }, [previewTree, navigate]);
+    !renderTree && navigate('/user/videos', { replace: true });
+  }, [renderTree, navigate]);
 
   return (
     <Fragment>
       <Helmet>
         <title>
-          Upload{previewTree?.info.title ? ` - ${previewTree.info.title}` : ''}{' '}
-          - WatchTree
+          Upload{renderTree?.title ? ` - ${renderTree.title}` : ''} - WatchTree
         </title>
       </Helmet>
-      {previewTree && <UploadLayout tree={previewTree} />}
+      {renderTree && <UploadLayout tree={renderTree} />}
     </Fragment>
   );
 };

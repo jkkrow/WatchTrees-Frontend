@@ -25,7 +25,7 @@ export const useAuthWatcher = () => {
 };
 
 export const useUploadWatcher = () => {
-  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const sourceTree = useAppSelector((state) => state.upload.sourceTree);
 
   const beforeunloadHandler = useCallback((event: BeforeUnloadEvent): void => {
     event.preventDefault();
@@ -33,8 +33,8 @@ export const useUploadWatcher = () => {
   }, []);
 
   useEffect(() => {
-    uploadTree
+    sourceTree
       ? window.addEventListener('beforeunload', beforeunloadHandler)
       : window.removeEventListener('beforeunload', beforeunloadHandler);
-  }, [uploadTree, beforeunloadHandler]);
+  }, [sourceTree, beforeunloadHandler]);
 };

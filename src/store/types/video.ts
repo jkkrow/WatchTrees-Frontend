@@ -1,65 +1,50 @@
-export interface VideoTree {
+export interface Tree {
   _id: string;
+  root: Node;
+}
+
+export interface Node {
+  _id: string;
+  parentId: string | null;
+  level: number;
+  children: Node[];
+}
+
+export interface VideoTree extends Tree {
   root: VideoNode;
-  info: TreeInfo;
+  title: string;
+  tags: string[];
+  description: string;
+  thumbnail: string;
+  size: number;
+  maxDuration: number;
+  minDuration: number;
+  status: 'public' | 'private';
+  isEditing: boolean;
   createdAt: string;
 }
 
-export interface VideoNode {
-  _id: string;
-  parentId: string | null;
-  layer: number;
-  info: NodeInfo | null;
-  creator?: string;
-  children: VideoNode[];
-}
-
-export interface NodeInfo {
+export interface VideoNode extends Node {
   name: string;
   label: string;
   size: number;
   duration: number;
   selectionTimeStart: number;
   selectionTimeEnd: number;
-  error: string | null;
-  progress: number;
-  isConverted: boolean;
   url: string;
+  children: VideoNode[];
 }
 
 export interface VideoTreeClient extends VideoTree {
-  info: TreeInfoClient;
-  data: TreeDataClient;
-  history: History | null;
-}
-
-export interface TreeInfo {
-  creator?: string;
-  title: string;
-  tags: string[];
-  description: string;
-  thumbnail: { name: string; url: string };
-  size: number;
-  maxDuration: number;
-  minDuration: number;
-  status: 'public' | 'private';
-  isEditing: boolean;
-}
-
-export interface TreeInfoClient extends TreeInfo {
-  creatorInfo: {
+  creator: {
+    id: string;
     name: string;
     picture: string;
   };
-}
-
-export interface TreeData {
   views: number;
   favorites: number;
-}
-
-export interface TreeDataClient extends TreeData {
   isFavorite: boolean;
+  history: History | null;
 }
 
 export interface History {

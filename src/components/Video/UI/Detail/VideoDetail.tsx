@@ -16,12 +16,12 @@ const VideoDetail: React.FC<VideoDetailProps> = ({ video }) => {
     <div className="video-detail">
       <div className="video-detail__header">
         <div className="video-detail__title">
-          <h2>{video.info.title}</h2>
+          <h2>{video.title}</h2>
           <div className="video-detail__favorites">
             <VideoFavorites
               videoId={video._id}
-              favorites={video.data.favorites}
-              isFavorite={video.data.isFavorite}
+              favorites={video.favorites}
+              isFavorite={video.isFavorite}
               button
             />
           </div>
@@ -31,17 +31,17 @@ const VideoDetail: React.FC<VideoDetailProps> = ({ video }) => {
         </div>
       </div>
       <div className="video-detail__creator">
-        <VideoCreator info={video.info} />
+        <VideoCreator creator={video.creator} />
       </div>
       <div className="video-detail__tags">
-        <VideoTags tags={video.info.tags} />
+        <VideoTags tags={video.tags} />
       </div>
-      <VideoViews views={video.data.views} />
+      <VideoViews views={video.views} />
       <VideoDuration
-        minDuration={video.info.minDuration}
-        maxDuration={video.info.maxDuration}
+        minDuration={video.minDuration}
+        maxDuration={video.maxDuration}
       />
-      <p className="video-detail__description">{video.info.description}</p>
+      <p className="video-detail__description">{video.description}</p>
     </div>
   );
 };

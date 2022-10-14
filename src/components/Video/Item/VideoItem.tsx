@@ -117,8 +117,8 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
         <VideoThumbnail video={video} />
         <div className="video-item__duration">
           <VideoDuration
-            minDuration={video.info.minDuration}
-            maxDuration={video.info.maxDuration}
+            minDuration={video.minDuration}
+            maxDuration={video.maxDuration}
             brief
           />
         </div>
@@ -133,8 +133,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
             style={{
               width: video.history.isEnded
                 ? '100%'
-                : (video.history.totalProgress / video.info.maxDuration) * 100 +
-                  '%',
+                : (video.history.totalProgress / video.maxDuration) * 100 + '%',
               opacity: isPreview ? 0 : 1,
             }}
           />
@@ -143,20 +142,20 @@ const VideoItem: React.FC<VideoItemProps> = ({ id, video, onDelete }) => {
       <div className="video-item__info">
         <div className="video-item__header">
           <Link to={`/video/${video._id}`} className="video-item__title">
-            {video.info.title}
+            {video.title}
           </Link>
           <VideoDropdown id={id} video={video} onDispatch={dispatchHandler} />
         </div>
         {!location.pathname.includes('/channel/') && (
-          <VideoCreator info={video.info} />
+          <VideoCreator creator={video.creator} />
         )}
         <div className="video-item__detail">
           <div className="video-item__data">
-            <VideoViews views={video.data.views} brief />
+            <VideoViews views={video.views} brief />
             <VideoFavorites
               videoId={video._id}
-              favorites={video.data.favorites}
-              isFavorite={video.data.isFavorite}
+              favorites={video.favorites}
+              isFavorite={video.isFavorite}
             />
           </div>
           <VideoTimestamp createdAt={video.createdAt} />

@@ -30,8 +30,8 @@ const VideoPage: React.FC = () => {
     <Fragment>
       {data && (
         <Helmet>
-          <title>{data.info.title} - WatchTree</title>
-          <meta name="description" content={data.info.description} />
+          <title>{data.title} - WatchTree</title>
+          <meta name="description" content={data.description} />
         </Helmet>
       )}
       <VideoLayout video={data} loaded={loaded} />

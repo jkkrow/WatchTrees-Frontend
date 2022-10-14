@@ -22,12 +22,12 @@ interface MenuProps {
 }
 
 const Menu: React.FC<MenuProps> = ({ on, onClose }) => {
-  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const sourceTree = useAppSelector((state) => state.upload.sourceTree);
   const userData = useAppSelector((state) => state.user.userData);
   const dispatch = useAppDispatch();
 
   const logoutHandler = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (uploadTree) {
+    if (sourceTree) {
       const result = window.confirm(
         'There is unfinished upload process. The unsaved changes will be lost if you logout. Are you sure to continue?'
       );

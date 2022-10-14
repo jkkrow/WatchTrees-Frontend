@@ -25,13 +25,13 @@ const CreatedVideoItem: React.FC<CreatedVideoItemProps> = ({
   item,
   onDelete,
 }) => {
-  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const sourceTree = useAppSelector((state) => state.upload.sourceTree);
   const { dispatchThunk, loading } = useAppThunk();
 
   const navigate = useNavigate();
 
   const editHandler = async (videoId: string) => {
-    if (!uploadTree) {
+    if (!sourceTree) {
       await dispatchThunk(continueUpload(videoId));
     }
 
@@ -45,28 +45,25 @@ const CreatedVideoItem: React.FC<CreatedVideoItemProps> = ({
         <VideoThumbnail video={item} />
       </div>
       <div className="created-video-item__info">
-        <h3 className="created-video-item__title">{item.info.title || '_'}</h3>
+        <h3 className="created-video-item__title">{item.title || '_'}</h3>
         <div className="created-video-item__tags">
-          <VideoTags tags={item.info.tags} />
+          <VideoTags tags={item.tags} />
         </div>
         <div className="created-video-item__detail">
           <div>
             <div className="created-video-item__status">
-              <VideoStatus status={item.info.status} brief />
+              <VideoStatus status={item.status} brief />
             </div>
             <div className="created-video-item__duration">
               <VideoDuration
-                minDuration={item.info.minDuration}
-                maxDuration={item.info.maxDuration}
+                minDuration={item.minDuration}
+                maxDuration={item.maxDuration}
                 brief
               />
             </div>
             <div className="created-video-item__data">
-              <VideoViews views={item.data.views} brief />
-              <VideoFavorites
-                videoId={item._id}
-                favorites={item.data.favorites}
-              />
+              <VideoViews views={item.views} brief />
+              <VideoFavorites videoId={item._id} favorites={item.favorites} />
             </div>
           </div>
           <div>
@@ -81,7 +78,7 @@ const CreatedVideoItem: React.FC<CreatedVideoItemProps> = ({
           </div>
         </div>
       </div>
-      {item.info.isEditing && (
+      {item.isEditing && (
         <div className="created-video-item__editing">EDITING</div>
       )}
     </Card>

@@ -8,12 +8,10 @@ import { usePlayer } from 'hooks/video/player';
 import { useVolume } from 'hooks/video/volume';
 import { useLoader } from 'hooks/video/loader';
 import { useLocalStorage } from 'hooks/common/storage';
-import { NodeInfo, VideoNode } from 'store/types/video';
+import { VideoNode } from 'store/types/video';
 import './PreviewPlayer.scss';
 
-interface PreviewPlayerProps {
-  id: string;
-  info: NodeInfo;
+interface PreviewPlayerProps extends VideoNode {
   children: VideoNode[];
 }
 

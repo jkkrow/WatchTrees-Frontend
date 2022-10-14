@@ -20,7 +20,7 @@ import { deleteVideo, fetchCreated } from 'store/thunks/video-thunk';
 import { VALIDATOR_EQUAL } from 'util/validators';
 
 const CreatedVideosPage: React.FC = () => {
-  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const sourceTree = useAppSelector((state) => state.upload.sourceTree);
   const dispatch = useAppDispatch();
   const {
     dispatchThunk: fetchThunk,
@@ -63,7 +63,7 @@ const CreatedVideosPage: React.FC = () => {
 
     await deleteThunk(deleteVideo(targetItem));
 
-    if (uploadTree && uploadTree._id === targetItem._id) {
+    if (sourceTree && sourceTree._id === targetItem._id) {
       dispatch(uploadActions.finishUpload());
     }
 
@@ -83,17 +83,15 @@ const CreatedVideosPage: React.FC = () => {
             <>
               <div>
                 To proceed, type the video name{' '}
-                <strong>{targetItem?.info.title}</strong>.
+                <strong>{targetItem?.title}</strong>.
               </div>
               <Input
                 id="video"
                 formInput
                 validators={
-                  targetItem
-                    ? [VALIDATOR_EQUAL(targetItem.info.title)]
-                    : undefined
+                  targetItem ? [VALIDATOR_EQUAL(targetItem.title)] : undefined
                 }
-                placeholder={targetItem?.info.title}
+                placeholder={targetItem?.title}
                 onForm={setFormInput}
               />
             </>

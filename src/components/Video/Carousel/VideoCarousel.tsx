@@ -47,28 +47,28 @@ const VideoCarousel: React.FC<VideoCarouselProps> = ({ data, loaded }) => {
                   to={`/video/${video._id}`}
                   className="video-carousel__title"
                 >
-                  {video.info.title}
+                  {video.title}
                 </Link>
                 <div className="video-carousel__creator">
-                  <VideoCreator info={video.info} />
+                  <VideoCreator creator={video.creator} />
                 </div>
                 <div className="video-carousel__duration">
                   <VideoDuration
                     brief
-                    minDuration={video.info.minDuration}
-                    maxDuration={video.info.maxDuration}
+                    minDuration={video.minDuration}
+                    maxDuration={video.maxDuration}
                   />
                 </div>
                 <div className="video-carousel__data">
-                  <VideoViews views={video.data.views} brief />
+                  <VideoViews views={video.views} brief />
                   <VideoFavorites
                     videoId={video._id}
-                    favorites={video.data.favorites}
-                    isFavorite={video.data.isFavorite}
+                    favorites={video.favorites}
+                    isFavorite={video.isFavorite}
                   />
                 </div>
                 <div className="video-carousel__description">
-                  {video.info.description}
+                  {video.description}
                 </div>
               </div>
             </SwiperSlide>

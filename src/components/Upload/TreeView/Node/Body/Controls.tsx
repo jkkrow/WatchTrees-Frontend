@@ -5,13 +5,13 @@ import { ReactComponent as RemoveIcon } from 'assets/icons/remove.svg';
 import { ReactComponent as AngleLeftIcon } from 'assets/icons/angle-left.svg';
 import { ReactComponent as AngleLeftDoubleIcon } from 'assets/icons/angle-left-double.svg';
 import { useAppDispatch, useAppSelector } from 'hooks/common/store';
-import { VideoNode } from 'store/types/video';
+import { RenderNode } from 'store/types/upload';
 import { videoActions } from 'store/slices/video-slice';
 import { uploadActions } from 'store/slices/upload-slice';
 import { validateNodes } from 'util/tree';
 
 interface ControlsProps {
-  currentNode: VideoNode;
+  currentNode: RenderNode;
   rootId: string;
 }
 
@@ -31,7 +31,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
   };
 
   const removeNodeHandler = () => {
-    dispatch(uploadActions.removeNode({ nodeId: currentNode._id }));
+    dispatch(uploadActions.removeNode({ id: currentNode._id }));
 
     if (currentNode._id === activeNodeId) {
       activeNodeHandler(currentNode.parentId!);
@@ -43,7 +43,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
   };
 
   const pendRemoveHandler = () => {
-    const isNotEmpty = validateNodes(currentNode, 'info', null, false);
+    const isNotEmpty = validateNodes(currentNode, 'url', '', false);
 
     if (isNotEmpty) {
       setIsWarning(true);
@@ -73,7 +73,7 @@ const Controls: React.FC<ControlsProps> = ({ currentNode, rootId }) => {
           onClick={pendRemoveHandler}
         />
       )}
-      {!currentNode.info &&
+      {!currentNode.url &&
         currentNode._id !== rootId &&
         currentNode._id === activeNodeId && (
           <div

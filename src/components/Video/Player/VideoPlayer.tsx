@@ -33,18 +33,14 @@ import { useSelector } from 'hooks/video/selector';
 import { useNavigation } from 'hooks/video/navigation';
 import { useError } from 'hooks/video/error';
 import { useKeyControls } from 'hooks/video/key-control';
-import { NodeInfo, VideoNode } from 'store/types/video';
+import { VideoNode } from 'store/types/video';
 import './VideoPlayer.scss';
 
-export interface VideoPlayerProps {
-  id: string;
-  parentId?: string | null;
-  layer?: number;
-  info: NodeInfo;
-  children: VideoNode[];
+export interface VideoPlayerProps extends VideoNode {
   active?: boolean;
   autoPlay?: boolean;
   editMode?: boolean;
+  children: VideoNode[];
 }
 
 export interface VideoPlayerDependencies extends VideoPlayerProps {
@@ -270,10 +266,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
             videoDuration={videoDuration}
             progressTooltip={progressTooltip}
             progressTooltipPosition={progressTooltipPosition}
-            selectionStartPoint={
-              videoPlayerDependencies.info.selectionTimeStart
-            }
-            selectionEndPoint={videoPlayerDependencies.info.selectionTimeEnd}
+            selectionStartPoint={videoPlayerDependencies.selectionTimeStart}
+            selectionEndPoint={videoPlayerDependencies.selectionTimeEnd}
             editMode={videoPlayerDependencies.editMode}
             onHover={updateTooltip}
             onTouch={updateTooltipMobile}

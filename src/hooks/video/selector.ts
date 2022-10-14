@@ -7,7 +7,8 @@ import { videoActions } from 'store/slices/video-slice';
 
 export const useSelector = ({
   videoRef,
-  info,
+  selectionTimeStart,
+  selectionTimeEnd,
   children,
   active,
 }: VideoPlayerDependencies) => {
@@ -19,7 +20,7 @@ export const useSelector = ({
   const [temporarilyVisible, setTemporarilyVisible] = useState(false);
   const [leftTime, setLeftTime] = useState(0);
   const [nextVideos, setNextVideos] = useState(
-    children.filter((video) => video.info)
+    children.filter((video) => video.url)
   );
 
   const [setSelectorTimeout] = useTimeout();
@@ -27,8 +28,6 @@ export const useSelector = ({
   const updateSelector = useCallback(() => {
     const video = videoRef.current!;
     const currentTime = video.currentTime || 0;
-    const selectionTimeStart = info.selectionTimeStart;
-    const selectionTimeEnd = info.selectionTimeEnd;
 
     if (
       currentTime >= selectionTimeStart &&
@@ -50,8 +49,8 @@ export const useSelector = ({
     }
   }, [
     videoRef,
-    info.selectionTimeStart,
-    info.selectionTimeEnd,
+    selectionTimeStart,
+    selectionTimeEnd,
     nextVideos.length,
     isSelected,
   ]);
@@ -83,7 +82,7 @@ export const useSelector = ({
     if (active) return;
 
     setIsSelected(false);
-    setNextVideos(children.filter((video) => video.info));
+    setNextVideos(children.filter((video) => video.url));
   }, [active, children]);
 
   return {

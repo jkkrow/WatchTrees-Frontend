@@ -18,7 +18,7 @@ const Preview: React.FC<PreviewProps> = ({ video, on, onUnmounted }) => {
     navigate(`/video/${video._id}`);
   };
 
-  return video.root.info ? (
+  return video.root ? (
     <CSSTransition
       in={on}
       classNames="video-preview"
@@ -28,11 +28,7 @@ const Preview: React.FC<PreviewProps> = ({ video, on, onUnmounted }) => {
       onExited={onUnmounted}
     >
       <div className="video-preview" onClick={watchVideoHandler}>
-        <PreviewPlayer
-          id={video.root._id}
-          info={video.root.info}
-          children={video.root.children}
-        />
+        <PreviewPlayer {...video.root} />
       </div>
     </CSSTransition>
   ) : null;

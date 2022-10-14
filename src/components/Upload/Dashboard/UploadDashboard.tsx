@@ -17,7 +17,7 @@ import {
   useAppSelector,
   useAppThunk,
 } from 'hooks/common/store';
-import { VideoTree } from 'store/types/video';
+import { RenderTree } from 'store/types/upload';
 import { uploadActions } from 'store/slices/upload-slice';
 import {
   saveUpload,
@@ -30,7 +30,7 @@ import { validateNodes } from 'util/tree';
 import './UploadDashboard.scss';
 
 interface UploadDashboardProps {
-  tree: VideoTree;
+  tree: RenderTree;
 }
 
 const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
@@ -38,12 +38,10 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const dispatch = useAppDispatch();
   const { dispatchThunk, loading } = useAppThunk();
 
-  const [titleInput, setTitleInput] = useState(tree.info.title);
+  const [titleInput, setTitleInput] = useState(tree.title);
   const [tagInput, setTagInput] = useState('');
-  const [tagArray, setTagArray] = useState(tree.info.tags);
-  const [descriptionInput, setDescriptionInput] = useState(
-    tree.info.description
-  );
+  const [tagArray, setTagArray] = useState(tree.tags);
+  const [descriptionInput, setDescriptionInput] = useState(tree.description);
   const [isUndoing, setIsUndoing] = useState(false);
 
   const [setTitleTimeout] = useTimeout();
@@ -52,9 +50,9 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
   const disableSubmit = useMemo(() => {
     let message: string = '';
 
-    const isEmptyNode = validateNodes(tree.root, 'info');
+    const isEmptyNode = validateNodes(tree.root, 'url', '');
     const isUncomletedNode = validateNodes(tree.root, 'progress', 100, false);
-    const isTitleEmpty = !tree.info.title;
+    const isTitleEmpty = !tree.title;
 
     if (isTitleEmpty) {
       message = 'Title is empty';
@@ -69,15 +67,16 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     }
 
     return message;
-  }, [tree.root, tree.info.title]);
+  }, [tree.root, tree.title]);
 
   const titleChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleInput(event.target.value);
-
     setTitleTimeout(
       () =>
         dispatch(
-          uploadActions.setTree({ info: { title: event.target.value } })
+          uploadActions.updateTree({
+            info: { title: event.target.value },
+          })
         ),
       300
     );
@@ -87,11 +86,12 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setDescriptionInput(event.target.value);
-
     setDescriptionTimeout(
       () =>
         dispatch(
-          uploadActions.setTree({ info: { description: event.target.value } })
+          uploadActions.updateTree({
+            info: { description: event.target.value },
+          })
         ),
       300
     );
@@ -114,7 +114,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
       const newTags = [...tagArray, newTag];
 
       setTagArray(newTags);
-      dispatch(uploadActions.setTree({ info: { tags: newTags } }));
+      dispatch(uploadActions.updateTree({ info: { tags: newTags } }));
     }
 
     setTagInput('');
@@ -124,12 +124,14 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
     const filteredTags = tagArray.filter((item: string) => item !== tag);
 
     setTagArray(filteredTags);
-    dispatch(uploadActions.setTree({ info: { tags: filteredTags } }));
+    dispatch(uploadActions.updateTree({ info: { tags: filteredTags } }));
   };
 
   const statusChangeHandler = (value: string) => {
     dispatch(
-      uploadActions.setTree({ info: { status: value as 'public' | 'private' } })
+      uploadActions.updateTree({
+        info: { status: value as 'public' | 'private' },
+      })
     );
   };
 
@@ -221,7 +223,7 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
         <FileInput
           type="image"
           label="Add thumbnail"
-          initialValue={[tree.info.thumbnail]}
+          initialValue={[{ name: 'thumbnail', url: tree.thumbnail }]}
           onFileChange={thumbnailChangeHandler}
           onFileDelete={thumbnailDeleteHandler}
         />
@@ -230,24 +232,24 @@ const UploadDashboard: React.FC<UploadDashboardProps> = ({ tree }) => {
             <Radio
               name="video-status"
               options={['public', 'private']}
-              initialValue={tree.info.status}
+              initialValue={tree.status}
               onRadioChange={statusChangeHandler}
             />
           </div>
           <div className="upload-dashboard__size" data-label="Size">
-            {formatSize(tree.info.size)}
+            {formatSize(tree.size)}
           </div>
           <div
             className="upload-dashboard__min-duration"
             data-label="Min Duration"
           >
-            {formatTime(tree.info.minDuration)}
+            {formatTime(tree.minDuration)}
           </div>
           <div
             className="upload-dashboard__max-duration"
             data-label="Max Duration"
           >
-            {formatTime(tree.info.maxDuration)}
+            {formatTime(tree.maxDuration)}
           </div>
         </div>
         <div className="upload-dashboard__buttons">

@@ -1,18 +1,18 @@
 import { Link } from 'react-router-dom';
 
 import Avatar from 'components/Common/UI/Avatar/Avatar';
-import { TreeInfoClient } from 'store/types/video';
+import { VideoTreeClient } from 'store/types/video';
 import './VideoCreator.scss';
 
 interface VideoCreatorProps {
-  info: TreeInfoClient;
+  creator: VideoTreeClient['creator'];
 }
 
-const VideoCreator: React.FC<VideoCreatorProps> = ({ info }) => {
+const VideoCreator: React.FC<VideoCreatorProps> = ({ creator }) => {
   return (
-    <Link className="video-creator" to={`/channel/${info.creator}`}>
-      <Avatar width="2.5rem" height="2.5rem" src={info.creatorInfo.picture} />
-      <div className="video-creator__name">{info.creatorInfo.name}</div>
+    <Link className="video-creator" to={`/channel/${creator.id}`}>
+      <Avatar width="2.5rem" height="2.5rem" src={creator.picture} />
+      <div className="video-creator__name">{creator.name}</div>
     </Link>
   );
 };

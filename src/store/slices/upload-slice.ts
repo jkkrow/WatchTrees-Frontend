@@ -1,8 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { v4 as uuidv4 } from 'uuid';
 
-import { NodeInfo } from 'store/types/video';
-import { UploadTree } from 'store/types/upload';
+import {
+  SourceTree,
+  RenderTree,
+  SourceNode,
+  RenderNode,
+} from 'store/types/upload';
 import { authActions } from './auth-slice';
 import {
   findById,
@@ -11,18 +15,16 @@ import {
   getMinMaxDuration,
 } from 'util/tree';
 
-type TreeType = 'uploadTree' | 'previewTree';
-
 interface UploadSliceState {
-  uploadTree: UploadTree | null;
-  previewTree: UploadTree | null;
+  sourceTree: SourceTree | null;
+  renderTree: RenderTree | null;
   activeNodeId: string;
   isUploadSaved: boolean;
 }
 
 const initialState: UploadSliceState = {
-  uploadTree: null,
-  previewTree: null,
+  sourceTree: null,
+  renderTree: null,
   activeNodeId: '',
   isUploadSaved: false,
 };
@@ -31,166 +33,100 @@ const uploadSlice = createSlice({
   name: 'upload',
   initialState,
   reducers: {
-    initiateUpload: (state, { payload }: PayloadAction<UploadTree>) => {
-      state.uploadTree = payload;
-      state.previewTree = payload;
-      state.activeNodeId = payload.root._id;
+    initiateUpload: (
+      state,
+      {
+        payload,
+      }: PayloadAction<{ sourceTree: SourceTree; renderTree: RenderTree }>
+    ) => {
+      state.sourceTree = payload.sourceTree;
+      state.renderTree = payload.renderTree;
+      state.activeNodeId = payload.sourceTree.root._id;
       state.isUploadSaved = true;
     },
 
-    appendNode: (
-      state,
-      { payload }: PayloadAction<{ type?: TreeType; nodeId: string }>
-    ) => {
-      let trees = [
-        state.uploadTree as UploadTree,
-        state.previewTree as UploadTree,
-      ];
+    addNode: (state, { payload }: PayloadAction<{ parentId: string }>) => {
+      const sourceTree = state.sourceTree as SourceTree;
+      const renderTree = state.renderTree as RenderTree;
+      const sourceNode = findById(sourceTree, payload.parentId);
+      const renderNode = findById(renderTree, payload.parentId);
 
-      if (payload.type) {
-        trees = [state[payload.type] as UploadTree];
-      }
+      if (!sourceNode || !renderNode) return;
 
-      const newNodeId = uuidv4();
+      const newNode = {
+        _id: uuidv4(),
+        parentId: sourceNode._id,
+        level: sourceNode.level + 1,
+        name: '',
+        label: '',
+        url: '',
+        size: 0,
+        duration: 0,
+        selectionTimeStart: 0,
+        selectionTimeEnd: 0,
+        children: [],
+      };
 
-      for (let tree of trees) {
-        const node = findById(tree, payload.nodeId);
-
-        if (!node) return;
-
-        const newNode = {
-          _id: newNodeId,
-          parentId: node._id,
-          layer: node.layer + 1,
-          info: null,
-          children: [],
-        };
-
-        node.children.push(newNode);
-
-        const { max, min } = getMinMaxDuration(tree);
-
-        tree.info.maxDuration = max;
-        tree.info.minDuration = min;
-      }
-
-      state.isUploadSaved = false;
+      sourceNode.children.push(newNode);
+      renderNode.children.push({ ...newNode, error: null, progress: 0 });
     },
 
-    setNode: (
+    updateNode: (
       state,
       {
         payload,
       }: PayloadAction<{
-        type?: TreeType;
-        info: Partial<NodeInfo> | null;
-        nodeId: string;
+        id: string;
+        info: Partial<SourceNode | RenderNode>;
+        exclude?: 'source' | 'render';
       }>
     ) => {
-      let trees = [
-        state.uploadTree as UploadTree,
-        state.previewTree as UploadTree,
-      ];
+      const sourceTree = state.sourceTree as SourceTree;
+      const renderTree = state.renderTree as RenderTree;
+      const sourceNode = findByChildId(sourceTree, payload.id);
+      const renderNode = findByChildId(renderTree, payload.id);
 
-      if (payload.type) {
-        trees = [state[payload.type] as UploadTree];
-      }
+      if (!sourceNode || !renderNode) return;
 
-      for (let tree of trees) {
-        const node = findById(tree, payload.nodeId);
-
-        if (!node) return;
-
-        if (!node.info) {
-          node.info = payload.info as NodeInfo;
-        } else {
-          if (payload.info === null) {
-            node.info = null;
-          } else {
-            node.info = { ...node.info, ...payload.info };
-          }
+      for (let key in payload.info) {
+        if (payload.exclude !== 'source' && sourceNode.hasOwnProperty(key)) {
+          (sourceNode as any)[key] = (payload.info as any)[key];
         }
 
-        const fullSize = getFullSize(tree);
-        const { max, min } = getMinMaxDuration(tree);
-
-        tree.info.size = fullSize;
-        tree.info.maxDuration = max;
-        tree.info.minDuration = min;
+        if (payload.exclude !== 'render') {
+          (renderNode as any)[key] = (payload.info as any)[key];
+        }
       }
-
-      state.isUploadSaved = false;
     },
 
-    removeNode: (
-      state,
-      { payload }: PayloadAction<{ type?: TreeType; nodeId: string }>
-    ) => {
-      let trees = [
-        state.uploadTree as UploadTree,
-        state.previewTree as UploadTree,
-      ];
+    removeNode: (state, { payload }: PayloadAction<{ id: string }>) => {
+      const sourceTree = state.sourceTree as SourceTree;
+      const renderTree = state.renderTree as RenderTree;
+      const sourceNode = findByChildId(sourceTree, payload.id);
+      const renderNode = findByChildId(renderTree, payload.id);
 
-      if (payload.type) {
-        trees = [state[payload.type] as UploadTree];
-      }
+      if (!sourceNode || !renderNode) return;
 
-      for (let tree of trees) {
-        if (!tree) return;
+      sourceNode.children = sourceNode.children.filter(
+        (child) => child._id !== payload.id
+      );
 
-        const node = findByChildId(tree, payload.nodeId);
-
-        if (!node) return;
-
-        node.children = node.children.filter(
-          (item) => item._id !== payload.nodeId
-        );
-
-        const fullSize = getFullSize(tree);
-        const { max, min } = getMinMaxDuration(tree);
-
-        tree.info.size = fullSize;
-        tree.info.maxDuration = max;
-        tree.info.minDuration = min;
-      }
-
-      state.isUploadSaved = false;
+      renderNode.children = renderNode.children.filter(
+        (child) => child._id !== payload.id
+      );
     },
 
-    setTree: (
+    updateTree: (
       state,
-      {
-        payload,
-      }: PayloadAction<{
-        type?: TreeType;
-        info: Partial<UploadTree['info']>;
-      }>
+      { payload }: PayloadAction<{ info: Partial<SourceTree> }>
     ) => {
-      switch (payload.type) {
-        case 'uploadTree':
-          state.uploadTree = {
-            ...state.uploadTree,
-            info: { ...state.uploadTree?.info, ...payload.info },
-          } as UploadTree;
-          break;
-        case 'previewTree':
-          state.previewTree = {
-            ...state.previewTree,
-            info: { ...state.previewTree?.info, ...payload.info },
-          } as UploadTree;
-          break;
-        default:
-          state.uploadTree = {
-            ...state.uploadTree,
-            info: { ...state.uploadTree?.info, ...payload.info },
-          } as UploadTree;
-          state.previewTree = {
-            ...state.previewTree,
-            info: { ...state.previewTree?.info, ...payload.info },
-          } as UploadTree;
-      }
+      const sourceTree = state.sourceTree as SourceTree;
+      const renderTree = state.renderTree as RenderTree;
 
-      state.isUploadSaved = false;
+      for (let key in payload.info) {
+        (sourceTree as any)[key] = (payload.info as any)[key];
+        (renderTree as any)[key] = (payload.info as any)[key];
+      }
     },
 
     setActiveNode: (state, { payload }: PayloadAction<string>) => {
@@ -202,19 +138,43 @@ const uploadSlice = createSlice({
     },
 
     finishUpload: (state) => {
-      state.uploadTree = null;
-      state.previewTree = null;
+      state.sourceTree = null;
+      state.renderTree = null;
       state.activeNodeId = '';
       state.isUploadSaved = false;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(authActions.signout, (state) => {
-      state.uploadTree = null;
-      state.previewTree = null;
-      state.activeNodeId = '';
-      state.isUploadSaved = false;
-    });
+    builder
+      .addCase(authActions.signout, (state) => {
+        state.sourceTree = null;
+        state.renderTree = null;
+        state.activeNodeId = '';
+        state.isUploadSaved = false;
+      })
+      .addMatcher(
+        ({ type }) => {
+          const prefix = type.split('upload/')[1];
+          return prefix ? prefix.match('(update|remove).*') : false;
+        },
+        (state) => {
+          const sourceTree = state.sourceTree as SourceTree;
+          const renderTree = state.renderTree as RenderTree;
+
+          const fullSize = getFullSize(sourceTree);
+          const { max, min } = getMinMaxDuration(sourceTree);
+
+          sourceTree.size = fullSize;
+          sourceTree.maxDuration = max;
+          sourceTree.minDuration = min;
+
+          renderTree.size = fullSize;
+          renderTree.maxDuration = max;
+          renderTree.minDuration = min;
+
+          state.isUploadSaved = false;
+        }
+      );
   },
 });
 

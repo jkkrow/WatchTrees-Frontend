@@ -8,7 +8,7 @@ import { VideoPlayerDependencies } from 'components/Video/Player/VideoPlayer';
 export const useNavigation = ({
   videoRef,
   parentId,
-  info,
+  selectionTimeStart,
   children,
 }: VideoPlayerDependencies) => {
   const videoTree = useAppSelector((state) => state.video.videoTree!);
@@ -20,9 +20,8 @@ export const useNavigation = ({
     (nextVideos: VideoNode[]) => {
       return () => {
         const video = videoRef.current!;
-        const validNextVideos = children.filter((video) => video.info);
+        const validNextVideos = children.filter((video) => video.url);
         const isLastVideo = !validNextVideos.length;
-        const selectionTimeStart = info.selectionTimeStart;
 
         if (isLastVideo) {
           video.currentTime = video.duration;
@@ -39,7 +38,7 @@ export const useNavigation = ({
         );
       };
     },
-    [videoRef, info.selectionTimeStart, children, dispatch]
+    [videoRef, selectionTimeStart, children, dispatch]
   );
 
   const navigateToPreviousVideo = useCallback(() => {

@@ -131,18 +131,18 @@ export const addToHistory = (unmount?: boolean): AppThunk => {
 
     if (!videoTree || !activeNodeId) return;
     const activeNode = findById(videoTree, activeNodeId);
-    if (!activeNode || !activeNode.info) return;
+    if (!activeNode || !activeNode) return;
 
     const threshold =
-      activeNode.info.duration * 0.95 > activeNode.info.duration - 10
-        ? activeNode.info.duration - 10
-        : activeNode.info.duration * 0.95;
+      activeNode.duration * 0.95 > activeNode.duration - 10
+        ? activeNode.duration - 10
+        : activeNode.duration * 0.95;
     const isLastVideo = activeNode.children.length === 0;
-    const endAt = activeNode.info!.duration - threshold > 180 ? 180 : threshold;
+    const endAt = activeNode!.duration - threshold > 180 ? 180 : threshold;
 
     const previousNodes = findAncestors(videoTree, activeNode._id);
     const previousProgress = previousNodes.reduce(
-      (acc, cur) => acc + (cur.info?.duration || 0),
+      (acc, cur) => acc + (cur.duration || 0),
       0
     );
 

@@ -1,8 +1,11 @@
-import { NodeInfo, VideoNode, VideoTree } from 'store/types/video';
+import { Tree, Node, VideoTree, VideoNode } from 'store/types/video';
 
-export const findById = (tree: VideoTree, id: string): VideoNode | null => {
-  let currentNode: VideoNode = tree.root;
-  const queue: VideoNode[] = [];
+export const findById = <T extends Tree>(
+  tree: T,
+  id: string
+): T['root'] | null => {
+  let currentNode = tree.root;
+  const queue: T['root'][] = [];
 
   queue.push(currentNode);
 
@@ -18,12 +21,12 @@ export const findById = (tree: VideoTree, id: string): VideoNode | null => {
   return null;
 };
 
-export const findByChildId = (
-  tree: VideoTree,
+export const findByChildId = <T extends Tree>(
+  tree: T,
   id: string
-): VideoNode | null => {
-  let currentNode: VideoNode = tree.root;
-  const queue: VideoNode[] = [];
+): T['root'] | null => {
+  let currentNode = tree.root;
+  const queue: T['root'][] = [];
 
   queue.push(currentNode);
 
@@ -40,10 +43,10 @@ export const findByChildId = (
   return null;
 };
 
-export const traverseNodes = (root: VideoNode): VideoNode[] => {
+export const traverseNodes = <T extends Node>(root: T): T[] => {
   let currentNode = root;
-  const queue: VideoNode[] = [];
-  const nodes: VideoNode[] = [];
+  const queue: T[] = [];
+  const nodes: T[] = [];
 
   queue.push(currentNode);
 
@@ -53,36 +56,16 @@ export const traverseNodes = (root: VideoNode): VideoNode[] => {
     nodes.push(currentNode);
 
     if (currentNode.children.length)
-      currentNode.children.forEach((child) => queue.push(child));
+      (currentNode.children as T[]).forEach((child) => queue.push(child));
   }
 
   return nodes;
 };
 
-export const validateNodes = (
-  root: VideoNode,
-  key: keyof NodeInfo | 'info',
-  value: any = null,
-  type = true
-): boolean => {
-  const nodes = traverseNodes(root);
+export const getAllPaths = <T extends Tree>(tree: T): T['root'][][] => {
+  const result: T['root'][][] = [];
 
-  if (key === 'info') {
-    return !!nodes.find((node) =>
-      type ? node.info === value : node.info !== value
-    );
-  }
-
-  return !!nodes.find((node) => {
-    if (!node.info) return false;
-    return type ? node.info[key] === value : node.info[key] !== value;
-  });
-};
-
-export const getAllPaths = (tree: VideoTree): VideoNode[][] => {
-  const result: VideoNode[][] = [];
-
-  const iterate = (currentNode: VideoNode, path: VideoNode[]) => {
+  const iterate = (currentNode: Node, path: Node[]) => {
     const newPath = path.concat(currentNode);
 
     if (currentNode.children.length) {
@@ -99,48 +82,14 @@ export const getAllPaths = (tree: VideoTree): VideoNode[][] => {
   return result;
 };
 
-export const getFullSize = (tree: VideoTree): number => {
-  const nodes = traverseNodes(tree.root);
-  const filteredNodes: VideoNode[] = [];
-  const seen: { [key: string]: boolean } = {};
-
-  for (let node of nodes) {
-    if (!node.info) continue;
-
-    const duplicated = seen.hasOwnProperty(node.info.name);
-
-    if (!duplicated) {
-      filteredNodes.push(node);
-      seen[node.info.name] = true;
-    }
-  }
-
-  return filteredNodes.reduce((acc, cur) => acc + (cur.info?.size ?? 0), 0);
-};
-
-export const getMinMaxDuration = (
-  tree: VideoTree
-): { max: number; min: number } => {
-  const paths = getAllPaths(tree);
-
-  const possibleDurations = paths.map((path) =>
-    path.reduce((acc, cur) => acc + (cur.info?.duration ?? 0), 0)
-  );
-
-  return {
-    max: Math.max(...possibleDurations),
-    min: Math.min(...possibleDurations),
-  };
-};
-
-export const mapTree = (node: VideoNode) => {
+export const mapTree = <T extends Node>(node: T) => {
   const map: any = {};
 
-  const iterate = (node: VideoNode) => {
+  const iterate = (node: T) => {
     map[node._id] = node;
 
     if (node.children.length) {
-      node.children.forEach(iterate);
+      (node.children as T[]).forEach(iterate);
     }
   };
 
@@ -149,14 +98,14 @@ export const mapTree = (node: VideoNode) => {
   return map;
 };
 
-export const findAncestors = (
-  tree: VideoTree,
+export const findAncestors = <T extends Tree>(
+  tree: T,
   nodeId: string,
   include?: boolean
 ) => {
   const map = mapTree(tree.root);
 
-  const ancestors: VideoNode[] = [];
+  const ancestors: T['root'][] = [];
   let parentId = map[nodeId]?.parentId;
 
   include && ancestors.push(map[nodeId]);
@@ -167,4 +116,53 @@ export const findAncestors = (
   }
 
   return ancestors;
+};
+
+/**
+ * VideoTree Specific
+ */
+
+export const validateNodes = <T extends VideoNode>(
+  root: T,
+  key: keyof T,
+  value: any,
+  type = true
+): boolean => {
+  const nodes = traverseNodes<T>(root);
+
+  return !!nodes.find((node) => {
+    return type ? node[key] === value : node[key] !== value;
+  });
+};
+
+export const getFullSize = <T extends VideoTree>(tree: T): number => {
+  const nodes = traverseNodes(tree.root);
+  const filteredNodes: T['root'][] = [];
+  const seen: { [key: string]: boolean } = {};
+
+  for (let node of nodes) {
+    const duplicated = seen.hasOwnProperty(node.name);
+
+    if (!duplicated) {
+      filteredNodes.push(node);
+      seen[node.name] = true;
+    }
+  }
+
+  return filteredNodes.reduce((acc, cur) => acc + (cur.size ?? 0), 0);
+};
+
+export const getMinMaxDuration = <T extends VideoTree>(
+  tree: T
+): { max: number; min: number } => {
+  const paths = getAllPaths(tree);
+
+  const possibleDurations = paths.map((path) =>
+    path.reduce((acc, cur) => acc + (cur.duration ?? 0), 0)
+  );
+
+  return {
+    max: Math.max(...possibleDurations),
+    min: Math.min(...possibleDurations),
+  };
 };

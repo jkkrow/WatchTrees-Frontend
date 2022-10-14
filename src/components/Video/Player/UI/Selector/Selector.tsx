@@ -32,7 +32,7 @@ const Selector: React.FC<SelectorProps> = ({
               className="vp-selector__btn"
               onClick={() => onSelect(index)}
             >
-              {video.info!.label}
+              {video.label}
             </button>
           </CSSTransition>
         ))}

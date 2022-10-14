@@ -9,11 +9,11 @@ import './UploadButton.scss';
 
 const UploadButton: React.FC = () => {
   const { dispatchThunk, loading } = useAppThunk();
-  const uploadTree = useAppSelector((state) => state.upload.uploadTree);
+  const sourceTree = useAppSelector((state) => state.upload.sourceTree);
   const navigate = useNavigate();
 
   const addNewVideoHandler = async () => {
-    if (!uploadTree) {
+    if (!sourceTree) {
       await dispatchThunk(initiateUpload());
     }
 
@@ -23,7 +23,7 @@ const UploadButton: React.FC = () => {
   return (
     <div className="upload-button">
       <Button inversed onClick={addNewVideoHandler} loading={loading}>
-        {!uploadTree ? (
+        {!sourceTree ? (
           <>
             <PlusIcon />
             NEW VIDEO

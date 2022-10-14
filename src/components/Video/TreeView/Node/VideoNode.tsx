@@ -51,16 +51,12 @@ const VideoNode: React.FC<VideoNodeProps> = ({
     <>
       {(isActive || isActiveChild) && (
         <div className="video-node" data-active={isActive}>
-          {currentVideo.info ? (
+          {currentVideo.url ? (
             <VideoPlayer
-              id={currentVideo._id}
-              parentId={currentVideo.parentId}
-              layer={currentVideo.layer}
-              info={currentVideo.info}
-              children={currentVideo.children}
               autoPlay={autoPlay}
               editMode={editMode}
               active={activeNodeId === currentVideo._id}
+              {...currentVideo}
             />
           ) : (
             <div className="video-node__not-found">

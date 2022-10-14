@@ -10,8 +10,8 @@ import { useAppDispatch, useAppSelector } from 'hooks/common/store';
 import { videoActions } from 'store/slices/video-slice';
 
 export const usePlayer = ({
-  id,
-  info,
+  _id,
+  url,
   ...rest
 }: VideoPlayerProps): VideoPlayerDependencies => {
   const activeNodeId = useAppSelector((state) => state.video.activeNodeId);
@@ -29,22 +29,23 @@ export const usePlayer = ({
     if (!firstRender) return;
 
     const video = videoRef.current!;
-    let src = info.url;
+    let src = url;
 
     // Edit mode
     if (src.substring(0, 4) === 'blob') {
       return video.setAttribute('src', src);
     }
 
-    src = info.isConverted
-      ? `${process.env.REACT_APP_MEDIA_URL}/${src}`
-      : `${process.env.REACT_APP_SOURCE_URL}/${src}`;
+    src =
+      url.split('.')[1] === 'mpd'
+        ? `${process.env.REACT_APP_MEDIA_URL}/${src}`
+        : `${process.env.REACT_APP_SOURCE_URL}/${src}`;
 
     // Connect video to Shaka Player
     const shakaPlayer = new shaka.Player(video);
 
     (async () => {
-      if (activeNodeId === id && initialProgress) {
+      if (activeNodeId === _id && initialProgress) {
         await shakaPlayer.load(src, initialProgress);
         dispatch(videoActions.setInitialProgress(0));
       } else {
@@ -55,15 +56,7 @@ export const usePlayer = ({
     if (isUnmounted.current) return;
 
     setPlayer(shakaPlayer);
-  }, [
-    dispatch,
-    id,
-    info.isConverted,
-    info.url,
-    activeNodeId,
-    initialProgress,
-    firstRender,
-  ]);
+  }, [dispatch, _id, url, activeNodeId, initialProgress, firstRender]);
 
   useEffect(() => {
     return () => {
@@ -71,5 +64,5 @@ export const usePlayer = ({
     };
   }, []);
 
-  return { videoRef, player, id, info, ...rest };
+  return { videoRef, player, _id, url, ...rest };
 };

@@ -9,7 +9,7 @@ export const initiateUpload = (): AppThunk => {
     const client = dispatch(api());
     const { data } = await client.post('/video-trees');
 
-    dispatch(uploadActions.initiateUpload(data.video));
+    dispatch(uploadActions.initiateUpload(data));
   };
 };
 
@@ -18,16 +18,16 @@ export const continueUpload = (id: string): AppThunk => {
     const client = dispatch(api());
     const { data } = await client.get(`/video-trees/created/${id}`);
 
-    dispatch(uploadActions.initiateUpload(data.video));
+    dispatch(uploadActions.initiateUpload(data));
   };
 };
 
 export const uploadVideo = (file: File, nodeId: string): AppThunk => {
   return async (dispatch, getState, api) => {
-    const { uploadTree, previewTree } = getState().upload;
+    const { sourceTree, renderTree } = getState().upload;
     const client = dispatch(api());
 
-    if (!uploadTree || !previewTree) return;
+    if (!sourceTree || !renderTree) return;
 
     try {
       const videoDuration = await new Promise<number>((resolve) => {
@@ -47,49 +47,42 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
             ? +(videoDuration - 10).toFixed(3)
             : +videoDuration.toFixed(3),
         selectionTimeEnd: +videoDuration.toFixed(3),
-        progress: 0,
-        error: null,
-        isConverted: false,
-        url: '',
       };
 
       dispatch(
-        uploadActions.setNode({
-          type: 'uploadTree',
+        uploadActions.updateNode({
+          id: nodeId,
           info: nodeInfo,
-          nodeId,
         })
       );
       dispatch(
-        uploadActions.setNode({
-          type: 'previewTree',
-          info: { ...nodeInfo, url: URL.createObjectURL(file) },
-          nodeId,
+        uploadActions.updateNode({
+          id: nodeId,
+          info: { url: URL.createObjectURL(file) },
+          exclude: 'source',
         })
       );
 
       // Check if file is duplicated
-      const uploadNodes = traverseNodes(uploadTree.root);
+      const uploadNodes = traverseNodes(sourceTree.root);
 
       for (let node of uploadNodes) {
-        if (!node.info) continue;
-
-        if (node.info.name === file.name && node.info.size === file.size) {
+        if (node.name === file.name && node.size === file.size) {
           // match current node's prgress state and url
-          const previewUrl = findById(previewTree, node._id)!.info!.url;
+          const previewUrl = findById(renderTree, node._id)!.url;
 
           dispatch(
-            uploadActions.setNode({
-              type: 'uploadTree',
-              info: { progress: node.info.progress, url: node.info.url },
-              nodeId,
+            uploadActions.updateNode({
+              id: nodeId,
+              info: { url: node.url },
+              exclude: 'render',
             })
           );
           dispatch(
-            uploadActions.setNode({
-              type: 'previewTree',
-              info: { progress: node.info.progress, url: previewUrl },
-              nodeId,
+            uploadActions.updateNode({
+              id: nodeId,
+              info: { progress: 100, url: previewUrl },
+              exclude: 'source',
             })
           );
 
@@ -101,7 +94,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
        * Initiate upload
        */
       const response = await client.post('/upload/multipart', {
-        videoId: uploadTree._id,
+        videoId: sourceTree._id,
         fileName: file.name,
         fileType: file.type,
       });
@@ -111,15 +104,13 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
       const progressArray: number[] = [];
 
       const getDuplicatedNodeIds = () => {
-        const uploadTree = getState().upload.uploadTree!;
-        const uploadNodes = traverseNodes(uploadTree.root);
+        const sourceTree = getState().upload.sourceTree!;
+        const uploadNodes = traverseNodes(sourceTree.root);
 
         const duplicatedNodeIds: string[] = [];
 
         for (let node of uploadNodes) {
-          if (!node.info) continue;
-
-          if (node.info.name === file.name && node.info.size === file.size) {
+          if (node.name === file.name && node.size === file.size) {
             duplicatedNodeIds.push(node._id);
           }
         }
@@ -136,7 +127,13 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
           const progress = Math.round(sum / count);
 
           for (let id of getDuplicatedNodeIds()) {
-            dispatch(uploadActions.setNode({ info: { progress }, nodeId: id }));
+            dispatch(
+              uploadActions.updateNode({
+                id,
+                info: { progress },
+                exclude: 'source',
+              })
+            );
           }
         };
       };
@@ -149,7 +146,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
       // get presigned urls for each parts
       const getUrlResponse = await client.put(`/upload/multipart/${uploadId}`, {
-        videoId: uploadTree._id,
+        videoId: sourceTree._id,
         fileName: file.name,
         partCount,
       });
@@ -187,7 +184,7 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
       const completeUploadReseponse = await client.post(
         `/upload/multipart/${uploadId}`,
         {
-          videoId: uploadTree._id,
+          videoId: sourceTree._id,
           fileName: file.name,
           parts: uploadParts,
         }
@@ -197,16 +194,17 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
       for (let id of getDuplicatedNodeIds()) {
         dispatch(
-          uploadActions.setNode({
-            info: { progress: 100 },
-            nodeId: id,
+          uploadActions.updateNode({
+            id,
+            info: { url },
+            exclude: 'render',
           })
         );
         dispatch(
-          uploadActions.setNode({
-            type: 'uploadTree',
-            info: { url },
-            nodeId: id,
+          uploadActions.updateNode({
+            id,
+            info: { progress: 100 },
+            exclude: 'source',
           })
         );
       }
@@ -214,9 +212,10 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
       return await dispatch(saveUpload());
     } catch (err) {
       dispatch(
-        uploadActions.setNode({
+        uploadActions.updateNode({
+          id: nodeId,
           info: { error: `${(err as Error).message}` },
-          nodeId,
+          exclude: 'source',
         })
       );
     }
@@ -225,13 +224,13 @@ export const uploadVideo = (file: File, nodeId: string): AppThunk => {
 
 export const updateThumbnail = (file: File): AppThunk => {
   return async (dispatch, getState, api) => {
-    const uploadTree = getState().upload.uploadTree;
+    const sourceTree = getState().upload.sourceTree;
     const client = dispatch(api());
 
-    if (!uploadTree) return;
+    if (!sourceTree) return;
 
     const { data } = await client.put('/upload/image', {
-      key: uploadTree.info.thumbnail.url,
+      key: sourceTree.thumbnail,
       fileType: file ? file.type : null,
     });
 
@@ -240,8 +239,8 @@ export const updateThumbnail = (file: File): AppThunk => {
     });
 
     dispatch(
-      uploadActions.setTree({
-        info: { thumbnail: { name: file.name, url: data.key } },
+      uploadActions.updateTree({
+        info: { thumbnail: data.key },
       })
     );
 
@@ -251,18 +250,18 @@ export const updateThumbnail = (file: File): AppThunk => {
 
 export const deleteThumbnail = (): AppThunk => {
   return async (dispatch, getState, api) => {
-    const uploadTree = getState().upload.uploadTree;
+    const sourceTree = getState().upload.sourceTree;
     const client = dispatch(api());
 
-    if (!uploadTree) return;
+    if (!sourceTree) return;
 
     await client.delete('/upload/image', {
-      params: { key: uploadTree.info.thumbnail.url },
+      params: { key: sourceTree.thumbnail },
     });
 
     dispatch(
-      uploadActions.setTree({
-        info: { thumbnail: { name: '', url: '' } },
+      uploadActions.updateTree({
+        info: { thumbnail: '' },
       })
     );
 
@@ -272,13 +271,13 @@ export const deleteThumbnail = (): AppThunk => {
 
 export const saveUpload = (): AppThunk => {
   return async (dispatch, getState, api) => {
-    const uploadTree = getState().upload.uploadTree;
+    const sourceTree = getState().upload.sourceTree;
     const client = dispatch(api());
 
-    if (!uploadTree) return;
+    if (!sourceTree) return;
 
-    const { data } = await client.patch(`/video-trees/${uploadTree._id}`, {
-      uploadTree,
+    const { data } = await client.patch(`/video-trees/${sourceTree._id}`, {
+      sourceTree,
     });
 
     dispatch(uploadActions.saveUpload());
@@ -289,7 +288,7 @@ export const saveUpload = (): AppThunk => {
 
 export const submitUpload = (): AppThunk => {
   return async (dispatch) => {
-    dispatch(uploadActions.setTree({ info: { isEditing: false } }));
+    dispatch(uploadActions.updateTree({ info: { isEditing: false } }));
 
     const data = await dispatch(saveUpload());
 
