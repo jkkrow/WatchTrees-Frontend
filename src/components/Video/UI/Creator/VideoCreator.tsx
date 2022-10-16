@@ -10,7 +10,7 @@ interface VideoCreatorProps {
 
 const VideoCreator: React.FC<VideoCreatorProps> = ({ creator }) => {
   return (
-    <Link className="video-creator" to={`/channel/${creator.id}`}>
+    <Link className="video-creator" to={`/channel/${creator._id}`}>
       <Avatar width="2.5rem" height="2.5rem" src={creator.picture} />
       <div className="video-creator__name">{creator.name}</div>
     </Link>

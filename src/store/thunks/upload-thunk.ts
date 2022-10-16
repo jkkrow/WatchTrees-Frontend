@@ -2,14 +2,17 @@ import axios, { AxiosResponse } from 'axios';
 
 import { AppThunk } from 'store';
 import { uploadActions } from 'store/slices/upload-slice';
-import { findById, traverseNodes } from 'util/tree';
+import { findById, traverseNodes, generateRenderTree } from 'util/tree';
 
 export const initiateUpload = (): AppThunk => {
   return async (dispatch, _, api) => {
     const client = dispatch(api());
     const { data } = await client.post('/video-trees');
 
-    dispatch(uploadActions.initiateUpload(data));
+    const sourceTree = data.video;
+    const renderTree = generateRenderTree(sourceTree);
+
+    dispatch(uploadActions.initiateUpload({ sourceTree, renderTree }));
   };
 };
 
@@ -18,7 +21,10 @@ export const continueUpload = (id: string): AppThunk => {
     const client = dispatch(api());
     const { data } = await client.get(`/video-trees/created/${id}`);
 
-    dispatch(uploadActions.initiateUpload(data));
+    const sourceTree = data.video;
+    const renderTree = generateRenderTree(sourceTree);
+
+    dispatch(uploadActions.initiateUpload({ sourceTree, renderTree }));
   };
 };
 
@@ -277,7 +283,7 @@ export const saveUpload = (): AppThunk => {
     if (!sourceTree) return;
 
     const { data } = await client.patch(`/video-trees/${sourceTree._id}`, {
-      sourceTree,
+      videoTree: sourceTree,
     });
 
     dispatch(uploadActions.saveUpload());

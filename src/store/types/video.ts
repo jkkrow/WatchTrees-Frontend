@@ -37,7 +37,7 @@ export interface VideoNode extends Node {
 
 export interface VideoTreeClient extends VideoTree {
   creator: {
-    id: string;
+    _id: string;
     name: string;
     picture: string;
   };

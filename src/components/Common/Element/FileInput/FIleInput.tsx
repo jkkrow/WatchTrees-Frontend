@@ -133,7 +133,7 @@ const FileInput: React.FC<FileInputProps> = ({
       <ul className="file-input__list">
         {(initialValue || fileInfos).map(
           (fileInfo) =>
-            fileInfo.name && (
+            fileInfo.url && (
               <li key={fileInfo.url} className="file-input__item">
                 <span
                   className={type === 'image' ? ' btn' : ''}

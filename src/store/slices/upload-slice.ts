@@ -83,8 +83,8 @@ const uploadSlice = createSlice({
     ) => {
       const sourceTree = state.sourceTree as SourceTree;
       const renderTree = state.renderTree as RenderTree;
-      const sourceNode = findByChildId(sourceTree, payload.id);
-      const renderNode = findByChildId(renderTree, payload.id);
+      const sourceNode = findById(sourceTree, payload.id);
+      const renderNode = findById(renderTree, payload.id);
 
       if (!sourceNode || !renderNode) return;
 

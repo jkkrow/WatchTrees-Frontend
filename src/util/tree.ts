@@ -1,4 +1,5 @@
 import { Tree, Node, VideoTree, VideoNode } from 'store/types/video';
+import { RenderTree } from 'store/types/upload';
 
 export const findById = <T extends Tree>(
   tree: T,
@@ -165,4 +166,18 @@ export const getMinMaxDuration = <T extends VideoTree>(
     max: Math.max(...possibleDurations),
     min: Math.min(...possibleDurations),
   };
+};
+
+export const generateRenderTree = <T extends VideoTree>(
+  tree: T
+): RenderTree => {
+  const renderTree: RenderTree = JSON.parse(JSON.stringify(tree));
+  const renderNodes = traverseNodes(renderTree.root);
+
+  renderNodes.forEach((node) => {
+    node.error = null;
+    node.url ? (node.progress = 100) : (node.progress = 0);
+  });
+
+  return renderTree;
 };
